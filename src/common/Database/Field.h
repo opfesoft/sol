@@ -60,13 +60,6 @@ class Field
             return static_cast<int8>(atol((char*)data.value));
         }
 
-#ifdef ELUNA
-        enum_field_types GetType() const
-        {
-            return data.type;
-        }
-#endif
-
         uint16 GetUInt16() const
         {
             if (!data.value)

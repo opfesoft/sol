@@ -19,9 +19,6 @@
 #include "GameObjectAI.h"
 #include "Transport.h"
 #include "ScriptMgr.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 #include <time.h>
 
 GameEventMgr* GameEventMgr::instance()

@@ -27,9 +27,6 @@
 #include "LFGMgr.h"
 #include "Chat.h"
 #include "AvgDiffTracker.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 
 MapManager::MapManager()
 {

@@ -22,10 +22,6 @@
 #include "AvgDiffTracker.h"
 #include "AsyncAuctionListing.h"
 
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
-
 #ifdef _WIN32
 #include "ServiceWin32.h"
 extern int m_ServiceStatus;
@@ -80,9 +76,6 @@ void WorldRunnable::run()
     sObjectAccessor->UnloadAll();             // unload 'i_player2corpse' storage and remove from world
     sScriptMgr->Unload();
     sOutdoorPvPMgr->Die();
-#ifdef ELUNA
-    Eluna::Uninitialize();
-#endif
 }
 
 void AuctionListingRunnable::run()

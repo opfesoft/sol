@@ -33,9 +33,6 @@
 #include "PacketLog.h"
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 
 #if defined(__GNUC__)
 #pragma pack(1)

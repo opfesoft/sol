@@ -57,9 +57,6 @@
 #include "InstanceScript.h"
 #include "ReputationMgr.h"
 #include "Transport.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 
 pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
 {
@@ -780,14 +777,6 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
     sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "Spell ScriptStart spellid %u in EffectDummy(%u)", m_spellInfo->Id, effIndex);
 #endif
     m_caster->GetMap()->ScriptsStart(sSpellScripts, uint32(m_spellInfo->Id | (effIndex << 24)), m_caster, unitTarget);
-#ifdef ELUNA
-    if (gameObjTarget)
-        sEluna->OnDummyEffect(m_caster, m_spellInfo->Id, effIndex, gameObjTarget);
-    else if (unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT)
-        sEluna->OnDummyEffect(m_caster, m_spellInfo->Id, effIndex, unitTarget->ToCreature());
-    else if (itemTarget)
-        sEluna->OnDummyEffect(m_caster, m_spellInfo->Id, effIndex, itemTarget);
-#endif
 }
 
 void Spell::EffectTriggerSpell(SpellEffIndex effIndex)

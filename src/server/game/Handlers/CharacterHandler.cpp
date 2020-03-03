@@ -39,9 +39,6 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Transport.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 
 class LoginQueryHolder : public SQLQueryHolder
 {
