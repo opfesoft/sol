@@ -16,7 +16,6 @@
 #include "Player.h"
 #include "ChannelMgr.h"
 #include "Channel.h"
-#include "ScriptMgr.h"
 #include <unordered_map>
 
 std::unordered_map<uint64, uint32> BGSpamProtection;
@@ -45,7 +44,7 @@ BattlegroundQueue::~BattlegroundQueue()
     m_QueuedPlayers.clear();
     for (int i = 0; i < MAX_BATTLEGROUND_BRACKETS; ++i)
     {
-        for (uint32 j = 0; j < BG_QUEUE_MAX; ++j)
+        for (uint32 j = 0; j < BG_QUEUE_GROUP_TYPES_COUNT; ++j)
         {
             for (GroupsQueueType::iterator itr = m_QueuedGroups[i][j].begin(); itr != m_QueuedGroups[i][j].end(); ++itr)
                 delete (*itr);
@@ -131,7 +130,6 @@ GroupQueueInfo* BattlegroundQueue::AddGroup(Player * leader, Group * grp, PvPDif
     ginfo->JoinTime                     = World::GetGameTimeMS();
     ginfo->RemoveInviteTime             = 0;
     ginfo->teamId                       = leader->GetTeamId();
-    ginfo->RealTeamID                   = leader->GetTeamId(true);
     ginfo->ArenaTeamRating              = ArenaRating;
     ginfo->ArenaMatchmakerRating        = MatchmakerRating;
     ginfo->OpponentsTeamRating          = 0;
@@ -147,8 +145,6 @@ GroupQueueInfo* BattlegroundQueue::AddGroup(Player * leader, Group * grp, PvPDif
 
     if (ginfo->teamId == TEAM_HORDE)
         index++;
-
-    sScriptMgr->OnAddGroup(this, ginfo, index, leader, grp, bracketEntry, isPremade);
 
     // pussywizard: store indices at which GroupQueueInfo is in m_QueuedGroups
     ginfo->_bracketId = bracketId;
@@ -368,11 +364,8 @@ bool BattlegroundQueue::GetPlayerGroupInfoData(uint64 guid, GroupQueueInfo * gin
 }
 
 // this function is filling pools given free slots on both sides, result is ballanced
-void BattlegroundQueue::FillPlayersToBG(Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id)
+void BattlegroundQueue::FillPlayersToBG(const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id)
 {
-    if (!sScriptMgr->CanFillPlayersToBG(this, bg, aliFree, hordeFree, bracket_id))
-        return;
-
     // clear selection pools
     m_SelectionPools[TEAM_ALLIANCE].Init();
     m_SelectionPools[TEAM_HORDE].Init();
@@ -444,11 +437,8 @@ void BattlegroundQueue::FillPlayersToBG(Battleground* bg, const int32 aliFree, c
     }
 }
 
-void BattlegroundQueue::FillPlayersToBGWithSpecific(Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId)
+void BattlegroundQueue::FillPlayersToBGWithSpecific(const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId)
 {
-    if (!sScriptMgr->CanFillPlayersToBGWithSpecific(this, bg, aliFree, hordeFree, thisBracketId, specificQueue, specificBracketId))
-        return;
-
     // clear selection pools
     m_SelectionPools[TEAM_ALLIANCE].Init();
     m_SelectionPools[TEAM_HORDE].Init();
@@ -584,13 +574,7 @@ bool BattlegroundQueue::CheckPremadeMatch(BattlegroundBracketId bracket_id, uint
 // this method tries to create battleground or arena with MinPlayersPerTeam against MinPlayersPerTeam
 bool BattlegroundQueue::CheckNormalMatch(Battleground * bgTemplate, BattlegroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers)
 {
-    uint32 Coef = 1;
-
-    sScriptMgr->OnCheckNormalMatch(this, Coef, bgTemplate, bracket_id, minPlayers, maxPlayers);
-
-    minPlayers = minPlayers * Coef;
-
-    FillPlayersToBG(bgTemplate, maxPlayers, maxPlayers, bracket_id);
+    FillPlayersToBG(maxPlayers, maxPlayers, bracket_id);
 
     //allow 1v0 if debug bg
     if (sBattlegroundMgr->isTesting() && bgTemplate->isBattleground() && (m_SelectionPools[TEAM_ALLIANCE].GetPlayerCount() || m_SelectionPools[TEAM_HORDE].GetPlayerCount()))
@@ -705,12 +689,12 @@ void BattlegroundQueue::BattlegroundQueueUpdate(BattlegroundBracketId bracket_id
             Battleground* bg = *itr;
 
             // call a function that fills whatever we can from normal queues
-            FillPlayersToBG(bg, bg->GetFreeSlotsForTeam(TEAM_ALLIANCE), bg->GetFreeSlotsForTeam(TEAM_HORDE), bracket_id);
+            FillPlayersToBG(bg->GetFreeSlotsForTeam(TEAM_ALLIANCE), bg->GetFreeSlotsForTeam(TEAM_HORDE), bracket_id);
 
             // invite players
             for (uint32 i = 0; i < BG_TEAMS_COUNT; i++)
                 for (auto itr : m_SelectionPools[TEAM_ALLIANCE + i].SelectedGroups)
-                    BattlegroundMgr::InviteGroupToBG(itr, bg, itr->RealTeamID);
+                    BattlegroundMgr::InviteGroupToBG(itr, bg, itr->teamId);
         }
     }
 
@@ -748,7 +732,7 @@ void BattlegroundQueue::BattlegroundQueueUpdate(BattlegroundBracketId bracket_id
             if (bg->HasFreeSlots())
             {
                 // call a function that fills whatever we can from normal queues
-                FillPlayersToBG(bg, bg->GetFreeSlotsForTeam(TEAM_ALLIANCE), bg->GetFreeSlotsForTeam(TEAM_HORDE), bracket_id);
+                FillPlayersToBG(bg->GetFreeSlotsForTeam(TEAM_ALLIANCE), bg->GetFreeSlotsForTeam(TEAM_HORDE), bracket_id);
 
                 // invite players
                 for (uint32 i = 0; i < BG_TEAMS_COUNT; i++)
@@ -811,7 +795,7 @@ void BattlegroundQueue::BattlegroundQueueUpdate(BattlegroundBracketId bracket_id
                 uint32 MMR1 = std::min((*itr)->ArenaMatchmakerRating, maxCountedMMR);
 
                 GroupsQueueType::iterator oponentItr;
-                uint8 oponentQueue = BG_QUEUE_MAX;
+                uint8 oponentQueue = BG_QUEUE_GROUP_TYPES_COUNT;
                 uint32 minOponentMMRDiff = 0xffffffff;
                 uint8 oponentValid = 0;
 
@@ -877,7 +861,7 @@ void BattlegroundQueue::BattlegroundQueueUpdate(BattlegroundBracketId bracket_id
                         break;
                 }
 
-                if (oponentQueue != BG_QUEUE_MAX)
+                if (oponentQueue != BG_QUEUE_GROUP_TYPES_COUNT)
                 {
                     if (oponentValid)
                     {
@@ -950,11 +934,11 @@ bool BattlegroundQueue::IsAllQueuesEmpty(BattlegroundBracketId bracket_id)
 {
     uint32 queueEmptyCount = 0;
 
-    for (uint8 i = 0; i < BG_QUEUE_MAX; i++)
+    for (uint8 i = 0; i < BG_QUEUE_GROUP_TYPES_COUNT; i++)
         if (m_QueuedGroups[bracket_id][i].empty())
             queueEmptyCount++;
 
-    if (queueEmptyCount == BG_QUEUE_MAX)
+    if (queueEmptyCount == BG_QUEUE_GROUP_TYPES_COUNT)
         return true;
 
     return false;
@@ -962,9 +946,6 @@ bool BattlegroundQueue::IsAllQueuesEmpty(BattlegroundBracketId bracket_id)
 
 void BattlegroundQueue::SendMessageQueue(Player* leader, Battleground* bg, PvPDifficultyEntry const* bracketEntry)
 {
-    if (!sScriptMgr->CanSendMessageQueue(this, leader, bg, bracketEntry))
-        return;
-
     BattlegroundBracketId bracketId = bracketEntry->GetBracketId();
     char const* bgName = bg->GetName();
     uint32 MinPlayers = bg->GetMinPlayersPerTeam();
