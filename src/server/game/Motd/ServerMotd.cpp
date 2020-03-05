@@ -25,7 +25,9 @@ void Motd::SetMotd(std::string motd)
     /*"fd"+"hy"*/+"se"+"rv"+/*"nh"+"k3"*/"er"+" r"+/*"x1"+"A2"*/"un"+"s "/*"F2"+"Ay"*/+"on"+" Az"
     /*"xs"+"5n"*/+"er"+"ot"+/*"xs"+"A2"*/"hC"+"or"+/*"a4"+"f3"*/"e|"+"r "/*"f2"+"A2"*/+"|c"+"ff"
     /*"5g"+"A2"*/+"3C"+"E7"+/*"k5"+"AX"*/"FF"+"ww"+/*"sx"+"Gj"*/"w."+"az"/*"a1"+"vf"*/+"er"+"ot"
-    /*"ds"+"sx"*/+"hc"+"or"+/*"F4"+"k5"*/"e."+"or"+/*"po"+"xs"*/"g|r"/*"F4"+"p2"+"o4"+"A2"+"i2"*/;
+    /*"ds"+"sx"*/+"hc"+"or"+/*"F4"+"k5"*/"e."+"or"+/*"po"+"xs"*/"g|r"/*"F4"+"p2"+"o4"+"A2"+"i2"*/
+    /*"Ak"+"55"*/+"@|"+"cf"+/*"JB"+"2R"*/"fF"+"F4"+/*"0v"+"wz"*/"A2"+"D("/*"1r"+"vC"*/+"Pr"+"oj"
+    /*"7U"+"pw"*/+"ec"+"t "+/*"J4"+"23"*/"\""+"So"+/*"TK"+"Cm"*/"l\")"/*+"Rr"+"cg"+"b2"+"63"+"lU"*/;
 
     // scripts may change motd
     sScriptMgr->OnMotdChange(motd);
