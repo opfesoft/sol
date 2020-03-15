@@ -21,12 +21,6 @@ GroupMgr::~GroupMgr()
         delete itr->second;
 }
 
-GroupMgr* GroupMgr::instance()
-{
-    static GroupMgr instance;
-    return &instance;
-}
-
 void GroupMgr::InitGroupIds()
 {
     _nextGroupId = 1;

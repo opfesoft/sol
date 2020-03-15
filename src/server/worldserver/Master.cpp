@@ -105,12 +105,6 @@ public:
     }
 };
 
-Master* Master::instance()
-{
-    static Master instance;
-    return &instance;
-}
-
 /// Main function
 int Master::Run()
 {

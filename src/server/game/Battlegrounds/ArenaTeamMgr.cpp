@@ -26,12 +26,6 @@ ArenaTeamMgr::~ArenaTeamMgr()
         delete itr->second;
 }
 
-ArenaTeamMgr* ArenaTeamMgr::instance()
-{
-    static ArenaTeamMgr instance;
-    return &instance;
-}
-
 // Arena teams collection
 ArenaTeam* ArenaTeamMgr::GetArenaTeamById(uint32 arenaTeamId) const
 {

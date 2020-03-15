@@ -3,6 +3,7 @@
 
 #include "Common.h"
 #include "SharedDefines.h"
+#include <ace/Singleton.h>
 
 struct GraveyardStruct
 {
@@ -27,9 +28,9 @@ typedef std::pair<WGGraveyardContainer::iterator, WGGraveyardContainer::iterator
 
 class Graveyard
 {
-public:
-    static Graveyard* instance();
+    friend class ACE_Singleton<Graveyard, ACE_Null_Mutex>;
 
+public:
     typedef std::unordered_map<uint32, GraveyardStruct> GraveyardContainer;    
 
     GraveyardStruct const* GetGraveyard(uint32 ID) const;
@@ -51,6 +52,6 @@ private:
     WGGraveyardContainer GraveyardStore;
 };
 
-#define sGraveyard Graveyard::instance()
+#define sGraveyard ACE_Singleton<Graveyard, ACE_Null_Mutex>::instance()
 
 #endif // _GAMEGRAVEYARD_H_

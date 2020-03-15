@@ -16,12 +16,6 @@ LootItemStorage::~LootItemStorage()
 {
 }
 
-LootItemStorage* LootItemStorage::instance()
-{
-    static LootItemStorage instance;
-    return &instance;
-}
-
 void LootItemStorage::LoadStorageFromDB()
 {
     uint32 oldMSTime = getMSTime();

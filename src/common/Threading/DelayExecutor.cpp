@@ -1,3 +1,4 @@
+#include <ace/Singleton.h>
 #include <ace/Thread_Mutex.h>
 #include <ace/Log_Msg.h>
 #include "Threading.h"
@@ -5,8 +6,7 @@
 
 DelayExecutor* DelayExecutor::instance()
 {
-    static DelayExecutor instance;
-    return &instance;
+    return ACE_Singleton<DelayExecutor, ACE_Thread_Mutex>::instance();
 }
 
 DelayExecutor::DelayExecutor()

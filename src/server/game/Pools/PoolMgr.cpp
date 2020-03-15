@@ -537,12 +537,6 @@ PoolMgr::PoolMgr()
 {
 }
 
-PoolMgr* PoolMgr::instance()
-{
-    static PoolMgr instance;
-    return &instance;
-}
-
 void PoolMgr::Initialize()
 {
     mQuestSearchMap.clear();

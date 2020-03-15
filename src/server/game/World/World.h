@@ -13,6 +13,7 @@
 
 #include "Common.h"
 #include "Timer.h"
+#include <ace/Singleton.h>
 #include <ace/Atomic_Op.h>
 #include "SharedDefines.h"
 #include "QueryResult.h"
@@ -566,8 +567,6 @@ class World
         World();
         ~World();
 
-        static World* instance();
-
         static uint32 m_worldLoopCounter;
 
         WorldSession* FindSession(uint32 id) const;
@@ -900,6 +899,6 @@ class World
         std::string m_configFileList;
 };
  
-#define sWorld World::instance()
+#define sWorld ACE_Singleton<World, ACE_Null_Mutex>::instance()
 #endif
 /// @}

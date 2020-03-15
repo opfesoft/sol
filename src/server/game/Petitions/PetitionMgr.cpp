@@ -17,12 +17,6 @@ PetitionMgr::~PetitionMgr()
 {
 }
 
-PetitionMgr* PetitionMgr::instance()
-{
-    static PetitionMgr instance;
-    return &instance;
-}
-
 void PetitionMgr::LoadPetitions()
 {
     uint32 oldMSTime = getMSTime();

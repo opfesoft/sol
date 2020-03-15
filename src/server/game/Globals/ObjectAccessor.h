@@ -11,6 +11,7 @@
 #include "UpdateData.h"
 #include "GridDefines.h"
 #include "Object.h"
+#include <ace/Singleton.h>
 #include <ace/Thread_Mutex.h>
 #include <unordered_map>
 #include <set>
@@ -86,6 +87,8 @@ public:
 
 class ObjectAccessor
 {
+    friend class ACE_Singleton<ObjectAccessor, ACE_Null_Mutex>;
+
     private:
         ObjectAccessor();
         ~ObjectAccessor();
@@ -93,7 +96,6 @@ class ObjectAccessor
         ObjectAccessor& operator=(const ObjectAccessor&);
 
     public:
-        static ObjectAccessor* instance();
         // TODO: override these template functions for each holder type and add assertions
 
         template<class T> static T* GetObjectInOrOutOfWorld(uint64 guid, T* /*typeSpecifier*/)
@@ -276,6 +278,6 @@ class ObjectAccessor
         mutable ACE_Thread_Mutex DelayedCorpseLock;
 };
 
-#define sObjectAccessor ObjectAccessor::instance()
+#define sObjectAccessor ACE_Singleton<ObjectAccessor, ACE_Null_Mutex>::instance()
 
 #endif

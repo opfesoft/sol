@@ -8,6 +8,7 @@
 #define _REALMLIST_H
 
 #include "Common.h"
+#include <ace/Singleton.h>
 #include <ace/INET_Addr.h>
 
 enum RealmFlags
@@ -48,8 +49,6 @@ public:
     RealmList();
     ~RealmList() { }
 
-    static RealmList* instance();
-
     void Initialize(uint32 updateInterval);
     void UpdateIfNeed();
     void AddRealm(const Realm& NewRealm) { m_realms[NewRealm.name] = NewRealm; }
@@ -67,6 +66,6 @@ private:
     time_t   m_NextUpdateTime;
 };
 
-#define sRealmList RealmList::instance()
+#define sRealmList ACE_Singleton<RealmList, ACE_Null_Mutex>::instance()
 
 #endif

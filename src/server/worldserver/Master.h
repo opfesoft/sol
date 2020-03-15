@@ -17,7 +17,6 @@
 class Master
 {
     public:
-        static Master* instance();
         int Run();
 
     private:
@@ -27,7 +26,7 @@ class Master
         void ClearOnlineAccounts();
 };
 
-#define sMaster Master::instance()
+#define sMaster ACE_Singleton<Master, ACE_Null_Mutex>::instance()
 
 #endif
 

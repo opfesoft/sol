@@ -5,6 +5,7 @@
 #ifndef _BAN_MANAGER_H
 #define _BAN_MANAGER_H
 
+#include <ace/Singleton.h>
 #include "Common.h"
 
  /// Ban function return codes
@@ -18,10 +19,9 @@ enum BanReturn
 
 class BanManager
 {
+    friend class ACE_Singleton<BanManager, ACE_Null_Mutex>;
+
 public:
-
-    static BanManager* instance();
-
     BanReturn BanAccount(std::string const& AccountName, std::string const& Duration, std::string const& Reason, std::string const& Author);
     BanReturn BanAccountByPlayerName(std::string const& CharacterName, std::string const& Duration, std::string const& Reason, std::string const& Author);
     BanReturn BanIP(std::string const& IP, std::string const& Duration, std::string const& Reason, std::string const& Author);
@@ -33,6 +33,6 @@ public:
     bool RemoveBanCharacter(std::string const& CharacterName);
 };
 
-#define sBan BanManager::instance()
+#define sBan ACE_Singleton<BanManager, ACE_Null_Mutex>::instance()
 
 #endif // _BAN_MANAGER_H

@@ -3,12 +3,6 @@
 #include "DBCStores.h"
 #include "Log.h"
 
-Graveyard* Graveyard::instance()
-{
-    static Graveyard instance;
-    return &instance;
-}
-
 void Graveyard::LoadGraveyardFromDB()
 {
     uint32 oldMSTime = getMSTime();    

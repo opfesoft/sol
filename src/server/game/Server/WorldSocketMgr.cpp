@@ -219,14 +219,8 @@ WorldSocketMgr::~WorldSocketMgr()
     delete m_Acceptor;
 }
 
-WorldSocketMgr* WorldSocketMgr::instance()
-{
-    static WorldSocketMgr instance;
-    return &instance;
-}
-
 int
-WorldSocketMgr::StartReactiveIO (uint16 port, const char* address)
+WorldSocketMgr::StartReactiveIO (ACE_UINT16 port, const char* address)
 {
     m_UseNoDelay = sConfigMgr->GetBoolDefault ("Network.TcpNodelay", true);
 
@@ -272,7 +266,7 @@ WorldSocketMgr::StartReactiveIO (uint16 port, const char* address)
 }
 
 int
-WorldSocketMgr::StartNetwork (uint16 port, const char* address)
+WorldSocketMgr::StartNetwork (ACE_UINT16 port, const char* address)
 {
     if (!sLog->IsOutDebug())
         ACE_Log_Msg::instance()->priority_mask (LM_ERROR, ACE_Log_Msg::PROCESS);

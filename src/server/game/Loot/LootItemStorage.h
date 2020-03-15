@@ -6,6 +6,7 @@ Xinef
 #define ACORE_LOOTITEMSTORAGE_H
 
 #include "Common.h"
+#include "ace/Singleton.h"
 #include "LootMgr.h"
 #include "Item.h"
 #include <map>
@@ -28,13 +29,13 @@ typedef std::unordered_map<uint32, StoredLootItemList> LootItemContainer;
 
 class LootItemStorage
 {
+    friend class ACE_Singleton<LootItemStorage, ACE_Thread_Mutex>;
+
     private:
         LootItemStorage();
         ~LootItemStorage();
 
     public:
-        static LootItemStorage* instance();
-
         void LoadStorageFromDB();
         void RemoveEntryFromDB(uint32 containerId, uint32 itemid, uint32 count);
 
@@ -49,6 +50,6 @@ class LootItemStorage
         LootItemContainer lootItemStore;
 };
 
-#define sLootItemStorage LootItemStorage::instance()
+#define sLootItemStorage ACE_Singleton<LootItemStorage, ACE_Thread_Mutex>::instance()
 
 #endif

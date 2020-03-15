@@ -54,12 +54,6 @@ BattlegroundMgr::~BattlegroundMgr()
     DeleteAllBattlegrounds();
 }
 
-BattlegroundMgr* BattlegroundMgr::instance()
-{
-    static BattlegroundMgr instance;
-    return &instance;
-}
-
 void BattlegroundMgr::DeleteAllBattlegrounds()
 {
     while (!m_Battlegrounds.empty())

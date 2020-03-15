@@ -270,12 +270,6 @@ ObjectMgr::~ObjectMgr()
         delete itr->second;
 }
 
-ObjectMgr* ObjectMgr::instance()
-{
-    static ObjectMgr instance;
-    return &instance;
-}
-
 void ObjectMgr::AddLocaleString(std::string const& s, LocaleConstant locale, StringVector& data)
 {
     if (!s.empty())
@@ -8731,7 +8725,7 @@ void ObjectMgr::LoadBroadcastTexts()
     }
     while (result->NextRow());
 
-    sLog->outString(">> Loaded " SZFMTD " broadcast texts in %u ms", _broadcastTextStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded " SIZEFMTD " broadcast texts in %u ms", _broadcastTextStore.size(), GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }
 

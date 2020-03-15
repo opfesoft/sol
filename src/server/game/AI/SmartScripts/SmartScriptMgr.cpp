@@ -20,12 +20,6 @@
 
 #include "SmartScriptMgr.h"
 
-SmartWaypointMgr* SmartWaypointMgr::instance()
-{
-    static SmartWaypointMgr instance;
-    return &instance;
-}
-
 void SmartWaypointMgr::LoadFromDB()
 {
     uint32 oldMSTime = getMSTime();
@@ -96,12 +90,6 @@ SmartWaypointMgr::~SmartWaypointMgr()
 
         delete itr->second;
     }
-}
-
-SmartAIMgr* SmartAIMgr::instance()
-{
-    static SmartAIMgr instance;
-    return &instance;
 }
 
 void SmartAIMgr::LoadSmartAIFromDB()

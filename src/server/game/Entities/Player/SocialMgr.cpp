@@ -196,12 +196,6 @@ SocialMgr::~SocialMgr()
 {
 }
 
-SocialMgr* SocialMgr::instance()
-{
-    static SocialMgr instance;
-    return &instance;
-}
-
 void SocialMgr::GetFriendInfo(Player* player, uint32 friendGUID, FriendInfo &friendInfo)
 {
     if (!player)

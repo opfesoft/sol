@@ -7,6 +7,7 @@
 #ifndef _LFGMGR_H
 #define _LFGMGR_H
 
+#include <ace/Singleton.h>
 #include "DBCStructure.h"
 #include "Field.h"
 #include "LFG.h"
@@ -378,6 +379,8 @@ struct LFGDungeonData
 
 class LFGMgr
 {
+    friend class ACE_Singleton<LFGMgr, ACE_Null_Mutex>;
+
     private:
         LFGMgr();
         ~LFGMgr();
@@ -398,8 +401,6 @@ class LFGMgr
         RBUsedDungeonsSet RBUsedDungeonsStore[2]; // for 2 factions
 
     public:
-        static LFGMgr* instance();
-
         // Functions used outside lfg namespace
         void Update(uint32 diff, uint8 task);
 
@@ -589,6 +590,6 @@ class LFGMgr
 
 } // namespace lfg
 
-#define sLFGMgr lfg::LFGMgr::instance()
+#define sLFGMgr ACE_Singleton<lfg::LFGMgr, ACE_Null_Mutex>::instance()
 
 #endif

@@ -8,6 +8,7 @@
 #define BATTLEFIELD_MGR_H_
 
 #include "Battlefield.h"
+#include "ace/Singleton.h"
 
 class Player;
 class GameObject;
@@ -23,8 +24,6 @@ class BattlefieldMgr
     BattlefieldMgr();
     // dtor
     ~BattlefieldMgr();
-
-    static BattlefieldMgr* instance();
 
     // create battlefield events
     void InitBattlefield();
@@ -63,6 +62,6 @@ class BattlefieldMgr
     uint32 m_UpdateTimer;
 };
 
-#define sBattlefieldMgr BattlefieldMgr::instance()
+#define sBattlefieldMgr ACE_Singleton<BattlefieldMgr, ACE_Null_Mutex>::instance()
 
 #endif

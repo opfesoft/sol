@@ -13,12 +13,6 @@
 #include "World.h"
 #include "WorldSession.h"
 
-BanManager* BanManager::instance()
-{
-    static BanManager instance;
-    return &instance;
-}
-
 /// Ban an account, duration will be parsed using TimeStringToSecs if it is positive, otherwise permban
 BanReturn BanManager::BanAccount(std::string const& AccountName, std::string const& Duration, std::string const& Reason, std::string const& Author)
 {

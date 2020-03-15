@@ -28,11 +28,11 @@ typedef std::unordered_map<uint32/*memberDBGUID*/, FormationInfo*>   CreatureGro
 
 class FormationMgr
 {
+    friend class ACE_Singleton<FormationMgr, ACE_Null_Mutex>;
+
     public:
         FormationMgr() { }
         ~FormationMgr();
-        
-        static FormationMgr* instance();
         
         void AddCreatureToGroup(uint32 group_id, Creature* creature);
         void RemoveCreatureFromGroup(CreatureGroup* group, Creature* creature);
@@ -71,6 +71,6 @@ class CreatureGroup
         bool m_Formed;
 };
 
-#define sFormationMgr FormationMgr::instance()
+#define sFormationMgr ACE_Singleton<FormationMgr, ACE_Null_Mutex>::instance()
 
 #endif

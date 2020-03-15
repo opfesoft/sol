@@ -7,6 +7,7 @@
 #ifndef ACORE_CALENDARMGR_H
 #define ACORE_CALENDARMGR_H
 
+#include <ace/Singleton.h>
 #include "Common.h"
 #include "DatabaseEnv.h"
 #include "WorldPacket.h"
@@ -256,6 +257,8 @@ typedef std::unordered_map<uint64 /* eventId */, CalendarInviteStore > CalendarE
 
 class CalendarMgr
 {
+    friend class ACE_Singleton<CalendarMgr, ACE_Null_Mutex>;
+
     private:
         CalendarMgr();
         ~CalendarMgr();
@@ -269,8 +272,6 @@ class CalendarMgr
         uint64 _maxInviteId;
 
     public:
-        static CalendarMgr* instance();
-        
         void LoadFromDB();
 
         CalendarEvent* GetEvent(uint64 eventId, CalendarEventStore::iterator* it = NULL);
@@ -317,6 +318,6 @@ class CalendarMgr
         void SendPacketToAllEventRelatives(WorldPacket packet, CalendarEvent const& calendarEvent);
 };
 
-#define sCalendarMgr CalendarMgr::instance()
+#define sCalendarMgr ACE_Singleton<CalendarMgr, ACE_Null_Mutex>::instance()
 
 #endif
