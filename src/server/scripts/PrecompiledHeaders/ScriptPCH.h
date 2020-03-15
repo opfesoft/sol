@@ -26,9 +26,5 @@
 #include "SpellScript.h"
 #include "SpellAuraEffects.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #endif
 

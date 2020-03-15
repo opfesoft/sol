@@ -11,12 +11,8 @@
 #include "G3D/Matrix4.h"
 #include "G3D/Quat.h"
 
-#ifdef _WIN32
-    #include "direct.h"
-#else
-    #include <sys/stat.h>
-    #include <unistd.h>
-#endif
+#include <sys/stat.h>
+#include <unistd.h>
 
 const float Constants::TileSize = 533.0f + (1/3.0f);
 const float Constants::MaxXY = 32.0f * Constants::TileSize;
@@ -35,11 +31,7 @@ const int Constants::TilesPerMap = Constants::VertexPerMap / Constants::VertexPe
 
 void Utils::CreateDir( const std::string& Path )
 {
-#ifdef _WIN32
-    _mkdir( Path.c_str());
-#else
     mkdir( Path.c_str(), 0777 );
-#endif
 }
 
 void Utils::Reverse(char word[])

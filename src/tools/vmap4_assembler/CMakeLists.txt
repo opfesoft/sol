@@ -27,8 +27,4 @@ set_target_properties(vmap4assembler
     FOLDER
       "tools")
 
-if( UNIX )
-  install(TARGETS vmap4assembler DESTINATION bin)
-elseif( WIN32 )
-  install(TARGETS vmap4assembler DESTINATION "${CMAKE_INSTALL_PREFIX}")
-endif()
+install(TARGETS vmap4assembler DESTINATION bin)

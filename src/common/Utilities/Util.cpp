@@ -282,12 +282,7 @@ uint32 CreatePIDFile(std::string const& filename)
 
 uint32 GetPID()
 {
-#ifdef _WIN32
-    DWORD pid = GetCurrentProcessId();
-#else
     pid_t pid = getpid();
-#endif
-
     return uint32(pid);
 }
 
@@ -484,34 +479,17 @@ std::wstring GetMainPartOfName(std::wstring const& wname, uint32 declension)
 
 bool utf8ToConsole(const std::string& utf8str, std::string& conStr)
 {
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-    std::wstring wstr;
-    if (!Utf8toWStr(utf8str, wstr))
-        return false;
-
-    conStr.resize(wstr.size());
-    CharToOemBuffW(&wstr[0], &conStr[0], wstr.size());
-#else
     // not implemented yet
     conStr = utf8str;
-#endif
 
     return true;
 }
 
 bool consoleToUtf8(const std::string& conStr, std::string& utf8str)
 {
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-    std::wstring wstr;
-    wstr.resize(conStr.size());
-    OemToCharBuffW(&conStr[0], &wstr[0], uint32(conStr.size()));
-
-    return WStrToUtf8(wstr, utf8str);
-#else
     // not implemented yet
     utf8str = conStr;
     return true;
-#endif
 }
 
 bool Utf8FitTo(const std::string& str, std::wstring const& search)
@@ -540,23 +518,7 @@ void utf8printf(FILE* out, const char *str, ...)
 
 void vutf8printf(FILE* out, const char *str, va_list* ap)
 {
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-    char temp_buf[32 * 1024];
-    wchar_t wtemp_buf[32 * 1024];
-
-    size_t temp_len = vsnprintf(temp_buf, 32 * 1024, str, *ap);
-    //vsnprintf returns -1 if the buffer is too small
-    if (temp_len == size_t(-1))
-        temp_len = 32*1024-1;
-
-    size_t wtemp_len = 32*1024-1;
-    Utf8toWStr(temp_buf, temp_len, wtemp_buf, wtemp_len);
-
-    CharToOemBuffW(&wtemp_buf[0], &temp_buf[0], uint32(wtemp_len + 1));
-    fprintf(out, "%s", temp_buf);
-#else
     vfprintf(out, str, *ap);
-#endif
 }
 
 bool Utf8ToUpperOnlyLatin(std::string& utf8String)

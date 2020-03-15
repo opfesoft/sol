@@ -15,10 +15,6 @@
 #include <ace/Default_Constants.h>
 #include "CompilerDefs.h"
 
-#if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__BORLANDC__)
-#define OS_WIN
-#endif
-
 #define ACORE_LITTLEENDIAN 0
 #define ACORE_BIGENDIAN    1
 
@@ -30,19 +26,9 @@
 #  endif //ACE_BYTE_ORDER
 #endif //ACORE_ENDIAN
 
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-#  define ACORE_PATH_MAX MAX_PATH
-#  ifndef DECLSPEC_NORETURN
-#    define DECLSPEC_NORETURN __declspec(noreturn)
-#  endif //DECLSPEC_NORETURN
-#  ifndef DECLSPEC_DEPRECATED
-#    define DECLSPEC_DEPRECATED __declspec(deprecated)
-#  endif //DECLSPEC_DEPRECATED
-#else //AC_PLATFORM != AC_PLATFORM_WINDOWS
-#  define ACORE_PATH_MAX PATH_MAX
-#  define DECLSPEC_NORETURN
-#  define DECLSPEC_DEPRECATED
-#endif //AC_PLATFORM
+#define ACORE_PATH_MAX PATH_MAX
+#define DECLSPEC_NORETURN
+#define DECLSPEC_DEPRECATED
 
 #if !defined(COREDEBUG)
 #  define ACORE_INLINE inline

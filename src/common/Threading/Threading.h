@@ -52,8 +52,6 @@ namespace acore
             bool wait();
             void destroy();
 
-            void setPriority(Priority type);
-
             static void Sleep(unsigned long msecs);
             static std::thread::id currentId();
 

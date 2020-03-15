@@ -23,7 +23,6 @@
 #include "Player.h"
 #include "Util.h"
 
-#if AC_PLATFORM != AC_PLATFORM_WINDOWS
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -75,25 +74,10 @@ int cli_hook_func()
        return 0;
 }
 
-#endif
-
 void utf8print(void* /*arg*/, const char* str)
-{
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-    wchar_t wtemp_buf[6000];
-    size_t wtemp_len = 6000-1;
-    if (!Utf8toWStr(str, strlen(str), wtemp_buf, wtemp_len))
-        return;
-
-    char temp_buf[6000];
-    CharToOemBuffW(&wtemp_buf[0], &temp_buf[0], wtemp_len+1);
-    printf(temp_buf);
-#else
 {
     printf("%s", str);
     fflush(stdout);
-}
-#endif
 }
 
 void commandFinished(void*, bool /*success*/)
@@ -122,10 +106,8 @@ void CliRunnable::run()
 {
     ///- Display the list of available CLI functions then beep
     //TC_LOG_INFO("server.worldserver", "");
-#if AC_PLATFORM != AC_PLATFORM_WINDOWS
     rl_attempted_completion_function = cli_completion;
     rl_event_hook = cli_hook_func;
-#endif
 
     if (sConfigMgr->GetBoolDefault("BeepAtStart", true))
         printf("\a");                                       // \a = Alert
@@ -141,13 +123,8 @@ void CliRunnable::run()
 
         char *command_str ;             // = fgets(commandbuf, sizeof(commandbuf), stdin);
 
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-        char commandbuf[256];
-        command_str = fgets(commandbuf, sizeof(commandbuf), stdin);
-#else
         command_str = readline("AC>");
         rl_bind_key('\t', rl_complete);
-#endif
 
         if (command_str != NULL)
         {
@@ -160,31 +137,21 @@ void CliRunnable::run()
 
             if (!*command_str)
             {
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-                printf("AC>");
-#else
                 free(command_str);
-#endif
                 continue;
             }
 
             std::string command;
             if (!consoleToUtf8(command_str, command))         // convert from console encoding to utf8
             {
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-                printf("AC>");
-#else
                 free(command_str);
-#endif
                 continue;
             }
 
             fflush(stdout);
             sWorld->QueueCliCommand(new CliCommandHolder(NULL, command.c_str(), &utf8print, &commandFinished));
-#if AC_PLATFORM != AC_PLATFORM_WINDOWS
             add_history(command.c_str());
             free(command_str);
-#endif
         }
         else if (feof(stdin))
         {

@@ -10,10 +10,6 @@
 #include <algorithm>
 #include <cstdio>
 
-#ifdef WIN32
-#define snprintf _snprintf
-#endif
-
 char const* GetPlainName(char const* FileName)
 {
     const char * szTemp;

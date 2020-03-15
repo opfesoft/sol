@@ -17,13 +17,6 @@ CollectSourceFiles(
   # Exclude
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
 
-if( WIN32 )
-  list(APPEND PRIVATE_SOURCES ${winDebugging})
-  if ( MSVC )
-    list(APPEND PRIVATE_SOURCES authserver.rc)
-  endif()
-endif()
-
 if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/authPCH.h)
 endif()
@@ -36,10 +29,8 @@ add_executable(authserver
 
 add_dependencies(authserver revision.h)
 
-if(NOT WIN32)
-  set_target_properties(authserver PROPERTIES
-    COMPILE_DEFINITIONS _ACORE_REALM_CONFIG="${CONF_DIR}/authserver.conf")
-endif()
+set_target_properties(authserver PROPERTIES
+  COMPILE_DEFINITIONS _ACORE_REALM_CONFIG="${CONF_DIR}/authserver.conf")
 
 target_link_libraries(authserver
   PUBLIC
@@ -62,25 +53,7 @@ set_target_properties(authserver
     FOLDER
       "server")
 
-if( WIN32 )
-  if ( MSVC )
-    add_custom_command(TARGET authserver
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/authserver.conf.dist ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
-    )
-  elseif ( MINGW )
-    add_custom_command(TARGET authserver
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/authserver.conf.dist ${CMAKE_BINARY_DIR}/bin/
-    )
-  endif()
-endif()
-
-if( UNIX )
-  install(TARGETS authserver DESTINATION bin)
-elseif( WIN32 )
-  install(TARGETS authserver DESTINATION "${CMAKE_INSTALL_PREFIX}")
-endif()
+install(TARGETS authserver DESTINATION bin)
 
 install(FILES  authserver.conf.dist DESTINATION ${CONF_DIR})
 

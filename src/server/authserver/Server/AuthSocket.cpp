@@ -1194,7 +1194,6 @@ PatcherRunnable::PatcherRunnable(class AuthSocket* as)
 void PatcherRunnable::run() { }
 
 // Preload MD5 hashes of existing patch files on server
-#ifndef _WIN32
 #include <dirent.h>
 #include <errno.h>
 void Patcher::LoadPatchesInfo()
@@ -1233,19 +1232,6 @@ void Patcher::LoadPatchesInfo()
     if (dirp)
         closedir(dirp);
 }
-#else
-void Patcher::LoadPatchesInfo()
-{
-    WIN32_FIND_DATA fil;
-    HANDLE hFil = FindFirstFile("./patches/*.mpq", &fil);
-    if (hFil == INVALID_HANDLE_VALUE)
-        return;                                             // no patches were found
-
-    do
-        LoadPatchMD5(fil.cFileName);
-    while (FindNextFile(hFil, &fil));
-}
-#endif
 
 // Calculate and store MD5 hash for a given patch file
 void Patcher::LoadPatchMD5(char *szFileName)

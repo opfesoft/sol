@@ -37,8 +37,4 @@ set_target_properties(vmap4extractor
     FOLDER
       "tools")
 
-if( UNIX )
-  install(TARGETS vmap4extractor DESTINATION bin)
-elseif( WIN32 )
-  install(TARGETS vmap4extractor DESTINATION "${CMAKE_INSTALL_PREFIX}")
-endif()
+install(TARGETS vmap4extractor DESTINATION bin)

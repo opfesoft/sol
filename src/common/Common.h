@@ -60,11 +60,7 @@
 #include <signal.h>
 #include <assert.h>
 
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-#define STRCASECMP stricmp
-#else
 #define STRCASECMP strcasecmp
-#endif
 
 #include <set>
 #include <list>
@@ -86,41 +82,17 @@
 #include <ace/OS_NS_time.h>
 #include <ace/Stack_Trace.h>
 
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-#  include <ace/config-all.h>
-// XP winver - needed to compile with standard leak check in MemoryLeaks.h
-// uncomment later if needed
-//#define _WIN32_WINNT 0x0501
-#  include <ws2tcpip.h>
-//#undef WIN32_WINNT
-#else
-#  include <sys/types.h>
-#  include <sys/ioctl.h>
-#  include <sys/socket.h>
-#  include <netinet/in.h>
-#  include <unistd.h>
-#  include <netdb.h>
-#endif
-
-#if AC_COMPILER == AC_COMPILER_MICROSOFT
-
-#include <float.h>
-
-#define I32FMT "%08I32X"
-#define I64FMT "%016I64X"
-#define snprintf _snprintf
-#define atoll _atoi64
-#define vsnprintf _vsnprintf
-#define llabs _abs64
-
-#else
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <netdb.h>
 
 #define stricmp strcasecmp
 #define strnicmp strncasecmp
 #define I32FMT "%08X"
 #define I64FMT "%016llX"
-
-#endif
 
 using namespace std;
 

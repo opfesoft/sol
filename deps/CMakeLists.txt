@@ -10,12 +10,6 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-  if(USE_MYSQL_SOURCES)
-      add_subdirectory(mysqllite)
-  endif()
-endif()
-
 add_subdirectory(threads)
 add_subdirectory(acelite)
 add_subdirectory(fmt)

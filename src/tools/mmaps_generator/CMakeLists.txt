@@ -39,8 +39,4 @@ set_target_properties(mmaps_generator
     FOLDER
       "tools")
 
-if( UNIX )
-  install(TARGETS mmaps_generator DESTINATION bin)
-elseif( WIN32 )
-  install(TARGETS mmaps_generator DESTINATION "${CMAKE_INSTALL_PREFIX}")
-endif()
+install(TARGETS mmaps_generator DESTINATION bin)

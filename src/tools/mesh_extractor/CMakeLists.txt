@@ -39,8 +39,4 @@ set_target_properties(MeshExtractor
     FOLDER
       "tools")
 
-if( UNIX )
-  install(TARGETS MeshExtractor DESTINATION bin)
-elseif( WIN32 )
-  install(TARGETS MeshExtractor DESTINATION "${CMAKE_INSTALL_PREFIX}")
-endif()
+install(TARGETS MeshExtractor DESTINATION bin)

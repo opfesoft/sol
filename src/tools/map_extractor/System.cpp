@@ -11,12 +11,8 @@
 #include <set>
 #include <cstdlib>
 
-#ifdef _WIN32
-#include "direct.h"
-#else
 #include <sys/stat.h>
 #include <unistd.h>
-#endif
 
 #include "dbcfile.h"
 #include "mpq_libmpq04.h"
@@ -104,11 +100,8 @@ void CreateDir( const std::string& Path )
     }
 
     int ret;
-    #ifdef _WIN32
-    ret = _mkdir( Path.c_str());
-    #else
     ret = mkdir( Path.c_str(), 0777 );
-    #endif
+
     if (ret != 0)
     {
         printf("Fatal Error: Could not create directory %s check your permissions", Path.c_str());

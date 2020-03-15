@@ -15,13 +15,6 @@ CollectSourceFiles(
   # Exclude
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
 
-if( WIN32 )
-  list(APPEND PRIVATE_SOURCES ${winDebugging})
-  if ( MSVC )
-    list(APPEND PRIVATE_SOURCES worldserver.rc)
-  endif()
-endif()
- 
 if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/worldPCH.h)
 endif()
@@ -32,14 +25,12 @@ GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(worldserver
   ${PRIVATE_SOURCES})
 
-if(NOT WIN32)
-  set_target_properties(worldserver PROPERTIES
-    COMPILE_DEFINITIONS _ACORE_CORE_CONFIG="${CONF_DIR}/worldserver.conf")
-endif()
+set_target_properties(worldserver PROPERTIES
+  COMPILE_DEFINITIONS _ACORE_CORE_CONFIG="${CONF_DIR}/worldserver.conf")
 
 add_dependencies(worldserver revision.h)
 
-if(UNIX AND NOT NOJEM)
+if(NOT NOJEM)
   set(worldserver_LINK_FLAGS "-pthread -lncurses ${worldserver_LINK_FLAGS}")
 endif()
 
@@ -74,25 +65,7 @@ set_target_properties(worldserver
     FOLDER
       "server")
 
-if( WIN32 )
-  if ( MSVC )
-    add_custom_command(TARGET worldserver
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/worldserver.conf.dist ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
-    )
-  elseif ( MINGW )
-    add_custom_command(TARGET worldserver
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/worldserver.conf.dist ${CMAKE_BINARY_DIR}/bin/
-    )
-  endif()
-endif()
-
-if( UNIX )
-  install(TARGETS worldserver DESTINATION bin)
-elseif( WIN32 )
-  install(TARGETS worldserver DESTINATION "${CMAKE_INSTALL_PREFIX}")
-endif()
+install(TARGETS worldserver DESTINATION bin)
 
 install(FILES worldserver.conf.dist DESTINATION ${CONF_DIR})
 
@@ -104,19 +77,6 @@ endif()
 # handle config file
 CU_GET_GLOBAL("MODULE_CONFIG_FILE_LIST")
 FOREACH(configFile ${MODULE_CONFIG_FILE_LIST})
-if( WIN32 )
-  if ( MSVC )
-    add_custom_command(TARGET worldserver
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${configFile}" ${CMAKE_BINARY_DIR}/bin/$(ConfigurationName)/
-    )
-  elseif ( MINGW )
-    add_custom_command(TARGET worldserver
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${configFile}" ${CMAKE_BINARY_DIR}/bin/
-    )
-  endif()
-endif()
 install(FILES "${configFile}" DESTINATION ${CONF_DIR})
 ENDFOREACH()
 

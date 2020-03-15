@@ -29,17 +29,8 @@ namespace acore
 
 std::string GetDebugInfo();
 
-#if AC_COMPILER == AC_COMPILER_MICROSOFT
-#define ASSERT_BEGIN __pragma(warning(push)) __pragma(warning(disable: 4127))
-#define ASSERT_END __pragma(warning(pop))
-#else
 #define ASSERT_BEGIN
 #define ASSERT_END
-#endif
-
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-#define EXCEPTION_ASSERTION_FAILURE 0xC0000420L
-#endif
 
 #define WPAssert(cond, ...) ASSERT_BEGIN do { if (!(cond)) acore::Assert(__FILE__, __LINE__, __FUNCTION__, GetDebugInfo(), #cond, ##__VA_ARGS__); } while(0) ASSERT_END
 #define WPAssert_NODEBUGINFO(cond, ...) ASSERT_BEGIN do { if (!(cond)) acore::Assert(__FILE__, __LINE__, __FUNCTION__, "", #cond, ##__VA_ARGS__); } while(0) ASSERT_END

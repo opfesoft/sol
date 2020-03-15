@@ -32,11 +32,6 @@
 #include "OpenSSLCrypto.h"
 #include <ace/Sig_Handler.h>
 
-#ifdef _WIN32
-#include "ServiceWin32.h"
-extern int m_ServiceStatus;
-#endif
-
 #ifdef __linux__
 #include <sched.h>
 #include <sys/resource.h>
@@ -55,10 +50,6 @@ class WorldServerSignalHandler : public acore::SignalHandler
                     World::StopNow(RESTART_EXIT_CODE);
                     break;
                 case SIGTERM:
-#ifdef _WIN32
-                case SIGBREAK:
-                    if (m_ServiceStatus != 1)
-#endif
                     World::StopNow(SHUTDOWN_EXIT_CODE);
                     break;
                 /*case SIGSEGV:
@@ -160,30 +151,19 @@ int Master::Run()
 
     ///- Initialize the signal handlers
     WorldServerSignalHandler signalINT, signalTERM; //, signalSEGV
-    #ifdef _WIN32
-    WorldServerSignalHandler signalBREAK;
-    #endif /* _WIN32 */
 
     ///- Register worldserver's signal handlers
     ACE_Sig_Handler handle;
     handle.register_handler(SIGINT, &signalINT);
     handle.register_handler(SIGTERM, &signalTERM);
-#ifdef _WIN32
-    handle.register_handler(SIGBREAK, &signalBREAK);
-#endif
     //handle.register_handler(SIGSEGV, &signalSEGV);
 
     ///- Launch WorldRunnable thread
     acore::Thread worldThread(new WorldRunnable);
-    worldThread.setPriority(acore::Priority_Highest);
 
     acore::Thread* cliThread = NULL;
 
-#ifdef _WIN32
-    if (sConfigMgr->GetBoolDefault("Console.Enable", true) && (m_ServiceStatus == -1)/* need disable console in service mode*/)
-#else
     if (sConfigMgr->GetBoolDefault("Console.Enable", true))
-#endif
     {
         ///- Launch CliRunnable thread
         cliThread = new acore::Thread(new CliRunnable);
@@ -193,46 +173,13 @@ int Master::Run()
 
     // pussywizard:
     acore::Thread auctionLising_thread(new AuctionListingRunnable);
-    auctionLising_thread.setPriority(acore::Priority_High);
 
-#if defined(_WIN32) || defined(__linux__)
+#if defined(__linux__)
 
 
     ///- Handle affinity for multiple processors and process priority
     uint32 affinity = sConfigMgr->GetIntDefault("UseProcessors", 0);
     bool highPriority = sConfigMgr->GetBoolDefault("ProcessPriority", false);
-
-#ifdef _WIN32 // Windows
-
-    HANDLE hProcess = GetCurrentProcess();
-
-    if (affinity > 0)
-    {
-        ULONG_PTR appAff;
-        ULONG_PTR sysAff;
-
-        if (GetProcessAffinityMask(hProcess, &appAff, &sysAff))
-        {
-            ULONG_PTR currentAffinity = affinity & appAff;            // remove non accessible processors
-
-            if (!currentAffinity)
-                sLog->outError("Processors marked in UseProcessors bitmask (hex) %x are not accessible for the worldserver. Accessible processors bitmask (hex): %x", affinity, appAff);
-            else if (SetProcessAffinityMask(hProcess, currentAffinity))
-                sLog->outString("Using processors (bitmask, hex): %x", currentAffinity);
-            else
-                sLog->outError("Can't set used processors (hex): %x", currentAffinity);
-        }
-    }
-
-    if (highPriority)
-    {
-        if (SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS))
-            sLog->outString("worldserver process priority class set to HIGH");
-        else
-            sLog->outError("Can't set worldserver process priority class.");
-    }
-
-#else // Linux
 
     if (affinity > 0)
     {
@@ -262,7 +209,6 @@ int Master::Run()
     }
 
 #endif
-#endif
 
     // Start soap serving thread
     acore::Thread* soapThread = NULL;
@@ -279,7 +225,6 @@ int Master::Run()
     {
         FreezeDetectorRunnable* runnable = new FreezeDetectorRunnable(freezeDelay*1000);
         freezeThread = new acore::Thread(runnable);
-        freezeThread->setPriority(acore::Priority_Highest);
     }
 
     ///- Launch the world listener socket
@@ -328,51 +273,7 @@ int Master::Run()
 
     if (cliThread)
     {
-        #ifdef _WIN32
-
-        // this only way to terminate CLI thread exist at Win32 (alt. way exist only in Windows Vista API)
-        //_exit(1);
-        // send keyboard input to safely unblock the CLI thread
-        INPUT_RECORD b[4];
-        HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
-        b[0].EventType = KEY_EVENT;
-        b[0].Event.KeyEvent.bKeyDown = TRUE;
-        b[0].Event.KeyEvent.uChar.AsciiChar = 'X';
-        b[0].Event.KeyEvent.wVirtualKeyCode = 'X';
-        b[0].Event.KeyEvent.wRepeatCount = 1;
-
-        b[1].EventType = KEY_EVENT;
-        b[1].Event.KeyEvent.bKeyDown = FALSE;
-        b[1].Event.KeyEvent.uChar.AsciiChar = 'X';
-        b[1].Event.KeyEvent.wVirtualKeyCode = 'X';
-        b[1].Event.KeyEvent.wRepeatCount = 1;
-
-        b[2].EventType = KEY_EVENT;
-        b[2].Event.KeyEvent.bKeyDown = TRUE;
-        b[2].Event.KeyEvent.dwControlKeyState = 0;
-        b[2].Event.KeyEvent.uChar.AsciiChar = '\r';
-        b[2].Event.KeyEvent.wVirtualKeyCode = VK_RETURN;
-        b[2].Event.KeyEvent.wRepeatCount = 1;
-        b[2].Event.KeyEvent.wVirtualScanCode = 0x1c;
-
-        b[3].EventType = KEY_EVENT;
-        b[3].Event.KeyEvent.bKeyDown = FALSE;
-        b[3].Event.KeyEvent.dwControlKeyState = 0;
-        b[3].Event.KeyEvent.uChar.AsciiChar = '\r';
-        b[3].Event.KeyEvent.wVirtualKeyCode = VK_RETURN;
-        b[3].Event.KeyEvent.wVirtualScanCode = 0x1c;
-        b[3].Event.KeyEvent.wRepeatCount = 1;
-        DWORD numb;
-        WriteConsoleInput(hStdIn, b, 4, &numb);
-
-        cliThread->wait();
-
-        #else
-
         cliThread->destroy();
-
-        #endif
-
         delete cliThread;
     }
 

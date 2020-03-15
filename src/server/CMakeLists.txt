@@ -9,13 +9,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-# Crash logs for windows
-if (WIN32)
-set(winDebugging
-  ${CMAKE_SOURCE_DIR}/src/common/Debugging/WheatyExceptionReport.cpp
-  ${CMAKE_SOURCE_DIR}/src/common/Debugging/WheatyExceptionReport.h)
-endif()
-
 add_subdirectory(shared)
 add_subdirectory(game)
 add_subdirectory(authserver)

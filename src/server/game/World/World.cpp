@@ -412,10 +412,6 @@ void World::LoadModuleConfigSettings()
 
         std::string conf_path = _CONF_DIR;
         std::string cfg_file = conf_path + "/" + configFile;
-
-#if AC_PLATFORM == AC_PLATFORM_WINDOWS
-        cfg_file = configFile;
-#endif
         std::string cfg_def_file = cfg_file + ".dist";
 
         // Load .conf.dist config
@@ -1193,14 +1189,12 @@ void World::LoadConfigSettings(bool reload)
     if (dataPath.empty() || (dataPath.at(dataPath.length()-1) != '/' && dataPath.at(dataPath.length()-1) != '\\'))
         dataPath.push_back('/');
 
-#if AC_PLATFORM == AC_PLATFORM_UNIX || AC_PLATFORM == AC_PLATFORM_APPLE
     if (dataPath[0] == '~')
     {
         const char* home = getenv("HOME");
         if (home)
             dataPath.replace(0, 1, home);
     }
-#endif
 
     if (reload)
     {

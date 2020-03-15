@@ -11,10 +11,8 @@
 #include <string>
 #include <vector>
 
-#ifndef _WIN32
-    #include <stddef.h>
-    #include <dirent.h>
-#endif
+#include <stddef.h>
+#include <dirent.h>
 
 #ifdef __linux__
     #include <errno.h>
@@ -78,27 +76,6 @@ namespace MMAP
 
     inline ListFilesResult getDirContents(std::vector<std::string> &fileList, std::string dirpath = ".", std::string filter = "*")
     {
-    #ifdef WIN32
-        HANDLE hFind;
-        WIN32_FIND_DATA findFileInfo;
-        std::string directory;
-
-        directory = dirpath + "/" + filter;
-
-        hFind = FindFirstFile(directory.c_str(), &findFileInfo);
-
-        if (hFind == INVALID_HANDLE_VALUE)
-            return LISTFILE_DIRECTORY_NOT_FOUND;
-        do
-        {
-            if ((findFileInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
-                fileList.push_back(std::string(findFileInfo.cFileName));
-        }
-        while (FindNextFile(hFind, &findFileInfo));
-
-        FindClose(hFind);
-
-    #else
         const char *p = dirpath.c_str();
         DIR * dirp = opendir(p);
         struct dirent * dp;
@@ -119,7 +96,6 @@ namespace MMAP
             closedir(dirp);
         else
             return LISTFILE_DIRECTORY_NOT_FOUND;
-    #endif
 
         return LISTFILE_OK;
     }

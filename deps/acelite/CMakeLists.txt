@@ -8,15 +8,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-  add_subdirectory(ace)
-else()
-  add_library(ace SHARED IMPORTED GLOBAL)
+add_library(ace SHARED IMPORTED GLOBAL)
 
-  set_target_properties(ace
-    PROPERTIES
-      IMPORTED_LOCATION
-        "${ACE_LIBRARY}"
-      INTERFACE_INCLUDE_DIRECTORIES
-        "${ACE_INCLUDE_DIR}")
-endif()
+set_target_properties(ace
+  PROPERTIES
+    IMPORTED_LOCATION
+      "${ACE_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES
+      "${ACE_INCLUDE_DIR}")

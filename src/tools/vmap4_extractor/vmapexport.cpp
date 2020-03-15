@@ -11,14 +11,7 @@
 #include <list>
 #include <errno.h>
 
-#ifdef WIN32
-    #include <Windows.h>
-    #include <sys/stat.h>
-    #include <direct.h>
-    #define mkdir _mkdir
-#else
-    #include <sys/stat.h>
-#endif
+#include <sys/stat.h>
 
 #undef min
 #undef max
@@ -248,11 +241,7 @@ void ParsMapFiles()
 
 void getGamePath()
 {
-#ifdef _WIN32
-    strcpy(input_path,"Data\\");
-#else
     strcpy(input_path,"Data/");
-#endif
 }
 
 bool scan_patches(char* scanmatch, std::vector<std::string>& pArchiveNames)
@@ -457,7 +446,7 @@ int main(int argc, char ** argv)
     //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     // Create the working directory
     if (mkdir(szWorkDirWmo
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__)
                     , 0711
 #endif
                     ))

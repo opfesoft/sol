@@ -23,20 +23,6 @@
 # define _ACORE_CORE_CONFIG  "worldserver.conf"
 #endif
 
-#ifdef _WIN32
-#include "ServiceWin32.h"
-char serviceName[] = "worldserver";
-char serviceLongName[] = "AzerothCore world service";
-char serviceDescription[] = "AzerothCore World of Warcraft emulator world service";
-/*
- * -1 - not in service mode
- *  0 - stopped
- *  1 - running
- *  2 - paused
- */
-int m_ServiceStatus = -1;
-#endif
-
 WorldDatabaseWorkerPool WorldDatabase;                      ///< Accessor to the world database
 CharacterDatabaseWorkerPool CharacterDatabase;              ///< Accessor to the character database
 LoginDatabaseWorkerPool LoginDatabase;                      ///< Accessor to the realm/login database
@@ -49,12 +35,6 @@ void usage(const char* prog)
     printf("Usage:\n");
     printf(" %s [<options>]\n", prog);
     printf("    -c config_file           use config_file as configuration file\n");
-#ifdef _WIN32
-    printf("    Running as service functions:\n");
-    printf("    --service                run as service\n");
-    printf("    -s install               install service\n");
-    printf("    -s uninstall             uninstall service\n");
-#endif
 }
 
 /// Launch the Trinity server
@@ -82,39 +62,6 @@ extern int main(int argc, char** argv)
                 cfg_file = argv[c];
         }
 
-        #ifdef _WIN32
-        if (strcmp(argv[c], "-s") == 0) // Services
-        {
-            if (++c >= argc)
-            {
-                printf("Runtime-Error: -s option requires an input argument");
-                usage(argv[0]);
-                return 1;
-            }
-
-            if (strcmp(argv[c], "install") == 0)
-            {
-                if (WinServiceInstall())
-                    printf("Installing service\n");
-                return 1;
-            }
-            else if (strcmp(argv[c], "uninstall") == 0)
-            {
-                if (WinServiceUninstall())
-                    printf("Uninstalling service\n");
-                return 1;
-            }
-            else
-            {
-                printf("Runtime-Error: unsupported option %s", argv[c]);
-                usage(argv[0]);
-                return 1;
-            }
-        }
-
-        if (strcmp(argv[c], "--service") == 0)
-            WinServiceRun();
-        #endif
         ++c;
     }
 

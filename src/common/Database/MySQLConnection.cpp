@@ -7,9 +7,6 @@
 
 #include "Common.h"
 
-#ifdef _WIN32
-  #include <winsock2.h>
-#endif
 #include <mysql.h>
 #include <mysqld_error.h>
 #include <errmsg.h>
@@ -82,20 +79,6 @@ bool MySQLConnection::Open()
 
     mysql_options(mysqlInit, MYSQL_SET_CHARSET_NAME, "utf8");
     //mysql_options(mysqlInit, MYSQL_OPT_READ_TIMEOUT, (char const*)&timeout);
-    #ifdef _WIN32
-    if (m_connectionInfo.host == ".")                                           // named pipe use option (Windows)
-    {
-        unsigned int opt = MYSQL_PROTOCOL_PIPE;
-        mysql_options(mysqlInit, MYSQL_OPT_PROTOCOL, (char const*)&opt);
-        port = 0;
-        unix_socket = 0;
-    }
-    else                                                    // generic case
-    {
-        port = atoi(m_connectionInfo.port_or_socket.c_str());
-        unix_socket = 0;
-    }
-    #else
     if (m_connectionInfo.host == ".")                                           // socket use option (Unix/Linux)
     {
         unsigned int opt = MYSQL_PROTOCOL_SOCKET;
@@ -109,7 +92,6 @@ bool MySQLConnection::Open()
         port = atoi(m_connectionInfo.port_or_socket.c_str());
         unix_socket = 0;
     }
-    #endif
 
     // Possible improvement for future: make ATTEMPTS and SECONDS configurable values
     uint32 const ATTEMPTS = 180;
