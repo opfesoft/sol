@@ -11,6 +11,7 @@
 set(g3dlib_STAT_SRCS
   source/AABox.cpp
   source/Any.cpp
+  source/AnyTableReader.cpp
   source/BinaryFormat.cpp
   source/BinaryInput.cpp
   source/BinaryOutput.cpp
@@ -26,6 +27,7 @@ set(g3dlib_STAT_SRCS
   source/format.cpp
   source/g3dfnmatch.cpp
   source/g3dmath.cpp
+  source/GThread.cpp
   source/Line.cpp
   source/LineSegment.cpp
   source/Log.cpp
@@ -38,7 +40,6 @@ set(g3dlib_STAT_SRCS
   source/Quat.cpp
   source/Random.cpp
   source/Ray.cpp
-  source/ReferenceCount.cpp
   source/RegistryUtil.cpp
   source/Sphere.cpp
   source/stringutils.cpp
