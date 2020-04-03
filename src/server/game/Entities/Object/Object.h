@@ -370,7 +370,6 @@ struct Position
 {
     Position(float x = 0, float y = 0, float z = 0, float o = 0)
         : m_positionX(x), m_positionY(y), m_positionZ(z), m_orientation(NormalizeOrientation(o)) { }
-
     Position(Position const& loc) { Relocate(loc); }
 
     struct PositionXYStreamer
@@ -395,6 +394,8 @@ struct Position
     float m_positionY;
     float m_positionZ;
     float m_orientation;
+
+    Position& operator=(const Position& loc) = default;
 
     bool operator==(Position const &a);
 
@@ -635,6 +636,8 @@ class WorldLocation : public Position
         explicit WorldLocation(uint32 _mapid = MAPID_INVALID, float _x = 0, float _y = 0, float _z = 0, float _o = 0)
             : m_mapId(_mapid) { Relocate(_x, _y, _z, _o); }
         WorldLocation(const WorldLocation &loc) { WorldRelocate(loc); }
+
+        WorldLocation& operator=(const WorldLocation& loc) = default;
 
         void WorldRelocate(const WorldLocation &loc)
         {

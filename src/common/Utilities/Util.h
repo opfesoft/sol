@@ -398,6 +398,8 @@ public:
         part[2] = p3;
     }
 
+    flag96(const flag96&) = default;
+
     inline bool IsEqual(uint32 p1 = 0, uint32 p2 = 0, uint32 p3 = 0) const
     {
         return (part[0] == p1 && part[1] == p2 && part[2] == p3);

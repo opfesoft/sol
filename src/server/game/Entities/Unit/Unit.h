@@ -1318,6 +1318,7 @@ public:
     {
         return _posOwner.GetExactDistSq(&o) > 0.5f*0.5f || _posTarget.GetExactDistSq(&t) > 0.5f*0.5f;
     }
+    MMapTargetData& operator=(const MMapTargetData& c) = default;
     uint32 _endTime;
     Position _posOwner;
     Position _posTarget;

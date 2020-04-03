@@ -23,6 +23,8 @@ class WorldPacket : public ByteBuffer
         {
         }
 
+        WorldPacket& operator=(const WorldPacket& packet) = default;
+
         void Initialize(uint16 opcode, size_t newres=200)
         {
             clear();

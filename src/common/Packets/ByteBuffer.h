@@ -91,6 +91,8 @@ class ByteBuffer
             put(pos, (uint8 *)&value, sizeof(value));
         }
 
+        ByteBuffer& operator=(const ByteBuffer& buf) = default;
+
         ByteBuffer &operator<<(uint8 value)
         {
             append<uint8>(value);
