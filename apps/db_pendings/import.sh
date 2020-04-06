@@ -118,6 +118,7 @@ function import() {
 }
 
 import "world"
+import "sol_world"
 import "characters"
 import "auth"
 
