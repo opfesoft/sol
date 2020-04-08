@@ -15,8 +15,7 @@ Customizations:
   - CFBG support (see AC commits 782150ead311b47b030ea5b2aba8cdad478c0b19, e15a0c218942f602d55584b7235eb69254c3a35b, a425de6a1fc2489a5fba3be6ee560395da9df353, d40e8946180129b39172c2a1b4d690aa71723917)
   - Windows support and it's dependencies to the provided and outdated acelite & mysqllite libs (Sol only supports Linux)
   - Docker support, CI (Travis), SQL archive etc.
-- The changes concerning ACE removal have been reverted (see AC commits 30b0325cee4a1b7b3992b80ea863483fc6fc0d30, 1977336050955f40d6eb33b8c601435e8559a50a, 4a8f1de5381d1cf53cdcc4c5bb7d9ef7c99a8a8f)
-  ACE won't be replaced for this project as the libary is still maintained and stable (see "[ACE installation](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md#ace-installation)" on how to build the latest ACE version)
+- The changes concerning ACE removal have been reverted (see AC commits 30b0325cee4a1b7b3992b80ea863483fc6fc0d30, 1977336050955f40d6eb33b8c601435e8559a50a, 4a8f1de5381d1cf53cdcc4c5bb7d9ef7c99a8a8f); ACE won't be replaced for this project as the libary is still maintained and stable (see "[ACE installation](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md#ace-installation)" on how to build the latest ACE version)
 
 License:
 - The new AzerothCore source components are released under the [GNU AGPL v3](LICENSE-AGPL3), same for project "Sol"
