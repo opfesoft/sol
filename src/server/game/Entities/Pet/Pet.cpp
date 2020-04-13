@@ -759,7 +759,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
     SetModifierValue(UNIT_MOD_ARMOR, BASE_VALUE, float(petlevel*50));
 
     uint32 attackTime = BASE_ATTACK_TIME;
-    if (owner->getClass() != CLASS_HUNTER && cinfo->BaseAttackTime >= 1000)
+    if (petType != HUNTER_PET && cinfo->BaseAttackTime >= 1000)
         attackTime = cinfo->BaseAttackTime;
 
     SetAttackTime(BASE_ATTACK, attackTime);
