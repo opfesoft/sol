@@ -8,7 +8,27 @@ This is a custom version of AzerothCore (AC). The actual AC project is located h
 
 You are free to use Sol, but there won't be any support for it. This is solely a learning / fun project.
 
-Customizations:
+#### Project components
+- [Sol-Docs](https://gitlab.com/opfesoft/sol-docs): Documentation (updated, cleaned up and adapted to Sol)
+  - [Build tips](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md)
+  - [Performance](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Performance.md)
+  - [GM commands](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/GM-Commands.md)
+  - [GM tips](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/GM-Tips.md)
+  - [Auth DB](https://gitlab.com/opfesoft/sol-docs/-/tree/master/db/auth)
+  - [Characters DB](https://gitlab.com/opfesoft/sol-docs/-/tree/master/db/characters)
+  - [World DB](https://gitlab.com/opfesoft/sol-docs/-/tree/master/db/world)
+  - [DBC](https://gitlab.com/opfesoft/sol-docs/-/tree/master/dbc)
+- AC modules (adapted to Sol):
+  - [mod-ah-bot](https://gitlab.com/opfesoft/mod-ah-bot)
+  - [mod-autobalance](https://gitlab.com/opfesoft/mod-autobalance)
+  - [mod-morphsummon](https://gitlab.com/opfesoft/mod-morphsummon)
+  - [mod-npc-beastmaster](https://gitlab.com/opfesoft/mod-npc-beastmaster)
+  - [mod-transmog](https://gitlab.com/opfesoft/mod-transmog)
+  - [mod-weapon-visual](https://gitlab.com/opfesoft/mod-weapon-visual)
+- Sol modules:
+  - [mod-stoabrogga](https://gitlab.com/opfesoft/mod-stoabrogga)
+
+#### Customizations:
 - Sol is based on azerothcore-wotlk commit 2eb07056680776f85fcd700d45defa37c0ff9815 (2020-02-28)
 - The following components have been removed as they are not needed for this project and are just bloating the code:
   - Eluna support (see AC commits 00777a80ae067d18634e2b515a118e81e5cf47e5, be3abe21d919ec0fef0b8b3a5fec197fe916ee71, 204160b121a40a7cda92eec94f518079b6204d3c, 7ad58aa6ea642750d300cab01e7cfdd7fb5d1902)
@@ -17,6 +37,6 @@ Customizations:
   - Docker support, CI (Travis), SQL archive etc.
 - The changes concerning ACE removal have been reverted (see AC commits 30b0325cee4a1b7b3992b80ea863483fc6fc0d30, 1977336050955f40d6eb33b8c601435e8559a50a, 4a8f1de5381d1cf53cdcc4c5bb7d9ef7c99a8a8f); ACE won't be replaced for this project as the libary is still maintained and stable (see "[ACE installation](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md#ace-installation)" on how to build the latest ACE version)
 
-License:
+#### License:
 - The new AzerothCore source components are released under the [GNU AGPL v3](LICENSE-AGPL3), same for project "Sol"
 - The old sources based on MaNGOS/TrinityCore are released under the [GNU GPL v2](LICENSE-GPL2)
