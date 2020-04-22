@@ -8,7 +8,7 @@ This is a custom version of AzerothCore (AC). The actual AC project is located h
 
 You are free to use Sol, but there won't be any support for it. This is solely a learning / fun project.
 
-#### Project components
+#### Project components:
 - [Sol-Docs](https://gitlab.com/opfesoft/sol-docs): Documentation (updated, cleaned up and adapted to Sol)
   - [Build tips](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md)
   - [Performance](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Performance.md)
