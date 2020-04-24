@@ -137,7 +137,7 @@ void ChannelMgr::LoadChannelRights()
     if (!result)
     {
         sLog->outString();
-        sLog->outString(">>  Loaded 0 Channel Rights!");
+        sLog->outString(">> Loaded 0 Channel Rights!");
         return;
     }
 

@@ -1334,7 +1334,15 @@ void World::LoadConfigSettings(bool reload)
 
     m_bool_configs[CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE] = sConfigMgr->GetBoolDefault("SetAllCreaturesWithWaypointMovementActive", false);
 
-    //packet spoof punishment
+    // DoS protection (if enabled uses the packet spoof parameters)
+    m_bool_configs[CONFIG_DOS_PROTECTION] = sConfigMgr->GetBoolDefault("DoSProtection", true);
+
+    if (m_bool_configs[CONFIG_DOS_PROTECTION])
+        sLog->outString("DoS protection enabled");
+    else
+        sLog->outString("DoS protection disabled");
+
+    // packet spoof punishment
     m_int_configs[CONFIG_PACKET_SPOOF_POLICY] = sConfigMgr->GetIntDefault("PacketSpoof.Policy", (uint32)WorldSession::DosProtection::POLICY_KICK);
     m_int_configs[CONFIG_PACKET_SPOOF_BANMODE] = sConfigMgr->GetIntDefault("PacketSpoof.BanMode", (uint32)0);
     if (m_int_configs[CONFIG_PACKET_SPOOF_BANMODE] > 1)
@@ -1818,7 +1826,7 @@ void World::SetInitialWorldSettings()
     AddonMgr::LoadFromDB();
 
     // pussywizard:
-    sLog->outString("Deleting invalid mail items...\n");
+    sLog->outString("Deleting invalid mail items...");
     CharacterDatabase.Query("DELETE mi FROM mail_items mi LEFT JOIN item_instance ii ON mi.item_guid = ii.guid WHERE ii.guid IS NULL");
     CharacterDatabase.Query("DELETE mi FROM mail_items mi LEFT JOIN mail m ON mi.mail_id = m.id WHERE m.id IS NULL");
     CharacterDatabase.Query("UPDATE mail m LEFT JOIN mail_items mi ON m.id = mi.mail_id SET m.has_items=0 WHERE m.has_items<>0 AND mi.mail_id IS NULL");

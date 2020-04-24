@@ -3395,9 +3395,23 @@ ICC.Buff.Alliance = 73828
 
 ###################################################################################################
 #
+# Denial of Service (DoS) protection
+#
+#    DoSProtection
+#        Description: Enables or disables DoS protection. As the DoS protection takes some performance
+#                     it may be desirable to disable it, especially if other ways of DoS protection
+#                     have been established (additional hardware, OS configuration etc.).
+#        Default:     1 - Enable
+#                     0 - Disable
+#
+
+DoSProtection = 1
+
+#
 # Packet Spoof Protection Settings
 #
-# These settings determine which action to take when harmful packet spoofing is detected.
+# These settings determine which action to take when harmful packet spoofing is detected. They are
+# only used if DoS protection is enabled.
 #
 #    PacketSpoof.Policy
 #        Description: Determines the course of action when packet spoofing is detected.

@@ -8222,7 +8222,7 @@ void ObjectMgr::LoadTrainerSpell()
 
     if (!result)
     {
-        sLog->outErrorDb(">>  Loaded 0 Trainers. DB table `npc_trainer` is empty!");
+        sLog->outErrorDb(">> Loaded 0 Trainers. DB table `npc_trainer` is empty!");
         sLog->outString();
         return;
     }
@@ -8304,7 +8304,7 @@ void ObjectMgr::LoadVendors()
     if (!result)
     {
         sLog->outString();
-        sLog->outErrorDb(">>  Loaded 0 Vendors. DB table `npc_vendor` is empty!");
+        sLog->outErrorDb(">> Loaded 0 Vendors. DB table `npc_vendor` is empty!");
         return;
     }
 

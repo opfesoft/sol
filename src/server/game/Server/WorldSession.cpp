@@ -1314,6 +1314,9 @@ void WorldSession::InitWarden(BigNumber* k, std::string const& os)
 
 bool WorldSession::DosProtection::EvaluateOpcode(WorldPacket& p, time_t time) const
 {
+    if (!sWorld->getBoolConfig(CONFIG_DOS_PROTECTION))
+        return true;
+
     uint32 maxPacketCounterAllowed = GetMaxPacketCounterAllowed(p.GetOpcode());
 
     // Return true if there no limit for the opcode
