@@ -1,3 +1,19 @@
+-- DB update 2020_04_23_00 -> 2020_04_24_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_world' AND COLUMN_NAME = '2020_04_23_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_world CHANGE COLUMN 2020_04_23_00 2020_04_24_00 bit;
+SELECT sql_rev INTO OK FROM version_db_world WHERE sql_rev = '1586845118268975400'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
 INSERT INTO `version_db_world` (`sql_rev`) VALUES ('1586845118268975400');
 
 ALTER TABLE `holiday_dates` ADD COLUMN `holiday_duration` INT(10) UNSIGNED DEFAULT 0 NOT NULL AFTER `date_value`;
@@ -88,3 +104,12 @@ INSERT INTO `holiday_dates` (`id`, `date_id`, `date_value`) VALUES -- DONE.
 -- Lunar Festival
 UPDATE `game_event` SET `length` = 20160 WHERE `eventEntry` = 7;
 UPDATE `holiday_dates` SET `holiday_duration`=336 WHERE `id`=327;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
