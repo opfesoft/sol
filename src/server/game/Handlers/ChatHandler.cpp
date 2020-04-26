@@ -102,7 +102,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
         recvData.rfinish();
         return;
     }
-    
+
     if (langDesc->skill_id != 0 && !sender->HasSkill(langDesc->skill_id))
     {
         // also check SPELL_AURA_COMPREHEND_LANGUAGE (client offers option to speak in that language)
@@ -170,7 +170,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
 
 	            break;
             default:
-                sLog->outError("Player %s (GUID: %u) sent a chatmessage with an invalid language/message type combination", 
+                sLog->outError("Player %s (GUID: %u) sent a chatmessage with an invalid language/message type combination",
                                                      GetPlayer()->GetName().c_str(), GetPlayer()->GetGUIDLow());
 
                 recvData.rfinish();
@@ -321,6 +321,13 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 return;
         }
     }
+
+    // prevent crash player
+    if (msg.find("| |Hquest") != std::string::npos) {
+        return;
+    }
+
+    sScriptMgr->OnBeforeSendChatMessage(_player, type, lang, msg);
 
     switch (type)
     {
