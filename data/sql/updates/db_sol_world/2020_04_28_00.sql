@@ -28,7 +28,7 @@ UPDATE `creature_template` SET `mingold` = 8900, `maxgold` = 14440 WHERE `entry`
 UPDATE `gameobject` SET `spawntimesecs` = 2 WHERE `guid` = 65527;
 
 -- Crazed Mana-Wyrm: Enable random movement for the wyrms above; ensure that the wyrm corpses lie on the ground
-UPDATE `creature_template` SET `hoverheight` = 0, `unit_flags` = `unit_flags` ^ 4 WHERE `entry` IN (26761,30521);
+UPDATE `creature_template` SET `hoverheight` = 0, `unit_flags` = `unit_flags` & ~4 WHERE `entry` IN (26761,30521);
 UPDATE `creature` SET `unit_flags` = 536870912 | 33554432 | 262144 | 512 | 256, `dynamicflags` = 32 WHERE `guid` IN (126587,126588);
 UPDATE `creature` SET `MovementType` = 1, `wander_distance` = 10 WHERE `guid` IN (126584,126585,126586,126589,126590,126591,126592,126593,126594,126595,126596,126597,126598);
 
