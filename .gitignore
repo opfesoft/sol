@@ -4,25 +4,12 @@
 
 conf/*
 !conf/*.dist
-apps/drassil/*
-env/dist/*
-env/user/*
+local/*
 modules/*
 !modules/*.md
 !modules/*.sh
 build*/
 var/*
-docker/build/cache
-docker/authserver/bin
-docker/worldserver/bin
-docker/authserver/etc/authserver.conf
-docker/authserver/etc/authserver.conf.dist
-docker/worldserver/etc/worldserver.conf
-docker/worldserver/etc/worldserver.conf.dist
-docker/authserver/logs/
-docker/worldserver/logs/
-docker/worldserver/data/
-!docker/build
 .env
 
 !.gitkeep

@@ -1,17 +1,32 @@
-[[ ${GUARDYVAR:-} -eq 1 ]] && return || readonly GUARDYVAR=1 # include it once
+[[ ${GUARDYVAR:-} -eq 1 ]] && return || readonly GUARDYVAR=1 # include this file only once
 
 # force default language for applications
 LC_ALL=C 
 
 AC_PATH_APPS="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
 
-AC_PATH_SHARED="$AC_PATH_APPS/bash_shared"
+unamestr=`uname`
+if [[ "$unamestr" == 'Darwin' ]]; then
+   AC_PATH_ROOT=$(greadlink -f "$AC_PATH_APPS/../")
+else
+   AC_PATH_ROOT=$(readlink -f "$AC_PATH_APPS/../")
+fi
 
-source "$AC_PATH_SHARED/defines.sh"
+AC_PATH_CONF="$AC_PATH_ROOT/conf"
+AC_PATH_MODULES="$AC_PATH_ROOT/modules"
+AC_PATH_DEPS="$AC_PATH_ROOT/deps"
 
-source "$AC_PATH_DEPS/hw-core/bash-lib-event/src/hooks.sh"
+source "$AC_PATH_CONF/config.sh.dist" # add default configuration parameters
 
-source "$AC_PATH_SHARED/common.sh"
+if [ -f "$AC_PATH_CONF/config.sh"  ]; then
+    source "$AC_PATH_CONF/config.sh" # overwrite configuration parameters using a custom config file
+fi
 
-[[ "$OSTYPE" = "msys" ]] && AC_BINPATH_FULL="$BINPATH" || AC_BINPATH_FULL="$BINPATH/bin"
+# load modules
 
+for entry in "$AC_PATH_MODULES/"*/include.sh
+do
+    if [ -e $entry ]; then
+        source $entry
+    fi
+done

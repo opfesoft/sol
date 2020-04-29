@@ -10,15 +10,11 @@ cmdopt=$1
 
 PS3='[Please enter your choice]: '
 options=(
-    "all: Assemble all"                              # 1
-    "bases: Assemble only bases"                      # 2
-    "updates: Assemble only updates"                 # 3
-    "customs: Assemble only customs"                  # 4
-    "import-all: Assemble & Import all"              # 5
-    "import-bases: Assemble & Import only bases"      # 6
-    "import-updates: Assemble & Import only updates" # 7
-    "import-customs:  Assemble & Import only customs" # 8
-    "quit: Exit from this menu"                      # 9
+    "all: Assemble all"              # 1
+    "bases: Assemble only bases"     # 2
+    "updates: Assemble only updates" # 3
+    "customs: Assemble only customs" # 4
+    "quit: Exit from this menu"      # 5
     )
 
 function _switch() {
@@ -38,19 +34,7 @@ function _switch() {
         ""|"customs"|"4")
             dbasm_run false false true
             ;;
-        ""|"import-all"|"5")
-            dbasm_import true true true
-            ;;
-        ""|"import-bases"|"6")
-            dbasm_import true false false
-            ;;
-        ""|"import-updates"|"7")
-            dbasm_import false true false
-            ;;
-        ""|"import-customs"|"8")
-            dbasm_import false false true
-            ;;
-        ""|"quit"|"9")
+        ""|"quit"|"5")
             echo "Goodbye!"
             exit
             ;;

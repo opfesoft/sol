@@ -1,10 +1,10 @@
 ## Description
 
-This script allows you to assemble all sql files into one so you can easily import it to your databases (or use the main script to import directly). By default, it creates the merged files in `/env/dist`.
+This script allows you to assemble all sql files into one so you can easily import it to your databases (or use the main script to import directly). By default, it creates the merged files in `/local`.
 
 ## How to use:
 
-First of all, if you need some custom configuration, you have to copy and rename `/conf/config.sh.dist` to `/conf/config.sh` and configure it. The file is here: https://github.com/azerothcore/azerothcore-wotlk/tree/master/conf
+First of all, if you need some custom configuration, you have to copy and rename `/conf/config.sh.dist` to `/conf/config.sh` and configure it.
 
 _Read it because there are several options to configure._
 

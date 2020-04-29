@@ -17,7 +17,7 @@ function import() {
     latestUpd=`ls -1 $updPath/ | tail -n 1`
 
     if [ -z $latestUpd ]; then
-        echo "FIRST UPDATE FILE MISSING!! DID YOU ARCHIVED IT?";
+        echo "FIRST UPDATE FILE MISSING!! DID YOU ARCHIVE IT?";
         exit;
     fi
 
