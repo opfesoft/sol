@@ -75,7 +75,7 @@ void FormationMgr::LoadCreatureFormations()
     CreatureGroupMap.clear();
 
     //Get group data
-    QueryResult result = WorldDatabase.Query("SELECT leaderGUID, memberGUID, dist, angle, groupAI, point_1, point_2 FROM creature_formations ORDER BY leaderGUID");
+    QueryResult result = WorldDatabase.Query("SELECT leaderGUID, memberGUID, dist, angle, groupAI FROM creature_formations ORDER BY leaderGUID");
 
     if (!result)
     {
@@ -97,8 +97,6 @@ void FormationMgr::LoadCreatureFormations()
         group_member->leaderGUID            = fields[0].GetUInt32();
         uint32 memberGUID                   = fields[1].GetUInt32();
         group_member->groupAI               = fields[4].GetUInt32();
-        group_member->point_1               = fields[5].GetUInt16();
-        group_member->point_2               = fields[6].GetUInt16();
         //If creature is group leader we may skip loading of dist/angle
         if (group_member->leaderGUID != memberGUID)
         {
@@ -244,11 +242,7 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
         // Xinef: this should be automatized, if turn angle is greater than PI/2 (90�) we should swap formation angle
         if (M_PI - fabs(fabs(m_leader->GetOrientation() - pathAngle) - M_PI) > M_PI*0.50f)
         {
-            // pussywizard: in both cases should be 2*M_PI - follow_angle
-            // pussywizard: also, GetCurrentWaypointID() returns 0..n-1, while point_1 must be > 0, so +1
-            // pussywizard: db table waypoint_data shouldn't have point id 0 and shouldn't have any gaps for this to work!
-            // if (m_leader->GetCurrentWaypointID()+1 == itr->second->point_1 || m_leader->GetCurrentWaypointID()+1 == itr->second->point_2)
-            itr->second->follow_angle = Position::NormalizeOrientation(itr->second->follow_angle + M_PI); //(2 * M_PI) - itr->second->follow_angle;
+            itr->second->follow_angle = (2 * M_PI) - itr->second->follow_angle;
         }
 
         float followAngle = itr->second->follow_angle;
