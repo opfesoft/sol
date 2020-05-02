@@ -1,0 +1,45 @@
+-- DB update 2020_05_03_00 -> 2020_05_03_01
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2020_05_03_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2020_05_03_00 2020_05_03_01 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1588460880221960551'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1588460880221960551');
+
+-- Thal'trak Proudtusk
+DELETE FROM `creature_formations` WHERE `leaderGUID` = 6885;
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`)
+VALUES
+(6885,6877,12,180,515),
+(6885,6880,9,180,515),
+(6885,6883,6,180,515),
+(6885,6885,0,0,515),
+(6885,6886,3,180,515);
+
+-- Wooly Kodo
+DELETE FROM `creature_formations` WHERE `leaderGUID` = 15144;
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`)
+VALUES
+(15144,15135,15,180,515),
+(15144,15141,9,60,515),
+(15144,15142,12,270,515),
+(15144,15144,0,0,515);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
