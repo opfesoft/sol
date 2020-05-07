@@ -240,7 +240,7 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
             continue;
 
         // Xinef: this should be automatized, if turn angle is greater than PI/2 (90�) we should swap formation angle
-        if (M_PI - fabs(fabs(m_leader->GetOrientation() - pathAngle) - M_PI) > M_PI*0.50f)
+        if (m_leader->GetOrientation() && (M_PI - fabs(fabs(m_leader->GetOrientation() - pathAngle) - M_PI) > M_PI*0.50f))
         {
             itr->second->follow_angle = (2 * M_PI) - itr->second->follow_angle;
         }
