@@ -112,10 +112,10 @@ public:
             if (result)
                 point = (*result)[0].GetUInt32();
         }
-        else
+        else if (!path_number)
         {
-            // waypoint selected; shift the next waypoints up in preparation of adding the new waypoint
-            // after the selected one
+            // waypoint selected and no path number specified; shift the next waypoints up in
+            // preparation of adding the new waypoint after the selected one
             PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_POINT_SHIFT_UP);
 
             stmt->setUInt32(0, pathid);
@@ -637,38 +637,41 @@ public:
             Player* chr = handler->GetSession()->GetPlayer();
             Map* map = chr->GetMap();
             {
-                // What to do:
-                // Move the visual spawnpoint
-                // Respawn the owner of the waypoints
+                // Move the visual waypoint
                 if (wpGuid != 0)
                 {
+                    // remove old waypoint
                     if (Creature* wpCreature = map->GetCreature(MAKE_NEW_GUID(wpGuid, VISUAL_WAYPOINT, HIGHGUID_UNIT)))
                     {
                         wpCreature->CombatStop();
                         wpCreature->DeleteFromDB();
                         wpCreature->AddObjectToRemoveList();
                     }
-                    // re-create
+                    // create new waypoint
                     Creature* wpCreature2 = new Creature;
                     if (!wpCreature2->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, chr->GetPhaseMaskForSpawn(), VISUAL_WAYPOINT, 0, chr->GetPositionX(), chr->GetPositionY(), chr->GetPositionZ(), chr->GetOrientation()))
                     {
                         handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, VISUAL_WAYPOINT);
                         delete wpCreature2;
-                        wpCreature2 = nullptr;
                         return false;
                     }
 
+                    // Set "wpguid" column to the visual waypoint
+                    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_WPGUID);
+
+                    stmt->setInt32(0, int32(wpCreature2->GetGUIDLow()));
+                    stmt->setUInt32(1, pathid);
+                    stmt->setUInt32(2, point);
+
+                    WorldDatabase.Execute(stmt);
+
                     wpCreature2->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-                    // To call _LoadGoods(); _LoadQuests(); CreateTrainerSpells();
-                    //TODO: Should we first use "Create" then use "LoadFromDB"?
-                    if (!wpCreature2->LoadCreatureFromDB(wpCreature2->GetDBTableGUIDLow(), map))
+                    if (!map->AddToMap(wpCreature2))
                     {
                         handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, VISUAL_WAYPOINT);
                         delete wpCreature2;
-                        wpCreature2 = nullptr;
                         return false;
                     }
-                    //sMapMgr->GetMap(npcCreature->GetMapId())->Add(wpCreature2);
                 }
 
                 PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_POSITION);
@@ -774,6 +777,8 @@ public:
         if (!show_str)
             return false;
 
+        std::string show = show_str;
+
         // second arg: GUID (optional, if a creature is selected)
         char* guid_str = strtok((char*)nullptr, " ");
 
@@ -789,12 +794,15 @@ public:
 
             if (!target)
             {
-                handler->SendSysMessage(LANG_SELECT_CREATURE);
-                handler->SetSentErrorMessage(true);
-                return false;
+                if (show != "off")
+                {
+                    handler->SendSysMessage(LANG_SELECT_CREATURE);
+                    handler->SetSentErrorMessage(true);
+                    return false;
+                }
             }
-
-            pathid = target->GetWaypointPath();
+            else
+                pathid = target->GetWaypointPath();
         }
         else
         {
@@ -806,10 +814,6 @@ public:
 
             pathid = atoi((char*)guid_str);
         }
-
-        std::string show = show_str;
-
-        //handler->PSendSysMessage("wpshow - show: %s", show);
 
         // Show info for the selected waypoint
         if (show == "info")
@@ -950,8 +954,7 @@ public:
                 WorldDatabase.Execute(stmt);
 
                 wpCreature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-                // To call _LoadGoods(); _LoadQuests(); CreateTrainerSpells();
-                if (!wpCreature->LoadCreatureFromDB(wpCreature->GetDBTableGUIDLow(), map))
+                if (!map->AddToMap(wpCreature))
                 {
                     handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
                     delete wpCreature;
@@ -1005,7 +1008,7 @@ public:
             }
 
             creature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-            if (!creature->LoadCreatureFromDB(creature->GetDBTableGUIDLow(), map))
+            if (!map->AddToMap(creature))
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
                 delete creature;
@@ -1054,7 +1057,7 @@ public:
             }
 
             creature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-            if (!creature->LoadCreatureFromDB(creature->GetDBTableGUIDLow(), map))
+            if (!map->AddToMap(creature))
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_NOTCREATED, id);
                 delete creature;
@@ -1111,7 +1114,6 @@ public:
             stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_ALL_WPGUID);
 
             WorldDatabase.Execute(stmt);
-            //WorldDatabase.PExecute("UPDATE creature_movement SET wpguid = '0' WHERE wpguid <> '0'");
 
             if (hasError)
             {
