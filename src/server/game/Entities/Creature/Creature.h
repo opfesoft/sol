@@ -604,12 +604,12 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         Unit* SelectNearestTargetInAttackDistance(float dist) const;
 
         void DoFleeToGetAssistance();
-        void CallForHelp(float fRadius);
+        void CallForHelp(float fRadius, bool forceAssist = false);
         void CallAssistance();
         void SetNoCallAssistance(bool val) { m_AlreadyCallAssistance = val; }
         void SetNoSearchAssistance(bool val) { m_AlreadySearchedAssistance = val; }
         bool HasSearchedAssistance() { return m_AlreadySearchedAssistance; }
-        bool CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction = true) const;
+        bool CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction = true, bool forceAssist = false) const;
         bool _IsTargetAcceptable(const Unit* target) const;
         bool _CanDetectFeignDeathOf(const Unit* target) const; // pussywizard
 

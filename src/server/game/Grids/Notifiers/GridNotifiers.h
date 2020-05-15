@@ -1034,15 +1034,15 @@ namespace acore
     class CallOfHelpCreatureInRangeDo
     {
         public:
-            CallOfHelpCreatureInRangeDo(Unit* funit, Unit* enemy, float range)
-                : i_funit(funit), i_enemy(enemy), i_range(range)
+            CallOfHelpCreatureInRangeDo(Unit* funit, Unit* enemy, float range, bool forceAssist)
+                : i_funit(funit), i_enemy(enemy), i_range(range), i_forceAssist(forceAssist)
             {}
             void operator()(Creature* u)
             {
                 if (u == i_funit)
                     return;
 
-                if (!u->CanAssistTo(i_funit, i_enemy, false))
+                if (!u->CanAssistTo(i_funit, i_enemy, false, i_forceAssist))
                     return;
 
                 // too far
@@ -1060,6 +1060,7 @@ namespace acore
             Unit* const i_funit;
             Unit* const i_enemy;
             float i_range;
+            bool i_forceAssist;
     };
 
     struct AnyDeadUnitCheck

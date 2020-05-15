@@ -1928,7 +1928,7 @@ void Creature::CallAssistance()
     }
 }
 
-void Creature::CallForHelp(float radius)
+void Creature::CallForHelp(float radius, bool forceAssist /*= false*/)
 {
     if (radius <= 0.0f || !GetVictim() || IsPet() || IsCharmed())
         return;
@@ -1937,7 +1937,7 @@ void Creature::CallForHelp(float radius)
     Cell cell(p);
     cell.SetNoCreate();
 
-    acore::CallOfHelpCreatureInRangeDo u_do(this, GetVictim(), radius);
+    acore::CallOfHelpCreatureInRangeDo u_do(this, GetVictim(), radius, forceAssist);
     acore::CreatureWorker<acore::CallOfHelpCreatureInRangeDo> worker(this, u_do);
 
     TypeContainerVisitor<acore::CreatureWorker<acore::CallOfHelpCreatureInRangeDo>, GridTypeMapContainer >  grid_creature_searcher(worker);
@@ -1945,11 +1945,15 @@ void Creature::CallForHelp(float radius)
     cell.Visit(p, grid_creature_searcher, *GetMap(), *this, radius);
 }
 
-bool Creature::CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction /*= true*/) const
+bool Creature::CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction /*= true*/, bool forceAssist /*= false*/) const
 { 
-    // is it true?
     if (!HasReactState(REACT_AGGRESSIVE))
-        return false;
+    {
+        if (!HasReactState(REACT_DEFENSIVE))
+            return false; // creature has passive react state, skip
+        else if (!forceAssist)
+            return false; // creature has defensive react state, skip if not forced to assist
+    }
 
     // we don't need help from zombies :)
     if (!IsAlive())
@@ -1990,9 +1994,13 @@ bool Creature::CanAssistTo(const Unit* u, const Unit* enemy, bool checkfaction /
             return false;
     }
 
-    // skip non hostile to caster enemy creatures
     if (!IsHostileTo(enemy))
-        return false;
+    {
+        if (IsFriendlyTo(enemy))
+            return false;
+        else if (!forceAssist)
+            return false; // creature is either unfriendly or neutral to the enemy, skip if not forced to assist
+    }
 
     return true;
 }

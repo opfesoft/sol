@@ -469,7 +469,7 @@ enum SMART_ACTION
     SMART_ACTION_UPDATE_TEMPLATE                    = 36,     // Entry, UpdateLevel
     SMART_ACTION_DIE                                = 37,     // No Params
     SMART_ACTION_SET_IN_COMBAT_WITH_ZONE            = 38,     // No Params
-    SMART_ACTION_CALL_FOR_HELP                      = 39,     // Radius, With Emote
+    SMART_ACTION_CALL_FOR_HELP                      = 39,     // Radius, With Emote, Force Assist
     SMART_ACTION_SET_SHEATH                         = 40,     // Sheath (0-unarmed, 1-melee, 2-ranged)
     SMART_ACTION_FORCE_DESPAWN                      = 41,     // timer
     SMART_ACTION_SET_INVINCIBILITY_HP_LEVEL         = 42,     // MinHpValue(+pct, -flat)
@@ -817,6 +817,7 @@ struct SmartAction
         {
             uint32 range;
             uint32 withEmote;
+            uint32 forceAssist;
         } callHelp;
 
         struct

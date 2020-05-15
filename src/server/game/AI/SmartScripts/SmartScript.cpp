@@ -1340,7 +1340,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             if (IsCreature(*itr))
             {
-                (*itr)->ToCreature()->CallForHelp((float)e.action.callHelp.range);
+                (*itr)->ToCreature()->CallForHelp((float)e.action.callHelp.range, e.action.callHelp.forceAssist != 0);
                 if (e.action.callHelp.withEmote)
                 {
                     AcoreStringTextBuilder builder(*itr, CHAT_MSG_MONSTER_EMOTE, LANG_CALL_FOR_HELP, LANG_UNIVERSAL, NULL);
