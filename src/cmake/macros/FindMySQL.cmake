@@ -1,5 +1,5 @@
 #
-# Find the MySQL client includes and library
+# Find the MariaDB client includes and library
 # 
 
 # This module defines
@@ -13,18 +13,17 @@
 set( MYSQL_FOUND 0 )
 
 set(MYSQL_CONFIG_PREFER_PATH "$ENV{MYSQL_HOME}/bin" CACHE FILEPATH
-  "preferred path to MySQL (mysql_config)"
+  "preferred path to MySQL (mariadb_config)"
 )
 
-find_program(MYSQL_CONFIG mysql_config
+find_program(MYSQL_CONFIG mariadb_config
   ${MYSQL_CONFIG_PREFER_PATH}
-  /usr/local/mysql/bin/
   /usr/local/bin/
   /usr/bin/
 )
 
 if( MYSQL_CONFIG )
-  message(STATUS "Using mysql-config: ${MYSQL_CONFIG}")
+  message(STATUS "Using mariadb_config: ${MYSQL_CONFIG}")
   # set INCLUDE_DIR
   exec_program(${MYSQL_CONFIG}
     ARGS --include
