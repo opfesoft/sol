@@ -59,7 +59,7 @@ class npc_pet_shaman_earth_elemental : public CreatureScript
                     if (!me->IsInCombat())
                         if (Player* owner = me->GetCharmerOrOwnerPlayerOrPlayerItself())
                             if (Unit* target = owner->GetSelectedUnit())
-                                if (me->_CanDetectFeignDeathOf(target) && me->CanCreatureAttack(target))
+                                if (me->_CanDetectFeignDeathOf(target) && me->CanStartAttack(target))
                                     AttackStart(target);
                     _initAttack = false;
                 }
@@ -121,7 +121,7 @@ class npc_pet_shaman_fire_elemental : public CreatureScript
                     if (!me->IsInCombat())
                         if (Player* owner = me->GetCharmerOrOwnerPlayerOrPlayerItself())
                             if (Unit* target = owner->GetSelectedUnit())
-                                if (me->_CanDetectFeignDeathOf(target) && me->CanCreatureAttack(target))
+                                if (me->_CanDetectFeignDeathOf(target) && me->CanStartAttack(target))
                                     AttackStart(target);
                     _initAttack = false;
                 }
