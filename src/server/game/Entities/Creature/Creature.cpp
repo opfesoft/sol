@@ -151,7 +151,8 @@ CreatureBaseStats const* CreatureBaseStats::GetBaseStats(uint8 level, uint8 unit
 
 bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
 {
-    m_owner.DespawnOrUnsummon();    // since we are here, we are not TempSummon as object type cannot change during runtime
+    if (m_execTime == m_owner.GetDespawnTime()) // only despawn if the despawn time wasn't updated in the meantime
+        m_owner.DespawnOrUnsummon();    // since we are here, we are not TempSummon as object type cannot change during runtime
     return true;
 }
 
@@ -1653,8 +1654,8 @@ void Creature::ForcedDespawn(uint32 timeMSToDespawn)
     if (timeMSToDespawn)
     {
         ForcedDespawnDelayEvent* pEvent = new ForcedDespawnDelayEvent(*this);
-
-        m_Events.AddEvent(pEvent, m_Events.CalculateTime(timeMSToDespawn));
+        m_despawnTime = m_Events.CalculateTime(timeMSToDespawn);
+        m_Events.AddEvent(pEvent, m_despawnTime);
         return;
     }
 

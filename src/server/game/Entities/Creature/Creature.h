@@ -712,6 +712,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         time_t GetLastDamagedTime() const { return _lastDamagedTime; }
         void SetLastDamagedTime(time_t val) { _lastDamagedTime = val; }
 
+        uint64 GetDespawnTime() const { return m_despawnTime; }
+
     protected:
         bool CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data = NULL);
         bool InitEntry(uint32 entry, const CreatureData* data=NULL);
@@ -764,6 +766,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         bool IsInvisibleDueToDespawn() const override;
         bool CanAlwaysSee(WorldObject const* obj) const override;
+
+        uint64 m_despawnTime;
 
     private:
         void ForcedDespawn(uint32 timeMSToDespawn = 0);
