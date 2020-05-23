@@ -7740,7 +7740,17 @@ bool ObjectMgr::LoadAcoreStrings()
     uint32 oldMSTime = getMSTime();
 
     _acoreStringStore.clear(); // for reload case
-    QueryResult result = WorldDatabase.PQuery("SELECT entry, content_default, content_loc1, content_loc2, content_loc3, content_loc4, content_loc5, content_loc6, content_loc7, content_loc8 FROM acore_string");
+    QueryResult result = WorldDatabase.PQuery("SELECT ac_str.entry, ac_str.content_default, ac_str_loc1.content, ac_str_loc2.content, ac_str_loc3.content, ac_str_loc4.content, "
+                                              "ac_str_loc5.content, ac_str_loc6.content, ac_str_loc7.content, ac_str_loc8.content FROM acore_string ac_str "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc1 ON (ac_str.entry = ac_str_loc1.entry AND ac_str_loc1.locale = 'koKR') "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc2 ON (ac_str.entry = ac_str_loc2.entry AND ac_str_loc2.locale = 'frFR') "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc3 ON (ac_str.entry = ac_str_loc3.entry AND ac_str_loc3.locale = 'deDE') "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc4 ON (ac_str.entry = ac_str_loc4.entry AND ac_str_loc4.locale = 'zhCN') "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc5 ON (ac_str.entry = ac_str_loc5.entry AND ac_str_loc5.locale = 'zhTW') "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc6 ON (ac_str.entry = ac_str_loc6.entry AND ac_str_loc6.locale = 'esES') "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc7 ON (ac_str.entry = ac_str_loc7.entry AND ac_str_loc7.locale = 'esMX') "
+                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc8 ON (ac_str.entry = ac_str_loc8.entry AND ac_str_loc8.locale = 'ruRU')");
+
     if (!result)
     {
         sLog->outString(">> Loaded 0 acore strings. DB table `acore_strings` is empty.");
@@ -7771,15 +7781,15 @@ bool ObjectMgr::LoadAcoreStrings()
 
 char const* ObjectMgr::GetAcoreString(uint32 entry, LocaleConstant locale) const
 {
-    if (AcoreString const* ts = GetAcoreString(entry))
+    if (AcoreString const* as = GetAcoreString(entry))
     {
-        if (ts->Content.size() > size_t(locale) && !ts->Content[locale].empty())
-            return ts->Content[locale].c_str();
+        if (as->Content.size() > size_t(locale) && !as->Content[locale].empty())
+            return as->Content[locale].c_str();
 
-        return ts->Content[DEFAULT_LOCALE].c_str();
+        return as->Content[DEFAULT_LOCALE].c_str();
     }
 
-    sLog->outErrorDb("Trinity string entry %u not found in DB.", entry);
+    sLog->outErrorDb("Acore string entry %u not found in DB.", entry);
 
     return "<error>";
 }
