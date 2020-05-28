@@ -1628,7 +1628,7 @@ class ScriptRegistry
                     {
                         // The script uses a script name from database, but isn't assigned to anything.
                         if (script->GetName().find("Smart") == std::string::npos)
-                            sLog->outErrorDb("Script named '%s' is not assigned in the database.",
+                            sLog->outString("WARNING: Script named '%s' is not assigned in the database.",
                                 script->GetName().c_str());
                     }
                 } else {
