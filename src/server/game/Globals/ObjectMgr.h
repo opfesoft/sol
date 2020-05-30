@@ -111,7 +111,10 @@ enum ScriptCommands
     SCRIPT_COMMAND_MODEL                 = 32,               // source = Creature, datalong = model id
     SCRIPT_COMMAND_CLOSE_GOSSIP          = 33,               // source = Player
     SCRIPT_COMMAND_PLAYMOVIE             = 34,               // source = Player, datalong = movie id
-    SCRIPT_COMMAND_MOVEMENT              = 35                // soucre = Creature, datalong = MovementType, datalong2 = MovementDistance (wander_distance f.ex.), dataint = pathid
+    SCRIPT_COMMAND_MOVEMENT              = 35,               // source = Creature, datalong = MovementType, datalong2 = MovementDistance (wander_distance f.ex.), dataint = pathid
+
+    // Sol only
+    SCRIPT_COMMAND_DESPAWN_CREATURE      = 50                // source = Unit, datalong = creature entry, datalong2 = despawn delay, x = search radius
 };
 
 // Benchmarked: Faster than std::unordered_map (insert/find)
@@ -367,6 +370,15 @@ struct ScriptInfo
             uint32 MovementDistance; // datalong2
             int32  Path;             // dataint
         } Movement;
+
+        struct                      // SCRIPT_COMMAND_DESPAWN_CREATURE (50)
+        {
+            uint32 CreatureEntry;   // datalong
+            uint32 DespawnDelay;    // datalong2
+            int32  Unused2;         // dataint
+
+            float SearchRadius;     // x
+        } DespawnCreature;
     };
 
     std::string GetDebugInfo() const;

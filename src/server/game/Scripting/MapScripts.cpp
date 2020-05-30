@@ -938,6 +938,13 @@ void Map::ScriptsProcess()
                 }
                 break;
 
+            case SCRIPT_COMMAND_DESPAWN_CREATURE:
+                // Source must be Unit.
+                if (Unit* sourceUnit = _GetScriptUnit(source, true, step.script))
+                    if (Creature* targetCreature = GetClosestCreatureWithEntry(sourceUnit, step.script->DespawnCreature.CreatureEntry, step.script->DespawnCreature.SearchRadius))
+                        targetCreature->DespawnOrUnsummon(step.script->DespawnCreature.DespawnDelay);
+                break;
+
             default:
                 sLog->outError("Unknown script command %s.", step.script->GetDebugInfo().c_str());
                 break;
