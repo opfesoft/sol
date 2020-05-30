@@ -1071,7 +1071,6 @@ class ObjectMgr
 
         void SetHighestGuids();
         uint32 GenerateLowGuid(HighGuid guidhigh);
-        uint32 GenerateRecycledLowGuid(HighGuid guidHigh);
         uint32 GenerateAuctionID();
         uint64 GenerateEquipmentSetGuid();
         uint32 GenerateMailID();
@@ -1368,11 +1367,6 @@ class ObjectMgr
         uint32 _hiDoGuid; ACE_Thread_Mutex _hiDoGuidMutex;
         uint32 _hiCorpseGuid; ACE_Thread_Mutex _hiCorpseGuidMutex;
         uint32 _hiMoTransGuid; ACE_Thread_Mutex _hiMoTransGuidMutex;
-
-        uint32 _hiCreatureRecycledGuidMax;
-        uint32 _hiCreatureRecycledGuid;
-        uint32 _hiGoRecycledGuidMax;
-        uint32 _hiGoRecycledGuid;
 
         QuestMap _questTemplates;
         std::vector<Quest*> _questTemplatesFast; // pussywizard
