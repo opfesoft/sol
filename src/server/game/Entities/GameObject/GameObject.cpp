@@ -63,6 +63,10 @@ GameObject::~GameObject()
 {
     delete m_AI;
     delete m_model;
+
+    if (!GetDBTableGUIDLow())
+        sObjectMgr->AddFreeGuid(HIGHGUID_GAMEOBJECT, GetGUIDLow());
+
     //if (m_uint32Values)                                      // field array can be not exist if GameOBject not loaded
     //    CleanupsBeforeDelete();
 }

@@ -191,6 +191,9 @@ Creature::~Creature()
     delete i_AI;
     i_AI = NULL;
 
+    if (!GetDBTableGUIDLow())
+        sObjectMgr->AddFreeGuid(HIGHGUID_UNIT, GetGUIDLow());
+
     //if (m_uint32Values)
     //    sLog->outError("Deconstruct Creature Entry = %u", GetEntry());
 }

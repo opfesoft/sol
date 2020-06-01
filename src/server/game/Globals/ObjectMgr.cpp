@@ -6275,7 +6275,14 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
         {
             ASSERT(_hiCreatureGuid < 0x00FFFFFE && "Creature guid overflow!");
             ACORE_GUARD(ACE_Thread_Mutex, _hiCreatureGuidMutex);
-            return _hiCreatureGuid++;
+            if (_hiCreatureFreeGuids.empty())
+                return _hiCreatureGuid++;
+            else
+            {
+                uint32 oldGuid = _hiCreatureFreeGuids.front();
+                _hiCreatureFreeGuids.pop();
+                return oldGuid;
+            }
         }
         case HIGHGUID_PET:
         {
@@ -6298,7 +6305,14 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
         {
             ASSERT(_hiGoGuid < 0x00FFFFFE && "Gameobject guid overflow!");
             ACORE_GUARD(ACE_Thread_Mutex, _hiGoGuidMutex);
-            return _hiGoGuid++;
+            if (_hiGoFreeGuids.empty())
+                return _hiGoGuid++;
+            else
+            {
+                uint32 oldGuid = _hiGoFreeGuids.front();
+                _hiGoFreeGuids.pop();
+                return oldGuid;
+            }
         }
         case HIGHGUID_CORPSE:
         {
@@ -6321,6 +6335,28 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
         default:
             ASSERT(false && "ObjectMgr::GenerateLowGuid - Unknown HIGHGUID type");
             return 0;
+    }
+}
+
+void ObjectMgr::AddFreeGuid(HighGuid guidhigh, uint32 guid)
+{
+    switch (guidhigh)
+    {
+        case HIGHGUID_UNIT:
+        {
+            ACORE_GUARD(ACE_Thread_Mutex, _hiCreatureGuidMutex);
+            _hiCreatureFreeGuids.push(guid);
+            return;
+        }
+        case HIGHGUID_GAMEOBJECT:
+        {
+            ACORE_GUARD(ACE_Thread_Mutex, _hiGoGuidMutex);
+            _hiGoFreeGuids.push(guid);
+            return;
+        }
+        default:
+            ASSERT(false && "ObjectMgr::AddFreeGuid - HIGHGUID type not handled");
+            return;
     }
 }
 
