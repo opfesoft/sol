@@ -6181,7 +6181,12 @@ void ObjectMgr::SetHighestGuids()
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM creature");
     if (result)
+    {
         _hiCreatureGuid = (*result)[0].GetUInt32()+1;
+        _hiCreatureGuidReserved = _hiCreatureGuid;
+        _hiCreatureGuidReservedMax = _hiCreatureGuidReserved + 9999;
+        _hiCreatureGuid = _hiCreatureGuidReservedMax + 1;
+    }
 
     result = CharacterDatabase.Query("SELECT MAX(guid) FROM item_instance");
     if (result)
@@ -6195,7 +6200,12 @@ void ObjectMgr::SetHighestGuids()
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM gameobject");
     if (result)
+    {
         _hiGoGuid = (*result)[0].GetUInt32()+1;
+        _hiGoGuidReserved = _hiGoGuid;
+        _hiGoGuidReservedMax = _hiGoGuidReserved + 9999;
+        _hiGoGuid = _hiGoGuidReservedMax + 1;
+    }
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM transports");
     if (result)
@@ -6336,6 +6346,31 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
             ASSERT(false && "ObjectMgr::GenerateLowGuid - Unknown HIGHGUID type");
             return 0;
     }
+}
+
+uint32 ObjectMgr::GenerateReservedLowGuid(HighGuid guidhigh)
+{
+    switch (guidhigh)
+    {
+        case HIGHGUID_UNIT:
+        {
+            ASSERT(_hiCreatureGuidReserved < 0x00FFFFFE && "Creature guid overflow!");
+            ACORE_GUARD(ACE_Thread_Mutex, _hiCreatureGuidMutex);
+            if (_hiCreatureGuidReserved < _hiCreatureGuidReservedMax)
+                return _hiCreatureGuidReserved++;
+        }
+        case HIGHGUID_GAMEOBJECT:
+        {
+            ASSERT(_hiGoGuidReserved < 0x00FFFFFE && "Gameobject guid overflow!");
+            ACORE_GUARD(ACE_Thread_Mutex, _hiGoGuidMutex);
+            if (_hiGoGuidReserved < _hiGoGuidReservedMax)
+                return _hiGoGuidReserved++;
+        }
+        default:
+            break; // handled by GenerateLowGuid
+    }
+
+    return GenerateLowGuid(guidhigh);
 }
 
 void ObjectMgr::AddFreeGuid(HighGuid guidhigh, uint32 guid)

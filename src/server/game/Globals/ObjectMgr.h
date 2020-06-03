@@ -1071,6 +1071,7 @@ class ObjectMgr
 
         void SetHighestGuids();
         uint32 GenerateLowGuid(HighGuid guidhigh);
+        uint32 GenerateReservedLowGuid(HighGuid guidhigh);
         void AddFreeGuid(HighGuid guidhigh, uint32 guid);
         uint32 GenerateAuctionID();
         uint64 GenerateEquipmentSetGuid();
@@ -1360,11 +1361,11 @@ class ObjectMgr
 
         // first free low guid for selected guid type
         uint32 _hiCharGuid; // pussywizard: accessed by a single thread
-        uint32 _hiCreatureGuid; std::queue<uint32> _hiCreatureFreeGuids; ACE_Thread_Mutex _hiCreatureGuidMutex;
+        uint32 _hiCreatureGuid, _hiCreatureGuidReserved, _hiCreatureGuidReservedMax; std::queue<uint32> _hiCreatureFreeGuids; ACE_Thread_Mutex _hiCreatureGuidMutex;
         uint32 _hiPetGuid; ACE_Thread_Mutex _hiPetGuidMutex;
         uint32 _hiVehicleGuid; ACE_Thread_Mutex _hiVehicleGuidMutex;
         uint32 _hiItemGuid; ACE_Thread_Mutex _hiItemGuidMutex;
-        uint32 _hiGoGuid; std::queue<uint32> _hiGoFreeGuids; ACE_Thread_Mutex _hiGoGuidMutex;
+        uint32 _hiGoGuid, _hiGoGuidReserved, _hiGoGuidReservedMax; std::queue<uint32> _hiGoFreeGuids; ACE_Thread_Mutex _hiGoGuidMutex;
         uint32 _hiDoGuid; ACE_Thread_Mutex _hiDoGuidMutex;
         uint32 _hiCorpseGuid; ACE_Thread_Mutex _hiCorpseGuidMutex;
         uint32 _hiMoTransGuid; ACE_Thread_Mutex _hiMoTransGuidMutex;
