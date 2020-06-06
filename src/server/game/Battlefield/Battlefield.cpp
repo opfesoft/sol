@@ -791,7 +791,14 @@ Creature* Battlefield::SpawnCreature(uint32 entry, float x, float y, float z, fl
         return 0;
     }
 
-    Creature* creature = new Creature(true);
+    CreatureTemplate const* cinfo = sObjectMgr->GetCreatureTemplate(entry);
+    if (!cinfo)
+    {
+        sLog->outErrorDb("Battlefield::SpawnCreature: entry %u does not exist.", entry);
+        return NULL;
+    }
+
+    Creature* creature = new Creature();
     if (!creature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, PHASEMASK_NORMAL, entry, 0, x, y, z, o))
     {
         sLog->outError("Battlefield::SpawnCreature: Can't create creature entry: %u", entry);
@@ -802,18 +809,20 @@ Creature* Battlefield::SpawnCreature(uint32 entry, float x, float y, float z, fl
     creature->setFaction(BattlefieldFactions[teamId]);
     creature->SetHomePosition(x, y, z, o);
 
-    CreatureTemplate const* cinfo = sObjectMgr->GetCreatureTemplate(entry);
-    if (!cinfo)
-    {
-        sLog->outErrorDb("Battlefield::SpawnCreature: entry %u does not exist.", entry);
-        return NULL;
-    }
     // force using DB speeds -- do we really need this?
     creature->SetSpeed(MOVE_WALK, cinfo->speed_walk);
     creature->SetSpeed(MOVE_RUN, cinfo->speed_run);
 
     // Set creature in world
-    map->AddToMap(creature);
+    if (!map->AddToMap(creature))
+    {
+        sLog->outError("Battlefield::SpawnCreature: Can't add creature with entry %u to map", entry);
+        delete creature;
+        return NULL;
+    }
+
+    creature->setActive(true);
+    creature->SetVisibilityDistanceOverride(true);
 
     return creature;
 }

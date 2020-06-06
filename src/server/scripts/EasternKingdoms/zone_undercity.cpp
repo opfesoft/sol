@@ -982,6 +982,15 @@ public:
             memset(allianceForcesGUID, 0, sizeof(allianceForcesGUID));
             memset(hordeForcesGUID, 0, sizeof(hordeForcesGUID));
             allianceGuardsGUID.clear();
+            bStepping = false;
+            step = 0;
+            phaseTimer = 0;
+            jainaGUID = 0;
+            putressGUID = 0;
+            blightWormGUID = 0;
+            khanokGUID = 0;
+            thrallGUID = 0;
+            sylvanasGUID = 0;
         }
 
         bool bStepping;
@@ -2328,6 +2337,16 @@ public:
         {
             memset(allianceForcesGUID, 0, sizeof(allianceForcesGUID));
             hordeGuardsGUID.clear();
+            bStepping = false;
+            EnableAttack = false;
+            step = 0;
+            phaseTimer = 0;
+            sylvanasfollowGUID = 0;
+            ValimathrasGUID = 0;
+            ValimathrasPortalGUID = 0;
+            WrynnGUID = 0;
+            JainaGUID = 0;
+            SaurfangGUID = 0;
         }
 
         bool bStepping;

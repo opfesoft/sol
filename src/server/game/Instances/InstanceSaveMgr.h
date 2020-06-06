@@ -77,6 +77,7 @@ class InstanceSave
 
         void AddPlayer(uint32 guidLow);
         bool RemovePlayer(uint32 guidLow, InstanceSaveManager* ism);
+        void ClearPlayerList();
 
         typedef std::list<uint32> PlayerListType;
     private:
@@ -173,6 +174,7 @@ class InstanceSaveManager
         uint32 PlayerGetDestinationInstanceId(Player* player, uint32 mapid, Difficulty difficulty);
         void CopyBinds(uint32 from, uint32 to, Player* toPlr = NULL);
         void UnbindAllFor(InstanceSave* save);
+        void Cleanup();
 
     protected:
         static uint16 ResetTimeDelay[];

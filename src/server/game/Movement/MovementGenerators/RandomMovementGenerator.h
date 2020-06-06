@@ -35,6 +35,8 @@ class RandomMovementGenerator : public MovementGeneratorMedium< T, RandomMovemen
                 _validPointsVector[RANDOM_POINTS_NUMBER].push_back(i);
         }
 
+        ~RandomMovementGenerator() { delete _pathGenerator; }
+
         void _setRandomLocation(T*);
         void DoInitialize(T*);
         void DoFinalize(T*);

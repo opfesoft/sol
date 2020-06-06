@@ -44,6 +44,23 @@ InstanceSaveManager::~InstanceSaveManager()
 }
 
 /*
+- used to cleanup allocated memory; called when the world thread is shutting down
+*/
+void InstanceSaveManager::Cleanup()
+{
+    lock_instLists = true;
+
+    for (auto& i : m_instanceSaveById)
+    {
+        i.second->ClearPlayerList();
+        delete i.second;
+    }
+
+    for (auto& i : playerBindStorage)
+        delete i.second;
+}
+
+/*
 - adding instance into manager
 */
 InstanceSave* InstanceSaveManager::AddInstanceSave(uint32 mapId, uint32 instanceId, Difficulty difficulty, bool startup /*=false*/)
@@ -199,6 +216,12 @@ bool InstanceSave::RemovePlayer(uint32 guidLow, InstanceSaveManager* ism)
 
     // ism passed as an argument to avoid calling via singleton (might result in a deadlock)
     return ism->DeleteInstanceSaveIfNeeded(this->GetInstanceId(), false);
+}
+
+void InstanceSave::ClearPlayerList()
+{
+    ACORE_GUARD(ACE_Thread_Mutex, _lock);
+    m_playerList.clear();
 }
 
 void InstanceSaveManager::LoadInstances()

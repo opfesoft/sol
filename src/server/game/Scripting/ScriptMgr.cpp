@@ -107,15 +107,19 @@ void ScriptMgr::Unload()
     SCR_CLEAR(TransportScript);
     SCR_CLEAR(AchievementCriteriaScript);
     SCR_CLEAR(PlayerScript);
-    SCR_CLEAR(AccountScript);
     SCR_CLEAR(GuildScript);
     SCR_CLEAR(GroupScript);
     SCR_CLEAR(GlobalScript);
-    SCR_CLEAR(ModuleScript);
+    SCR_CLEAR(UnitScript);
+    SCR_CLEAR(AllCreatureScript);
+    SCR_CLEAR(AllMapScript);
+    SCR_CLEAR(MovementHandlerScript);
     SCR_CLEAR(BGScript);
     SCR_CLEAR(SpellSC);
+    SCR_CLEAR(AccountScript);
     SCR_CLEAR(GameEventScript);
     SCR_CLEAR(MailScript);
+    SCR_CLEAR(ModuleScript);
 
     #undef SCR_CLEAR
 }

@@ -21,6 +21,7 @@
 #include "OutdoorPvPMgr.h"
 #include "AvgDiffTracker.h"
 #include "AsyncAuctionListing.h"
+#include "InstanceSaveMgr.h"
 
 /// Heartbeat for the World
 void WorldRunnable::run()
@@ -63,6 +64,7 @@ void WorldRunnable::run()
     sObjectAccessor->UnloadAll();             // unload 'i_player2corpse' storage and remove from world
     sScriptMgr->Unload();
     sOutdoorPvPMgr->Die();
+    sInstanceSaveMgr->Cleanup();              // cleanup allocated memory
 }
 
 void AuctionListingRunnable::run()

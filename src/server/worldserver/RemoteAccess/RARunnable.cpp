@@ -40,6 +40,7 @@ RARunnable::RARunnable()
 
 RARunnable::~RARunnable()
 {
+    m_Reactor->end_reactor_event_loop();
     delete m_Reactor;
 }
 

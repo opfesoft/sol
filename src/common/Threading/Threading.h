@@ -18,6 +18,7 @@ namespace acore
     class Runnable
     {
         public:
+            Runnable() { m_refs = 0; }
             virtual ~Runnable() {}
             virtual void run() = 0;
 
