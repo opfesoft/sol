@@ -4,10 +4,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/// \addtogroup Trinityd
-/// @{
-/// \file
-
 #ifndef _RASOCKET_H
 #define _RASOCKET_H
 

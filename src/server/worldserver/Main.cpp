@@ -4,10 +4,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/// \addtogroup Trinityd Trinity Daemon
-/// @{
-/// \file
-
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include <ace/Version.h>
@@ -37,7 +33,7 @@ void usage(const char* prog)
     printf("    -c config_file           use config_file as configuration file\n");
 }
 
-/// Launch the Trinity server
+/// Launch the AzerothCore server
 extern int main(int argc, char** argv)
 {
     ///- Command line parsing to get the configuration file name
@@ -86,7 +82,7 @@ extern int main(int argc, char** argv)
     // at sMaster return function exist with codes
     // 0 - normal shutdown
     // 1 - shutdown at error
-    // 2 - restart command used, this code can be used by restarter for restart Trinityd
+    // 2 - restart command used, this code can be used by restarter for restart AzerothCore
 
     return ret;
 }

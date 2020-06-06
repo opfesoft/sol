@@ -23,9 +23,9 @@
  */
 
 // should be easily accessible in gdb
-extern "C" { char const* TrinityAssertionFailedMessage = nullptr; }
+extern "C" { char const* AzerothCoreAssertionFailedMessage = nullptr; }
 #define Crash(message) \
-    TrinityAssertionFailedMessage = strdup(message); \
+    AzerothCoreAssertionFailedMessage = strdup(message); \
     *((volatile int*)nullptr) = 0; \
     exit(1);
 

@@ -4,10 +4,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/// \addtogroup Trinityd
-/// @{
-/// \file
-
 #ifndef __CLIRUNNABLE_H
 #define __CLIRUNNABLE_H
 

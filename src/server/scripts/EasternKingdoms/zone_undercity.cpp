@@ -994,12 +994,9 @@ public:
         }
 
         bool bStepping;
-        bool summoned;
 
         uint32 step;
         uint32 phaseTimer;
-
-        uint32 whirlwindTimer;
 
         uint64 jainaGUID;
         uint64 putressGUID;

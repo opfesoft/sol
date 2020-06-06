@@ -4,10 +4,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/// \addtogroup Trinityd
-/// @{
-/// \file
-
 #ifndef _ACORE_RARUNNABLE_H_
 #define _ACORE_RARUNNABLE_H_
 

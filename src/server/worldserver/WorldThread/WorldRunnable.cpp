@@ -4,10 +4,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/** \file
-    \ingroup Trinityd
-*/
-
 #include "Common.h"
 #include "ObjectAccessor.h"
 #include "World.h"

@@ -32,17 +32,6 @@ namespace acore
             std::atomic_long m_refs;
     };
 
-    enum Priority
-    {
-        Priority_Idle,
-        Priority_Lowest,
-        Priority_Low,
-        Priority_Normal,
-        Priority_High,
-        Priority_Highest,
-        Priority_Realtime,
-    };
-
     class Thread
     {
         public:

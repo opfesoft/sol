@@ -4,10 +4,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/// \addtogroup Trinityd
-/// @{
-/// \file
-
 #include "Common.h"
 #include "ObjectMgr.h"
 #include "World.h"

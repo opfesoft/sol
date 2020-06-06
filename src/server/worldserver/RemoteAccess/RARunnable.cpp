@@ -4,10 +4,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/** \file
-    \ingroup Trinityd
- */
-
 #include "Common.h"
 #include "Config.h"
 #include "Log.h"
@@ -57,11 +53,11 @@ void RARunnable::run()
 
     if (acceptor.open(listenAddress, m_Reactor) == -1)
     {
-        sLog->outError("Trinity RA can not bind to port %d on %s (possible error: port already in use)", raPort, stringIp.c_str());
+        sLog->outError("AzerothCore RA can not bind to port %d on %s (possible error: port already in use)", raPort, stringIp.c_str());
         return;
     }
 
-    sLog->outString("Starting Trinity RA on port %d on %s", raPort, stringIp.c_str());
+    sLog->outString("Starting AzerothCore RA on port %d on %s", raPort, stringIp.c_str());
 
     while (!World::IsStopped())
     {
@@ -71,6 +67,6 @@ void RARunnable::run()
     }
 
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-    sLog->outStaticDebug("Trinity RA thread exiting");
+    sLog->outStaticDebug("AzerothCore RA thread exiting");
 #endif
 }

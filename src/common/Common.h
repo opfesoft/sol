@@ -13,7 +13,7 @@
 #ifdef HAVE_CONFIG_H
 // Remove Some things that we will define
 // This is in case including another config.h
-// before trinity config.h
+// before AzerothCore config.h
 #ifdef PACKAGE
 #undef PACKAGE
 #endif //PACKAGE
