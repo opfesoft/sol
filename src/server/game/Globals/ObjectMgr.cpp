@@ -6192,11 +6192,19 @@ void ObjectMgr::SetHighestGuids()
     if (result)
         _hiItemGuid = (*result)[0].GetUInt32()+1;
 
-    // Cleanup other tables from not existed guids ( >= _hiItemGuid)
-    CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item >= '%u'", _hiItemGuid);      // One-time query
-    CharacterDatabase.PExecute("DELETE FROM mail_items WHERE item_guid >= '%u'", _hiItemGuid);          // One-time query
-    CharacterDatabase.PExecute("DELETE FROM auctionhouse WHERE itemguid >= '%u'", _hiItemGuid);         // One-time query
-    CharacterDatabase.PExecute("DELETE FROM guild_bank_item WHERE item_guid >= '%u'", _hiItemGuid);     // One-time query
+    result = CharacterDatabase.Query("SELECT prev_guid, guid - 1 FROM (SELECT guid, IFNULL((LAG(guid, 1) OVER (ORDER BY guid)), 0) AS prev_guid FROM item_instance) guid_free_ranges WHERE guid - prev_guid > 1 ORDER BY guid ASC");
+    if (result)
+        do
+        {
+            Field* fields = result->Fetch();
+            _hiItemGuidFreeRanges.push(std::make_pair(fields[0].GetUInt32(), fields[1].GetUInt32()));
+        } while (result->NextRow());
+
+    // Remove references to non-existent item GUIDs
+    CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item NOT IN (SELECT guid FROM item_instance)");      // One-time query
+    CharacterDatabase.PExecute("DELETE FROM mail_items WHERE item_guid NOT IN (SELECT guid FROM item_instance)");          // One-time query
+    CharacterDatabase.PExecute("DELETE FROM auctionhouse WHERE itemguid NOT IN (SELECT guid FROM item_instance)");         // One-time query
+    CharacterDatabase.PExecute("DELETE FROM guild_bank_item WHERE item_guid NOT IN (SELECT guid FROM item_instance)");     // One-time query
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM gameobject");
     if (result)
@@ -6279,7 +6287,18 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
         {
             ASSERT(_hiItemGuid < 0xFFFFFFFE && "Item guid overflow!");
             ACORE_GUARD(ACE_Thread_Mutex, _hiItemGuidMutex);
-            return _hiItemGuid++;
+            if (!_hiItemGuidFreeRanges.empty())
+            {
+                std::pair<uint32, uint32>& range = _hiItemGuidFreeRanges.front();
+                uint32 nextFreeGuid = range.first + 1;
+                if (nextFreeGuid == range.second)
+                    _hiItemGuidFreeRanges.pop();
+                else
+                    range.first = nextFreeGuid;
+                return nextFreeGuid;
+            }
+            else
+                return _hiItemGuid++;
         }
         case HIGHGUID_UNIT:
         {
