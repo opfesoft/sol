@@ -102,6 +102,7 @@ public:
                     DoSpawnBandits(ID_AMBUSH_3);
                     break;
                 case 45:
+                    Talk(SAY_LAKO_END);
                     if (Player* player = GetPlayerForEscort())
                         player->GroupEventHappens(QUEST_FREE_AT_LAST, me);
                     break;
