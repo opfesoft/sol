@@ -14,7 +14,6 @@ EndScriptData */
 /* ContentData
 npc_lakota_windsong
 npc_swiftmountain
-npc_plucky
 npc_enraged_panther
 go_panther_cage
 EndContentData */
@@ -195,125 +194,6 @@ public:
     };
 };
 
-/*#####
-# npc_plucky
-######*/
-
-#define GOSSIP_P    "Please tell me the Phrase.."
-
-enum Plucky
-{
-    FACTION_FRIENDLY        = 35,
-    QUEST_SCOOP             = 1950,
-    SPELL_PLUCKY_HUMAN      = 9192,
-    SPELL_PLUCKY_CHICKEN    = 9220
-};
-
-class npc_plucky : public CreatureScript
-{
-public:
-    npc_plucky() : CreatureScript("npc_plucky") { }
-
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
-    {
-        ClearGossipMenuFor(player);
-        switch (action)
-        {
-            case GOSSIP_ACTION_INFO_DEF+1:
-                CloseGossipMenuFor(player);
-                player->CompleteQuest(QUEST_SCOOP);
-            break;
-        }
-        return true;
-    }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (player->GetQuestStatus(QUEST_SCOOP) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_P, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-
-        SendGossipMenuFor(player, 738, creature->GetGUID());
-
-        return true;
-    }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_pluckyAI(creature);
-    }
-
-    struct npc_pluckyAI : public ScriptedAI
-    {
-        npc_pluckyAI(Creature* creature) : ScriptedAI(creature) { NormFaction = creature->getFaction(); }
-
-        uint32 NormFaction;
-        uint32 ResetTimer;
-
-        void Reset() override
-        {
-            ResetTimer = 120000;
-
-            if (me->getFaction() != NormFaction)
-                me->setFaction(NormFaction);
-
-            if (me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-
-            DoCast(me, SPELL_PLUCKY_CHICKEN, false);
-        }
-
-        void ReceiveEmote(Player* player, uint32 TextEmote) override
-        {
-            if (player->GetQuestStatus(QUEST_SCOOP) == QUEST_STATUS_INCOMPLETE)
-            {
-                if (TextEmote == TEXT_EMOTE_BECKON)
-                {
-                    me->setFaction(FACTION_FRIENDLY);
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                    DoCast(me, SPELL_PLUCKY_HUMAN, false);
-                }
-            }
-
-            if (TextEmote == TEXT_EMOTE_CHICKEN)
-            {
-                if (me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
-                    return;
-                else
-                {
-                    me->setFaction(FACTION_FRIENDLY);
-                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                    DoCast(me, SPELL_PLUCKY_HUMAN, false);
-                    me->HandleEmoteCommand(EMOTE_ONESHOT_WAVE);
-                }
-            }
-        }
-
-        void UpdateAI(uint32 Diff) override
-        {
-            if (me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
-            {
-                if (ResetTimer <= Diff)
-                {
-                    if (!me->GetVictim())
-                        EnterEvadeMode();
-                    else
-                        me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-
-                    return;
-                }
-                else
-                    ResetTimer -= Diff;
-            }
-
-            if (!UpdateVictim())
-                return;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-
-};
-
 enum PantherCage
 {
     ENRAGED_PANTHER = 10992
@@ -376,7 +256,6 @@ void AddSC_thousand_needles()
 {
     new npc_lakota_windsong();
     new npc_paoka_swiftmountain();
-    new npc_plucky();
     new npc_enraged_panther();
     new go_panther_cage();
 }
