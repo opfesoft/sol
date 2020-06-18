@@ -83,7 +83,7 @@ bool WorldSessionFilter::Process(WorldPacket* packet)
 }
 
 /// WorldSession constructor
-WorldSession::WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale, uint32 recruiter, bool isARecruiter, bool skipQueue, uint32 TotalTime) :
+WorldSession::WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale, uint32 recruiter, bool isARecruiter, bool skipQueue) :
     m_muteTime(mute_time),
     m_timeOutTime(0),
     _lastAuctionListItemsMSTime(0),
@@ -96,7 +96,6 @@ WorldSession::WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, uint8
     _skipQueue(skipQueue),
     _accountId(id),
     m_expansion(expansion),
-    m_total_time(TotalTime),
     _logoutTime(0),
     m_inQueue(false),
     m_playerLoading(false),
@@ -134,8 +133,6 @@ WorldSession::WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, uint8
 /// WorldSession destructor
 WorldSession::~WorldSession()
 {
-    LoginDatabase.PExecute("UPDATE account SET totaltime = %u WHERE id = %u", GetTotalTime(), GetAccountId());
-
     ///- unload player if not unloaded
     if (_player)
         LogoutPlayer(true);
