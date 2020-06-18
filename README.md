@@ -40,5 +40,5 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - Only specific AC commits will be taken over (sometimes modified); a list of skipped AC commits is available here: [Skipped-AC-Commits](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Skipped-AC-Commits.md)
 
 #### License:
-- The new AzerothCore source components are released under the [GNU AGPL v3](LICENSE-AGPL3), same for project "Sol"
+- The new AzerothCore source components are released under the [GNU AGPL v3](LICENSE), same for project "Sol"
 - The old sources based on MaNGOS/TrinityCore are released under the [GNU GPL v2](LICENSE-GPL2)
