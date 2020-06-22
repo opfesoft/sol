@@ -133,7 +133,8 @@ namespace VMAP
         {
             // calculate world height (zDist in model coords):
             // assume WMO not tilted (wouldn't make much sense anyway)
-            liqHeight = zDist * iScale + iPos.z;
+            // (as a side note: if there are WMOs which are tilted too much we'd have to use raytracing which is much more resource-intensive)
+            liqHeight = (zDist - pModel.z) * iScale + p.z;
             return true;
         }
         return false;

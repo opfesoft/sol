@@ -266,7 +266,7 @@ void ReadLiquidTypeTableDBC()
 
 // Map file format data
 static char const* MAP_MAGIC         = "MAPS";
-static char const* MAP_VERSION_MAGIC = "v1.8";
+static char const* MAP_VERSION_MAGIC = "v3.0";
 static char const* MAP_AREA_MAGIC    = "AREA";
 static char const* MAP_HEIGHT_MAGIC  = "MHGT";
 static char const* MAP_LIQUID_MAGIC  = "MLIQ";
@@ -672,6 +672,8 @@ bool ConvertADT(std::string const& inputPath, std::string const& outputPath, int
         }
     }
 
+    bool noLiquidHeight = false;
+
     // Get liquid map for grid (in WOTLK used MH2O chunk)
     adt_MH2O * h2o = adt.a_grid->getMH2O();
     if (h2o)
@@ -683,6 +685,9 @@ bool ConvertADT(std::string const& inputPath, std::string const& outputPath, int
                 adt_liquid_header *h = h2o->getLiquidData(i,j);
                 if (!h)
                     continue;
+
+                if (h->formatFlags & MAP_LIQUID_NO_HEIGHT)
+                    noLiquidHeight = true;
 
                 int count = 0;
                 uint64 show = h2o->getLiquidShowMap(h);
@@ -789,7 +794,11 @@ bool ConvertADT(std::string const& inputPath, std::string const& outputPath, int
                     if (minHeight > h) minHeight = h;
                 }
                 else
+                {
                     liquid_height[y][x] = CONF_use_minHeight;
+                    if (maxHeight < CONF_use_minHeight) maxHeight = CONF_use_minHeight;
+                    if (minHeight > CONF_use_minHeight) minHeight = CONF_use_minHeight;
+                }
             }
         }
         map.liquidMapOffset = map.heightMapOffset + map.heightMapSize;
@@ -803,11 +812,8 @@ bool ConvertADT(std::string const& inputPath, std::string const& outputPath, int
         liquidHeader.height  = maxY - minY + 1 + 1;
         liquidHeader.liquidLevel = minHeight;
 
-        if (maxHeight == minHeight)
-            liquidHeader.flags |= MAP_LIQUID_NO_HEIGHT;
-
-        // Not need store if flat surface
-        if (CONF_allow_float_to_int && (maxHeight - minHeight) < CONF_flat_liquid_delta_limit)
+        if (noLiquidHeight || (maxHeight == minHeight) ||
+            (CONF_allow_float_to_int && (maxHeight - minHeight) < CONF_flat_liquid_delta_limit)) // No need to store if flat surface
             liquidHeader.flags |= MAP_LIQUID_NO_HEIGHT;
 
         if (!fullType)
