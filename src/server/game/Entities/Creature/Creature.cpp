@@ -771,7 +771,15 @@ void Creature::DoFleeToGetAssistance()
             //TODO: use 31365
             SetControlled(true, UNIT_STATE_FLEEING);
         else
-            GetMotionMaster()->MoveSeekAssistance(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ());
+        {
+            // check if the target creature is actually reachable
+            PathGenerator pathFinder(this);
+            bool result = pathFinder.CalculatePath(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), false);
+            if (result && !(pathFinder.GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE)))
+                GetMotionMaster()->MoveSeekAssistance(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ());
+            else
+                SetControlled(true, UNIT_STATE_FLEEING);
+        }
     }
 }
 
