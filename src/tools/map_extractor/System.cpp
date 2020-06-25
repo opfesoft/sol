@@ -672,8 +672,6 @@ bool ConvertADT(std::string const& inputPath, std::string const& outputPath, int
         }
     }
 
-    bool noLiquidHeight = false;
-
     // Get liquid map for grid (in WOTLK used MH2O chunk)
     adt_MH2O * h2o = adt.a_grid->getMH2O();
     if (h2o)
@@ -685,9 +683,6 @@ bool ConvertADT(std::string const& inputPath, std::string const& outputPath, int
                 adt_liquid_header *h = h2o->getLiquidData(i,j);
                 if (!h)
                     continue;
-
-                if (h->formatFlags & MAP_LIQUID_NO_HEIGHT)
-                    noLiquidHeight = true;
 
                 int count = 0;
                 uint64 show = h2o->getLiquidShowMap(h);
@@ -812,7 +807,7 @@ bool ConvertADT(std::string const& inputPath, std::string const& outputPath, int
         liquidHeader.height  = maxY - minY + 1 + 1;
         liquidHeader.liquidLevel = minHeight;
 
-        if (noLiquidHeight || (maxHeight == minHeight) ||
+        if ((maxHeight == minHeight) ||
             (CONF_allow_float_to_int && (maxHeight - minHeight) < CONF_flat_liquid_delta_limit)) // No need to store if flat surface
             liquidHeader.flags |= MAP_LIQUID_NO_HEIGHT;
 
