@@ -53,7 +53,7 @@ class BattlegroundQueue
         BattlegroundQueue();
         ~BattlegroundQueue();
 
-        void BattlegroundQueueUpdate(BattlegroundBracketId bracket_id, uint8 actionMask, bool isRated, uint32 arenaRatedTeamId);
+        void BattlegroundQueueUpdate(BattlegroundBracketId bracket_id, bool isRated, uint32 arenaRatedTeamId);
         void UpdateEvents(uint32 diff);
 
         void FillPlayersToBG(const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id);
