@@ -4,7 +4,8 @@
 
 <br>
 
-This is a custom version of AzerothCore (AC). The actual AC project is located here: https://www.azerothcore.org/
+This is a custom version of AzerothCore (AC). The actual AC project is located here: https://www.azerothcore.org/<br>
+The [AC master branch](https://github.com/azerothcore/azerothcore-wotlk) on GitHub has been cloned into branch "[ac\_master](https://gitlab.com/opfesoft/sol/-/tree/ac_master)" and will be kept up to date in order to be able to reference commits from within GitLab.
 
 You are free to use Sol, but there won't be any support for it. This is solely a learning / fun project.
 
