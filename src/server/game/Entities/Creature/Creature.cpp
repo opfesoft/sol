@@ -776,7 +776,7 @@ void Creature::DoFleeToGetAssistance()
             PathGenerator pathFinder(this);
             bool result = pathFinder.CalculatePath(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), false);
             if (result && !(pathFinder.GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE)))
-                GetMotionMaster()->MoveSeekAssistance(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ());
+                GetMotionMaster()->MoveSeekAssistance(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), 0.0f, &pathFinder.GetPath());
             else
                 SetControlled(true, UNIT_STATE_FLEEING);
         }

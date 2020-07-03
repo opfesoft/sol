@@ -46,8 +46,8 @@ class PointMovementGenerator : public MovementGeneratorMedium< T, PointMovementG
 class AssistanceMovementGenerator : public PointMovementGenerator<Creature>
 {
     public:
-        AssistanceMovementGenerator(float _x, float _y, float _z) :
-            PointMovementGenerator<Creature>(0, _x, _y, _z) {}
+        AssistanceMovementGenerator(float _x, float _y, float _z, float _speed, const Movement::PointsArray* _path) :
+            PointMovementGenerator<Creature>(0, _x, _y, _z, _speed, _path) {}
 
         MovementGeneratorType GetMovementGeneratorType() { return ASSISTANCE_MOTION_TYPE; }
         void Finalize(Unit*);
