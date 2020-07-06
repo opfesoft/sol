@@ -94,8 +94,6 @@
 #define I32FMT "%08X"
 #define I64FMT "%016llX"
 
-using namespace std;
-
 inline float finiteAlways(float f) { return isfinite(f) ? f : 0.0f; }
 
 inline bool myisfinite(float f) { return isfinite(f) && !isnan(f); }
