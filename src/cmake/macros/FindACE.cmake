@@ -52,13 +52,13 @@ if ( ACE_LIBRARY )
       set(ACE_VERSION "${_ACE_VERSION}")
     else (_ACE_VERSION)
       file(STRINGS "${ACE_INCLUDE_DIR}/ace/Version.h" ACE_VERSION_STR REGEX "^#define ACE_VERSION \".*\"")
-      string(REGEX REPLACE "^.*ACE_VERSION \"([0-9].[0-9].[0-9a-z]).*$"
+      string(REGEX REPLACE "^.*ACE_VERSION \"([0-9]+.[0-9]+.[0-9]+).*$"
          "\\1" ACE_VERSION "${ACE_VERSION_STR}")
     endif (_ACE_VERSION)
 
     include(EnsureVersion)
     ENSURE_VERSION( "${ACE_EXPECTED_VERSION}" "${ACE_VERSION}" ACE_FOUND)
-    message( STATUS "Minimal ACE version: ${ACE_EXPECTED_VERSION}")
+    message( STATUS "Minimum ACE version: ${ACE_EXPECTED_VERSION}")
     if (NOT ACE_FOUND)
       message(FATAL_ERROR "AzerothCore needs ACE version ${ACE_EXPECTED_VERSION} but found version ${ACE_VERSION}")
     endif()
