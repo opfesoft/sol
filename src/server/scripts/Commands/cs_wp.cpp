@@ -121,7 +121,7 @@ public:
             stmt->setUInt32(0, pathid);
             stmt->setUInt32(1, point);
 
-            WorldDatabase.Execute(stmt);
+            WorldDatabase.DirectExecute(stmt);
             handler->PSendSysMessage("%s%s%u%s|r", "|cff00ff00", "Waypoints greater than |r|cff00ffff", point, "|r|cff00ff00 shifted up.");
         }
 
