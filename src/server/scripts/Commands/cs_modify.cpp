@@ -465,42 +465,51 @@ public:
             return false;
         }
 
-        Player* target = handler->getSelectedPlayerOrSelf();
-        if (AccountMgr::IsGMAccount(handler->GetSession()->GetSecurity()))
-            target = handler->GetSession()->GetPlayer();
+        Unit* target = handler->getSelectedUnit();
         if (!target)
         {
-            handler->SendSysMessage(LANG_NO_CHAR_SELECTED);
+            handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        // check online security
-        if (handler->HasLowerSecurity(target, 0))
-            return false;
+        Player* player = target->ToPlayer();
+        std::string targetNameLink;
 
-        std::string targetNameLink = handler->GetNameLink(target);
-
-        if (target->IsInFlight())
+        if (player)
         {
-            handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
-            handler->SetSentErrorMessage(true);
-            return false;
+            // check online security
+            if (handler->HasLowerSecurity(player, 0))
+                return false;
+            else
+                targetNameLink = handler->GetNameLink(player);
+        }
+        else
+            targetNameLink = target->GetNameForLocaleIdx(handler->GetSession()->GetSessionDbLocaleIndex());
+
+        if (player)
+        {
+            if (player->IsInFlight())
+            {
+                handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            if (handler->needReportToTarget(player))
+                (ChatHandler(player->GetSession())).PSendSysMessage(LANG_YOURS_ASPEED_CHANGED, handler->GetNameLink().c_str(), ASpeed);
         }
 
         handler->PSendSysMessage(LANG_YOU_CHANGE_ASPEED, ASpeed, targetNameLink.c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target->GetSession())).PSendSysMessage(LANG_YOURS_ASPEED_CHANGED, handler->GetNameLink().c_str(), ASpeed);
 
-        target->SetSpeed(MOVE_WALK,    ASpeed, true);
-        target->SetSpeed(MOVE_RUN,     ASpeed, true);
-        target->SetSpeed(MOVE_SWIM,    ASpeed, true);
-        //target->SetSpeed(MOVE_TURN,    ASpeed, true);
-        target->SetSpeed(MOVE_FLIGHT,     ASpeed, true);
+        target->SetSpeed(MOVE_WALK,   ASpeed, true);
+        target->SetSpeed(MOVE_RUN,    ASpeed, true);
+        target->SetSpeed(MOVE_SWIM,   ASpeed, true);
+        target->SetSpeed(MOVE_FLIGHT, ASpeed, true);
         return true;
     }
 
-    //Edit Player Speed
+    //Edit Player Walk/Run Speed
     static bool HandleModifySpeedCommand(ChatHandler* handler, const char* args)
     {
         if (!*args)
@@ -515,33 +524,44 @@ public:
             return false;
         }
 
-        Player* target = handler->getSelectedPlayerOrSelf();
-        if (AccountMgr::IsGMAccount(handler->GetSession()->GetSecurity()))
-            target = handler->GetSession()->GetPlayer();
+        Unit* target = handler->getSelectedUnit();
         if (!target)
         {
-            handler->SendSysMessage(LANG_NO_CHAR_SELECTED);
+            handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        // check online security
-        if (handler->HasLowerSecurity(target, 0))
-            return false;
+        Player* player = target->ToPlayer();
+        std::string targetNameLink;
 
-        std::string targetNameLink = handler->GetNameLink(target);
-
-        if (target->IsInFlight())
+        if (player)
         {
-            handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
-            handler->SetSentErrorMessage(true);
-            return false;
+            // check online security
+            if (handler->HasLowerSecurity(player, 0))
+                return false;
+            else
+                targetNameLink = handler->GetNameLink(player);
+        }
+        else
+            targetNameLink = target->GetNameForLocaleIdx(handler->GetSession()->GetSessionDbLocaleIndex());
+
+        if (player)
+        {
+            if (player->IsInFlight())
+            {
+                handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            if (player && handler->needReportToTarget(player))
+                (ChatHandler(player->GetSession())).PSendSysMessage(LANG_YOURS_SPEED_CHANGED, handler->GetNameLink().c_str(), Speed);
         }
 
         handler->PSendSysMessage(LANG_YOU_CHANGE_SPEED, Speed, targetNameLink.c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target->GetSession())).PSendSysMessage(LANG_YOURS_SPEED_CHANGED, handler->GetNameLink().c_str(), Speed);
 
+        target->SetSpeed(MOVE_WALK, Speed, true);
         target->SetSpeed(MOVE_RUN, Speed, true);
 
         return true;
@@ -562,32 +582,42 @@ public:
             return false;
         }
 
-        Player* target = handler->getSelectedPlayerOrSelf();
-        if (AccountMgr::IsGMAccount(handler->GetSession()->GetSecurity()))
-            target = handler->GetSession()->GetPlayer();
+        Unit* target = handler->getSelectedUnit();
         if (!target)
         {
-            handler->SendSysMessage(LANG_NO_CHAR_SELECTED);
+            handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        // check online security
-        if (handler->HasLowerSecurity(target, 0))
-            return false;
+        Player* player = target->ToPlayer();
+        std::string targetNameLink;
 
-        std::string targetNameLink = handler->GetNameLink(target);
-
-        if (target->IsInFlight())
+        if (player)
         {
-            handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
-            handler->SetSentErrorMessage(true);
-            return false;
+            // check online security
+            if (handler->HasLowerSecurity(player, 0))
+                return false;
+            else
+                targetNameLink = handler->GetNameLink(player);
+        }
+        else
+            targetNameLink = target->GetNameForLocaleIdx(handler->GetSession()->GetSessionDbLocaleIndex());
+
+        if (player)
+        {
+            if (player->IsInFlight())
+            {
+                handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            if (player && handler->needReportToTarget(player))
+                (ChatHandler(player->GetSession())).PSendSysMessage(LANG_YOURS_SWIM_SPEED_CHANGED, handler->GetNameLink().c_str(), Swim);
         }
 
         handler->PSendSysMessage(LANG_YOU_CHANGE_SWIM_SPEED, Swim, targetNameLink.c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target->GetSession())).PSendSysMessage(LANG_YOURS_SWIM_SPEED_CHANGED, handler->GetNameLink().c_str(), Swim);
 
         target->SetSpeed(MOVE_SWIM, Swim, true);
 
@@ -656,23 +686,32 @@ public:
             return false;
         }
 
-        Player* target = handler->getSelectedPlayerOrSelf();
-        if (AccountMgr::IsGMAccount(handler->GetSession()->GetSecurity()))
-            target = handler->GetSession()->GetPlayer();
+        Unit* target = handler->getSelectedUnit();
         if (!target)
         {
-            handler->SendSysMessage(LANG_NO_CHAR_SELECTED);
+            handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        // check online security
-        if (handler->HasLowerSecurity(target, 0))
-            return false;
+        Player* player = target->ToPlayer();
+        std::string targetNameLink;
 
-        handler->PSendSysMessage(LANG_YOU_CHANGE_FLY_SPEED, FSpeed, handler->GetNameLink(target).c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target->GetSession())).PSendSysMessage(LANG_YOURS_FLY_SPEED_CHANGED, handler->GetNameLink().c_str(), FSpeed);
+        if (player)
+        {
+            // check online security
+            if (handler->HasLowerSecurity(player, 0))
+                return false;
+            else
+                targetNameLink = handler->GetNameLink(player);
+        }
+        else
+            targetNameLink = target->GetNameForLocaleIdx(handler->GetSession()->GetSessionDbLocaleIndex());
+
+        if (player && handler->needReportToTarget(player))
+            (ChatHandler(player->GetSession())).PSendSysMessage(LANG_YOURS_FLY_SPEED_CHANGED, handler->GetNameLink().c_str(), FSpeed);
+
+        handler->PSendSysMessage(LANG_YOU_CHANGE_FLY_SPEED, FSpeed, targetNameLink.c_str());
 
         target->SetSpeed(MOVE_FLIGHT, FSpeed, true);
 
