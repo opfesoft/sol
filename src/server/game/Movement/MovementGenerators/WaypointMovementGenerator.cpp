@@ -317,7 +317,8 @@ void FlightPathMovementGenerator::DoFinalize(Player* player)
         // this prevent cheating with landing  point at lags
         // when client side flight end early in comparison server side
         player->StopMoving();
-        player->SetFallInformation(time(NULL), player->GetPositionZ());
+        player->SetFallInformation(time(NULL), i_path[GetCurrentNode()]->z);
+        player->TeleportTo(i_path[GetCurrentNode()]->mapid, i_path[GetCurrentNode()]->x, i_path[GetCurrentNode()]->y, i_path[GetCurrentNode()]->z, player->GetOrientation());
     }
 
     player->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_TAXI_BENCHMARK);
