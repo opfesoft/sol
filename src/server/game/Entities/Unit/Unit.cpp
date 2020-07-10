@@ -18298,6 +18298,10 @@ void Unit::_ExitVehicle(Position const* exitPosition)
     if (!m_vehicle)
         return;
 
+    uint32 seatId = 0;
+    if (const VehicleSeatEntry* seat = m_vehicle->GetSeatForPassenger(this))
+        seatId = seat->m_ID;
+
     m_vehicle->RemovePassenger(this);
 
     Player* player = ToPlayer();
@@ -18329,6 +18333,14 @@ void Unit::_ExitVehicle(Position const* exitPosition)
     {
         float x = pos.GetPositionX() + 2.0f * cos(pos.GetOrientation() - M_PI / 2.0f);
         float y = pos.GetPositionY() + 2.0f * sin(pos.GetOrientation() - M_PI / 2.0f);
+        float z = GetMap()->GetHeight(GetPhaseMask(), x, y, pos.GetPositionZ())+0.1f;
+        if (z > INVALID_HEIGHT)
+            pos.Relocate(x, y, z);
+    }
+    else if (seatId == 2764 || seatId == 2765 || seatId == 2767 || seatId == 2768) // Traveler's Tundra Mammoth NPCs
+    {
+        float x = GetPositionX() + ((seatId == 2768 || seatId == 2765) ? 2.0f : -2.0f) * cos(GetOrientation() - M_PI / 2.0f);
+        float y = GetPositionY() + ((seatId == 2768 || seatId == 2765) ? 2.0f : -2.0f) * sin(GetOrientation() - M_PI / 2.0f);
         float z = GetMap()->GetHeight(GetPhaseMask(), x, y, pos.GetPositionZ())+0.1f;
         if (z > INVALID_HEIGHT)
             pos.Relocate(x, y, z);
