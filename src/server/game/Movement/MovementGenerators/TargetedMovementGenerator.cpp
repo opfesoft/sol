@@ -314,6 +314,9 @@ bool TargetedMovementGeneratorMedium<T,D>::DoUpdate(T* owner, uint32 time_diff)
     }
 
     Unit* pOwner = owner->GetCharmerOrOwner();
+    if (!pOwner) // charmer or owner not found; check if the creature has follow motion type
+        if (static_cast<D*>(this)->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+            pOwner = i_target.getTarget();
 
     if (pOwner && pOwner->GetTypeId() == TYPEID_PLAYER)
     {

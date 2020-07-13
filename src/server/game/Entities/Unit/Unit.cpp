@@ -52,6 +52,7 @@
 #include "ArenaSpectator.h"
 #include "DynamicVisibility.h"
 #include "AccountMgr.h"
+#include "TargetedMovementGenerator.h"
 
 #include <math.h>
 
@@ -13080,8 +13081,22 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
         {
             if (GetTypeId() == TYPEID_UNIT)
             {
+                bool npcFollowingPlayer = false;
+                float offset, angle;
                 Unit* pOwner = GetCharmerOrOwner();
-                if (pOwner && !IsInCombat() && !IsVehicle() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && (IsPet() || IsGuardian() || GetGUID() == pOwner->GetCritterGUID() || GetCharmerGUID() == pOwner->GetGUID()))
+                if (!pOwner) // charmer or owner not found; check if the creature is following a player
+                    if (MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(MOTION_SLOT_ACTIVE))
+                        if (movementGenerator && movementGenerator->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+                            if (Unit* target = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetTarget())
+                                if (target && target->GetTypeId() == TYPEID_PLAYER)
+                                {
+                                    pOwner = target;
+                                    npcFollowingPlayer = true;
+                                    offset = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetOffset();
+                                    angle = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetAngle();
+                                }
+
+                if (pOwner && !IsInCombat() && !IsVehicle() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && (npcFollowingPlayer || IsPet() || IsGuardian() || GetGUID() == pOwner->GetCritterGUID() || GetCharmerGUID() == pOwner->GetGUID()))
                 {
                     if (pOwner->GetTypeId() != TYPEID_PLAYER)
                     {
@@ -13092,7 +13107,17 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                     {
                         // special treatment for player pets in order to avoid stuttering
                         float ownerSpeed = pOwner->GetSpeedRate(mtype);
-                        float distOwner = GetDistance(pOwner);
+                        float distOwner;
+
+                        if (npcFollowingPlayer)
+                        {
+                            float x, y, z;
+                            pOwner->GetClosePoint(x, y, z, 0.0f, offset, angle, this, true);
+                            distOwner = GetDistance(x, y, z);
+                        }
+                        else
+                            distOwner = GetDistance(pOwner);
+
                         float minDist = 2.5f;
 
                         if (ToCreature()->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
@@ -13112,10 +13137,12 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                         if (distOwner > maxDist && !m_petCatchUp)
                             m_petCatchUp = true;
 
-                        if (m_petCatchUp)
-                            speed = ownerSpeed * 1.05f;
+                        float speedFactor = m_petCatchUp ? 1.05f : 0.95f;
+
+                        if (npcFollowingPlayer && (ownerSpeed * speedFactor > speed * ToCreature()->GetCreatureTemplate()->speed_run))
+                            speed *= ToCreature()->GetCreatureTemplate()->speed_run;
                         else
-                            speed = ownerSpeed * 0.95f;
+                            speed = ownerSpeed * speedFactor;
                     }
                 }
                 else

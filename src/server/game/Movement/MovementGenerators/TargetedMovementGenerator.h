@@ -39,6 +39,8 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
     public:
         bool DoUpdate(T*, uint32);
         Unit* GetTarget() const { return i_target.getTarget(); }
+        float GetOffset() const { return i_offset; }
+        float GetAngle() const { return i_angle; }
 
         void unitSpeedChanged() { i_recalculateTravel = true; }
         bool IsReachable() const { return (i_path) ? (i_path->GetPathType() & PATHFIND_NORMAL) : true; }
