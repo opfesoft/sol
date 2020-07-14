@@ -38,6 +38,7 @@ SmartAI::SmartAI(Creature* c) : CreatureAI(c)
     // spawn in run mode
     // Xinef: spawn in run mode and set mRun to run... this overrides SetWalk EVERYWHERE, RETARDS
     mRun = true;
+    mRunOverridden = false;
 
     mCanAutoAttack = true;
     mCanCombatMove = true;
@@ -738,6 +739,7 @@ void SmartAI::JustRespawned()
     mFollowArrivedEntry = 0;
     mFollowCreditType = 0;
     mFollowArrivedAlive = true;
+    mRunOverridden = false;
 }
 
 int SmartAI::Permissible(const Creature* creature)
@@ -915,10 +917,11 @@ uint64 SmartAI::GetGUID(int32 /*id*/) const
     return 0;
 }
 
-void SmartAI::SetRun(bool run)
+void SmartAI::SetRun(bool run, bool runOverride)
 {
     me->SetWalk(!run);
     mRun = run;
+    mRunOverridden = runOverride;
 }
 
 void SmartAI::SetFly(bool fly)

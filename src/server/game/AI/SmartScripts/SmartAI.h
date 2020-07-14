@@ -157,7 +157,9 @@ class SmartAI : public CreatureAI
         void MovepointReached(uint32 id);
 
         // Makes the creature run/walk
-        void SetRun(bool run = true);
+        void SetRun(bool run = true, bool runOverride = false);
+        bool IsRun() { return mRun; }
+        bool IsRunOverridden() { return mRunOverridden; }
 
         void SetFly(bool fly = true);
 
@@ -213,6 +215,7 @@ class SmartAI : public CreatureAI
         uint32 GetWPCount() { return mWayPoints ? mWayPoints->size() : 0; }
         bool mCanRepeatPath;
         bool mRun;
+        bool mRunOverridden;
         bool mCanAutoAttack;
         bool mCanCombatMove;
         bool mForcedPaused;

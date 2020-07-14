@@ -1707,7 +1707,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (IsCreature(*itr))
             {
                 if (IsSmart((*itr)->ToCreature()))
-                    CAST_AI(SmartAI, (*itr)->ToCreature()->AI())->SetRun(e.action.setRun.run);
+                    CAST_AI(SmartAI, (*itr)->ToCreature()->AI())->SetRun(e.action.setRun.run, true);
                 else
                     (*itr)->ToCreature()->SetWalk(e.action.setRun.run ? false : true); // Xinef: reversed
             }
