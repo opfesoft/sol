@@ -15478,6 +15478,9 @@ void Unit::StopMoving()
     if (movespline->Finalized())
         return;
 
+    // Update position now since Stop does not start a new movement that can be updated later
+    if (movespline->HasStarted())
+        UpdateSplinePosition();
     Movement::MoveSplineInit init(this);
     init.Stop();
 }
@@ -16777,6 +16780,12 @@ void Unit::SetStunned(bool apply)
         RemoveUnitMovementFlag(MOVEMENTFLAG_MASK_MOVING);
         AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
 
+        // Creature specific
+        if (GetTypeId() != TYPEID_PLAYER)
+            StopMoving();
+        else
+            SetStandState(UNIT_STAND_STATE_STAND);
+
         if (GetTypeId() == TYPEID_PLAYER)
         {
             WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
@@ -16790,15 +16799,6 @@ void Unit::SetStunned(bool apply)
             data.append(GetPackGUID());
             SendMessageToSet(&data, true);
         }
-
-        // xinef: inform client about our current orientation
-        SendMovementFlagUpdate();
-
-        // Creature specific
-        if (GetTypeId() != TYPEID_PLAYER)
-            StopMoving();
-        else
-            SetStandState(UNIT_STAND_STATE_STAND);
 
         CastStop();
     }
@@ -16856,6 +16856,10 @@ void Unit::SetRooted(bool apply)
         RemoveUnitMovementFlag(MOVEMENTFLAG_MASK_MOVING);
         AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
 
+        // Creature specific
+        if (GetTypeId() != TYPEID_PLAYER)
+            StopMoving();
+
         if (GetTypeId() == TYPEID_PLAYER)
         {
             WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
@@ -16868,7 +16872,6 @@ void Unit::SetRooted(bool apply)
             WorldPacket data(SMSG_SPLINE_MOVE_ROOT, 8);
             data.append(GetPackGUID());
             SendMessageToSet(&data, true);
-            StopMoving();
         }
     }
     else
