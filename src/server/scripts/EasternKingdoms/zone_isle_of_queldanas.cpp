@@ -87,6 +87,7 @@ enum ThalorienTexts
     SAY_OUTRO_1 = 7,
     SAY_OUTRO_2 = 8,
     SAY_OUTRO_3 = 9,
+    SAY_SUMMON_0 = 0
 };
 
 #define SUNWELL_DEFENDER_NUM 10
@@ -374,7 +375,7 @@ public:
                             if (c->GetEntry() == NPC_MORLEN_COLDGRIP && summons.size() != 1)
                                 continue;
                             else
-                                c->AI()->Talk(SAY_MORLEN_4);
+                                c->AI()->Talk(SAY_SUMMON_0);
                             c->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
                             c->AI()->AttackStart(me);
                         }
