@@ -209,6 +209,11 @@ public:
 ## npc_creditmarker_visist_with_ancestors
 ######*/
 
+enum VisitWithAncestors
+{
+    NPC_VISION_OF_THE_FORGOTTEN = 18904
+};
+
 class npc_creditmarker_visit_with_ancestors : public CreatureScript
 {
 public:
@@ -241,7 +246,10 @@ public:
                 {
                     // 18840: Sunspring, 18841: Laughing, 18842: Garadar, 18843: Bleeding
                     if (!player->GetReqKillOrCastCurrentCount(10085, creditMarkerId))
+                    {
                         player->KilledMonsterCredit(creditMarkerId, me->GetGUID());
+                        player->SummonCreature(NPC_VISION_OF_THE_FORGOTTEN, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 10000);
+                    }
                 }
             }
         }
