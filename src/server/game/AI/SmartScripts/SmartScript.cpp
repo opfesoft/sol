@@ -1544,8 +1544,13 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 o += e.target.o;
                 if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
                 {
-                    if (e.action.summonCreature.attackInvoker == 2) // pussywizard: proper attackInvoker implementation, but not spoiling tc shitness
-                        summon->AI()->AttackStart(unit);
+                    if (e.action.summonCreature.attackInvoker == 2)
+                    {
+                        if (unit)
+                            summon->AI()->AttackStart(unit);
+                        else if (Unit* tempLastInvoker = GetLastInvoker())
+                            summon->AI()->AttackStart(tempLastInvoker);
+                    }
                     else if (e.action.summonCreature.attackInvoker)
                         summon->AI()->AttackStart((*itr)->ToUnit());
                     else if (me && e.action.summonCreature.attackScriptOwner)
