@@ -74,26 +74,38 @@ public:
 
     struct boss_jedoga_shadowseekerAI : public ScriptedAI
     {
-        boss_jedoga_shadowseekerAI(Creature* c) : ScriptedAI(c), summons(me)
+        boss_jedoga_shadowseekerAI(Creature* c) : ScriptedAI(c), summonsInitiate(me), summonsController(me)
         {
             pInstance = c->GetInstanceScript();
         }
 
         InstanceScript* pInstance;
         EventMap events;
-        SummonList summons;
+        SummonList summonsInitiate, summonsController;
 
         uint8 initiates;
         uint32 introCheck;
         bool isFlying;
         bool startFly;
 
-        void JustSummoned(Creature *cr) { summons.Summon(cr); }
-        void MoveInLineOfSight(Unit *) { }
+        void JustSummoned(Creature *cr) override
+        {
+            if (cr->GetEntry() == NPC_INITIATE)
+                summonsInitiate.Summon(cr);
+        }
+
+        void SummonedCreatureDespawn(Creature* cr) override
+        {
+            if (cr->GetEntry() == NPC_INITIATE)
+                summonsInitiate.Despawn(cr);
+        }
+
+        void MoveInLineOfSight(Unit *) override { }
 
         void SpawnInitiate(bool start)
         {
-            summons.DespawnAll();
+            summonsInitiate.DespawnAll();
+            summonsController.DespawnAll();
             if (start)
             {
                 me->SummonCreature(NPC_INITIATE, 362.458f, -714.166f, -16.0964f, 0.977384f);
@@ -135,18 +147,17 @@ public:
                 me->SummonCreature(NPC_INITIATE, 366.861f, -721.702f, -16.1797f, 5.65409f);
                 me->SummonCreature(NPC_INITIATE, 362.343f, -718.019f, -16.1797f, 5.51665f);
                 me->SummonCreature(NPC_INITIATE, 358.906f, -714.357f, -16.1797f, 5.35957f);
-
             }
         }
 
         void ActivateInitiate()
         {
-            if (!summons.size())
+            if (!summonsInitiate.size())
                 return;
 
-            uint8 rnd = urand(0, summons.size()-1);
+            uint8 rnd = urand(0, summonsInitiate.size()-1);
             uint8 loop = 0;
-            for (std::list<uint64>::iterator i = summons.begin(); i != summons.end();)
+            for (std::list<uint64>::iterator i = summonsInitiate.begin(); i != summonsInitiate.end();)
             {
                 Creature *summon = ObjectAccessor::GetCreature(*me, *i);
                 if (summon && summon->GetEntry() == NPC_INITIATE && loop >= rnd)
@@ -170,14 +181,15 @@ public:
             events.RescheduleEvent(EVENT_JEDOGA_MOVE_UP, urand(20000, 25000));
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
             if (param == ACTION_INITIATE_DIED)
             {
                 // all killed
                 if (initiates++ > 13)
                 {
-                    summons.DespawnAll();
+                    summonsInitiate.DespawnAll();
+                    summonsController.DespawnAll();
                     MoveDown();
                     initiates = 0;
                 }
@@ -199,7 +211,7 @@ public:
             }
         }
 
-        void Reset()
+        void Reset() override
         {
             if (pInstance)
             {
@@ -219,7 +231,7 @@ public:
             me->CastSpell(me, SPELL_LIGHTNING_BOLTS, true);
         }
 
-        void EnterCombat(Unit*  /*who*/)
+        void EnterCombat(Unit*  /*who*/) override
         {
             if (pInstance)
                 pInstance->SetData(DATA_JEDOGA_SHADOWSEEKER_EVENT, IN_PROGRESS);
@@ -227,7 +239,7 @@ public:
             Talk(TEXT_AGGRO);
         }
 
-        void KilledUnit(Unit* Victim)
+        void KilledUnit(Unit* Victim) override
         {
             if (!Victim || Victim->GetTypeId() != TYPEID_PLAYER)
                 return;
@@ -235,13 +247,14 @@ public:
             Talk(TEXT_SLAY);
         }
 
-        void JustDied(Unit* /*Killer*/)
+        void JustDied(Unit* /*Killer*/) override
         {
             Talk(TEXT_DEATH);
             if (pInstance)
                 pInstance->SetData(DATA_JEDOGA_SHADOWSEEKER_EVENT, DONE);
 
-            summons.DespawnAll();
+            summonsInitiate.DespawnAll();
+            summonsController.DespawnAll();
         }
 
         void MoveDown()
@@ -263,7 +276,7 @@ public:
             me->SetDisableGravity(true);
         }
         
-        void MovementInform(uint32 Type, uint32 PointId)
+        void MovementInform(uint32 Type, uint32 PointId) override
         {
             if (Type != POINT_MOTION_TYPE) 
                 return;
@@ -277,7 +290,7 @@ public:
                 isFlying = false;
                 me->SetInCombatWithZone();
                 me->SetDisableGravity(false);
-                if (!summons.HasEntry(NPC_INITIATE))
+                if (!summonsInitiate.size())
                     SpawnInitiate(false);
 
                 if (UpdateVictim())
@@ -294,7 +307,7 @@ public:
                 startFly = true;
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             // Start text
             if (introCheck)
@@ -362,13 +375,13 @@ public:
                     case EVENT_JEDOGA_MOVE_UP:
                     {
                         events.PopEvent();
-                        if (!summons.HasEntry(NPC_INITIATE))
+                        if (!summonsInitiate.size())
                             break;
 
                         if (Creature *cr = me->SummonCreature(NPC_JEDOGA_CONTROLLER, 373.48f, -706.00f, -16.18f))
                         {
                             cr->CastSpell(cr, SPELL_SACRIFICE_VISUAL, true);
-                            summons.Summon(cr);
+                            summonsController.Summon(cr);
                         }
 
                         Talk(TEXT_SACRIFICE_1);
@@ -381,7 +394,7 @@ public:
                     case EVENT_JEDOGA_MOVE_DOWN:
                     {
                         Talk(TEXT_SACRIFICE_2);
-                        summons.DespawnEntry(NPC_JEDOGA_CONTROLLER);
+                        summonsController.DespawnEntry(NPC_JEDOGA_CONTROLLER);
                         MoveDown();
                         events.PopEvent();
                         break;
@@ -414,19 +427,19 @@ public:
         InstanceScript* pInstance;
         int32 Timer;
 
-        void AttackStart(Unit* who)
+        void AttackStart(Unit* who) override
         {
             if (!Timer)
                 ScriptedAI::AttackStart(who);
         }
 
-        void MoveInLineOfSight(Unit *who) 
+        void MoveInLineOfSight(Unit *who) override
         {
             if (!Timer)
                 ScriptedAI::MoveInLineOfSight(who);
         }
 
-        void Reset()
+        void Reset() override
         {
             Timer = 0;
 
@@ -449,7 +462,7 @@ public:
             }
         }
 
-        void JustDied(Unit* Killer)
+        void JustDied(Unit* Killer) override
         {
             if (!pInstance || Killer == me)
                 return;
@@ -462,9 +475,11 @@ public:
                 else
                     boss->AI()->DoAction(ACTION_INITIATE_DIED);
             }
+
+            me->DespawnOrUnsummon(5000);
         }
 
-        void DoAction(int32 param)
+        void DoAction(int32 param) override
         {
             if (param == ACTION_ACTIVATE)
             {
@@ -473,7 +488,7 @@ public:
             }
         }
 
-        void MovementInform(uint32 Type, uint32 PointId)
+        void MovementInform(uint32 Type, uint32 PointId) override
         {
             if (Type == POINT_MOTION_TYPE && PointId == POINT_RITUAL)
             {
@@ -485,7 +500,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             if (Timer)
             {
