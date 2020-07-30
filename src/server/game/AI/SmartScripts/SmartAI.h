@@ -205,6 +205,7 @@ class SmartAI : public CreatureAI
         void UpdatePath(const uint32 diff);
         SmartScript mScript;
         WPPath* mWayPoints;
+        WPPauses* mWayPointPauses;
         uint32 mEscortState;
         uint32 mCurrentWPID;
         bool mWPReached;
@@ -213,6 +214,7 @@ class SmartAI : public CreatureAI
         WayPoint* mLastWP;
         uint32 mEscortNPCFlags;
         uint32 GetWPCount() { return mWayPoints ? mWayPoints->size() : 0; }
+        bool HasWayPointPause(uint32 pointId);
         bool mCanRepeatPath;
         bool mRun;
         bool mRunOverridden;

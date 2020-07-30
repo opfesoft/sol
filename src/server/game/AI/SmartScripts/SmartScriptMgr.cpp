@@ -92,6 +92,13 @@ SmartWaypointMgr::~SmartWaypointMgr()
     }
 }
 
+SmartAIMgr::~SmartAIMgr()
+{
+    for (auto& itr : waypoint_pauses)
+        delete itr.second;
+    waypoint_pauses.clear();
+}
+
 void SmartAIMgr::LoadSmartAIFromDB()
 {
     uint32 oldMSTime = getMSTime();
@@ -261,6 +268,42 @@ void SmartAIMgr::LoadSmartAIFromDB()
     while (result->NextRow());
 
     sLog->outString(">> Loaded %u SmartAI scripts in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+
+    oldMSTime = getMSTime();
+    count = 0;
+
+    for (auto& itr : waypoint_pauses)
+        delete itr.second;
+    waypoint_pauses.clear();
+    stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_SMART_SCRIPTS_WP_PAUSES);
+    stmt->setUInt8(0, SMART_EVENT_WAYPOINT_REACHED);
+    stmt->setUInt8(1, SMART_ACTION_WP_PAUSE);
+    stmt->setUInt8(2, SMART_EVENT_WAYPOINT_REACHED);
+    stmt->setUInt8(3, SMART_ACTION_WP_PAUSE);
+    stmt->setUInt8(4, SMART_EVENT_WAYPOINT_REACHED);
+    stmt->setUInt8(5, SMART_ACTION_CALL_TIMED_ACTIONLIST);
+    stmt->setUInt8(6, SMART_ACTION_WP_PAUSE);
+    stmt->setUInt8(7, SMART_EVENT_WAYPOINT_REACHED);
+    stmt->setUInt8(8, SMART_ACTION_CALL_RANDOM_TIMED_ACTIONLIST);
+    stmt->setUInt8(9, SMART_ACTION_WP_PAUSE);
+    stmt->setUInt8(10, SMART_EVENT_WAYPOINT_REACHED);
+    stmt->setUInt8(11, SMART_ACTION_CALL_RANDOM_RANGE_TIMED_ACTIONLIST);
+    stmt->setUInt8(12, SMART_ACTION_WP_PAUSE);
+
+    result = WorldDatabase.Query(stmt);
+    if (result)
+        do
+        {
+            Field* fields = result->Fetch();
+            int32 entry = fields[0].GetInt32();
+            uint32 pointId = fields[1].GetUInt32();
+            if (waypoint_pauses.find(entry) == waypoint_pauses.end())
+                waypoint_pauses[entry] = new WPPauses();
+            waypoint_pauses[entry]->insert(pointId);
+            count++;
+        } while (result->NextRow());
+
+    sLog->outString(">> Loaded %u SmartAI WP pause points in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }
 

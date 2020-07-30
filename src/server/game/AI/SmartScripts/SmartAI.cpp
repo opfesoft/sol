@@ -124,6 +124,8 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
         {
             WayPoint* wp = (*itr).second;
             points->push_back(G3D::Vector3(wp->x, wp->y, wp->z));
+            if (HasWayPointPause(wpCounter-1))
+                break;
         }
     }
     else
@@ -142,6 +144,8 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
             {
                 WayPoint* wp = (*itr).second;
                 pVector.push_back(G3D::Vector3(wp->x, wp->y, wp->z));
+                if (HasWayPointPause(wpCounter-1))
+                    break;
             }
 
             if (pVector.size() > 2) // more than source + dest
@@ -168,6 +172,24 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
             break;
         }
     }
+}
+
+bool SmartAI::HasWayPointPause(uint32 pointId)
+{
+    if (mWayPointPauses)
+    {
+        auto it = mWayPointPauses->find(pointId);
+        if (it != mWayPointPauses->end())
+            return true;
+        else
+        {
+            it = mWayPointPauses->find(0);
+            if (it != mWayPointPauses->end())
+                return true;
+        }
+    }
+
+    return false;
 }
 
 void SmartAI::StartPath(bool run, uint32 path, bool repeat, Unit* invoker)
@@ -220,6 +242,14 @@ bool SmartAI::LoadPath(uint32 entry)
     {
         GetScript()->SetPathId(0);
         return false;
+    }
+
+    int32 entryOrGuid = -((int32)me->GetDBTableGUIDLow());
+    mWayPointPauses = sSmartScriptMgr->GetPauses(entryOrGuid);
+    if (!mWayPointPauses)
+    {
+        entryOrGuid = (int32)me->GetEntry();
+        mWayPointPauses = sSmartScriptMgr->GetPauses(entryOrGuid);
     }
 
     GetScript()->SetPathId(entry);
