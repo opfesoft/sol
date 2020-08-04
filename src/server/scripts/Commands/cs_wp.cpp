@@ -570,7 +570,7 @@ public:
         // Check
         // Remember: "show" must also be the name of a column!
         if ((show != "delay") && (show != "action") && (show != "action_chance")
-            && (show != "move_type") && (show != "del") && (show != "move")
+            && (show != "move_type") && (show != "del") && (show != "move") && (show != "orientation")
             )
         {
             return false;
@@ -698,9 +698,22 @@ public:
         }
         else
         {
-            // show_str check for present in list of correct values, no sql injection possible
             std::string text2 = text;
-            WorldDatabase.EscapeString(text2);
+
+            if (show == "orientation")
+            {
+                float o;
+                if (text2 == "player")
+                    o = handler->GetSession()->GetPlayer()->GetOrientation();
+                else
+                    o = float(atof(text));
+
+                text2 = std::to_string(o);
+            }
+            else
+                text2 = std::to_string(uint32(atoi(text)));
+
+            // values are checked for correctness, no sql injection possible
             WorldDatabase.PExecute("UPDATE waypoint_data SET %s='%s' WHERE id='%u' AND point='%u'", show_str, text2.c_str(), pathid, point); // Query can't be a prepared statement
         }
 
@@ -848,12 +861,14 @@ public:
                 uint32 flag             = fields[3].GetUInt32();
                 uint32 ev_id            = fields[4].GetUInt32();
                 uint32 ev_chance        = fields[5].GetInt16();
+                float orientation       = fields[6].GetFloat();
 
                 handler->PSendSysMessage("|cff00ff00Show info: for current point: |r|cff00ffff%u|r|cff00ff00, Path ID: |r|cff00ffff%u|r", point, pathid);
-                handler->PSendSysMessage("|cff00ff00Show info: delay: |r|cff00ffff%u|r", delay);
+                handler->PSendSysMessage("|cff00ff00Show info: Delay: |r|cff00ffff%u|r", delay);
                 handler->PSendSysMessage("|cff00ff00Show info: Move flag: |r|cff00ffff%u|r", flag);
                 handler->PSendSysMessage("|cff00ff00Show info: Waypoint event: |r|cff00ffff%u|r", ev_id);
                 handler->PSendSysMessage("|cff00ff00Show info: Event chance: |r|cff00ffff%i|r", ev_chance);
+                handler->PSendSysMessage("|cff00ff00Show info: Orientation: |r|cff00ffff%f|r", orientation);
             }
             while (result->NextRow());
 
