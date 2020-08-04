@@ -1,0 +1,38 @@
+-- DB update 2020_08_04_00 -> 2020_08_04_01
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2020_08_04_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2020_08_04_00 2020_08_04_01 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1596534588422509566'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1596534588422509566');
+
+UPDATE `creature` SET `position_x` = 3476.57, `position_y` = 348.229, `position_z` = 54.3918 WHERE `guid` = 110542;
+
+DELETE FROM `waypoint_data` WHERE `id` = 1105420;
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_type`, `action`, `action_chance`, `wpguid`)
+VALUES
+(1105420,1,3476.57,348.229,54.3918,0,2000,0,0,100,0),
+(1105420,2,3463.25,331.659,54.1436,0,0,0,0,100,0),
+(1105420,3,3476.57,348.229,54.3918,0,2000,0,0,100,0),
+(1105420,4,3494.9,364.971,54.0447,0,0,0,0,100,0),
+(1105420,5,3499.04,368.367,52.2274,0,0,0,0,100,0),
+(1105420,6,3494.9,364.971,54.0447,0,0,0,0,100,0);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
