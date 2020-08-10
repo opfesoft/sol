@@ -100,20 +100,20 @@ extern int main(int argc, char** argv)
     sLog->outString("%s (authserver)", GitRevision::GetFullVersion());
     sLog->outString("<Ctrl-C> to stop.\n");
 
-    sLog->outString("   █████╗ ███████╗███████╗██████╗  ██████╗ ████████╗██╗  ██╗");           
-    sLog->outString("  ██╔══██╗╚══███╔╝██╔════╝██╔══██╗██╔═══██╗╚══██╔══╝██║  ██║");           
-    sLog->outString("  ███████║  ███╔╝ █████╗  ██████╔╝██║   ██║   ██║   ███████║");           
-    sLog->outString("  ██╔══██║ ███╔╝  ██╔══╝  ██╔══██╗██║   ██║   ██║   ██╔══██║");           
-    sLog->outString("  ██║  ██║███████╗███████╗██║  ██║╚██████╔╝   ██║   ██║  ██║");           
-    sLog->outString("  ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝");
-    sLog->outString("                                ██████╗ ██████╗ ██████╗ ███████╗");
-    sLog->outString("                                ██╔════╝██╔═══██╗██╔══██╗██╔═══╝");
-    sLog->outString("                                ██║     ██║   ██║██████╔╝█████╗");  
-    sLog->outString("                                ██║     ██║   ██║██╔══██╗██╔══╝");  
-    sLog->outString("                                ╚██████╗╚██████╔╝██║  ██║███████╗");
-    sLog->outString("                                 ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝\n");
+    sLog->outString("  ███████╗ ███████╗  ███████╗       ██╗████████╗ ███████╗████████╗");
+    sLog->outString("  ██╔═══██╗██╔═══██╗██╔════██╗      ██║██╔═════╝██╔═════╝╚══██╔══╝");
+    sLog->outString("  ███████╔╝███████╔╝██║    ██║      ██║██████╗  ██║         ██║");
+    sLog->outString("  ██╔════╝ ██╔═══██╗██║    ██║██╗   ██║██╔═══╝  ██║         ██║");
+    sLog->outString("  ██║      ██║   ██║╚███████╔╝╚██████╔╝████████╗╚███████╗   ██║");
+    sLog->outString("  ╚═╝      ╚═╝   ╚═╝ ╚══════╝  ╚═════╝ ╚═══════╝ ╚══════╝   ╚═╝");
+    sLog->outString("               ██╗██╗ ███████╗ ██████╗ ██╗      ██╗██╗");
+    sLog->outString("               ██║██║██╔═════╝██╔═══██╗██║      ██║██║");
+    sLog->outString("               ╚═╝╚═╝╚██████╗ ██║   ██║██║      ╚═╝╚═╝");
+    sLog->outString("                      ╚════██╗██║   ██║██║");
+    sLog->outString("                     ███████╔╝╚██████╔╝████████╗");
+    sLog->outString("                     ╚══════╝  ╚═════╝ ╚═══════╝\n");
 
-    sLog->outString("  	  AzerothCore 3.3.5a  -  www.azerothcore.org (Project \"Sol\")\n");
+    sLog->outString("Project \"Sol\" - based on AzerothCore 3.3.5a 2020-02-28 - www.azerothcore.org\n");
 
     sLog->outString("Using configuration file %s.", configFile);
 

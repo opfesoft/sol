@@ -102,20 +102,20 @@ int Master::Run()
     sLog->outString("%s (worldserver-daemon)", GitRevision::GetFullVersion());
     sLog->outString("<Ctrl-C> to stop.\n");
 
-    sLog->outString("   █████╗ ███████╗███████╗██████╗  ██████╗ ████████╗██╗  ██╗");
-    sLog->outString("  ██╔══██╗╚══███╔╝██╔════╝██╔══██╗██╔═══██╗╚══██╔══╝██║  ██║");
-    sLog->outString("  ███████║  ███╔╝ █████╗  ██████╔╝██║   ██║   ██║   ███████║");
-    sLog->outString("  ██╔══██║ ███╔╝  ██╔══╝  ██╔══██╗██║   ██║   ██║   ██╔══██║");
-    sLog->outString("  ██║  ██║███████╗███████╗██║  ██║╚██████╔╝   ██║   ██║  ██║");
-    sLog->outString("  ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝");
-    sLog->outString("                                ██████╗ ██████╗ ██████╗ ███████╗");
-    sLog->outString("                                ██╔════╝██╔═══██╗██╔══██╗██╔═══╝");
-    sLog->outString("                                ██║     ██║   ██║██████╔╝█████╗");
-    sLog->outString("                                ██║     ██║   ██║██╔══██╗██╔══╝");
-    sLog->outString("                                ╚██████╗╚██████╔╝██║  ██║███████╗");
-    sLog->outString("                                 ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝\n");
+    sLog->outString("  ███████╗ ███████╗  ███████╗       ██╗████████╗ ███████╗████████╗");
+    sLog->outString("  ██╔═══██╗██╔═══██╗██╔════██╗      ██║██╔═════╝██╔═════╝╚══██╔══╝");
+    sLog->outString("  ███████╔╝███████╔╝██║    ██║      ██║██████╗  ██║         ██║");
+    sLog->outString("  ██╔════╝ ██╔═══██╗██║    ██║██╗   ██║██╔═══╝  ██║         ██║");
+    sLog->outString("  ██║      ██║   ██║╚███████╔╝╚██████╔╝████████╗╚███████╗   ██║");
+    sLog->outString("  ╚═╝      ╚═╝   ╚═╝ ╚══════╝  ╚═════╝ ╚═══════╝ ╚══════╝   ╚═╝");
+    sLog->outString("               ██╗██╗ ███████╗ ██████╗ ██╗      ██╗██╗");
+    sLog->outString("               ██║██║██╔═════╝██╔═══██╗██║      ██║██║");
+    sLog->outString("               ╚═╝╚═╝╚██████╗ ██║   ██║██║      ╚═╝╚═╝");
+    sLog->outString("                      ╚════██╗██║   ██║██║");
+    sLog->outString("                     ███████╔╝╚██████╔╝████████╗");
+    sLog->outString("                     ╚══════╝  ╚═════╝ ╚═══════╝\n");
 
-    sLog->outString("  	  AzerothCore 3.3.5a  -  www.azerothcore.org (Project \"Sol\")\n");
+    sLog->outString("Project \"Sol\" - based on AzerothCore 3.3.5a 2020-02-28 - www.azerothcore.org\n");
 
     /// worldserver PID file creation
     std::string pidFile = sConfigMgr->GetStringDefault("PidFile", "");
