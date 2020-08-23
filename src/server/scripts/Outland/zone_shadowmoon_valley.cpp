@@ -427,8 +427,14 @@ enum EnshlavedNetherwingDrake
 
     // Creatures
     NPC_DRAGONMAW_SUBJUGATOR        = 21718,
-    NPC_ESCAPE_DUMMY                = 22317
+    NPC_ESCAPE_DUMMY                = 22317,
 
+    // Quests
+    QUEST_FORCE_OF_NELTHARAKU       = 10854,
+
+    // Events
+    EVENT_CAST_FORCE_OF_NELTHARAKU  = 1,
+    EVENT_FLY                       = 2
 };
 
 class npc_enslaved_netherwing_drake : public CreatureScript
@@ -451,20 +457,28 @@ public:
         }
 
         uint64 PlayerGUID;
-        uint32 FlyTimer;
+        EventMap events;
         bool Tapped;
 
-        void Reset()
+        void JustRespawned() override
         {
-            if (!Tapped)
-                me->setFaction(FACTION_DEFAULT);
-
-            FlyTimer = 10000;
-            me->SetDisableGravity(false);
-            me->SetVisible(true);
+            me->SetReactState(REACT_AGGRESSIVE);
+            PlayerGUID = 0;
+            Tapped = false;
+            Reset();
         }
 
-        void SpellHit(Unit* caster, const SpellInfo* spell)
+        void Reset() override
+        {
+            if (!Tapped)
+            {
+                me->setFaction(FACTION_DEFAULT);
+                me->SetDisableGravity(false);
+                events.Reset();
+            }
+        }
+
+        void SpellHit(Unit* caster, const SpellInfo* spell) override
         {
             if (!caster)
                 return;
@@ -475,7 +489,7 @@ public:
                 PlayerGUID = caster->GetGUID();
 
                 me->setFaction(FACTION_FRIENDLY);
-                DoCast(caster, SPELL_FORCE_OF_NELTHARAKU, true);
+                events.ScheduleEvent(EVENT_CAST_FORCE_OF_NELTHARAKU, 2000);
 
                 Unit* Dragonmaw = me->FindNearestCreature(NPC_DRAGONMAW_SUBJUGATOR, 50);
                 if (Dragonmaw)
@@ -490,65 +504,38 @@ public:
             }
         }
 
-        void MovementInform(uint32 type, uint32 id)
-        {
-            if (type != POINT_MOTION_TYPE)
-                return;
-
-            if (id == 1)
-            {
-                if (PlayerGUID)
-                {
-                    Unit* player = ObjectAccessor::GetUnit(*me, PlayerGUID);
-                    if (player)
-                        DoCast(player, SPELL_FORCE_OF_NELTHARAKU, true);
-
-                    PlayerGUID = 0;
-                }
-                me->SetVisible(false);
-                me->SetDisableGravity(false);
-                Unit::DealDamage(me, me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-                me->RemoveCorpse();
-            }
-        }
-
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim())
             {
-                if (Tapped)
+                events.Update(diff);
+
+                switch (events.ExecuteEvent())
                 {
-                    if (FlyTimer <= diff)
+                    case EVENT_CAST_FORCE_OF_NELTHARAKU:
                     {
-                        Tapped = false;
-                        if (PlayerGUID)
+                        Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID);
+                        if (player && player->GetQuestStatus(QUEST_FORCE_OF_NELTHARAKU) == QUEST_STATUS_INCOMPLETE)
+                            DoCast(player, SPELL_FORCE_OF_NELTHARAKU, true);
+                        events.ScheduleEvent(EVENT_FLY, 2000);
+                        me->SetReactState(REACT_PASSIVE);
+                        me->DespawnOrUnsummon(6000);
+                        break;
+                    }
+                    case EVENT_FLY:
+                    {
+                        Position pos;
+                        if (Unit* EscapeDummy = me->FindNearestCreature(NPC_ESCAPE_DUMMY, 30))
+                            EscapeDummy->GetPosition(&pos);
+                        else
                         {
-                            Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID);
-                            if (player && player->GetQuestStatus(10854) == QUEST_STATUS_INCOMPLETE)
-                            {
-                                DoCast(player, SPELL_FORCE_OF_NELTHARAKU, true);
-                                /*
-                                float x, y, z;
-                                me->GetPosition(x, y, z);
-
-                                float dx, dy, dz;
-                                me->GetRandomPoint(x, y, z, 20, dx, dy, dz);
-                                dz += 20; // so it's in the air, not ground*/
-
-                                Position pos;
-                                if (Unit* EscapeDummy = me->FindNearestCreature(NPC_ESCAPE_DUMMY, 30))
-                                    EscapeDummy->GetPosition(&pos);
-                                else
-                                {
-                                    me->GetRandomNearPosition(pos, 20);
-                                    pos.m_positionZ += 25;
-                                }
-
-                                me->SetDisableGravity(true);
-                                me->GetMotionMaster()->MovePoint(1, pos);
-                            }
+                            me->GetRandomNearPosition(pos, 20);
+                            pos.m_positionZ += 25;
                         }
-                    } else FlyTimer -= diff;
+                        me->SetDisableGravity(true);
+                        me->GetMotionMaster()->MovePoint(1, pos);
+                        break;
+                    }
                 }
                 return;
             }
