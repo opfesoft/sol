@@ -1801,7 +1801,6 @@ void GameEventMgr::SetHolidayEventTime(GameEventData& event)
             return;
         }
     }
-    sLog->outString("No suitable start date found for holiday %u.", event.holiday_id);
 }
 
 bool IsHolidayActive(HolidayIds id)
