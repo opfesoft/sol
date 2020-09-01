@@ -48,6 +48,7 @@ class Quest;
 class ScriptMgr;
 class Spell;
 class SpellScript;
+class SpellInfo;
 class SpellCastTargets;
 class Transport;
 class StaticTransport;
@@ -413,6 +414,9 @@ class ItemScript : public ScriptObject
 
         // Called when a player uses the item.
         virtual bool OnUse(Player* /*player*/, Item* /*item*/, SpellCastTargets const& /*targets*/) { return false; }
+
+        // Called before casting a combat spell from this item (chance on hit spells of item template, can be used to prevent cast if returning false)
+        virtual bool OnCastItemCombatSpell(Player* /*player*/, Unit* /*victim*/, SpellInfo const* /*spellInfo*/, Item* /*item*/) { return true; }
 
         // Called when the item expires (is destroyed).
         virtual bool OnExpire(Player* /*player*/, ItemTemplate const* /*proto*/) { return false; }
@@ -1269,6 +1273,7 @@ class ScriptMgr
         bool OnQuestAccept(Player* player, Item* item, Quest const* quest);
         bool OnItemUse(Player* player, Item* item, SpellCastTargets const& targets);
         bool OnItemExpire(Player* player, ItemTemplate const* proto);
+        bool OnCastItemCombatSpell(Player* player, Unit* victim, SpellInfo const* spellInfo, Item* item);
         void OnGossipSelect(Player* player, Item* item, uint32 sender, uint32 action);
         void OnGossipSelectCode(Player* player, Item* item, uint32 sender, uint32 action, const char* code);
 
