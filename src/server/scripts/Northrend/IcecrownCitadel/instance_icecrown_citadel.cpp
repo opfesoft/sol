@@ -369,6 +369,10 @@ class instance_icecrown_citadel : public InstanceMapScript
                             creature->UpdateEntry(NPC_MURADIN_BRONZEBEARD_DUMMY, creature->GetCreatureData());
                             creature->LoadEquipment();
                         }
+                        else if (TeamIdInInstance == TEAM_HORDE)
+                        {
+                            creature->SetDisplayId(MODEL_HIGH_OVERLORD_SAURFANG_DUMMY);
+                        }
                         break;
                     case NPC_SE_KOR_KRON_REAVER:
                         if (TeamIdInInstance == TEAM_ALLIANCE)

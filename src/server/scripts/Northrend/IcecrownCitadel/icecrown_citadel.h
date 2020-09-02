@@ -567,6 +567,11 @@ enum ItemIds
     ITEM_GOBLIN_ROCKET_PACK = 49278
 };
 
+enum ModelIds
+{
+    MODEL_HIGH_OVERLORD_SAURFANG_DUMMY = 30583
+};
+
 class spell_trigger_spell_from_caster : public SpellScriptLoader
 {
     public:
