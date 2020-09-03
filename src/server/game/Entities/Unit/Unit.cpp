@@ -2154,8 +2154,6 @@ void Unit::AttackerStateUpdate (Unit* victim, WeaponAttackType attType, bool ext
         Unit::DealDamageMods(victim, damageInfo.damage, &damageInfo.absorb);
         SendAttackStateUpdate(&damageInfo);
 
-        //TriggerAurasProcOnEvent(damageInfo);
-
         DealMeleeDamage(&damageInfo, true);
         ProcDamageAndSpell(damageInfo.target, damageInfo.procAttacker, damageInfo.procVictim, damageInfo.procEx, damageInfo.damage, damageInfo.attackType);
 
@@ -15351,70 +15349,6 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, u
         SetCantProc(false);
 }
 
-void Unit::GetProcAurasTriggeredOnEvent(std::list<AuraApplication*>& aurasTriggeringProc, std::list<AuraApplication*>* procAuras, ProcEventInfo eventInfo)
-{
-    // use provided list of auras which can proc
-    if (procAuras)
-    {
-        for (std::list<AuraApplication*>::iterator itr = procAuras->begin(); itr!= procAuras->end(); ++itr)
-        {
-            ASSERT((*itr)->GetTarget() == this);
-            if (!(*itr)->GetRemoveMode())
-                if ((*itr)->GetBase()->IsProcTriggeredOnEvent(*itr, eventInfo))
-                {
-                    (*itr)->GetBase()->PrepareProcToTrigger(*itr, eventInfo);
-                    aurasTriggeringProc.push_back(*itr);
-                }
-        }
-    }
-    // or generate one on our own
-    else
-    {
-        for (AuraApplicationMap::iterator itr = GetAppliedAuras().begin(); itr!= GetAppliedAuras().end(); ++itr)
-        {
-            if (itr->second->GetBase()->IsProcTriggeredOnEvent(itr->second, eventInfo))
-            {
-                itr->second->GetBase()->PrepareProcToTrigger(itr->second, eventInfo);
-                aurasTriggeringProc.push_back(itr->second);
-            }
-        }
-    }
-}
-
-void Unit::TriggerAurasProcOnEvent(CalcDamageInfo& damageInfo)
-{
-    DamageInfo dmgInfo = DamageInfo(damageInfo);
-    TriggerAurasProcOnEvent(NULL, NULL, damageInfo.target, damageInfo.procAttacker, damageInfo.procVictim, 0, 0, damageInfo.procEx, NULL, &dmgInfo, NULL);
-}
-
-void Unit::TriggerAurasProcOnEvent(std::list<AuraApplication*>* myProcAuras, std::list<AuraApplication*>* targetProcAuras, Unit* actionTarget, uint32 typeMaskActor, uint32 typeMaskActionTarget, uint32 spellTypeMask, uint32 spellPhaseMask, uint32 hitMask, Spell* spell, DamageInfo* damageInfo, HealInfo* healInfo)
-{
-    // prepare data for self trigger
-    ProcEventInfo myProcEventInfo = ProcEventInfo(this, actionTarget, actionTarget, typeMaskActor, spellTypeMask, spellPhaseMask, hitMask, spell, damageInfo, healInfo, NULL);
-    std::list<AuraApplication*> myAurasTriggeringProc;
-    GetProcAurasTriggeredOnEvent(myAurasTriggeringProc, myProcAuras, myProcEventInfo);
-
-    // prepare data for target trigger
-    ProcEventInfo targetProcEventInfo = ProcEventInfo(this, actionTarget, this, typeMaskActionTarget, spellTypeMask, spellPhaseMask, hitMask, spell, damageInfo, healInfo, NULL);
-    std::list<AuraApplication*> targetAurasTriggeringProc;
-    if (typeMaskActionTarget)
-        GetProcAurasTriggeredOnEvent(targetAurasTriggeringProc, targetProcAuras, targetProcEventInfo);
-
-    TriggerAurasProcOnEvent(myProcEventInfo, myAurasTriggeringProc);
-
-    if (typeMaskActionTarget)
-        TriggerAurasProcOnEvent(targetProcEventInfo, targetAurasTriggeringProc);
-}
-
-void Unit::TriggerAurasProcOnEvent(ProcEventInfo& eventInfo, std::list<AuraApplication*>& aurasTriggeringProc)
-{
-    for (std::list<AuraApplication*>::iterator itr = aurasTriggeringProc.begin(); itr != aurasTriggeringProc.end(); ++itr)
-    {
-        if (!(*itr)->GetRemoveMode())
-            (*itr)->GetBase()->TriggerProcOnEvent(*itr, eventInfo);
-    }
-}
-
 SpellSchoolMask Unit::GetMeleeDamageSchoolMask() const
 {
     return SPELL_SCHOOL_MASK_NORMAL;
@@ -16083,10 +16017,6 @@ bool Unit::InitTamedPet(Pet* pet, uint8 level, uint32 spell_id)
 bool Unit::IsTriggeredAtSpellProcEvent(Unit* victim, Aura* aura, SpellInfo const* procSpell, uint32 procFlag, uint32 procExtra, WeaponAttackType attType, bool isVictim, bool active, SpellProcEventEntry const* & spellProcEvent, ProcEventInfo const& eventInfo)
 {
     SpellInfo const* spellProto = aura->GetSpellInfo();
-
-    // let the aura be handled by new proc system if it has new entry
-    if (sSpellMgr->GetSpellProcEntry(spellProto->Id))
-        return false;
 
     // Get proc Event Entry
     spellProcEvent = sSpellMgr->GetSpellProcEvent(spellProto->Id);
