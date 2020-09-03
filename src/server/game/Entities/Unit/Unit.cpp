@@ -6969,7 +6969,8 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                     return false;
 
                 Unit* beaconTarget = triggeredByAura->GetBase()->GetCaster();
-                if (!beaconTarget || beaconTarget == this || !beaconTarget->GetAura(53563, victim->GetGUID()))
+                if (!beaconTarget || beaconTarget == this || !beaconTarget->GetAura(53563, victim->GetGUID())
+                    || procSpell->Id == 20167 || procSpell->Id == 20267 || procSpell->Id == 54968)
                     return false;
 
                 basepoints0 = int32(damage);
