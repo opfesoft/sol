@@ -13,11 +13,7 @@
 #include "ByteBuffer.h"
 #include "Warden.h"
 
-#if defined(__GNUC__)
-#pragma pack(1)
-#else
 #pragma pack(push,1)
-#endif
 
 struct WardenInitModuleRequest
 {
@@ -49,11 +45,7 @@ struct WardenInitModuleRequest
     uint8 Function3_set;
 };
 
-#if defined(__GNUC__)
-#pragma pack()
-#else
 #pragma pack(pop)
-#endif
 
 class WorldSession;
 class Warden;

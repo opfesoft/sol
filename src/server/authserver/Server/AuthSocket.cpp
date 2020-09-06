@@ -35,12 +35,7 @@ enum eAuthCmd
     XFER_CANCEL                                  = 0x34
 };
 
-// GCC have alternative #pragma pack(N) syntax and old gcc version not support pack(push, N), also any gcc version not support it at some paltform
-#if defined(__GNUC__)
-#pragma pack(1)
-#else
 #pragma pack(push, 1)
-#endif
 
 typedef struct AUTH_LOGON_CHALLENGE_C
 {
@@ -121,12 +116,7 @@ typedef struct AuthHandler
     bool (AuthSocket::*handler)(void);
 } AuthHandler;
 
-// GCC have alternative #pragma pack() syntax and old gcc version not support pack(pop), also any gcc version not support it at some paltform
-#if defined(__GNUC__)
-#pragma pack()
-#else
 #pragma pack(pop)
-#endif
 
 // Launch a thread to transfer a patch to the client
 class PatcherRunnable: public acore::Runnable

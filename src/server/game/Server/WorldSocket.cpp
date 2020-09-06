@@ -34,11 +34,7 @@
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
 
-#if defined(__GNUC__)
-#pragma pack(1)
-#else
 #pragma pack(push, 1)
-#endif
 
 struct ServerPktHeader
 {
@@ -81,11 +77,7 @@ struct ClientPktHeader
     uint32 cmd;
 };
 
-#if defined(__GNUC__)
-#pragma pack()
-#else
 #pragma pack(pop)
-#endif
 
 WorldSocket::WorldSocket(void): WorldHandler(),
 m_LastPingTime(ACE_Time_Value::zero), m_OverSpeedPings(0), m_Session(0),

@@ -37,7 +37,7 @@ You are free to use Sol, but there won't be any support for it. This is solely a
   - Windows support and it's dependencies to the provided and outdated acelite & mysqllite libs (Sol only supports Linux)
   - Docker support, CI (Travis), SQL archive etc.
 - The changes concerning ACE removal have been reverted (see AC commits 30b0325cee4a1b7b3992b80ea863483fc6fc0d30, 1977336050955f40d6eb33b8c601435e8559a50a, 4a8f1de5381d1cf53cdcc4c5bb7d9ef7c99a8a8f); ACE won't be replaced for this project as the libary is still maintained and stable (see "[ACE installation](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md#ace-installation)" on how to build the latest ACE version)
-- Sol only supports MariaDB 10.2+
+- Sol only supports MariaDB 10.2+ and the compiler Clang 10+
 - Only specific AC commits will be taken over (sometimes modified)
   - A list of skipped AC commits is available here for documentation purposes: [Skipped-AC-Commits](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Skipped-AC-Commits.md)
   - Sol aims exclusively at fixing bugs (from a player's point of view)

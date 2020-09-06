@@ -561,12 +561,7 @@ inline uint8 ItemSubClassToDurabilityMultiplierId(uint32 ItemClass, uint32 ItemS
     }
 }
 
-// GCC have alternative #pragma pack(N) syntax and old gcc version not support pack(push, N), also any gcc version not support it at some platform
-#if defined(__GNUC__)
-#pragma pack(1)
-#else
 #pragma pack(push, 1)
-#endif
 
 struct _Damage
 {
@@ -597,12 +592,7 @@ struct _Socket
     uint32 Content;
 };
 
-// GCC have alternative #pragma pack() syntax and old gcc version not support pack(pop), also any gcc version not support it at some platform
-#if defined(__GNUC__)
-#pragma pack()
-#else
 #pragma pack(pop)
-#endif
 
 #define MAX_ITEM_PROTO_DAMAGES 2                            // changed in 3.1.0
 #define MAX_ITEM_PROTO_SOCKETS 3

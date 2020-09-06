@@ -1350,11 +1350,7 @@ enum PacketProcessing
 class WorldSession;
 class WorldPacket;
 
-#if defined(__GNUC__)
-#pragma pack(1)
-#else
 #pragma pack(push, 1)
-#endif
 
 struct OpcodeHandler
 {
@@ -1366,11 +1362,7 @@ struct OpcodeHandler
 
 extern OpcodeHandler opcodeTable[NUM_MSG_TYPES];
 
-#if defined(__GNUC__)
-#pragma pack()
-#else
 #pragma pack(pop)
-#endif
 
 /// Lookup opcode name for human understandable logging
 inline const char* LookupOpcodeName(uint16 id)

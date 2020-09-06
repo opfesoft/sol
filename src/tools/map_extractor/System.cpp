@@ -24,14 +24,10 @@
 #include "G3D/Plane.h"
 #include <fcntl.h>
 
-#if defined( __GNUC__ )
-    #define _open   open
-    #define _close close
-    #ifndef O_BINARY
-        #define O_BINARY 0
-    #endif
-#else
-    #include <io.h>
+#define _open   open
+#define _close close
+#ifndef O_BINARY
+    #define O_BINARY 0
 #endif
 
 #ifdef O_LARGEFILE
