@@ -6380,6 +6380,7 @@ uint32 ObjectMgr::GenerateReservedLowGuid(HighGuid guidhigh)
             ACORE_GUARD(ACE_Thread_Mutex, _hiCreatureGuidMutex);
             if (_hiCreatureGuidReserved < _hiCreatureGuidReservedMax)
                 return _hiCreatureGuidReserved++;
+            break;
         }
         case HIGHGUID_GAMEOBJECT:
         {
@@ -6387,6 +6388,7 @@ uint32 ObjectMgr::GenerateReservedLowGuid(HighGuid guidhigh)
             ACORE_GUARD(ACE_Thread_Mutex, _hiGoGuidMutex);
             if (_hiGoGuidReserved < _hiGoGuidReservedMax)
                 return _hiGoGuidReserved++;
+            break;
         }
         default:
             break; // handled by GenerateLowGuid

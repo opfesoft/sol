@@ -17,6 +17,7 @@ extern LoginDatabaseWorkerPool LoginDatabase;
 #include <stdarg.h>
 #include <stdio.h>
 #include <ace/Stack_Trace.h>
+#include <iomanip>
 
 Log::Log() :
     raLogfile(NULL), logfile(NULL), gmLogfile(NULL), charLogfile(NULL),
@@ -306,9 +307,9 @@ std::string Log::GetTimestampStr()
     //       HH     hour (2 digits 00-23)
     //       MM     minutes (2 digits 00-59)
     //       SS     seconds (2 digits 00-59)
-    char buf[20];
-    snprintf(buf, 20, "%04d-%02d-%02d_%02d-%02d-%02d", aTm.tm_year+1900, aTm.tm_mon+1, aTm.tm_mday, aTm.tm_hour, aTm.tm_min, aTm.tm_sec);
-    return std::string(buf);
+    std::ostringstream oss;
+    oss << std::put_time(&aTm, "%F_%T");
+    return oss.str();
 }
 
 void Log::outDB(LogTypes type, const char * str)

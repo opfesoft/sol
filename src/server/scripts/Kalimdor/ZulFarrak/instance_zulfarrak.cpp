@@ -7,6 +7,8 @@
 #include "zulfarrak.h"
 #include "Player.h"
 #include "TemporarySummon.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
 
 class instance_zulfarrak : public InstanceMapScript
 {

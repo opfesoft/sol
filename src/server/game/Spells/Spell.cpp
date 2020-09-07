@@ -1361,7 +1361,7 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
             Map* map = m_caster->GetMap();
             uint32 mapid = m_caster->GetMapId();
             uint32 phasemask = m_caster->GetPhaseMask();
-            float destx, desty, destz, ground, startx, starty, startz, starto;
+            float destx = 0.f, desty = 0.f, destz = 0.f, ground = 0.f, startx = 0.f, starty = 0.f, startz = 0.f, starto = 0.f;
 
             Position pos;
             Position lastpos;
@@ -1375,7 +1375,7 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
             if (!m_caster->HasUnitMovementFlag(MOVEMENTFLAG_FALLING) || (pos.GetPositionZ() - ground < distance))
             {
                 float tstX, tstY, tstZ, prevX, prevY, prevZ;
-                float tstZ1, tstZ2, tstZ3, destz1, destz2, destz3, srange, srange1, srange2, srange3;
+                float tstZ1 = 0.f, tstZ2 = 0.f, tstZ3 = 0.f, destz1 = 0.f, destz2 = 0.f, destz3 = 0.f, srange = 0.f, srange1 = 0.f, srange2 = 0.f, srange3 = 0.f;
                 float maxtravelDistZ = 2.65f;
                 float overdistance = 0.0f;
                 float totalpath = 0.0f;
@@ -3568,6 +3568,7 @@ void Spell::cancel(bool bySelf)
                 if (m_caster->ToPlayer()->NeedSendSpectatorData())
                     ArenaSpectator::SendCommand_Spell(m_caster->FindMap(), m_caster->GetGUID(), "SPE", m_spellInfo->Id, bySelf ? 99998 : 99999);
             }
+            [[fallthrough]];
         case SPELL_STATE_DELAYED:
             SendInterrupted(0);
             // xinef: fixes bugged gcd reset in some cases
@@ -6004,6 +6005,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                     case SUMMON_CATEGORY_PET:
                         if (m_caster->GetPetGUID())
                             return SPELL_FAILED_ALREADY_HAVE_SUMMON;
+                        [[fallthrough]];
                     case SUMMON_CATEGORY_PUPPET:
                         if (m_caster->GetCharmGUID())
                             return SPELL_FAILED_ALREADY_HAVE_CHARM;
@@ -6942,6 +6944,7 @@ SpellCastResult Spell::CheckItems()
                         return SPELL_FAILED_DONT_REPORT;
                     }
                 }
+                [[fallthrough]];
             case SPELL_EFFECT_ENCHANT_ITEM_PRISMATIC:
             {
                 Item* targetItem = m_targets.GetItemTarget();
@@ -8457,7 +8460,7 @@ bool WorldObjectSpellTargetCheck::operator()(WorldObject* target)
             case TARGET_CHECK_RAID_CLASS:
                 if (_referer->getClass() != unitTarget->getClass())
                     return false;
-                // nobreak;
+                [[fallthrough]];
             case TARGET_CHECK_RAID:
                 if (unitTarget->IsTotem())
                     return false;

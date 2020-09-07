@@ -28,13 +28,6 @@ if(WITH_COREDEBUG)
   message(STATUS "Clang: Debug-flags set (-g3)")
 endif()
 
-# -Wno-narrowing needed to suppress a warning in g3d
-# -Wno-deprecated-register is needed to suppress gsoap warnings on Unix systems.
-target_compile_options(acore-compile-option-interface
-  INTERFACE
-    -Wno-narrowing
-    -Wno-deprecated-register)
-
 target_compile_definitions(acore-compile-option-interface
   INTERFACE
     -DDEBUG=1)

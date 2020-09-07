@@ -51,27 +51,29 @@ protected:
     void EvaluateLinear(index_type, float, Vector3&) const;
     void EvaluateCatmullRom(index_type, float, Vector3&) const;
     void EvaluateBezier3(index_type, float, Vector3&) const;
-    typedef void (SplineBase::*EvaluationMethtod)(index_type, float, Vector3&) const;
-    static EvaluationMethtod evaluators[ModesEnd];
+    typedef void (SplineBase::*EvaluationMethod)(index_type, float, Vector3&) const;
+    static EvaluationMethod evaluators[ModesEnd];
 
     void EvaluateDerivativeLinear(index_type, float, Vector3&) const;
     void EvaluateDerivativeCatmullRom(index_type, float, Vector3&) const;
     void EvaluateDerivativeBezier3(index_type, float, Vector3&) const;
-    static EvaluationMethtod derivative_evaluators[ModesEnd];
+    static EvaluationMethod derivative_evaluators[ModesEnd];
 
     float SegLengthLinear(index_type) const;
     float SegLengthCatmullRom(index_type) const;
     float SegLengthBezier3(index_type) const;
-    typedef float (SplineBase::*SegLenghtMethtod)(index_type) const;
-    static SegLenghtMethtod seglengths[ModesEnd];
+    typedef float (SplineBase::*SegLenghtMethod)(index_type) const;
+    static SegLenghtMethod seglengths[ModesEnd];
 
     void InitLinear(const Vector3*, index_type, bool, index_type);
     void InitCatmullRom(const Vector3*, index_type, bool, index_type);
     void InitBezier3(const Vector3*, index_type, bool, index_type);
-    typedef void (SplineBase::*InitMethtod)(const Vector3*, index_type, bool, index_type);
-    static InitMethtod initializers[ModesEnd];
+    typedef void (SplineBase::*InitMethod)(const Vector3*, index_type, bool, index_type);
+    static InitMethod initializers[ModesEnd];
 
-    void UninitializedSpline() const { ABORT();}
+    void UninitializedSplineEvaluationMethod(index_type, float, Vector3&) const { ABORT(); }
+    float UninitializedSplineSegLenghtMethod(index_type) const { ABORT(); return 0.0f; }
+    void UninitializedSplineInitMethod(const Vector3*, index_type, bool, index_type) { ABORT(); }
 
 public:
 

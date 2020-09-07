@@ -140,7 +140,14 @@ public:
     }
     void force_insert_front(const uint64& g)
     {
-        if (guid[3]) guid[4] = guid[3]; if (guid[2]) guid[3] = guid[2]; if (guid[1]) guid[2] = guid[1]; guid[1] = guid[0]; guid[0] = g;
+        if (guid[3])
+            guid[4] = guid[3];
+        if (guid[2])
+            guid[3] = guid[2];
+        if (guid[1])
+            guid[2] = guid[1];
+        guid[1] = guid[0];
+        guid[0] = g;
     }
     void remove(const uint64& g)
     {

@@ -568,7 +568,7 @@ public:
                     IsDuringLKFight = false;
                     outroTimer = 0;
                     outroStep = 0;
-                    // no break intended
+                    [[fallthrough]];
                 case ACTION_DELETE_ICE_WALL:
                     HandleGameObject(GO_IceWallGUID, true);
                     GO_IceWallGUID = 0;

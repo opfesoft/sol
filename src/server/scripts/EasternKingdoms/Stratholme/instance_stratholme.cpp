@@ -431,11 +431,13 @@ class instance_stratholme : public InstanceMapScript
                 {
                     case EVENT_GATE1_TRAP:
                         gate = 0;
+                        [[fallthrough]];
                     case EVENT_GATE2_TRAP:
                         _gateTrapsCooldown[gate] = false;
                         break;
                     case EVENT_GATE1_DELAY:
                         gate = 0;
+                        [[fallthrough]];
                     case EVENT_GATE2_DELAY:
                         if (_trapGatesGUIDs[2 * gate])
                             DoUseDoorOrButton(_trapGatesGUIDs[2 * gate]);
@@ -444,6 +446,7 @@ class instance_stratholme : public InstanceMapScript
                         break;
                     case EVENT_GATE1_CRITTER_DELAY:
                         gate = 0;
+                        [[fallthrough]];
                     case EVENT_GATE2_CRITTER_DELAY:
                         if (_trappedPlayerGUID)
                         {

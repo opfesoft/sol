@@ -89,10 +89,14 @@ static const char* const langs[] = {"enGB", "enUS", "deDE", "esES", "frFR", "koK
 
 void CreateDir( const std::string& Path )
 {
-    if(chdir(Path.c_str()) == 0)
+    if (chdir(Path.c_str()) == 0)
     {
-            chdir("../");
-            return;
+        if (chdir("../") < 0)
+        {
+            printf("Fatal Error: %s exists but cannot change to parent directory", Path.c_str());
+            exit(1);
+        }
+        return;
     }
 
     int ret;

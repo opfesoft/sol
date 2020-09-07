@@ -1893,6 +1893,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             }
         }
 
+        MovementSlot movementSlot = e.action.MoveToPos.controlled ? MOTION_SLOT_CONTROLLED : MOTION_SLOT_ACTIVE;
+
         if (!target)
         {
             G3D::Vector3 dest(e.target.x, e.target.y, e.target.z);
@@ -1900,7 +1902,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 if (TransportBase* trans = me->GetDirectTransport())
                     trans->CalculatePassengerPosition(dest.x, dest.y, dest.z);
 
-            me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, dest.x, dest.y, dest.z, true, true, e.action.MoveToPos.controlled ? MOTION_SLOT_CONTROLLED : MOTION_SLOT_ACTIVE);
+            me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, dest.x, dest.y, dest.z, true, true, movementSlot);
         }
         else // Xinef: we can use dest.x, dest.y, dest.z to make offset
         {
@@ -1908,7 +1910,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             target->GetPosition(x, y, z);
             if (e.action.MoveToPos.ContactDistance > 0)
                 target->GetContactPoint(me, x, y, z, e.action.MoveToPos.ContactDistance);
-            me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, x + e.target.x, y + e.target.y, z + e.target.z, e.action.MoveToPos.controlled ? MOTION_SLOT_CONTROLLED : MOTION_SLOT_ACTIVE);
+            me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, x + e.target.x, y + e.target.y, z + e.target.z, movementSlot);
         }
         break;
     }
@@ -1918,12 +1920,14 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!targets)
             return;
 
+        MovementSlot movementSlot = e.action.MoveToPos.controlled ? MOTION_SLOT_CONTROLLED : MOTION_SLOT_ACTIVE;
+
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
         {
             if (IsCreature(*itr))
             {
                 Creature* target = (*itr)->ToCreature();
-                target->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, e.target.x, e.target.y, e.target.z, true, true, e.action.MoveToPos.controlled ? MOTION_SLOT_CONTROLLED : MOTION_SLOT_ACTIVE);
+                target->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, e.target.x, e.target.y, e.target.z, true, true, movementSlot);
             }
         }
 

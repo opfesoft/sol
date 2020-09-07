@@ -2903,7 +2903,7 @@ SpellMissInfo Unit::SpellHitResult(Unit* victim, SpellInfo const* spell, bool Ca
                 if (spell->Effects[i].Effect && spell->Effects[i].Effect != SPELL_EFFECT_SCHOOL_DAMAGE)
                     if (spell->Effects[i].ApplyAuraName != SPELL_AURA_PERIODIC_DAMAGE)
                         return SPELL_MISS_NONE;
-            // no break intended
+            [[fallthrough]];
         }
         case SPELL_DAMAGE_CLASS_MAGIC:
             return MagicSpellHitResult(victim, spell);
@@ -6797,6 +6797,7 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                 triggered_spell_id = isWrathSpell ? 48518 : 48517;
                 break;
             }
+            [[fallthrough]];
         }
         case SPELLFAMILY_ROGUE:
         {
@@ -8579,6 +8580,7 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
 
             target = this;
             trigger_spell_id = 22588;
+            break;
         }
         // Bonus Healing (Crystal Spire of Karabor mace)
         case 40971:
@@ -11074,9 +11076,14 @@ float Unit::SpellTakenCritChance(Unit const* caster, SpellInfo const* spellProto
                     switch ((*i)->GetMiscValue())
                     {
                         // Shatter
-                        case  911: modChance+= 16;
-                        case  910: modChance+= 17;
-                        case  849: modChance+= 17;
+                        case  911:
+                            modChance+= 16;
+                            [[fallthrough]];
+                        case  910:
+                            modChance+= 17;
+                            [[fallthrough]];
+                        case  849:
+                            modChance+= 17;
                             if (!HasAuraState(AURA_STATE_FROZEN, spellProto, caster))
                                 break;
                             crit_chance+=modChance;
@@ -11185,6 +11192,7 @@ float Unit::SpellTakenCritChance(Unit const* caster, SpellInfo const* spellProto
                        }
                     break;
                 }
+            [[fallthrough]];
         case SPELL_DAMAGE_CLASS_RANGED:
         {
             // flat aura mods

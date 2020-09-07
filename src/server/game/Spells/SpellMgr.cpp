@@ -2638,6 +2638,7 @@ void SpellMgr::LoadSpellCustomAttr()
                                 spellInfo->Effects[j].ApplyAuraName == SPELL_AURA_PERIODIC_HEALTH_FUNNEL ||
                                 spellInfo->Effects[j].ApplyAuraName == SPELL_AURA_PERIODIC_DUMMY)
                                 continue;
+                            [[fallthrough]];
                         default:
                             if (spellInfo->Effects[j].CalcValue() || ((spellInfo->Effects[j].Effect == SPELL_EFFECT_INTERRUPT_CAST || spellInfo->HasAttribute(SPELL_ATTR0_CU_AURA_CC)) && !spellInfo->HasAttribute(SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY)))
                                 if (spellInfo->Id != 69649 && spellInfo->Id != 71056 && spellInfo->Id != 71057 && spellInfo->Id != 71058 && spellInfo->Id != 73061 && spellInfo->Id != 73062 && spellInfo->Id != 73063 && spellInfo->Id != 73064) // Sindragosa Frost Breath
@@ -4129,6 +4130,7 @@ void SpellMgr::LoadDbcDataCorrections()
         case 57619: // WintergraspDemolisher - Spell Hourl Boulder - EffectRadiusIndex
         case 57610: // Cannon (Siege Turret)
             spellInfo->EffectRadiusIndex[1] = EFFECT_RADIUS_25_YARDS; // SPELL_EFFECT_WMO_DAMAGE
+            [[fallthrough]];
         case 51422: // WintergraspCannon - Spell Fire Cannon - EffectRadiusIndex
             spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_10_YARDS; // SPELL_EFFECT_SCHOOL_DAMAGE
             break;
@@ -4541,7 +4543,7 @@ void SpellMgr::LoadDbcDataCorrections()
         case 56430:
             spellInfo->Effect[0] = SPELL_EFFECT_TRIGGER_MISSILE;
             spellInfo->EffectTriggerSpell[0] = 56429;
-            // no break intended
+            [[fallthrough]];
         case 56429:
             spellInfo->EffectImplicitTargetA[0] = TARGET_DEST_DEST;
             spellInfo->EffectImplicitTargetB[0] = 0;
@@ -4911,7 +4913,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[1] = TARGET_UNIT_TARGET_ANY;
             spellInfo->EffectImplicitTargetB[1] = TARGET_DEST_TARGET_ANY;
             spellInfo->Effect[1] = 0;
-            // no break intended
+            [[fallthrough]];
         case 66317:
             spellInfo->Attributes |= SPELL_ATTR0_STOP_ATTACK_TARGET;
             spellInfo->AttributesEx |= SPELL_ATTR1_NO_THREAT;
@@ -5008,6 +5010,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 65767: // light surge 0
             spellInfo->excludeTargetAuraSpell = 65686;
             break;
@@ -5016,6 +5019,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 67274: // light surge 1
             spellInfo->excludeTargetAuraSpell = 67222;
             break;
@@ -5024,6 +5028,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 67275: // light surge 2
             spellInfo->excludeTargetAuraSpell = 67223;
             break;
@@ -5032,6 +5037,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 67276: // light surge 3
             spellInfo->excludeTargetAuraSpell = 67224;
             break;
@@ -5040,6 +5046,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 65769: // dark surge 0
             spellInfo->excludeTargetAuraSpell = 65684;
             break;
@@ -5048,6 +5055,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 67265: // dark surge 1
             spellInfo->excludeTargetAuraSpell = 67176;
             break;
@@ -5056,6 +5064,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 67266: // dark surge 2
             spellInfo->excludeTargetAuraSpell = 67177;
             break;
@@ -5064,6 +5073,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[0] = 6;
             spellInfo->EffectImplicitTargetB[0] = 0;
             spellInfo->Effect[1] = 0; spellInfo->Effect[2] = 0;
+            [[fallthrough]];
         case 67267: // dark surge 3
             spellInfo->excludeTargetAuraSpell = 67178;
             break;

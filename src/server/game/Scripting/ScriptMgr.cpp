@@ -1132,7 +1132,7 @@ bool ScriptMgr::OnCriteriaCheck(uint32 scriptId, Player* source, Unit* target, u
     // target can be NULL.
 
     GET_SCRIPT_RET(AchievementCriteriaScript, scriptId, tmpscript, false);
-    return tmpscript->OnCheck(source, target, criteria_id);
+    return tmpscript->OnCheckCriteria(source, target, criteria_id);
 }
 
 // Player

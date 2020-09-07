@@ -173,6 +173,7 @@ class boss_hadronox : public CreatureScript
                         break;
                     case EVENT_HADRONOX_MOVE4:
                         me->CastSpell(me, SPELL_WEB_FRONT_DOORS, true);
+                        [[fallthrough]];
                     case EVENT_HADRONOX_MOVE1:
                     case EVENT_HADRONOX_MOVE2:
                     case EVENT_HADRONOX_MOVE3:

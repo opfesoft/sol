@@ -53,8 +53,10 @@ public:
                 break;
             case NPC_NIGHTBANE:
                 m_uiNightBaneGUID = creature->GetGUID();
+                break;
             case NPC_RELAY:
                 m_uiRelayGUID = creature->GetGUID();
+                break;
             }
         }
 

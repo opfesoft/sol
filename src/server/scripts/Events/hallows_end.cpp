@@ -408,8 +408,8 @@ public:
             {
                 allowQuest = true;
                 eventStarted = 1;
-                float x, y, z, o;
-                uint32 path;
+                float x = 0.f, y = 0.f, z = 0.f, o = 0.f;
+                uint32 path = 0;
                 GetInitXYZ(x, y, z, o, path);
                 if (Creature* cr = me->SummonCreature(NPC_SHADE_OF_HORSEMAN, x, y, z, o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 10000))
                 {
@@ -732,7 +732,7 @@ class npc_hallows_end_soh : public CreatureScript
                 {
                     me->MonsterYell("My flames have died, left not a spark! I shall send you now to the lifeless dark!", LANG_UNIVERSAL, 0);
                     me->PlayDirectSound(11968);
-                    float x, y, z;
+                    float x = 0.f, y = 0.f, z = 0.f;
                     GetPosToLand(x, y, z);
                     me->GetMotionMaster()->MovePoint(8, x, y, z);
                 }
@@ -750,7 +750,7 @@ class npc_hallows_end_soh : public CreatureScript
             {
                 me->MonsterYell("So eager you are, for my blood to spill. Yet to vanquish me, 'tis my head you must kill!", LANG_UNIVERSAL, 0);
                 me->PlayDirectSound(11969);
-                float x, y, z;
+                float x = 0.f, y = 0.f, z = 0.f;
                 GetPosToLand(x, y, z);
                 me->CastSpell(x, y, z, SPELL_SUMMON_LANTERN, true);
                 CompleteQuest();

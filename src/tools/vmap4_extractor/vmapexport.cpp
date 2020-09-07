@@ -177,11 +177,26 @@ bool ExtractSingleWmo(std::string& fname)
     {
         for (uint32 i = 0; i < froot.nGroups; ++i)
         {
+            if (fname.length() > 1023)
+            {
+                printf("File name too long");
+                return false;
+            }
+            else if (fname.length() < 4)
+            {
+                printf("File name too short");
+                return false;
+            }
             char temp[1024];
-            strcpy(temp, fname.c_str());
+            strncpy(temp, fname.c_str(), 1023);
             temp[fname.length()-4] = 0;
             char groupFileName[1024];
-            sprintf(groupFileName, "%s_%03u.wmo", temp, i);
+            int n = snprintf(groupFileName, 1024, "%s_%03u.wmo", temp, i);
+            if (n < 0 || (size_t)n >= sizeof temp)
+            {
+                printf("Error creating group file name");
+                return false;
+            }
             //printf("Trying to open groupfile %s\n",groupFileName);
 
             string s = groupFileName;
@@ -329,7 +344,12 @@ bool fillArchiveNameVector(std::vector<std::string>& pArchiveNames)
 
     // now, scan for the patch levels in the core dir
     printf("Scanning patch levels from data directory.\n");
-    sprintf(path, "%spatch", input_path);
+    int n = snprintf(path, 512, "%spatch", input_path);
+    if (n < 0 || (size_t)n >= sizeof path)
+    {
+        printf("Error creating path name");
+        return false;
+    }
     if (!scan_patches(path, pArchiveNames))
         return(false);
 
@@ -339,7 +359,12 @@ bool fillArchiveNameVector(std::vector<std::string>& pArchiveNames)
     for (std::vector<std::string>::iterator i = locales.begin(); i != locales.end(); ++i)
     {
         printf("Locale: %s\n", i->c_str());
-        sprintf(path, "%s%s/patch-%s", input_path, i->c_str(), i->c_str());
+        n = snprintf(path, 512, "%s%s/patch-%s", input_path, i->c_str(), i->c_str());
+        if (n < 0 || (size_t)n >= sizeof path)
+        {
+            printf("Error creating path name");
+            return false;
+        }
         if(scan_patches(path, pArchiveNames))
             foundOne = true;
     }
