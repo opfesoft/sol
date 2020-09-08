@@ -1496,13 +1496,15 @@ class npc_commander_eligor_dawnbringer : public CreatureScript
             npc_commander_eligor_dawnbringerAI(Creature* creature) : ScriptedAI(creature)
             {
                 talkWing = 0;
+                std::fill_n(audienceList, 10, 0);
+                std::fill_n(imageList, 5, 0);
             }
 
             void Reset()
             {
                 talkWing = 0;
-                memset(audienceList, 0, sizeof(audienceList));
-                memset(imageList, 0, sizeof(imageList));
+                std::fill_n(audienceList, 10, 0);
+                std::fill_n(imageList, 5, 0);
                 _events.ScheduleEvent(EVENT_GET_TARGETS, 5000);
                 _events.ScheduleEvent(EVENT_START_RANDOM, 20000);
             }
