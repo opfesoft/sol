@@ -72,6 +72,7 @@ uint32 urand(uint32 min, uint32 max);
 
 /* Return a random number in the range 0 .. UINT32_MAX. */
 uint32 rand32();
+uint32 crand32();
 
 /* Return a random number in the range min..max */
 float frand(float min, float max);
@@ -548,21 +549,6 @@ bool CompareValues(ComparisionType type, T val1, T val2)
             return false;
     }
 }
-
-/*
-* SFMT wrapper satisfying UniformRandomNumberGenerator concept for use in <random> algorithms
-*/
-class SFMTEngine
-{
-public:
-    typedef uint32 result_type;
-
-    static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
-    static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
-    result_type operator()() const { return rand32(); }
-
-    static SFMTEngine& Instance();
-};
 
 class EventMap
 {

@@ -21,9 +21,6 @@ if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/authPCH.h)
 endif()
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 add_executable(authserver
   ${PRIVATE_SOURCES})
 

@@ -31,9 +31,6 @@ endif()
 
 add_library(Recast STATIC ${Recast_STAT_SRCS})
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 target_include_directories(Recast
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Include)

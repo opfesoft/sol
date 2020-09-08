@@ -6,9 +6,6 @@ CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE_SOURCES)
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 add_library(shared 
   ${PRIVATE_SOURCES})
 

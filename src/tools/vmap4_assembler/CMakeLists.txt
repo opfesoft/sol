@@ -19,9 +19,6 @@ target_link_libraries(vmap4assembler
   common
   zlib)
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 set_target_properties(vmap4assembler
   PROPERTIES
     FOLDER

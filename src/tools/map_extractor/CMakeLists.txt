@@ -31,9 +31,6 @@ CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   PUBLIC_INCLUDES)
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 target_include_directories(mapextractor
   PUBLIC
     ${PUBLIC_INCLUDES}

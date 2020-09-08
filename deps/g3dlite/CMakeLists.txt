@@ -56,9 +56,6 @@ set(g3dlib_STAT_SRCS
 
 add_library(g3dlib STATIC ${g3dlib_STAT_SRCS})
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 target_include_directories(g3dlib
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include)

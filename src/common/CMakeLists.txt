@@ -27,9 +27,6 @@ if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/commonPCH.h)
 endif()
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 add_library(common
   ${PRIVATE_SOURCES})
 

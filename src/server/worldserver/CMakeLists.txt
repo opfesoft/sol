@@ -19,9 +19,6 @@ if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/worldPCH.h)
 endif()
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 add_executable(worldserver
   ${PRIVATE_SOURCES})
 

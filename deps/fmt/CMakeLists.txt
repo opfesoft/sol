@@ -55,8 +55,6 @@ add_library(fmt STATIC
   ${FMT_SOURCES}
   ${FMT_HEADERS})
 
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 if (HAVE_STRTOD_L)
   target_compile_definitions(fmt 
     PUBLIC 

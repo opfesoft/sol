@@ -15,9 +15,6 @@ add_library(gsoap STATIC ${sources})
 
 set_target_properties(gsoap PROPERTIES LINKER_LANGUAGE CXX)
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 target_include_directories(gsoap
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR})

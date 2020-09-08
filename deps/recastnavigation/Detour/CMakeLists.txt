@@ -31,9 +31,6 @@ target_include_directories(Detour
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 target_link_libraries(Detour
   PRIVATE
     acore-dependency-interface

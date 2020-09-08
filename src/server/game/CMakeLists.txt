@@ -20,9 +20,6 @@ if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/gamePCH.h)
 endif ()
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 add_library(game-interface INTERFACE)
 
 CollectIncludeDirectories(

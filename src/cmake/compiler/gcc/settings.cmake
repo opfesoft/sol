@@ -47,8 +47,3 @@ if( WITH_COREDEBUG )
     -g3)
   message(STATUS "GCC: Debug-flags set (-g3)")
 endif()
-
-# -fno-strict-aliasing is needed to suppress SFMT warnings.
-target_compile_options(acore-compile-option-interface
-  INTERFACE
-    -fno-strict-aliasing)

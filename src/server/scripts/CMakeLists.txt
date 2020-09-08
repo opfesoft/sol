@@ -74,9 +74,6 @@ if (USE_SCRIPTPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/ScriptPCH.h)
 endif ()
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 add_library(scripts-interface INTERFACE)
 
 CollectIncludeDirectories(

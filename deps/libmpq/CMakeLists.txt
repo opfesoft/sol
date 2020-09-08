@@ -18,9 +18,6 @@ if(WIN32)
   set(WIN_EXTRA_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/win)
 endif()
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 target_include_directories(mpq
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}

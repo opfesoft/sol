@@ -26,9 +26,6 @@ else()
   add_library(bzip2 STATIC
     ${sources})
 
-  # Group sources
-  GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
   target_include_directories(bzip2
     PUBLIC
       ${CMAKE_CURRENT_SOURCE_DIR})

@@ -19,9 +19,6 @@ target_link_libraries(vmap4extractor
   PUBLIC
     mpq)
 
-# Group sources
-GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
-
 CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   PUBLIC_INCLUDES)

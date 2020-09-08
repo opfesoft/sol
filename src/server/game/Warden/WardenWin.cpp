@@ -302,7 +302,7 @@ void WardenWin::RequestData()
             }
             case MODULE_CHECK:
             {
-                uint32 seed = rand32();
+                uint32 seed = crand32();
                 buff << uint32(seed);
                 HmacHash hmac(4, (uint8*)&seed);
                 hmac.UpdateData(wd->Str);

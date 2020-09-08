@@ -13,6 +13,7 @@
 #include "Errors.h"
 #include "TypeList.h"
 #include "SFMT.h"
+#include "SFMTRand.h"
 #include "Errors.h" // for ASSERT
 #include <ace/TSS_T.h>
 #include <array>
@@ -23,12 +24,11 @@
 
 typedef ACE_TSS<SFMTRand> SFMTRandTSS;
 static SFMTRandTSS sfmtRand;
-static SFMTEngine engine;
 
 int32 irand(int32 min, int32 max)
 {
     ASSERT(max >= min);
-    return int32(sfmtRand->IRandom(min, max));
+    return sfmtRand->IRandom(min, max);
 }
 
 uint32 urand(uint32 min, uint32 max)
@@ -40,33 +40,32 @@ uint32 urand(uint32 min, uint32 max)
 float frand(float min, float max)
 {
     ASSERT(max >= min);
-    return float(sfmtRand->Random() * (max - min) + min);
+    return sfmtRand->FRandom(min, max);
 }
 
-uint32 rand32()
+uint32_t rand32()
 {
-    return int32(sfmtRand->BRandom());
+    return sfmtRand->RandomUInt32();
+}
+
+uint32_t crand32()
+{
+    return sfmtRand->CryptoRandomUInt32();
 }
 
 double rand_norm()
 {
-    return sfmtRand->Random();
+    return sfmtRand->RandomNorm();
 }
 
 double rand_chance()
 {
-    return sfmtRand->Random() * 100.0;
+    return sfmtRand->RandomChance();
 }
 
 uint32 urandweighted(size_t count, double const* chances)
 {
-    std::discrete_distribution<uint32> dd(chances, chances + count);
-    return dd(SFMTEngine::Instance());
-}
-
-SFMTEngine& SFMTEngine::Instance()
-{
-    return engine;
+    return sfmtRand->URandomWeighted(count, chances);
 }
 
 Tokenizer::Tokenizer(const std::string &src, const char sep, uint32 vectorReserve)
