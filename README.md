@@ -39,7 +39,8 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - The changes concerning ACE removal have been reverted (see AC commits 30b0325cee4a1b7b3992b80ea863483fc6fc0d30, 1977336050955f40d6eb33b8c601435e8559a50a, 4a8f1de5381d1cf53cdcc4c5bb7d9ef7c99a8a8f); ACE won't be replaced for this project as the libary is still maintained and stable (see "[ACE installation](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md#ace-installation)" on how to build the latest ACE version)
 - Sol only supports MariaDB 10.2+ and GCC 9+
 - Only specific AC commits will be taken over (sometimes modified)
-  - A list of skipped AC commits is available here for documentation purposes: [Skipped-AC-Commits](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Skipped-AC-Commits.md)
+  - A list of skipped AC commits is available here for documentation purposes: [Skipped-AC-Commits](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Skipped-AC-Commits.md)<br>
+    (2020-09-09: Stopped tracking all commits, as Sol follows its own development path and also too many bugs make their way into AC; only track interesting commits as "TODO" which have to be further verified or reworked)
   - Sol aims exclusively at fixing bugs (from a player's point of view)
   - Features will only be taken over if they are useful for fixing bugs (with the exception of a few smaller features that are non-intrusive)
 
