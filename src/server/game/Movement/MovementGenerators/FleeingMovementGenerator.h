@@ -19,6 +19,7 @@ class FleeingMovementGenerator : public MovementGeneratorMedium< T, FleeingMovem
         void DoFinalize(T*);
         void DoReset(T*);
         bool DoUpdate(T*, uint32);
+        void unitSpeedChanged() { i_recalculateSpeed = true; }
 
         MovementGeneratorType GetMovementGeneratorType() { return FLEEING_MOTION_TYPE; }
 
@@ -34,6 +35,10 @@ class FleeingMovementGenerator : public MovementGeneratorMedium< T, FleeingMovem
 
         uint64 i_frightGUID;
         TimeTracker i_nextCheckTime;
+
+        float i_x, i_y, i_z;
+        bool i_recalculateSpeed;
+        Movement::PointsArray m_precomputedPath;
 };
 
 class TimedFleeingMovementGenerator : public FleeingMovementGenerator<Creature>

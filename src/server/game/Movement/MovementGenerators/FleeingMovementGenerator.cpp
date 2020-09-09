@@ -28,8 +28,7 @@ void FleeingMovementGenerator<T>::_setTargetLocation(T* owner)
 
     owner->AddUnitState(UNIT_STATE_FLEEING_MOVE);
 
-    float x, y, z;
-    if (!_getPoint(owner, x, y, z))
+    if (!_getPoint(owner, i_x, i_y, i_z))
     {
         i_distStep = i_distStep < 15.0f ? i_distStep + 1.0f : 0.0f;
         i_nextCheckTime.Reset(200);
@@ -41,7 +40,7 @@ void FleeingMovementGenerator<T>::_setTargetLocation(T* owner)
         owner->GetPositionX(),
         owner->GetPositionY(),
         owner->GetPositionZ() + 2.0f,
-        x, y, z + 2.0f);
+        i_x, i_y, i_z + 2.0f);
 
     if (!isInLOS)
     {
@@ -52,7 +51,7 @@ void FleeingMovementGenerator<T>::_setTargetLocation(T* owner)
 
     PathGenerator path(owner);
     path.SetPathLengthLimit(30.0f);
-    bool result = path.CalculatePath(x, y, z);
+    bool result = path.CalculatePath(i_x, i_y, i_z);
     if (!result || (path.GetPathType() & PATHFIND_NOPATH))
     {
         i_distStep = i_distStep < 15.0f ? i_distStep + 1.0f : 0.0f;
@@ -60,9 +59,11 @@ void FleeingMovementGenerator<T>::_setTargetLocation(T* owner)
         return;
     }
 
+    m_precomputedPath = path.GetPath();
     Movement::MoveSplineInit init(owner);
-    init.MovebyPath(path.GetPath());
+    init.MovebyPath(m_precomputedPath);
     init.SetWalk(false);
+
     int32 traveltime = init.Launch();
     i_distStep = 0.0f;
     i_nextCheckTime.Reset(traveltime + urand(800, 1500));
@@ -151,6 +152,8 @@ bool FleeingMovementGenerator<T>::_getPoint(T* owner, float &x, float &y, float 
 template<class T>
 void FleeingMovementGenerator<T>::DoInitialize(T* owner)
 {
+    i_recalculateSpeed = false;
+
     if (!owner)
         return;
 
@@ -214,8 +217,40 @@ bool FleeingMovementGenerator<T>::DoUpdate(T* owner, uint32 time_diff)
     }
 
     i_nextCheckTime.Update(time_diff);
-    if (i_nextCheckTime.Passed() && owner->movespline->Finalized())
-        _setTargetLocation(owner);
+
+    if (owner->movespline->Finalized())
+    {
+        if (i_nextCheckTime.Passed())
+            _setTargetLocation(owner);
+    }
+    else
+    {
+        if (i_recalculateSpeed)
+        {
+            i_recalculateSpeed = false;
+            Movement::MoveSplineInit init(owner);
+
+            // xinef: speed changed during path execution, calculate remaining path and launch it once more
+            if (m_precomputedPath.size())
+            {
+                uint32 offset = std::min(uint32(owner->movespline->_currentSplineIdx()), uint32(m_precomputedPath.size()));
+                Movement::PointsArray::iterator offsetItr = m_precomputedPath.begin();
+                std::advance(offsetItr, offset);
+                m_precomputedPath.erase(m_precomputedPath.begin(), offsetItr);
+
+                // restore 0 element (current position)
+                m_precomputedPath.insert(m_precomputedPath.begin(), G3D::Vector3(owner->GetPositionX(), owner->GetPositionY(), owner->GetPositionZ()));
+
+                if (m_precomputedPath.size() > 2)
+                    init.MovebyPath(m_precomputedPath);
+                else if (m_precomputedPath.size() == 2)
+                    init.MoveTo(m_precomputedPath[1].x, m_precomputedPath[1].y, m_precomputedPath[1].z);
+            }
+            else
+                init.MoveTo(i_x, i_y, i_z);
+            init.Launch();
+        }
+    }
 
     return true;
 }
