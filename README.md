@@ -40,7 +40,7 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - Sol only supports MariaDB 10.2+ and GCC 9+
 - Only specific AC commits will be taken over (sometimes modified)
   - A list of skipped AC commits is available here for documentation purposes: [Skipped-AC-Commits](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Skipped-AC-Commits.md)<br>
-    (2020-09-09: Stopped tracking all commits, as Sol follows its own development path and also too many bugs make their way into AC; only track interesting commits as "TODO" which have to be further verified or reworked)
+    (2020-09-09: Stopped tracking all commits, as Sol follows its own development path and also too many bugs make their way into AC; only track interesting commits as "[TODOs](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/TODO.md)" which have to be further verified or reworked)
   - Sol aims exclusively at fixing bugs (from a player's point of view)
   - Features will only be taken over if they are useful for fixing bugs (with the exception of a few smaller features that are non-intrusive)
 
