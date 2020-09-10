@@ -4178,6 +4178,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 25139:
             spellInfo->AttributesEx3 |= SPELL_ATTR3_DEATH_PERSISTENT;
             break;
+        // Poisoned Spear
+        case 60988:
+            spellInfo->Attributes |= SPELL_ATTR0_REQ_AMMO;
+            break;
 
 
         // ///////////////////////////////////////////
