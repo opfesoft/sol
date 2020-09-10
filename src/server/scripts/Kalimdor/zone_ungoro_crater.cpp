@@ -75,22 +75,22 @@ public:
             {
                 switch (waypointId)
                 {
-                    case 19:
-                        me->SummonCreature(ENTRY_STOMPER, -6391.69f, -1730.49f, -272.83f, 4.96f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000);
-                        Talk(SAY_AGGRO1, player);
+                    case 32:
+                        if (Creature* creature = me->SummonCreature(ENTRY_STOMPER, -6391.69f, -1730.49f, -272.83f, 4.96f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000))
+                            Talk(SAY_AGGRO1, creature);
                         break;
-                    case 28:
+                    case 45:
                         Talk(SAY_SEARCH, player);
                         break;
-                    case 38:
-                        me->SummonCreature(ENTRY_TARLORD, -6370.75f, -1382.84f, -270.51f, 6.06f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000);
-                        Talk(SAY_AGGRO2, player);
+                    case 77:
+                        if (Creature* creature = me->SummonCreature(ENTRY_TARLORD, -6370.75f, -1382.84f, -270.51f, 6.06f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000))
+                            Talk(SAY_AGGRO2, creature);
                         break;
-                    case 49:
-                        me->SummonCreature(ENTRY_TARLORD1, -6324.44f, -1181.05f, -270.17f, 4.34f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000);
-                        Talk(SAY_AGGRO3, player);
+                    case 101:
+                        if (Creature* creature = me->SummonCreature(ENTRY_TARLORD1, -6324.44f, -1181.05f, -270.17f, 4.34f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000))
+                            Talk(SAY_AGGRO3, creature);
                         break;
-                    case 55:
+                    case 110:
                         Talk(SAY_FINISH, player);
                         player->GroupEventHappens(QUEST_CHASING_AME, me);
                         break;
