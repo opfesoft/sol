@@ -2955,6 +2955,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 44535: // Spirit Heal, abilities also have no cost
                 spellInfo->Effects[EFFECT_0].MiscValue = 127;
                 break;
+            case 38318: // Transformation - Blackwhelp
+                spellInfo->AttributesCu &= ~SPELL_ATTR0_CU_NEGATIVE_EFF1;
+                break;
         }
 
         switch (spellInfo->SpellFamilyName)
