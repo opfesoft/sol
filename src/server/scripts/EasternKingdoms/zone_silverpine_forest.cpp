@@ -63,34 +63,37 @@ public:
 
             switch (waypointId)
             {
-                case 1:
+                case 2:
                     Talk(SAY_START, player);
                     break;
-                case 10:
+                case 14:
                     Talk(SAY_PROGRESS);
                     break;
-                case 13:
+                case 18:
                     Talk(SAY_LAST, player);
                     player->GroupEventHappens(QUEST_ESCORTING, me);
                     break;
-                case 15:
+                case 23:
                     if (Creature* rane = me->FindNearestCreature(NPC_RANE, 20.0f))
+                    {
+                        me->SetOrientation(me->GetAngle(rane));
                         rane->AI()->Talk(SAY_RANE);
-                    break;
-                case 16:
-                    Talk(SAY_RANE_ANSWER);
-                    break;
-                case 17:
-                    Talk(SAY_MOVE_QUINN);
+                    }
                     break;
                 case 24:
-                    Talk(SAY_QUINN);
+                    Talk(SAY_RANE_ANSWER);
                     break;
                 case 25:
+                    Talk(SAY_MOVE_QUINN);
+                    break;
+                case 34:
+                    Talk(SAY_QUINN);
+                    break;
+                case 35:
                     if (Creature* quinn = me->FindNearestCreature(NPC_QUINN, 20.0f))
                         quinn->AI()->Talk(SAY_QUINN_ANSWER);
                     break;
-                case 26:
+                case 36:
                     Talk(SAY_BYE);
                     break;
             }
