@@ -562,7 +562,11 @@ void npc_escortAI::GenerateWaypointArray(Movement::PointsArray* points)
         points->clear();
         points->push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
         for (std::list<Escort_Waypoint>::const_iterator itr = CurrentWP; itr != WaypointList.end(); ++itr)
+        {
             points->push_back(G3D::Vector3(itr->x, itr->y, itr->z));
+            if (itr->WaitTimeMs > 0)
+                break;
+        }
     }
     else
     {
@@ -575,7 +579,11 @@ void npc_escortAI::GenerateWaypointArray(Movement::PointsArray* points)
 
             uint32 cnt = 0;
             for (std::list<Escort_Waypoint>::const_iterator itr = CurrentWP; itr != WaypointList.end() && cnt <= length; ++itr, ++cnt)
+            {
                 pVector.push_back(G3D::Vector3(itr->x, itr->y, itr->z));
+                if (itr->WaitTimeMs > 0)
+                    break;
+            }
 
             if (pVector.size() > 2) // more than source + dest
             {
