@@ -510,6 +510,47 @@ void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float spee
     Mutate(new EffectMovementGenerator(id), MOTION_SLOT_CONTROLLED);
 }
 
+void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount, bool walk)
+{
+    float step = 2 * float(M_PI) / stepCount * (clockwise ? -1.0f : 1.0f);
+    Position const& pos = { x, y, z, 0.0f };
+    float angle = pos.GetAngle(_owner->GetPositionX(), _owner->GetPositionY());
+
+    Movement::MoveSplineInit init(_owner);
+
+    // add the owner's current position as starting point as it gets removed after entering the cycle
+    init.Path().push_back(G3D::Vector3(_owner->GetPositionX(), _owner->GetPositionY(), _owner->GetPositionZ() - (_owner->IsHovering() ? _owner->GetHoverHeight() : 0.0f)));
+
+    for (uint8 i = 0; i < stepCount; angle += step, ++i)
+    {
+        G3D::Vector3 point;
+        point.x = x + radius * cosf(angle);
+        point.y = y + radius * sinf(angle);
+
+        if (_owner->IsFlying())
+            point.z = z;
+        else
+            point.z = _owner->GetMap()->GetHeight(_owner->GetPhaseMask(), point.x, point.y, z);
+
+        init.Path().push_back(point);
+    }
+
+    if (_owner->IsFlying())
+    {
+        init.SetFly();
+        init.SetCyclic();
+        init.SetAnimation(Movement::ToFly);
+    }
+    else
+    {
+        init.SetWalk(walk);
+        init.SetCyclic();
+    }
+
+    init.Launch();
+    Mutate(new EffectMovementGenerator(0), MOTION_SLOT_ACTIVE);
+}
+
 void MotionMaster::MoveFall(uint32 id /*=0*/, bool addFlagForNPC)
 {
     // Xinef: do not allow to move with UNIT_FLAG_DISABLE_MOVE

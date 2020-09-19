@@ -591,6 +591,14 @@ enum SMART_ACTION
     SMART_ACTION_RANDOM_MUSIC                       = 217,    // SoundId1, SoundId2, SoundId3, SoundId4, onlySelf, type
 
     SMART_ACTION_AC_END                             = 218,    // placeholder
+
+    // Sol-only SmartActions:
+
+    SMART_ACTION_SOL_START                          = 230,    // placeholder
+
+    SMART_ACTION_CIRCLE_MOVE                        = 231,    // radius, clockwise (0/1), stepCount, centerSelf
+
+    SMART_ACTION_SOL_END                            = 232     // placeholder
 };
 
 struct SmartAction
@@ -1181,6 +1189,14 @@ struct SmartAction
             uint32 stopMovement;
             uint32 movementExpired;
         } stopMotion;
+
+        struct
+        {
+            uint32 radius;
+            uint32 clockwise;
+            uint32 stepCount;
+            uint32 centerSelf;
+        } circleMove;
 
         //! Note for any new future actions
         //! All parameters must have type uint32

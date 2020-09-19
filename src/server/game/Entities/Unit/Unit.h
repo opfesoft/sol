@@ -2543,7 +2543,7 @@ class Unit : public WorldObject
         uint32 m_state;                                     // Even derived shouldn't modify
         uint32 m_CombatTimer;
         uint32 m_lastManaUse;                               // msecs
-        //TimeTrackerSmall m_movesplineTimer;
+        TimeTracker m_splineSyncTimer;
 
         Diminishing m_Diminishing;
         // Manage all Units that are threatened by us

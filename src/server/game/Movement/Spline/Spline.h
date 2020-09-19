@@ -37,6 +37,7 @@ protected:
 
     uint8 m_mode;
     bool cyclic;
+    float initialOrientation;
 
     enum{
         // could be modified, affects segment length evaluation precision
@@ -65,15 +66,15 @@ protected:
     typedef float (SplineBase::*SegLenghtMethod)(index_type) const;
     static SegLenghtMethod seglengths[ModesEnd];
 
-    void InitLinear(const Vector3*, index_type, bool, index_type);
-    void InitCatmullRom(const Vector3*, index_type, bool, index_type);
-    void InitBezier3(const Vector3*, index_type, bool, index_type);
-    typedef void (SplineBase::*InitMethod)(const Vector3*, index_type, bool, index_type);
+    void InitLinear(const Vector3*, index_type, index_type);
+    void InitCatmullRom(const Vector3*, index_type, index_type);
+    void InitBezier3(const Vector3*, index_type, index_type);
+    typedef void (SplineBase::*InitMethod)(const Vector3*, index_type, index_type);
     static InitMethod initializers[ModesEnd];
 
     void UninitializedSplineEvaluationMethod(index_type, float, Vector3&) const { ABORT(); }
     float UninitializedSplineSegLenghtMethod(index_type) const { ABORT(); return 0.0f; }
-    void UninitializedSplineInitMethod(const Vector3*, index_type, bool, index_type) { ABORT(); }
+    void UninitializedSplineInitMethod(const Vector3*, index_type, index_type) { ABORT(); }
 
 public:
 
@@ -102,12 +103,12 @@ public:
     // Xinef: DO NOT USE EXCEPT FOR SPLINE INITIALIZATION!!!!!!
     const ControlArray* allocateVisualPoints() const { return &pointsVisual; }
     const ControlArray& getPoints(bool visual) const { return visual ? pointsVisual : points;}
-    index_type getPointCount() const { return points.size();}
+    index_type getPointCount(bool visual) const { return visual ? pointsVisual.size() : points.size();}
     const Vector3& getPoint(index_type i, bool visual) const { return visual ? pointsVisual[i] : points[i];}
 
     /** Initializes spline. Don't call other methods while spline not initialized. */
-    void init_spline(const Vector3 * controls, index_type count, EvaluationMode m);
-    void init_cyclic_spline(const Vector3 * controls, index_type count, EvaluationMode m, index_type cyclic_point);
+    void init_spline(const Vector3 * controls, index_type count, EvaluationMode m, float orientation);
+    void init_cyclic_spline(const Vector3 * controls, index_type count, EvaluationMode m, index_type cyclic_point, float orientation);
 
     /** As i can see there are a lot of ways how spline can be initialized
         would be no harm to have some custom initializers. */
@@ -162,8 +163,8 @@ public:
     void computeIndex(float t, index_type& out_idx, float& out_u) const;
 
     /** Initializes spline. Don't call other methods while spline not initialized. */
-    void init_spline(const Vector3 * controls, index_type count, EvaluationMode m) { SplineBase::init_spline(controls, count, m);}
-    void init_cyclic_spline(const Vector3 * controls, index_type count, EvaluationMode m, index_type cyclic_point) { SplineBase::init_cyclic_spline(controls, count, m,cyclic_point);}
+    void init_spline(const Vector3 * controls, index_type count, EvaluationMode m, float orientation = 0) { SplineBase::init_spline(controls, count, m, orientation);}
+    void init_cyclic_spline(const Vector3 * controls, index_type count, EvaluationMode m, index_type cyclic_point, float orientation = 0) { SplineBase::init_cyclic_spline(controls, count, m, cyclic_point, orientation);}
 
     /**  Initializes lengths with SplineBase::SegLength method. */
     void initLengths();

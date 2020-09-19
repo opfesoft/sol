@@ -76,6 +76,7 @@ namespace Movement
         // corrent first vertex
         args.path[0] = real_position;
         args.initialOrientation = real_position.orientation;
+        args.flags.enter_cycle = args.flags.cyclic;
         move_spline.onTransport = transport;
 
         uint32 moveFlags = unit->m_movementInfo.GetMovementFlags();
@@ -113,7 +114,7 @@ namespace Movement
         }
 
         Movement::SplineBase::ControlArray* visualPoints = const_cast<Movement::SplineBase::ControlArray*>(move_spline._Spline().allocateVisualPoints());
-        visualPoints->resize(move_spline._Spline().getPointCount());
+        visualPoints->resize(move_spline._Spline().getPointCount(false));
         // Xinef: Apply hover in creature movement packet
         if (unit->IsHovering())
             std::transform(move_spline._Spline().getPoints(false).begin(), move_spline._Spline().getPoints(false).end(), visualPoints->begin(), HoverMovementTransform(unit->GetHoverHeight()));

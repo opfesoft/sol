@@ -398,7 +398,8 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
     }
     if (e.action.type <= 0
         || (e.action.type >= SMART_ACTION_TC_END && e.action.type <= SMART_ACTION_AC_START)
-        || e.action.type >= SMART_ACTION_AC_END)
+        || (e.action.type >= SMART_ACTION_AC_END && e.action.type <= SMART_ACTION_SOL_START)
+        || e.action.type >= SMART_ACTION_SOL_END)
     {
         sLog->outErrorDb("SmartAIMgr: EntryOrGuid %d using event(%u) has an invalid action type (%u), skipped.", e.entryOrGuid, e.event_id, e.GetActionType());
         return false;
@@ -1239,6 +1240,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_STOP_MOTION:
         case SMART_ACTION_NO_ENVIRONMENT_UPDATE:
         case SMART_ACTION_ZONE_UNDER_ATTACK:
+        case SMART_ACTION_CIRCLE_MOVE:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type(%u), event_type(%u), Entry %d SourceType %u Event %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);

@@ -53,6 +53,7 @@
 #include "DynamicVisibility.h"
 #include "AccountMgr.h"
 #include "TargetedMovementGenerator.h"
+#include "MovementPacketBuilder.h"
 
 #include <math.h>
 
@@ -148,7 +149,7 @@ _hitMask(hitMask), _damageInfo(damageInfo), _healInfo(healInfo), _triggeredByAur
 Unit::Unit(bool isWorldObject) : WorldObject(isWorldObject),
 m_movedByPlayer(NULL), m_lastSanctuaryTime(0), IsAIEnabled(false), NeedChangeAI(false),
 m_ControlledByPlayer(false), m_CreatedByPlayer(false), movespline(new Movement::MoveSpline()), i_AI(NULL), i_disabledAI(NULL), m_realRace(0), m_race(0), m_AutoRepeatFirstCast(false), m_procDeep(0), m_removedAurasCount(0),
-i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this), m_vehicle(NULL), m_vehicleKit(NULL), m_unitTypeMask(UNIT_MASK_NONE), m_HostileRefManager(this)
+i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this), m_vehicle(NULL), m_vehicleKit(NULL), m_unitTypeMask(UNIT_MASK_NONE), m_splineSyncTimer(0), m_HostileRefManager(this)
 {
     m_objectType |= TYPEMASK_UNIT;
     m_objectTypeId = TYPEID_UNIT;
@@ -481,6 +482,20 @@ void Unit::UpdateSplineMovement(uint32 t_diff)
     }
 
     bool arrived = movespline->Finalized();
+
+    if (movespline->isCyclic())
+    {
+        m_splineSyncTimer.Update(t_diff);
+        if (m_splineSyncTimer.Passed())
+        {
+            m_splineSyncTimer.Reset(5000); // Retail value, do not change
+
+            WorldPacket data(SMSG_FLIGHT_SPLINE_SYNC, 4 + GetPackGUID().size());
+            Movement::PacketBuilder::WriteSplineSync(*movespline, data);
+            data.appendPackGUID(GetGUID());
+            SendMessageToSet(&data, true);
+        }
+    }
 
     if (arrived)
         DisableSpline();

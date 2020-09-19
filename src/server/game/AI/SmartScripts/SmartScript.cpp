@@ -3040,6 +3040,57 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             me->FindMap()->LoadGrid(e.target.x, e.target.y);
         break;
     }
+    case SMART_ACTION_CIRCLE_MOVE:
+    {
+        ObjectList* targets = GetTargets(e, unit);
+        if (!targets)
+        {
+            if (me && e.GetTargetType() == SMART_TARGET_POSITION)
+                me->GetMotionMaster()->MoveCirclePath(
+                    e.target.x, e.target.y, e.target.z,
+                    (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
+                    (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun());
+        }
+        else
+        {
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            {
+                if (e.action.circleMove.centerSelf)
+                {
+                    if (IsCreature((*itr)))
+                    {
+                        bool walk = true;
+                        if (SmartAI* sai = CAST_AI(SmartAI, (*itr)->ToCreature()->AI()))
+                            walk = !sai->IsRun();
+                        else
+                            walk = (*itr)->ToCreature()->IsWalking();
+
+                        if (me)
+                            (*itr)->ToCreature()->GetMotionMaster()->MoveCirclePath(
+                                me->GetPositionX() + e.target.x, me->GetPositionY() + e.target.y, me->GetPositionZ() + e.target.z,
+                                (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
+                                (uint8)e.action.circleMove.stepCount, walk);
+                        else if (go)
+                            (*itr)->ToCreature()->GetMotionMaster()->MoveCirclePath(
+                                go->GetPositionX() + e.target.x, go->GetPositionY() + e.target.y, go->GetPositionZ() + e.target.z,
+                                (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
+                                (uint8)e.action.circleMove.stepCount, walk);
+                    }
+                }
+                else if (me)
+                {
+                    me->GetMotionMaster()->MoveCirclePath(
+                        (*itr)->GetPositionX() + e.target.x, (*itr)->GetPositionY() + e.target.y, (*itr)->GetPositionZ() + e.target.z,
+                        (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
+                        (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun());
+                    break;
+                }
+            }
+        }
+
+        delete targets;
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;
