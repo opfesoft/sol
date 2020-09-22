@@ -178,15 +178,15 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
 
 bool SmartAI::HasWayPointPause(uint32 pointId)
 {
-    if (mWayPointPauses)
+    if (mWayPointPauses.size() > 0)
     {
-        auto it = mWayPointPauses->find(pointId);
-        if (it != mWayPointPauses->end())
+        auto it = mWayPointPauses.find(pointId);
+        if (it != mWayPointPauses.end())
             return true;
         else
         {
-            it = mWayPointPauses->find(0);
-            if (it != mWayPointPauses->end())
+            it = mWayPointPauses.find(0);
+            if (it != mWayPointPauses.end())
                 return true;
         }
     }
@@ -242,7 +242,7 @@ bool SmartAI::LoadPath(uint32 entry)
 
     int32 entryOrGuid = -((int32)me->GetDBTableGUIDLow());
     mWayPointPauses = sSmartScriptMgr->GetPauses(entryOrGuid);
-    if (!mWayPointPauses)
+    if (mWayPointPauses.size() == 0)
     {
         entryOrGuid = (int32)me->GetEntry();
         mWayPointPauses = sSmartScriptMgr->GetPauses(entryOrGuid);

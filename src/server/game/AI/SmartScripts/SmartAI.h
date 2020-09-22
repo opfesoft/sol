@@ -205,7 +205,7 @@ class SmartAI : public CreatureAI
         void UpdatePath(const uint32 diff);
         SmartScript mScript;
         WPPath* mWayPoints;
-        WPPauses* mWayPointPauses;
+        WPPauses mWayPointPauses;
         uint32 mEscortState;
         uint32 mCurrentWPID;
         uint32 mCurrentFormationWPID;

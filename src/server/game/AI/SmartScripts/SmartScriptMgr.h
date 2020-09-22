@@ -1583,7 +1583,6 @@ struct SmartScriptHolder
 };
 
 typedef std::unordered_map<uint32, WayPoint*> WPPath;
-typedef std::unordered_set<uint32> WPPauses;
 
 typedef std::list<WorldObject*> ObjectList;
 typedef std::list<uint64> GuidList;
@@ -1668,13 +1667,14 @@ typedef std::list<SmartScriptHolder> SmartAIEventStoredList;
 // all events for all entries / guids
 typedef std::unordered_map<int32, SmartAIEventList> SmartAIEventMap;
 
+// all waypoint pauses
+typedef std::unordered_set<uint32> WPPauses;
+
 class SmartAIMgr
 {
     friend class ACE_Singleton<SmartAIMgr, ACE_Null_Mutex>;
     SmartAIMgr(){};
     public:
-        ~SmartAIMgr();
-
         void LoadSmartAIFromDB();
 
         SmartAIEventList GetScript(int32 entry, SmartScriptType type)
@@ -1692,19 +1692,20 @@ class SmartAIMgr
             }
         }
 
-        WPPauses* GetPauses(int32 entry)
+        WPPauses GetPauses(int32 entry)
         {
+            WPPauses temp;
             if (waypoint_pauses.find(entry) != waypoint_pauses.end())
                 return waypoint_pauses[entry];
             else
-                return 0;
+                return temp;
         }
 
     private:
         //event stores
         SmartAIEventMap mEventMap[SMART_SCRIPT_TYPE_MAX];
 
-        std::unordered_map<int32, WPPauses*> waypoint_pauses;
+        std::unordered_map<int32, WPPauses> waypoint_pauses;
 
         bool IsEventValid(SmartScriptHolder& e);
         bool IsTargetValid(SmartScriptHolder const& e);

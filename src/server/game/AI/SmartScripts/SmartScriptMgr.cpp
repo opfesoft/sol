@@ -92,13 +92,6 @@ SmartWaypointMgr::~SmartWaypointMgr()
     }
 }
 
-SmartAIMgr::~SmartAIMgr()
-{
-    for (auto& itr : waypoint_pauses)
-        delete itr.second;
-    waypoint_pauses.clear();
-}
-
 void SmartAIMgr::LoadSmartAIFromDB()
 {
     uint32 oldMSTime = getMSTime();
@@ -272,8 +265,6 @@ void SmartAIMgr::LoadSmartAIFromDB()
     oldMSTime = getMSTime();
     count = 0;
 
-    for (auto& itr : waypoint_pauses)
-        delete itr.second;
     waypoint_pauses.clear();
     stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_SMART_SCRIPTS_WP_PAUSES);
     stmt->setUInt8(0, SMART_EVENT_WAYPOINT_REACHED);
@@ -297,9 +288,14 @@ void SmartAIMgr::LoadSmartAIFromDB()
             Field* fields = result->Fetch();
             int32 entry = fields[0].GetInt32();
             uint32 pointId = fields[1].GetUInt32();
+
             if (waypoint_pauses.find(entry) == waypoint_pauses.end())
-                waypoint_pauses[entry] = new WPPauses();
-            waypoint_pauses[entry]->insert(pointId);
+            {
+                WPPauses wpPauseList;
+                waypoint_pauses[entry] = wpPauseList;
+            }
+
+            waypoint_pauses[entry].insert(pointId);
             count++;
         } while (result->NextRow());
 
