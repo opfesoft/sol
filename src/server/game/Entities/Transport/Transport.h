@@ -66,6 +66,8 @@ public:
 
     uint32 GetPeriod() const { return GetUInt32Value(GAMEOBJECT_LEVEL); }
     void SetPeriod(uint32 period) { SetUInt32Value(GAMEOBJECT_LEVEL, period); }
+    bool HasArrived() { return _hasArrived.load(std::memory_order_relaxed); }
+    uint32 GetLastArea() { return _lastArea.load(std::memory_order_relaxed); }
 
 private:
     void MoveToNextWaypoint();
@@ -94,6 +96,9 @@ private:
     mutable ACE_Thread_Mutex Lock;
     bool _passengersLoaded;
     bool _delayedTeleport;
+
+    std::atomic<bool> _hasArrived;
+    std::atomic<uint32> _lastArea;
 };
 
 class StaticTransport : public Transport

@@ -78,6 +78,7 @@ void AddSC_npcs_special();
 void AddSC_npc_taxi();
 void AddSC_achievement_scripts();
 void AddSC_action_ip_logger();
+void AddSC_npc_zeppelin_master();
 
 //events
 void AddSC_event_brewfest_scripts();
@@ -660,6 +661,7 @@ void AddWorldScripts()
     AddSC_chat_log(); // location: scripts\World\chat_log.cpp
     AddSC_character_creation();
     AddSC_action_ip_logger(); // location: scripts\World\action_ip_logger.cpp
+    AddSC_npc_zeppelin_master(); // location: scripts/World/npc_zeppelin_master.cpp
 #endif
 }
 

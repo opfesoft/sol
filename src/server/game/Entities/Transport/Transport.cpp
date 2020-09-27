@@ -21,7 +21,7 @@
 #include "WorldModel.h"
 #include "Spell.h"
 
-MotionTransport::MotionTransport() : Transport(), _transportInfo(NULL), _isMoving(true), _pendingStop(false), _triggeredArrivalEvent(false), _triggeredDepartureEvent(false), _passengersLoaded(false), _delayedTeleport(false)
+MotionTransport::MotionTransport() : Transport(), _transportInfo(NULL), _isMoving(true), _pendingStop(false), _triggeredArrivalEvent(false), _triggeredDepartureEvent(false), _passengersLoaded(false), _delayedTeleport(false), _hasArrived(false), _lastArea(0)
 {
     m_updateFlag = UPDATEFLAG_TRANSPORT | UPDATEFLAG_LOWGUID | UPDATEFLAG_STATIONARY_POSITION | UPDATEFLAG_ROTATION;
 }
@@ -156,6 +156,13 @@ void MotionTransport::Update(uint32 diff)
             if (timer < _currentFrame->DepartureTime)
             {
                 SetMoving(false);
+
+                if (_hasArrived != true)
+                {
+                    _hasArrived.store(true, std::memory_order_relaxed);
+                    _lastArea.store(GetAreaId(), std::memory_order_relaxed);
+                }
+
                 if (_pendingStop && GetGoState() != GO_STATE_READY)
                 {
                     SetGoState(GO_STATE_READY);
@@ -175,6 +182,9 @@ void MotionTransport::Update(uint32 diff)
 
         // not waiting anymore
         SetMoving(true);
+
+        if (_hasArrived != false)
+            _hasArrived.store(false, std::memory_order_relaxed);
 
         // Enable movement
         if (GetGOInfo()->moTransport.canBeStopped)
