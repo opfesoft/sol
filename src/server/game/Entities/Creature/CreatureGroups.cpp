@@ -101,7 +101,7 @@ void FormationMgr::LoadCreatureFormations()
         if (group_member->leaderGUID != memberGUID)
         {
             group_member->follow_dist       = fields[2].GetFloat();
-            group_member->follow_angle      = fields[3].GetFloat() * M_PI / 180;
+            group_member->follow_angle      = fields[3].GetFloat() * M_PI / 180.0f;
         }
         else
         {
@@ -245,7 +245,7 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
             itr->second->follow_angle = (2 * M_PI) - itr->second->follow_angle;
         }
 
-        float followAngle = itr->second->follow_angle;
+        float followAngle = itr->second->follow_angle + M_PI; // for some reason, someone thought it was a great idea to invert relative angles...
         float followDist = itr->second->follow_dist;
 
         float dx = x + cos(followAngle + pathAngle) * followDist;
