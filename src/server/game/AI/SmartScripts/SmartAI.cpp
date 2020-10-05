@@ -19,7 +19,6 @@
 #include "SmartAI.h"
 #include "ScriptMgr.h"
 #include "Vehicle.h"
-#include "CreatureGroups.h"
 
 SmartAI::SmartAI(Creature* c) : CreatureAI(c)
 {
@@ -28,7 +27,6 @@ SmartAI::SmartAI(Creature* c) : CreatureAI(c)
     mWayPoints = NULL;
     mEscortState = SMART_ESCORT_NONE;
     mCurrentWPID = 0;//first wp id is 1 !!
-    mCurrentFormationWPID = 0;
     mWPReached = false;
     mOOCReached = false;
     mWPPauseTimer = 0;
@@ -454,17 +452,6 @@ void SmartAI::UpdatePath(const uint32 diff)
 
     if ((me->GetVictim() && me->IsInCombat()) || HasEscortState(SMART_ESCORT_PAUSED | SMART_ESCORT_RETURNING))
         return;
-
-    if (mLastWP && mCurrentFormationWPID != mCurrentWPID)
-    {
-        mCurrentFormationWPID = mCurrentWPID;
-
-        //Call for creature group update
-        if (Creature* creature = me->ToCreature())
-            if (CreatureGroup* formation = creature->GetFormation())
-                if (formation && formation->getLeader() == creature)
-                    formation->LeaderMoveTo(mLastWP->x, mLastWP->y, mLastWP->z, mRun);
-    }
 
     // handle next wp
     if (!me->HasUnitState(UNIT_STATE_NOT_MOVE) && me->movespline->Finalized())//reached WP

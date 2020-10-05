@@ -208,7 +208,6 @@ class SmartAI : public CreatureAI
         WPPauses mWayPointPauses;
         uint32 mEscortState;
         uint32 mCurrentWPID;
-        uint32 mCurrentFormationWPID;
         bool mWPReached;
         bool mOOCReached;
         uint32 mWPPauseTimer;
