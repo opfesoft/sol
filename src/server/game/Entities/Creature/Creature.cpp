@@ -1075,7 +1075,6 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask, uint32 phaseMask)
     data.spawntimesecs = m_respawnDelay;
     // prevent add data integrity problems
     data.wander_distance = GetDefaultMovementType() == IDLE_MOTION_TYPE ? 0.0f : m_wanderDistance;
-    data.currentwaypoint = 0;
     data.curhealth = GetHealth();
     data.curmana = GetPower(POWER_MANA);
     // prevent add data integrity problems
@@ -1109,7 +1108,6 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask, uint32 phaseMask)
     stmt->setFloat(index++, GetOrientation());
     stmt->setUInt32(index++, m_respawnDelay);
     stmt->setFloat(index++, m_wanderDistance);
-    stmt->setUInt32(index++, 0);
     stmt->setUInt32(index++, GetHealth());
     stmt->setUInt32(index++, GetPower(POWER_MANA));
     stmt->setUInt8(index++, uint8(GetDefaultMovementType()));
