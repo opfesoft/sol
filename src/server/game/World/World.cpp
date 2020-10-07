@@ -485,24 +485,6 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_EXPLORE]                  = sConfigMgr->GetFloatDefault("Rate.XP.Explore", 1.0f);
     rate_values[RATE_REPAIRCOST]                  = sConfigMgr->GetFloatDefault("Rate.RepairCost", 1.0f);
 
-    rate_values[RATE_SELLVALUE_ITEM_POOR]         = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Poor", 1.0f);
-    rate_values[RATE_SELLVALUE_ITEM_NORMAL]       = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Normal", 1.0f);
-    rate_values[RATE_SELLVALUE_ITEM_UNCOMMON]     = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Uncommon", 1.0f);
-    rate_values[RATE_SELLVALUE_ITEM_RARE]         = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Rare", 1.0f);
-    rate_values[RATE_SELLVALUE_ITEM_EPIC]         = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Epic", 1.0f);
-    rate_values[RATE_SELLVALUE_ITEM_LEGENDARY]    = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Legendary", 1.0f);
-    rate_values[RATE_SELLVALUE_ITEM_ARTIFACT]     = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Artifact", 1.0f);
-    rate_values[RATE_SELLVALUE_ITEM_HEIRLOOM]     = sConfigMgr->GetFloatDefault("Rate.SellValue.Item.Heirloom", 1.0f);
-
-    rate_values[ RATE_BUYVALUE_ITEM_POOR]         = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Poor", 1.0f);
-    rate_values[ RATE_BUYVALUE_ITEM_NORMAL]       = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Normal", 1.0f);
-    rate_values[ RATE_BUYVALUE_ITEM_UNCOMMON]     = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Uncommon", 1.0f);
-    rate_values[ RATE_BUYVALUE_ITEM_RARE]         = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Rare", 1.0f);
-    rate_values[ RATE_BUYVALUE_ITEM_EPIC]         = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Epic", 1.0f);
-    rate_values[ RATE_BUYVALUE_ITEM_LEGENDARY]    = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Legendary", 1.0f);
-    rate_values[RATE_BUYVALUE_ITEM_ARTIFACT]      = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Artifact", 1.0f);
-    rate_values[RATE_BUYVALUE_ITEM_HEIRLOOM]      = sConfigMgr->GetFloatDefault("Rate.BuyValue.Item.Heirloom", 1.0f);
-
     if (rate_values[RATE_REPAIRCOST] < 0.0f)
     {
         sLog->outError("Rate.RepairCost (%f) must be >=0. Using 0.0 instead.", rate_values[RATE_REPAIRCOST]);
@@ -725,13 +707,6 @@ void World::LoadConfigSettings(bool reload)
         sLog->outError("MinPetName (%i) must be in range 1..%u. Set to 2.", m_int_configs[CONFIG_MIN_PET_NAME], MAX_PET_NAME);
         m_int_configs[CONFIG_MIN_PET_NAME] = 2;
     }
-
-    m_int_configs[CONFIG_CHARTER_COST_GUILD]     = sConfigMgr->GetIntDefault("Guild.CharterCost", 1000);
-    m_int_configs[CONFIG_CHARTER_COST_ARENA_2v2] = sConfigMgr->GetIntDefault("ArenaTeam.CharterCost.2v2", 800000);
-    m_int_configs[CONFIG_CHARTER_COST_ARENA_3v3] = sConfigMgr->GetIntDefault("ArenaTeam.CharterCost.3v3", 1200000);
-    m_int_configs[CONFIG_CHARTER_COST_ARENA_5v5] = sConfigMgr->GetIntDefault("ArenaTeam.CharterCost.5v5", 2000000);
-
-    m_int_configs[CONFIG_MAX_WHO_LIST_RETURN] = sConfigMgr->GetIntDefault("MaxWhoListReturns", 49);
 
     m_int_configs[CONFIG_CHARACTER_CREATING_DISABLED]           = sConfigMgr->GetIntDefault("CharacterCreating.Disabled", 0);
     m_int_configs[CONFIG_CHARACTER_CREATING_DISABLED_RACEMASK]  = sConfigMgr->GetIntDefault("CharacterCreating.Disabled.RaceMask", 0);
@@ -1094,16 +1069,6 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_BATTLEGROUND_INVITATION_TYPE]               = sConfigMgr->GetIntDefault("Battleground.InvitationType", 0);
     m_int_configs[CONFIG_BATTLEGROUND_PREMADE_GROUP_WAIT_FOR_MATCH]  = sConfigMgr->GetIntDefault ("Battleground.PremadeGroupWaitForMatch", 30 * MINUTE * IN_MILLISECONDS);
     m_bool_configs[CONFIG_BG_XP_FOR_KILL]                            = sConfigMgr->GetBoolDefault("Battleground.GiveXPForKills", false);
-    m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK_TIMER]              = sConfigMgr->GetIntDefault("Battleground.ReportAFK.Timer", 4);
-    m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]                    = sConfigMgr->GetIntDefault("Battleground.ReportAFK", 3);
-    if (m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] < 1) {
-        sLog->outError("Battleground.ReportAFK (%d) must be >0. Using 3 instead.", m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]);
-        m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] = 3;
-    } else if (m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] > 9) {
-        sLog->outError("Battleground.ReportAFK (%d) must be <10. Using 3 instead.", m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK]);
-        m_int_configs[CONFIG_BATTLEGROUND_REPORT_AFK] = 3;
-    }
-
     m_int_configs[CONFIG_ARENA_MAX_RATING_DIFFERENCE]                = sConfigMgr->GetIntDefault ("Arena.MaxRatingDifference", 150);
     m_int_configs[CONFIG_ARENA_RATING_DISCARD_TIMER]                 = sConfigMgr->GetIntDefault ("Arena.RatingDiscardTimer", 10 * MINUTE * IN_MILLISECONDS);
     m_bool_configs[CONFIG_ARENA_AUTO_DISTRIBUTE_POINTS]              = sConfigMgr->GetBoolDefault("Arena.AutoDistributePoints", false);
@@ -1350,19 +1315,7 @@ void World::LoadConfigSettings(bool reload)
 
     m_int_configs[CONFIG_PACKET_SPOOF_BANDURATION] = sConfigMgr->GetIntDefault("PacketSpoof.BanDuration", 86400);
 
-    // Random Battleground Rewards
-    m_int_configs[CONFIG_BG_REWARD_WINNER_HONOR_FIRST] = sConfigMgr->GetIntDefault("Battleground.RewardWinnerHonorFirst", 30);
-    m_int_configs[CONFIG_BG_REWARD_WINNER_ARENA_FIRST] = sConfigMgr->GetIntDefault("Battleground.RewardWinnerArenaFirst", 25);
-    m_int_configs[CONFIG_BG_REWARD_WINNER_HONOR_LAST]  = sConfigMgr->GetIntDefault("Battleground.RewardWinnerHonorLast", 15);
-    m_int_configs[CONFIG_BG_REWARD_WINNER_ARENA_LAST]  = sConfigMgr->GetIntDefault("Battleground.RewardWinnerArenaLast", 0);
-    m_int_configs[CONFIG_BG_REWARD_LOSER_HONOR_FIRST]  = sConfigMgr->GetIntDefault("Battleground.RewardLoserHonorFirst", 5);
-    m_int_configs[CONFIG_BG_REWARD_LOSER_HONOR_LAST]   = sConfigMgr->GetIntDefault("Battleground.RewardLoserHonorLast", 5);
-
     m_int_configs[CONFIG_WAYPOINT_MOVEMENT_STOP_TIME_FOR_PLAYER] = sConfigMgr->GetIntDefault("WaypointMovementStopTimeForPlayer", 120);
-
-    //Debug
-    m_bool_configs[CONFIG_DEBUG_BATTLEGROUND] = sConfigMgr->GetBoolDefault("Debug.Battleground", false);
-    m_bool_configs[CONFIG_DEBUG_ARENA]        = sConfigMgr->GetBoolDefault("Debug.Arena",        false);
 
     // call ScriptMgr if we're reloading the configuration
     sScriptMgr->OnAfterConfigLoad(reload);
