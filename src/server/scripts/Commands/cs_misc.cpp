@@ -113,7 +113,8 @@ public:
             { "unbindsight",        SEC_ADMINISTRATOR,      false, HandleUnbindSightCommand,            "" },
             { "playall",            SEC_GAMEMASTER,         false, HandlePlayAllCommand,                "" },
             { "skirmish",           SEC_ADMINISTRATOR,      false, HandleSkirmishCommand,               "" },
-            { "mailbox",            SEC_MODERATOR,          false, &HandleMailBoxCommand,               "" }
+            { "mailbox",            SEC_MODERATOR,          false, &HandleMailBoxCommand,               "" },
+            { "face",               SEC_MODERATOR,          false, &HandleFaceCommand,                  "" }
         };
         return commandTable;
     }
@@ -3339,6 +3340,17 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
 
         handler->GetSession()->SendShowMailBox(player->GetGUID());
+        return true;
+    }
+
+    static bool HandleFaceCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        Unit* unit = handler->getSelectedUnit();
+        if (!unit)
+            return false;
+
+        Player* player = handler->GetSession()->GetPlayer();
+        player->SetFacingTo(player->GetAngle(unit->GetPositionX(), unit->GetPositionY()));
         return true;
     }
 };

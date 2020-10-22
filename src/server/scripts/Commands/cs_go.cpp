@@ -62,78 +62,95 @@ public:
     //teleport to creature
     static bool HandleGoCreatureCommand(ChatHandler* handler, char const* args)
     {
-        if (!*args)
-            return false;
-
+        float x = 0.f, y = 0.f, z = 0.f, ort = 0.f;
+        int mapId = 0;
         Player* player = handler->GetSession()->GetPlayer();
 
-        // "id" or number or [name] Shift-click form |color|Hcreature_entry:creature_id|h[name]|h|r
-        char* param1 = handler->extractKeyFromLink((char*)args, "Hcreature");
-        if (!param1)
-            return false;
-
-        std::ostringstream whereClause;
-
-        // User wants to teleport to the NPC's template entry
-        if (strcmp(param1, "id") == 0)
+        if (*args)
         {
-            // Get the "creature_template.entry"
-            // number or [name] Shift-click form |color|Hcreature_entry:creature_id|h[name]|h|r
-            char* tail = strtok(nullptr, "");
-            if (!tail)
-                return false;
-            char* id = handler->extractKeyFromLink(tail, "Hcreature_entry");
-            if (!id)
+            // "id" or number or [name] Shift-click form |color|Hcreature_entry:creature_id|h[name]|h|r
+            char* param1 = handler->extractKeyFromLink((char*)args, "Hcreature");
+            if (!param1)
                 return false;
 
-            int32 entry = atoi(id);
-            if (!entry)
-                return false;
+            std::ostringstream whereClause;
 
-            whereClause << "WHERE id = '" << entry << '\'';
-        }
-        else
-        {
-            int32 guid = atoi(param1);
-
-            // Number is invalid - maybe the user specified the mob's name
-            if (!guid)
+            // User wants to teleport to the NPC's template entry
+            if (strcmp(param1, "id") == 0)
             {
-                std::string name = param1;
-                WorldDatabase.EscapeString(name);
-                whereClause << ", creature_template WHERE creature.id = creature_template.entry AND creature_template.name " _LIKE_ " '" << name << '\'';
+                // Get the "creature_template.entry"
+                // number or [name] Shift-click form |color|Hcreature_entry:creature_id|h[name]|h|r
+                char* tail = strtok(nullptr, "");
+                if (!tail)
+                    return false;
+                char* id = handler->extractKeyFromLink(tail, "Hcreature_entry");
+                if (!id)
+                    return false;
+
+                int32 entry = atoi(id);
+                if (!entry)
+                    return false;
+
+                whereClause << "WHERE id = '" << entry << '\'';
             }
             else
-                whereClause <<  "WHERE guid = '" << guid << '\'';
-        }
+            {
+                int32 guid = atoi(param1);
 
-        QueryResult result = WorldDatabase.PQuery("SELECT position_x, position_y, position_z, orientation, map, guid, id FROM creature %s", whereClause.str().c_str());
-        if (!result)
+                // Number is invalid - maybe the user specified the mob's name
+                if (!guid)
+                {
+                    std::string name = param1;
+                    WorldDatabase.EscapeString(name);
+                    whereClause << ", creature_template WHERE creature.id = creature_template.entry AND creature_template.name " _LIKE_ " '" << name << '\'';
+                }
+                else
+                    whereClause <<  "WHERE guid = '" << guid << '\'';
+            }
+
+            QueryResult result = WorldDatabase.PQuery("SELECT position_x, position_y, position_z, orientation, map, guid, id FROM creature %s", whereClause.str().c_str());
+            if (!result)
+            {
+                handler->SendSysMessage(LANG_COMMAND_GOCREATNOTFOUND);
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+            if (result->GetRowCount() > 1)
+                handler->SendSysMessage(LANG_COMMAND_GOCREATMULTIPLE);
+
+            Field* fields = result->Fetch();
+            x = fields[0].GetFloat();
+            y = fields[1].GetFloat();
+            z = fields[2].GetFloat();
+            ort = fields[3].GetFloat();
+            mapId = fields[4].GetUInt16();
+            uint32 guid = fields[5].GetUInt32();
+            uint32 id = fields[6].GetUInt32();
+
+            // if creature is in same map with caster go at its current location
+            if (Creature* creature = ObjectAccessor::GetCreature(*player, MAKE_NEW_GUID(guid, id, HIGHGUID_UNIT)))
+            {
+                x = creature->GetPositionX();
+                y = creature->GetPositionY();
+                z = creature->GetPositionZ();
+                ort = creature->GetOrientation();
+            }
+        }
+        else if (Unit* unit = handler->getSelectedUnit())
         {
-            handler->SendSysMessage(LANG_COMMAND_GOCREATNOTFOUND);
-            handler->SetSentErrorMessage(true);
+            if (unit->ToCreature())
+            {
+                x = unit->GetPositionX();
+                y = unit->GetPositionY();
+                z = unit->GetPositionZ();
+                ort = unit->GetOrientation();
+                mapId = unit->GetMapId();
+            }
+            else
+                return false;
+        }
+        else
             return false;
-        }
-        if (result->GetRowCount() > 1)
-            handler->SendSysMessage(LANG_COMMAND_GOCREATMULTIPLE);
-
-        Field* fields = result->Fetch();
-        float x = fields[0].GetFloat();
-        float y = fields[1].GetFloat();
-        float z = fields[2].GetFloat();
-        float ort = fields[3].GetFloat();
-        int mapId = fields[4].GetUInt16();
-        uint32 guid = fields[5].GetUInt32();
-        uint32 id = fields[6].GetUInt32();
-
-        // if creature is in same map with caster go at its current location
-        if (Creature* creature = ObjectAccessor::GetCreature(*player, MAKE_NEW_GUID(guid, id, HIGHGUID_UNIT)))
-        {
-            x = creature->GetPositionX();
-            y = creature->GetPositionY();
-            z = creature->GetPositionZ();
-            ort = creature->GetOrientation();
-        }
 
         if (!MapManager::IsValidMapCoord(mapId, x, y, z, ort))
         {
