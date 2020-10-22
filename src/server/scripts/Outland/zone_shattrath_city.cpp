@@ -340,61 +340,61 @@ public:
                 case 6:
                     Talk(WHISP2, player);
                     break;
-                case 7:
+                case 8:
                     Talk(WHISP3, player);
                     break;
-                case 8:
+                case 10:
                     Talk(WHISP4, player);
                     break;
-                case 17:
+                case 31:
                     Talk(WHISP5, player);
                     break;
-                case 18:
+                case 32:
                     Talk(WHISP6, player);
                     break;
-                case 19:
+                case 33:
                     Talk(WHISP7, player);
                     break;
-                case 33:
+                case 73:
                     Talk(WHISP8, player);
                     break;
-                case 34:
+                case 74:
                     Talk(WHISP9, player);
                     break;
-                case 35:
+                case 75:
                     Talk(WHISP10, player);
                     break;
-                case 36:
+                case 76:
                     Talk(WHISP11, player);
                     break;
-                case 43:
+                case 98:
                     Talk(WHISP12, player);
                     break;
-                case 44:
+                case 99:
                     Talk(WHISP13, player);
                     break;
-                case 49:
+                case 113:
                     Talk(WHISP14, player);
                     break;
-                case 50:
+                case 119:
                     Talk(WHISP15, player);
                     break;
-                case 51:
+                case 120:
                     Talk(WHISP16, player);
                     break;
-                case 52:
+                case 121:
                     Talk(WHISP17, player);
                     break;
-                case 53:
+                case 127:
                     Talk(WHISP18, player);
                     break;
-                case 54:
+                case 128:
                     Talk(WHISP19, player);
                     break;
-                case 55:
+                case 129:
                     Talk(WHISP20, player);
                     break;
-                case 56:
+                case 130:
                     Talk(WHISP21, player);
                     player->GroupEventHappens(10211, me);
                     break;
