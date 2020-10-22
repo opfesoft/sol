@@ -4622,11 +4622,16 @@ void SmartScript::SetScript9(SmartScriptHolder& e, uint32 entry)
     {
         i->enableTimed = i == mTimedActionList.begin();//enable processing only for the first action
 
-        if (e.action.timedActionList.timerType == 0)
-            i->event.type = SMART_EVENT_UPDATE_OOC;
-        else if (e.action.timedActionList.timerType == 1)
-            i->event.type = SMART_EVENT_UPDATE_IC;
-        else if (e.action.timedActionList.timerType > 1)
+        if (e.GetActionType() == SMART_ACTION_CALL_TIMED_ACTIONLIST)
+        {
+            if (e.action.timedActionList.timerType == 0)
+                i->event.type = SMART_EVENT_UPDATE_OOC;
+            else if (e.action.timedActionList.timerType == 1)
+                i->event.type = SMART_EVENT_UPDATE_IC;
+            else if (e.action.timedActionList.timerType > 1)
+                i->event.type = SMART_EVENT_UPDATE;
+        }
+        else
             i->event.type = SMART_EVENT_UPDATE;
 
         InitTimer((*i));
