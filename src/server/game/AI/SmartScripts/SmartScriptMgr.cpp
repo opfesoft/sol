@@ -640,6 +640,13 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 GameEventMgr::GameEventDataMap const& events = sGameEventMgr->GetEventMap();
                 if (e.event.gameEvent.gameEventId >= events.size() || !events[e.event.gameEvent.gameEventId].isValid())
                     return false;
+                if (e.GetActionType() == SMART_ACTION_SUMMON_CREATURE || e.GetActionType() == SMART_ACTION_SUMMON_GO || e.GetActionType() == SMART_ACTION_SUMMON_CREATURE_GROUP)
+                {
+                    // The game event manager locks the HashMapHolder while iterating through the objects and calling their event handler.
+                    // The "summon" actions will also lock the HashMapHolder to insert the new objects which will lead to a deadlock.
+                    sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u EventType %u uses invalid ActionType %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetEventType(), e.GetActionType());
+                    return false;
+                }
                 break;
             }
             case SMART_EVENT_ACTION_DONE:
