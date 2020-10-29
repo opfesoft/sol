@@ -1338,16 +1338,8 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap, bool gri
     m_deathState = ALIVE;
 
     m_respawnTime  = GetMap()->GetCreatureRespawnTime(m_DBTableGuid);
-    if (m_respawnTime)                          // respawn on Update
-    {
+    if (m_respawnTime > time(nullptr))          // not ready to respawn yet, set to DEAD
         m_deathState = DEAD;
-        if (CanFly())
-        {
-            float tz = map->GetHeight(GetPhaseMask(), data->posX, data->posY, data->posZ, false);
-            if (data->posZ - tz > 0.1f)
-                Relocate(data->posX, data->posY, tz);
-        }
-    }
 
     uint32 curhealth;
 
