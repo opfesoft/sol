@@ -4138,7 +4138,17 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         }
 
         if (creature)
-            ProcessTimedAction(e, e.event.distance.repeat, e.event.distance.repeat);
+        {
+            if (e.event.distance.state != 0)
+            {
+                if (Creature* distCreature = creature->ToCreature())
+                    if ((e.event.distance.state == 1 && distCreature->IsAlive()) ||
+                        (e.event.distance.state == 2 && !distCreature->IsAlive()))
+                        ProcessTimedAction(e, e.event.distance.repeat, e.event.distance.repeat);
+            }
+            else
+                ProcessTimedAction(e, e.event.distance.repeat, e.event.distance.repeat);
+        }
 
         break;
     }
@@ -4169,7 +4179,18 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         }
 
         if (gameobject)
-            ProcessTimedAction(e, e.event.distance.repeat, e.event.distance.repeat);
+        {
+            if (e.event.distance.state != 0)
+            {
+                if (GameObject* distGameObject = gameobject->ToGameObject())
+                    if ((e.event.distance.state == 1 && distGameObject->GetGoState() == GO_STATE_ACTIVE) ||
+                        (e.event.distance.state == 2 && distGameObject->GetGoState() == GO_STATE_READY) ||
+                        (e.event.distance.state == 3 && distGameObject->GetGoState() == GO_STATE_ACTIVE_ALTERNATIVE))
+                        ProcessTimedAction(e, e.event.distance.repeat, e.event.distance.repeat);
+            }
+            else
+                ProcessTimedAction(e, e.event.distance.repeat, e.event.distance.repeat);
+        }
 
         break;
     }

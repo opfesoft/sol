@@ -163,8 +163,8 @@ enum SMART_EVENT
     SMART_EVENT_ACTION_DONE              = 72,      // eventId (SharedDefines.EventId)
     SMART_EVENT_ON_SPELLCLICK            = 73,      // clicker (unit)
     SMART_EVENT_FRIENDLY_HEALTH_PCT      = 74,      // minHpPct, maxHpPct, repeatMin, repeatMax
-    SMART_EVENT_DISTANCE_CREATURE        = 75,      // guid, entry, distance, repeat
-    SMART_EVENT_DISTANCE_GAMEOBJECT      = 76,      // guid, entry, distance, repeat
+    SMART_EVENT_DISTANCE_CREATURE        = 75,      // guid, entry, distance, repeat, alive state
+    SMART_EVENT_DISTANCE_GAMEOBJECT      = 76,      // guid, entry, distance, repeat, GO state
     SMART_EVENT_COUNTER_SET              = 77,      // id, value, cooldownMin, cooldownMax
 
     SMART_EVENT_END                      = 78
@@ -399,6 +399,7 @@ struct SmartEvent
             uint32 entry;
             uint32 dist;
             uint32 repeat;
+            uint32 state;
         } distance;
 
         struct
