@@ -67,12 +67,11 @@ public:
         void UpdateAI(uint32 diff) override
         {
             events.Update(diff);
-            switch(events.GetEvent())
+            switch(events.ExecuteEvent())
             {
                 case 0:
                     break;
                 case 1:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_1);
@@ -85,7 +84,6 @@ public:
                     }
                     break;
                 case 2:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_2);
@@ -98,7 +96,6 @@ public:
                     }
                     break;
                 case 3:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_3);
@@ -111,7 +108,6 @@ public:
                     }
                     break;
                 case 4:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_4);
@@ -124,7 +120,6 @@ public:
                     }
                     break;
                 case 5:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_5);
@@ -137,7 +132,6 @@ public:
                     }
                     break;
                 case 6:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_6);
@@ -149,7 +143,6 @@ public:
                     }
                     break;
                 case 7:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_7);
@@ -157,7 +150,6 @@ public:
                     }
                     break;
                 case 8:
-                    events.PopEvent();
                     if (me->GetEntry() == NPC_JAINA_PART1)
                     {
                         Talk(SAY_JAINA_INTRO_8);

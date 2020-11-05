@@ -381,7 +381,7 @@ public:
             if( me->HasUnitState(UNIT_STATE_CASTING) )
                 return;
             
-            switch( events.GetEvent() )
+            switch( events.ExecuteEvent() )
             {
                 case 0:
                     break;
@@ -391,14 +391,12 @@ public:
                         me->CastSpell(me, SPELL_BERSERK, true);
                         me->MonsterYell(TEXT_HODIR_BERSERK, LANG_UNIVERSAL, 0);
                         me->PlayDirectSound(SOUND_HODIR_BERSERK, 0);
-                        events.PopEvent();
                     }
                     break;
                 case EVENT_HARD_MODE_MISSED:
                     {
                         hardmode = false;
                         me->MonsterTextEmote(TEXTEMOTE_HODIR_HARD_MODE_MISSED, 0);
-                        events.PopEvent();
                     }
                     break;
                 case EVENT_FLASH_FREEZE:
@@ -432,7 +430,6 @@ public:
                 case EVENT_SMALL_ICICLES_ENABLE:
                     {
                         SmallIcicles(true);
-                        events.PopEvent();
                     }
                     break;
                 case EVENT_FROZEN_BLOWS:
@@ -441,7 +438,6 @@ public:
                         me->MonsterTextEmote(TEXTEMOTE_HODIR_FROZEN_BLOWS, 0);
                         me->PlayDirectSound(SOUND_HODIR_FROZEN_BLOWS, 0);
                         me->CastSpell(me, SPELL_FROZEN_BLOWS, true);
-                        events.PopEvent();
                     }
                     break;
                 case EVENT_FREEZE:
@@ -763,7 +759,7 @@ public:
             if( me->HasUnitState(UNIT_STATE_CASTING) )
                 return;
 
-            switch( events.GetEvent() )
+            switch( events.ExecuteEvent() )
             {
                 case 0:
                     break;
@@ -775,7 +771,6 @@ public:
                                     if( Creature* hodir = ObjectAccessor::GetCreature(*me, g) )
                                     {
                                         AttackStart(hodir);
-                                        events.PopEvent();
                                         ScheduleAbilities();
                                         break;
                                     }
@@ -860,7 +855,7 @@ public:
             if( me->HasUnitState(UNIT_STATE_CASTING) )
                 return;
 
-            switch( events.GetEvent() )
+            switch( events.ExecuteEvent() )
             {
                 case 0:
                     break;
@@ -872,7 +867,6 @@ public:
                                     if( Creature* hodir = ObjectAccessor::GetCreature(*me, g) )
                                     {
                                         AttackStart(hodir);
-                                        events.PopEvent();
                                         ScheduleAbilities();
                                         break;
                                     }
@@ -965,7 +959,7 @@ public:
             if( me->HasUnitState(UNIT_STATE_CASTING) )
                 return;
 
-            switch( events.GetEvent() )
+            switch( events.ExecuteEvent() )
             {
                 case 0:
                     break;
@@ -977,7 +971,6 @@ public:
                                     if( Creature* hodir = ObjectAccessor::GetCreature(*me, g) )
                                     {
                                         AttackStart(hodir);
-                                        events.PopEvent();
                                         ScheduleAbilities();
                                         break;
                                     }
@@ -1060,7 +1053,7 @@ public:
             if( me->HasUnitState(UNIT_STATE_CASTING) )
                 return;
 
-            switch( events.GetEvent() )
+            switch( events.ExecuteEvent() )
             {
                 case 0:
                     break;
@@ -1072,7 +1065,6 @@ public:
                                     if( Creature* hodir = ObjectAccessor::GetCreature(*me, g) )
                                     {
                                         AttackStart(hodir);
-                                        events.PopEvent();
                                         ScheduleAbilities();
                                         break;
                                     }
