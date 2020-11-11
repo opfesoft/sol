@@ -324,7 +324,10 @@ bool TargetedMovementGeneratorMedium<T,D>::DoUpdate(T* owner, uint32 time_diff)
         if (pOwner->IsFlying())
             owner->UpdateSpeed(MOVE_FLIGHT, true);
         else
+        {
             owner->UpdateSpeed(MOVE_RUN, true);
+            owner->UpdateSpeed(MOVE_SWIM, true);
+        }
     }
 
     return true;

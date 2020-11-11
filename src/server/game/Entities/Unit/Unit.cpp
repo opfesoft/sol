@@ -13163,7 +13163,11 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                         if (distOwner > maxDist && !m_petCatchUp)
                             m_petCatchUp = true;
 
-                        float speedFactor = m_petCatchUp ? 1.05f : 0.95f;
+                        float speedFactor;
+                        if (isSwimming())
+                            speedFactor = m_petCatchUp ? 1.08f : 0.98f;
+                        else
+                            speedFactor = m_petCatchUp ? 1.05f : 0.95f;
 
                         if (npcFollowingPlayer && (ownerSpeed * speedFactor > speed * ToCreature()->GetCreatureTemplate()->speed_run))
                             speed *= ToCreature()->GetCreatureTemplate()->speed_run;
