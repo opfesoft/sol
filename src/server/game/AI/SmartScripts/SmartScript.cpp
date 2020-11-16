@@ -1667,7 +1667,24 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     case SMART_ACTION_STORE_TARGET_LIST:
     {
         ObjectList* targets = GetTargets(e, unit);
-        StoreTargetList(targets, e.action.storeTargets.id);
+        if (!targets)
+            break;
+
+        if (e.action.storeTargets.idRange > 0 && e.action.storeTargets.idRange >= e.action.storeTargets.id)
+        {
+            uint32 idCount = e.action.storeTargets.id;
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            {
+                ObjectList* l = new ObjectList();
+                l->push_back(*itr);
+                StoreTargetList(l, idCount++);
+                if (idCount > e.action.storeTargets.idRange)
+                    break;
+            }
+            delete targets;
+        }
+        else
+            StoreTargetList(targets, e.action.storeTargets.id);
         break;
     }
     case SMART_ACTION_TELEPORT:
@@ -3386,7 +3403,9 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
             }
 
             if ((e.target.unitDistance.creature && (*itr)->ToCreature()->GetEntry() == e.target.unitDistance.creature) || !e.target.unitDistance.creature)
+            {
                 l->push_back(*itr);
+            }
         }
 
         delete units;

@@ -495,7 +495,7 @@ enum SMART_ACTION
     SMART_ACTION_SET_SWIM                           = 61,     // 0/1
     SMART_ACTION_TELEPORT                           = 62,     // mapID,
     SMART_ACTION_SET_COUNTER                        = 63,     // id, value, reset (0/1)
-    SMART_ACTION_STORE_TARGET_LIST                  = 64,     // varID,
+    SMART_ACTION_STORE_TARGET_LIST                  = 64,     // varID, varID range
     SMART_ACTION_WP_RESUME                          = 65,     // none
     SMART_ACTION_SET_ORIENTATION                    = 66,     //
     SMART_ACTION_CREATE_TIMED_EVENT                 = 67,     // id, InitialMin, InitialMax, RepeatMin(only if it repeats), RepeatMax(only if it repeats), chance
@@ -953,6 +953,7 @@ struct SmartAction
         struct
         {
             uint32 id;
+            uint32 idRange;
         } storeTargets;
 
         struct
@@ -1237,7 +1238,7 @@ enum SMARTAI_TARGETS
     SMART_TARGET_ACTION_INVOKER                 = 7,    // Unit who caused this Event to occur
     SMART_TARGET_POSITION                       = 8,    // use xyz from event params
     SMART_TARGET_CREATURE_RANGE                 = 9,    // CreatureEntry(0any), minDist, maxDist, alive(0 - both, 1 - alive, 2 - dead)
-    SMART_TARGET_CREATURE_GUID                  = 10,   // guid, entry
+    SMART_TARGET_CREATURE_GUID                  = 10,   // guid, entry, getFromHashMap (0/1, this does not work in instances!)
     SMART_TARGET_CREATURE_DISTANCE              = 11,   // CreatureEntry(0any), maxDist, alive(0 - both, 1 - alive, 2 - dead)
     SMART_TARGET_STORED                         = 12,   // id, uses pre-stored target(list)
     SMART_TARGET_GAMEOBJECT_RANGE               = 13,   // entry(0any), min, max
