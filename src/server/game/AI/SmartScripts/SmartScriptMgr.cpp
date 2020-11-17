@@ -371,6 +371,7 @@ bool SmartAIMgr::IsTargetValid(SmartScriptHolder const& e)
         case SMART_TARGET_CLOSEST_FRIENDLY:
         case SMART_TARGET_STORED:
         case SMART_TARGET_FARTHEST:
+        case SMART_TARGET_VEHICLE_PASSENGER:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled target_type(%u), Entry %d SourceType %u Event %u Action %u, skipped.", e.GetTargetType(), e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
@@ -430,7 +431,8 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 e.entryOrGuid, e.event_id, e.GetTargetType());
         return false;
     }
-    if (e.target.type == SMART_TARGET_LOOT_RECIPIENTS || e.target.type == SMART_TARGET_VEHICLE_PASSENGER) {
+    if (e.target.type == SMART_TARGET_LOOT_RECIPIENTS)
+    {
         sLog->outErrorDb("SmartAIMgr: EntryOrGuid %d using event(%u) has a target type that is not yet supported on AzerothCore (%u), skipped.",
                 e.entryOrGuid, e.event_id, e.GetTargetType());
         return false;

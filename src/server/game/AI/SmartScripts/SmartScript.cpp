@@ -3642,6 +3642,15 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
 
         break;
     }
+    case SMART_TARGET_VEHICLE_PASSENGER:
+    {
+        if (me && me->IsVehicle())
+            for (std::pair<int8 const, VehicleSeat>& seat : me->GetVehicleKit()->Seats)
+                if (!e.target.vehicle.seatMask || (e.target.vehicle.seatMask & (1 << seat.first)))
+                    if (Unit* u = ObjectAccessor::GetUnit(*me, seat.second.Passenger.Guid))
+                        l->push_back(u);
+        break;
+    }
     case SMART_TARGET_NONE:
     case SMART_TARGET_POSITION:
     default:
