@@ -3108,6 +3108,33 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         delete targets;
         break;
     }
+    case SMART_ACTION_COPY_HEALTH:
+    {
+        ObjectList* targets = GetTargets(e, unit);
+        if (!targets)
+            break;
+
+        if (!me)
+            break;
+
+        bool copyFromTarget = e.action.copyHealth.copyFromTarget;
+        bool usePercentage = e.action.copyHealth.usePercentage;
+
+        for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            if (Unit* unit = (*itr)->ToUnit())
+            {
+                if (copyFromTarget)
+                {
+                    me->SetHealth(usePercentage ? (me->GetMaxHealth() * unit->GetHealthPct() / 100.0f) : unit->GetHealth());
+                    break;
+                }
+                else
+                    unit->SetHealth(usePercentage ? (unit->GetMaxHealth() * me->GetHealthPct() / 100.0f) : me->GetHealth());
+            }
+
+        delete targets;
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;
