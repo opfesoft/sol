@@ -22,6 +22,27 @@ class WorldObject;
 
 struct GameTele;
 
+namespace acore
+{
+    class BroadcastTextBuilder
+    {
+    public:
+        BroadcastTextBuilder(WorldObject const* obj, ChatMsg msgType, uint32 textId, uint8 gender, WorldObject const* target = nullptr, uint32 achievementId = 0)
+            : _source(obj), _msgType(msgType), _textId(textId), _gender(gender), _target(target), _achievementId(achievementId) { }
+
+        void operator()(WorldPacket& data, LocaleConstant locale) const;
+        size_t operator()(WorldPacket* data, LocaleConstant locale) const;
+
+    private:
+        WorldObject const* _source;
+        ChatMsg _msgType;
+        uint32 _textId;
+        uint8 _gender;
+        WorldObject const* _target;
+        uint32 _achievementId;
+    };
+}
+
 class ChatCommand
 {
     typedef bool(*pHandler)(ChatHandler*, char const*);

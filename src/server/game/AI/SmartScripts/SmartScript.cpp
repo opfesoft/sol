@@ -27,27 +27,6 @@
 #include "SpellMgr.h"
 #include "Vehicle.h"
 
-class AcoreStringTextBuilder
-{
-public:
-    AcoreStringTextBuilder(WorldObject* obj, ChatMsg msgtype, int32 id, uint32 language, WorldObject* target)
-        : _source(obj), _msgType(msgtype), _textId(id), _language(language), _target(target)
-    {
-    }
-
-    size_t operator()(WorldPacket* data, LocaleConstant locale) const
-    {
-        std::string text = sObjectMgr->GetAcoreString(_textId, locale);
-        return ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _source, _target, text, 0, "", locale);
-    }
-
-    WorldObject* _source;
-    ChatMsg _msgType;
-    int32 _textId;
-    uint32 _language;
-    WorldObject* _target;
-};
-
 SmartScript::SmartScript()
 {
     go = NULL;
@@ -1045,7 +1024,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         me->DoFleeToGetAssistance();
         if (e.action.flee.withEmote)
         {
-            AcoreStringTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, LANG_FLEE, LANG_UNIVERSAL, NULL);
+            acore::BroadcastTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, BROADCAST_TEXT_FLEE_FOR_ASSIST, me->getGender());
             sCreatureTextMgr->SendChatPacket(me, builder, CHAT_MSG_MONSTER_EMOTE);
         }
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
@@ -1343,7 +1322,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 (*itr)->ToCreature()->CallForHelp((float)e.action.callHelp.range, e.action.callHelp.forceAssist != 0);
                 if (e.action.callHelp.withEmote)
                 {
-                    AcoreStringTextBuilder builder(*itr, CHAT_MSG_MONSTER_EMOTE, LANG_CALL_FOR_HELP, LANG_UNIVERSAL, NULL);
+                    acore::BroadcastTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, BROADCAST_TEXT_CALL_FOR_HELP, me->getGender());
                     sCreatureTextMgr->SendChatPacket(*itr, builder, CHAT_MSG_MONSTER_EMOTE);
                 }
             }
