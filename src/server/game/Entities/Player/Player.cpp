@@ -16855,10 +16855,7 @@ void Player::AreaExploredOrEventHappens(uint32 questId)
             {
                 q_status->Explored = true;
                 m_QuestStatusSave[questId] = true;
-
-                // xinef: if we cannot complete quest send exploration succeded
-                if (!CanCompleteQuest(questId, q_status))
-                    SendQuestComplete(questId);
+                SendQuestComplete(questId);
             }
         }
         if (CanCompleteQuest(questId, q_status))
