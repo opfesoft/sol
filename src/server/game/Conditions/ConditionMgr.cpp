@@ -16,6 +16,7 @@
 #include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "Spell.h"
+#include "Vehicle.h"
 
 // Checks if object meets the condition
 // Can have CONDITION_SOURCE_TYPE_NONE && !mReferenceId if called from a special event (ie: eventAI)
@@ -380,6 +381,13 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo)
                 condMeets = unit->HasAuraType(AuraType(ConditionValue1));
             break;
         }
+        case CONDITION_HAS_EMPTY_SEAT:
+        {
+            if (Unit* unit = object->ToUnit())
+                if (Vehicle* vehicle = unit->GetVehicleKit())
+                    condMeets = vehicle->GetNextEmptySeat(0, true) < 0 ? false : true;
+            break;
+        }
         default:
             condMeets = false;
             break;
@@ -558,6 +566,9 @@ uint32 Condition::GetSearcherTypeMaskForCondition()
             break;
         case CONDITION_HAS_AURA_TYPE:
             mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_HAS_EMPTY_SEAT:
+            mask |= GRID_MAP_TYPE_MASK_CREATURE;
             break;
         default:
             ASSERT(false && "Condition::GetSearcherTypeMaskForCondition - missing condition handling!");
@@ -1603,7 +1614,8 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
 {
     if (cond->ConditionType == CONDITION_NONE
         || (cond->ConditionType >= CONDITION_TC_END && cond->ConditionType <= CONDITION_AC_START)
-        || (cond->ConditionType >= CONDITION_AC_END)
+        || (cond->ConditionType >= CONDITION_AC_END && cond->ConditionType <= CONDITION_SOL_START)
+        || (cond->ConditionType >= CONDITION_SOL_END)
         )
     {
         sLog->outErrorDb("SourceEntry %u in `condition` table has an invalid ConditionType (%u), ignoring.",
@@ -2178,13 +2190,13 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
 
             if (quest->RequiredNpcOrGo[cond->ConditionValue2] == 0)
             {
-                sLog->outErrorDb("CONDITION_QUEST_OBJECTIVE_PROGRESS has quest objective %u for quest %u, but the field RequiredNPCOrGo%u is 0, skipped.", cond->ConditionValue2, cond->ConditionValue1, cond->ConditionValue2);
+                sLog->outErrorDb("CONDITION_QUEST_OBJECTIVE_PROGRESS has quest objective %u for quest %u, but the field RequiredNPCOrGo%u is 0, skipped.", cond->ConditionValue2 + 1, cond->ConditionValue1, cond->ConditionValue2 + 1);
                 return false;
             }
 
             if (cond->ConditionValue3 > quest->RequiredNpcOrGoCount[cond->ConditionValue2])
             {
-                sLog->outErrorDb("CONDITION_QUEST_OBJECTIVE_PROGRESS has quest objective count %u in value3, but quest %u has a maximum objective count of %u in RequiredNPCOrGOCount%u, skipped.", cond->ConditionValue3, cond->ConditionValue2, quest->RequiredNpcOrGoCount[cond->ConditionValue2], cond->ConditionValue2);
+                sLog->outErrorDb("CONDITION_QUEST_OBJECTIVE_PROGRESS has quest objective count %u in value3, but quest %u has a maximum objective count of %u in RequiredNPCOrGOCount%u, skipped.", cond->ConditionValue3, cond->ConditionValue2, quest->RequiredNpcOrGoCount[cond->ConditionValue2], cond->ConditionValue2 + 1);
                 return false;
             }
             break;

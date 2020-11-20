@@ -76,7 +76,11 @@ enum ConditionTypes
     CONDITION_AC_START                 = 100,
     CONDITION_QUEST_SATISFY_EXCLUSIVE  = 101,                // quest_id         0              0                  true if satisfied exclusive group
     CONDITION_HAS_AURA_TYPE            = 102,                // aura_type        0              0                  true if has aura type
-    CONDITION_AC_END                   = 103                 // placeholder
+    CONDITION_AC_END                   = 103,                // placeholder
+
+    CONDITION_SOL_START                = 150,                // placeholder
+    CONDITION_HAS_EMPTY_SEAT           = 151,                // 0                0              0                  true if the unit is a vehicle and has an empty seat
+    CONDITION_SOL_END                  = 152                 // placeholder
 };
 
 /*! Documentation on implementing a new ConditionSourceType:
