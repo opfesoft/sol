@@ -1,0 +1,29 @@
+-- DB update 2020_12_05_00 -> 2020_12_05_01
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2020_12_05_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2020_12_05_00 2020_12_05_01 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1607125989308877008'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1607125989308877008');
+
+UPDATE `creature_template_addon` SET `bytes1` = `bytes1` | 33554432 WHERE `entry` = 23253;
+UPDATE `creature_template` SET `HoverHeight` = 3 WHERE `entry` = 23253;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
