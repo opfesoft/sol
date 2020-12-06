@@ -51,28 +51,41 @@ public:
 
     /** \brief Teleport the GM to the specified creature
     *
-    * .gocreature <GUID>      --> TP using creature.guid
-    * .gocreature azuregos    --> TP player to the mob with this name
-    *                             Warning: If there is more than one mob with this name
-    *                                      you will be teleported to the first one that is found.
-    * .gocreature id 6109     --> TP player to the mob, that has this creature_template.entry
-    *                             Warning: If there is more than one mob with this "id"
-    *                                      you will be teleported to the first one that is found.
+    * .go creature <GUID>               --> TP using creature.guid
+    * .go creature azuregos             --> TP player to the mob with this name
+    *                                       Warning: If there is more than one mob with this name
+    *                                       you will be teleported to the first one that is found.
+    * .go creature id 6109              --> TP player to the mob, that has this creature_template.entry
+    *                                       Warning: If there is more than one mob with this "id"
+    *                                       you will be teleported to the first one that is found.
+    * .go creature [ignore_orientation] --> TP player to the selected mob; if "ignore_orientation" is
+    *                                       specified, don't adjust the player's orientation
     */
     //teleport to creature
     static bool HandleGoCreatureCommand(ChatHandler* handler, char const* args)
     {
         float x = 0.f, y = 0.f, z = 0.f, ort = 0.f;
         int mapId = 0;
+        bool ignoreOrientation = false;
+        bool argsFound = false;
+        char* param1;
         Player* player = handler->GetSession()->GetPlayer();
 
         if (*args)
         {
-            // "id" or number or [name] Shift-click form |color|Hcreature_entry:creature_id|h[name]|h|r
-            char* param1 = handler->extractKeyFromLink((char*)args, "Hcreature");
+            // "id" or "ignore_orientation" or number or [name] Shift-click form |color|Hcreature_entry:creature_id|h[name]|h|r
+            param1 = handler->extractKeyFromLink((char*)args, "Hcreature");
             if (!param1)
                 return false;
 
+            if (strcmp(param1, "ignore_orientation") == 0)
+                ignoreOrientation = true;
+            else
+                argsFound = true;
+        }
+
+        if (argsFound)
+        {
             std::ostringstream whereClause;
 
             // User wants to teleport to the NPC's template entry
@@ -143,7 +156,7 @@ public:
                 x = unit->GetPositionX();
                 y = unit->GetPositionY();
                 z = unit->GetPositionZ();
-                ort = unit->GetOrientation();
+                ort = ignoreOrientation ? player->GetOrientation() : unit->GetOrientation();
                 mapId = unit->GetMapId();
             }
             else
