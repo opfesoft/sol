@@ -30,7 +30,7 @@ function import() {
     oldDate=${dateLast%_$tmp}
 
     if [ "$oldDate" = "$dateToday" ]; then
-        ((counter=$oldCnt+1))
+        counter=$(printf "$oldCnt" | awk '{print $0 + 1}')
     fi;
 
     for entry in "$pendingPath"/*.sql
