@@ -976,12 +976,8 @@ public:
                     return false;
                 }
 
-                if (target)
-                {
-                    wpCreature->SetDisplayId(target->GetDisplayId());
-                    wpCreature->SetObjectScale(0.5f);
-                    wpCreature->SetLevel(point > STRONG_MAX_LEVEL ? STRONG_MAX_LEVEL : point);
-                }
+                wpCreature->SetObjectScale(0.5f);
+                wpCreature->SetLevel(point > STRONG_MAX_LEVEL ? STRONG_MAX_LEVEL : point);
             }
             while (result->NextRow());
 
