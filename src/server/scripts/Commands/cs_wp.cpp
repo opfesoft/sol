@@ -672,6 +672,9 @@ public:
                         delete wpCreature2;
                         return false;
                     }
+
+                    wpCreature2->SetObjectScale(0.5f);
+                    wpCreature2->SetLevel(point > STRONG_MAX_LEVEL ? STRONG_MAX_LEVEL : point);
                 }
 
                 PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_POSITION);
