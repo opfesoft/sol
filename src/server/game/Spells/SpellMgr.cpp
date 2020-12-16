@@ -2961,6 +2961,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 38318: // Transformation - Blackwhelp
                 spellInfo->AttributesCu &= ~SPELL_ATTR0_CU_NEGATIVE_EFF1;
                 break;
+            case 33130: // Death Coil (High King Maulgar)
+                spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEGATIVE_EFF0|SPELL_ATTR0_CU_NEGATIVE_EFF1;
+                break;
         }
 
         switch (spellInfo->SpellFamilyName)
