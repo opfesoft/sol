@@ -206,6 +206,10 @@ public:
 
             if (pInstance)
                 pInstance->SetData(DATA_UROM, DONE);
+
+            me->SetCanFly(false);
+            me->SetDisableGravity(false);
+            me->NearTeleportTo(x, y, z, 0.0f);
         }
 
         void KilledUnit(Unit* /*victim*/)
