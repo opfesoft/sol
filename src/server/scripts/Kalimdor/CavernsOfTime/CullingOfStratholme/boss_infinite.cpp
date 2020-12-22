@@ -87,7 +87,10 @@ public:
                 }
 
             if (InstanceScript* pInstance = me->GetInstanceScript())
+            {
                 pInstance->SetData(DATA_SHOW_INFINITE_TIMER, 0);
+                pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_CORRUPTING_BLIGHT);
+            }
         }
 
         void DoAction(int32 param)
