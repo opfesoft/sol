@@ -8774,7 +8774,13 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
         // Cast positive spell on enemy target
         case 7099:  // Curse of Mending
         case 39703: // Curse of Mending
-        case 29494: // Temptation
+        case 40431: // Curse of Mending
+        case 60782: // Curse of Mending
+        case 29495: // Temptation
+        {
+            CastSpell(victim, trigger_spell_id, true);
+            return true;
+        }
         case 20233: // Improved Lay on Hands (cast on target)
         {
             target = victim;
