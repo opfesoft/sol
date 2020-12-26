@@ -3861,6 +3861,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 22987:
             spellInfo->EffectApplyAuraName[EFFECT_0] = SPELL_AURA_MOD_CHARM;
             break;
+        // Clicking on the Warlock Summoning Portal should not require mana
+        case 61994:
+            spellInfo->ManaCostPercentage = 0;
+            break;
 
 
         /////////////////////////////////
