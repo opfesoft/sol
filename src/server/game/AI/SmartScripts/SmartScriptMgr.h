@@ -442,7 +442,7 @@ enum SMART_ACTION
     SMART_ACTION_SET_REACT_STATE                    = 8,      // state
     SMART_ACTION_ACTIVATE_GOBJECT                   = 9,      //
     SMART_ACTION_RANDOM_EMOTE                       = 10,     // EmoteId1, EmoteId2, EmoteId3...
-    SMART_ACTION_CAST                               = 11,     // SpellId, CastFlags, LimitTargets
+    SMART_ACTION_CAST                               = 11,     // SpellId, CastFlags, LimitTargets, ForceRepeatOnRangeFail
     SMART_ACTION_SUMMON_CREATURE                    = 12,     // CreatureID, summonType, duration in ms, attackInvoker, attackScriptOwner
     SMART_ACTION_THREAT_SINGLE_PCT                  = 13,     // Threat%
     SMART_ACTION_THREAT_ALL_PCT                     = 14,     // Threat%
@@ -696,6 +696,7 @@ struct SmartAction
             uint32 spell;
             uint32 flags;
             uint32 targetsLimit;
+            uint32 forceRepeatOnRangeFail;
         } cast;
 
         struct
@@ -1572,7 +1573,7 @@ struct SmartScriptHolder
 {
     SmartScriptHolder() : entryOrGuid(0), source_type(SMART_SCRIPT_TYPE_CREATURE)
         , event_id(0), link(0), event(), action(), target(), timer(0), active(false), runOnce(false)
-        , enableTimed(false) {}
+        , enableTimed(false), forceRepeat(false) {}
 
     int32 entryOrGuid;
     SmartScriptType source_type;
@@ -1593,7 +1594,7 @@ struct SmartScriptHolder
     bool active;
     bool runOnce;
     bool enableTimed;
-
+    bool forceRepeat;
 };
 
 typedef std::unordered_map<uint32, WayPoint*> WPPath;

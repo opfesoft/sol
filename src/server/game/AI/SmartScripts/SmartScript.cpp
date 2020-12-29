@@ -111,6 +111,8 @@ void SmartScript::ProcessEventsFor(SMART_EVENT e, Unit* unit, uint32 var0, uint3
 
 void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, uint32 var1, bool bvar, const SpellInfo* spell, GameObject* gob)
 {
+    e.forceRepeat = false; // reset forced repeat
+
     //calc random
     if (e.GetEventType() != SMART_EVENT_LINK && e.event.event_chance < 100 && e.event.event_chance)
     {
@@ -761,7 +763,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     }
                 }
 
-                me->CastSpell((*itr)->ToUnit(), e.action.cast.spell, (e.action.cast.flags & SMARTCAST_TRIGGERED));
+                SpellCastResult result = me->CastSpell((*itr)->ToUnit(), e.action.cast.spell, (e.action.cast.flags & SMARTCAST_TRIGGERED));
+
+                if (e.action.cast.forceRepeatOnRangeFail && (result == SPELL_FAILED_OUT_OF_RANGE))
+                    e.forceRepeat = true;
             }
         }
 
@@ -3138,7 +3143,10 @@ void SmartScript::ProcessTimedAction(SmartScriptHolder& e, uint32 const& min, ui
     if (sConditionMgr->IsObjectMeetToConditions(info, conds))
     {
         ProcessAction(e, unit, var0, var1, bvar, spell, gob);
-        RecalcTimer(e, min, max);
+        if (e.forceRepeat)
+            RecalcTimer(e, 500, 500);
+        else
+            RecalcTimer(e, min, max);
     }
     else
         RecalcTimer(e, 5000, 5000);
@@ -3663,7 +3671,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
     if (!e.active && e.GetEventType() != SMART_EVENT_LINK)
         return;
 
-    if ((e.event.event_phase_mask && !IsInPhase(e.event.event_phase_mask)) || ((e.event.event_flags & SMART_EVENT_FLAG_NOT_REPEATABLE) && e.runOnce))
+    if (!e.forceRepeat && ((e.event.event_phase_mask && !IsInPhase(e.event.event_phase_mask)) || ((e.event.event_flags & SMART_EVENT_FLAG_NOT_REPEATABLE) && e.runOnce)))
         return;
 
     switch (e.GetEventType())
