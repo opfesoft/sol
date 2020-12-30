@@ -42,10 +42,11 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - The changes concerning ACE removal have been reverted (see AC commits 30b0325cee4a1b7b3992b80ea863483fc6fc0d30, 1977336050955f40d6eb33b8c601435e8559a50a, 4a8f1de5381d1cf53cdcc4c5bb7d9ef7c99a8a8f); ACE won't be replaced for this project as the libary is still maintained and stable (see "[ACE installation](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md#ace-installation)" on how to build the latest ACE version)
 - Only specific AC commits will be taken over (sometimes modified)
   - A list of skipped AC commits is available here for documentation purposes: [Skipped-AC-Commits](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Skipped-AC-Commits.md)<br>
-    (2020-09-09: Stopped tracking all commits, as Sol follows its own development path and also too many bugs make their way into AC; only track interesting commits as "[TODOs](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/TODO.md)" which have to be further verified or reworked)
+    (2020-09-09: Stopped tracking all commits in this list, as Sol follows its own development path and also too many bugs make their way into AC; interesting commits will be tracked as "[TODOs](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/TODO.md)" which have to be further verified and/or reworked)
   - Sol aims exclusively at fixing bugs and improving the player experience (which also means to include changes which were not part of retail at the time)
   - Features will only be taken over from AC if they are useful for fixing bugs (with the exception of a few smaller features that are non-intrusive)
   - Code style changes will not be taken over in order to be able to effectively compare new and old commits
+  - Should the events "Zalazane's Fall" and "Operation: Gnomeregan" ever be available on AC they will not be taken over as those events are useless without progressing to Cataclysm where the Trolls and Gnomes got their own starting areas.
 
 #### License:
 - The new source components for project "Sol" are released under the [GNU AGPL v3](LICENSE)
