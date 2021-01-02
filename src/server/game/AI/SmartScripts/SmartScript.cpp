@@ -3738,7 +3738,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         if (!me || !me->IsInCombat() || !me->GetVictim())
             return;
 
-        if (me->IsInRange(me->GetVictim(), (float)e.event.minMaxRepeat.min, (float)e.event.minMaxRepeat.max))
+        if (me->IsInRange(me->GetVictim(), (float)e.event.minMaxRepeat.min, (float)e.event.minMaxRepeat.max, true, e.event.minMaxRepeat.exact > 0))
             ProcessTimedAction(e, e.event.minMaxRepeat.repeatMin, e.event.minMaxRepeat.repeatMax, me->GetVictim());
         else // xinef: make it predictable
             RecalcTimer(e, 500, 500);
