@@ -4109,7 +4109,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         if (!me || !me->IsInCombat())
             return;
 
-        ObjectList* _targets = NULL;
+        Unit* target = nullptr;
 
         switch (e.GetTargetType())
         {
@@ -4120,35 +4120,41 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         case SMART_TARGET_CLOSEST_PLAYER:
         case SMART_TARGET_PLAYER_RANGE:
         case SMART_TARGET_PLAYER_DISTANCE:
-            _targets = GetTargets(e);
+        {
+            ObjectList* _targets = GetTargets(e);
+            if (!_targets)
+                return;
+
+            for (ObjectList::const_iterator itr = _targets->begin(); itr != _targets->end(); ++itr)
+            {
+                if (IsUnit(*itr) && me->IsFriendlyTo((*itr)->ToUnit()) && (*itr)->ToUnit()->IsAlive() && (*itr)->ToUnit()->IsInCombat())
+                {
+                    uint32 healthPct = uint32((*itr)->ToUnit()->GetHealthPct());
+
+                    if (healthPct > e.event.friendlyHealthPct.maxHpPct || healthPct < e.event.friendlyHealthPct.minHpPct)
+                        continue;
+
+                    target = (*itr)->ToUnit();
+                    break;
+                }
+            }
+
+            delete _targets;
+            break;
+        }
+        case SMART_TARGET_ACTION_INVOKER:
+            target = DoSelectLowestHpPercentFriendly((float)e.event.friendlyHealthPct.radius, e.event.friendlyHealthPct.minHpPct, e.event.friendlyHealthPct.maxHpPct);
             break;
         default:
             return;
         }
 
-        if (!_targets)
-            return;
-
-        Unit* target = NULL;
-
-        for (ObjectList::const_iterator itr = _targets->begin(); itr != _targets->end(); ++itr)
-        {
-            if (IsUnit(*itr) && me->IsFriendlyTo((*itr)->ToUnit()) && (*itr)->ToUnit()->IsAlive() && (*itr)->ToUnit()->IsInCombat())
-            {
-                uint32 healthPct = uint32((*itr)->ToUnit()->GetHealthPct());
-
-                if (healthPct > e.event.friendlyHealthPct.maxHpPct || healthPct < e.event.friendlyHealthPct.minHpPct)
-                    continue;
-
-                target = (*itr)->ToUnit();
-                break;
-            }
-        }
-
-        delete _targets;
-
         if (!target)
+        {
+            // if there are at least two same npcs, they will perform the same action immediately even if this is useless...
+            RecalcTimer(e, 1000, 3000);
             return;
+        }
 
         ProcessTimedAction(e, e.event.friendlyHealthPct.repeatMin, e.event.friendlyHealthPct.repeatMax, target);
         break;
@@ -4631,6 +4637,19 @@ Unit* SmartScript::DoSelectLowestHpFriendly(float range, uint32 MinHPDiff)
 
     acore::MostHPMissingInRange u_check(me, range, MinHPDiff);
     acore::UnitLastSearcher<acore::MostHPMissingInRange> searcher(me, unit, u_check);
+    me->VisitNearbyObject(range, searcher);
+    return unit;
+}
+
+Unit* SmartScript::DoSelectLowestHpPercentFriendly(float range, uint32 minHpPct, uint32 maxHpPct)
+{
+    if (!me)
+        return nullptr;
+
+    Unit* unit = nullptr;
+
+    acore::MostHPPercentMissingInRange u_check(me, range, minHpPct, maxHpPct);
+    acore::UnitLastSearcher<acore::MostHPPercentMissingInRange> searcher(me, unit, u_check);
     me->VisitNearbyObject(range, searcher);
     return unit;
 }

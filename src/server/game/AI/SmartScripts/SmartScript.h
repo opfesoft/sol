@@ -76,6 +76,7 @@ class SmartScript
         void OnMoveInLineOfSight(Unit* who);
 
         Unit* DoSelectLowestHpFriendly(float range, uint32 MinHPDiff);
+        Unit* DoSelectLowestHpPercentFriendly(float range, uint32 minHpPct, uint32 maxHpPct);
         void DoFindFriendlyCC(std::list<Creature*>& _list, float range);
         void DoFindFriendlyMissingBuff(std::list<Creature*>& list, float range, uint32 spellid);
         Unit* DoFindClosestFriendlyInRange(float range, bool playerOnly);
