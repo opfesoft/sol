@@ -4266,9 +4266,8 @@ void SmartScript::InitTimer(SmartScriptHolder& e)
         break;
     case SMART_EVENT_OOC_LOS:
     case SMART_EVENT_IC_LOS:
-        // Xinef: wtf is this bullshit? cooldown should be processed AFTER action is done, not before...
-        //RecalcTimer(e, e.event.los.cooldownMin, e.event.los.cooldownMax);
-        //break;
+        RecalcTimer(e, e.event.los.cooldownMin, e.event.los.cooldownMax);
+        break;
     case SMART_EVENT_DISTANCE_CREATURE:
     case SMART_EVENT_DISTANCE_GAMEOBJECT:
         RecalcTimer(e, e.event.distance.repeat, e.event.distance.repeat);
