@@ -15,7 +15,7 @@ EndScriptData */
 npc_lady_jaina_proudmoore
 npc_nat_pagle
 npc_private_hendel
-npc_cassa_crimsonwing - handled by npc_taxi
+npc_cassa_crimsonwing - handled via SAI
 EndContentData */
 
 #include "ScriptMgr.h"

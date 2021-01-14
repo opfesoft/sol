@@ -20,7 +20,6 @@ set(scripts_STAT_SRCS
   ${AC_SCRIPTS_DIR}/World/mob_generic_creature.cpp
   ${AC_SCRIPTS_DIR}/World/npc_innkeeper.cpp
   ${AC_SCRIPTS_DIR}/World/npc_professions.cpp
-  ${AC_SCRIPTS_DIR}/World/npc_taxi.cpp
   ${AC_SCRIPTS_DIR}/World/npcs_special.cpp
   ${AC_SCRIPTS_DIR}/World/character_creation.cpp
   ${AC_SCRIPTS_DIR}/World/action_ip_logger.cpp
