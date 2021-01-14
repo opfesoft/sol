@@ -3334,6 +3334,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 24314: // Threatening Gaze
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST | AURA_INTERRUPT_FLAG_MOVE | AURA_INTERRUPT_FLAG_JUMP;
             break;
+        case 32474: // Buffeting Winds of Susurrus
+            spellInfo->DurationIndex = 9; // 30s instead of 90s
+            break;
 
 
         /////////////////////////////////////////////
