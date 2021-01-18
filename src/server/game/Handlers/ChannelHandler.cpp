@@ -284,6 +284,21 @@ void WorldSession::HandleChannelAnnouncements(WorldPacket& recvPacket)
             channel->Announce(GetPlayer());
 }
 
+void WorldSession::HandleChannelModerateOpcode(WorldPacket& recvPacket)
+{
+    std::string channelName;
+    recvPacket >> channelName;
+
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
+    sLog->outDebug(LOG_FILTER_CHATSYS, "CMSG_CHANNEL_MODERATE %s Channel: %s",
+        GetPlayerInfo().c_str(), channelName.c_str());
+#endif
+
+    if (ChannelMgr* cMgr = ChannelMgr::forTeam(GetPlayer()->GetTeamId()))
+        if (Channel* chn = cMgr->GetChannel(channelName, GetPlayer()))
+            chn->ToggleModeration(GetPlayer());
+}
+
 void WorldSession::HandleChannelDisplayListQuery(WorldPacket &recvPacket)
 {
     // this should be OK because the 2 function _were_ the same
