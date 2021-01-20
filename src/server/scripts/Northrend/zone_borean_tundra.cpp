@@ -377,9 +377,10 @@ public:
 
         void JustDied(Unit* killer)
         {
-            Player* player = killer->ToPlayer();
-            if (!player)
+            if (!killer || killer->GetTypeId() != TYPEID_PLAYER)
                 return;
+
+            Player* player = killer->ToPlayer();
 
             if (player->GetQuestStatus(QUEST_TAKEN_BY_THE_SCOURGE) == QUEST_STATUS_INCOMPLETE)
             {
