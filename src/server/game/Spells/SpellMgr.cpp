@@ -3607,6 +3607,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 51690:
             spellInfo->AttributesEx |= SPELL_ATTR1_NOT_BREAK_STEALTH;
             break;
+        // Killing Spree (off-hand damage)
+        case 57842:
+            spellInfo->rangeIndex = 2; // melee range
+            break;
 
 
         /////////////////////////////////
