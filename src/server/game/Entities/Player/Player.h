@@ -1244,6 +1244,7 @@ class Player : public Unit, public GridObject<Player>
         Item* GetItemByPos(uint16 pos) const;
         Item* GetItemByPos(uint8 bag, uint8 slot) const;
         Bag*  GetBagByPos(uint8 slot) const;
+        uint32 GetFreeInventorySpace() const;
         inline Item* GetUseableItemByPos(uint8 bag, uint8 slot) const //Does additional check for disarmed weapons
         {
             if (!CanUseAttackType(GetAttackBySlot(slot)))
