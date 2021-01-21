@@ -1661,20 +1661,22 @@ class npc_commander_eligor_dawnbringer : public CreatureScript
                             break;
                         case EVENT_DEATH_KNIGHTS_2:
                             Talk(SAY_DEATH_KNIGHTS_2);
-                            if (Creature* creature = ObjectAccessor::GetCreature(*me, imageList[talkWing]))
-                            {
-                                creature->SetEntry(NPC_IMAGE_OF_BLAUMEUX);
-                                creature->SetDisplayId(MODEL_IMAGE_OF_BLAUMEUX);
-                            }
+                            if (talkWing < 5)
+                                if (Creature* creature = ObjectAccessor::GetCreature(*me, imageList[talkWing]))
+                                {
+                                    creature->SetEntry(NPC_IMAGE_OF_BLAUMEUX);
+                                    creature->SetDisplayId(MODEL_IMAGE_OF_BLAUMEUX);
+                                }
                             _events.ScheduleEvent(EVENT_DEATH_KNIGHTS_3, 10000);
                             break;
                         case EVENT_DEATH_KNIGHTS_3:
                             Talk(SAY_DEATH_KNIGHTS_3);
-                            if (Creature* creature = ObjectAccessor::GetCreature(*me, imageList[talkWing]))
-                            {
-                                creature->SetEntry(NPC_IMAGE_OF_ZELIEK);
-                                creature->SetDisplayId(MODEL_IMAGE_OF_ZELIEK);
-                            }
+                            if (talkWing < 5)
+                                if (Creature* creature = ObjectAccessor::GetCreature(*me, imageList[talkWing]))
+                                {
+                                    creature->SetEntry(NPC_IMAGE_OF_ZELIEK);
+                                    creature->SetDisplayId(MODEL_IMAGE_OF_ZELIEK);
+                                }
                             _events.ScheduleEvent(EVENT_DEATH_KNIGHTS_4, 10000);
                             break;
                         case EVENT_DEATH_KNIGHTS_4:
