@@ -361,12 +361,12 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
 
     if (updater.ProcessLogout())
     {
+        if (m_Socket && !m_Socket->IsClosed() && _warden)
+            _warden->Update(diff);
+
         time_t currTime = time(NULL);
         if (ShouldLogOut(currTime) && !m_playerLoading)
             LogoutPlayer(true);
-
-        if (m_Socket && !m_Socket->IsClosed() && _warden)
-            _warden->Update();
 
         if (m_Socket && m_Socket->IsClosed())
         {
