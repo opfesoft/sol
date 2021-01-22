@@ -1065,14 +1065,10 @@ public:
 
 enum HiddenCultist
 {
-    SPELL_SHROUD_OF_THE_DEATH_CULTIST           = 46077, //not working
+    SPELL_SHADOWFORM                            = 40973, //not the correct spell, but suffices
     SPELL_RIGHTEOUS_VISION                      = 46078, //player aura
 
     QUEST_THE_HUNT_IS_ON                        = 11794,
-
-    GOSSIP_TEXT_SALTY_JOHN_THORPE               = 12529,
-    GOSSIP_TEXT_GUARD_MITCHELSS                 = 12530,
-    GOSSIP_TEXT_TOM_HEGGER                      = 12528,
 
     NPC_TOM_HEGGER                              = 25827,
     NPC_SALTY_JOHN_THORPE                       = 25248,
@@ -1081,12 +1077,13 @@ enum HiddenCultist
     SAY_HIDDEN_CULTIST_1                        = 0,
     SAY_HIDDEN_CULTIST_2                        = 1,
     SAY_HIDDEN_CULTIST_3                        = 2,
-    SAY_HIDDEN_CULTIST_4                        = 3
-};
+    SAY_HIDDEN_CULTIST_4                        = 3,
 
-const char* GOSSIP_ITEM_TOM_HEGGER = "What do you know about the Cult of the Damned?";
-const char* GOSSIP_ITEM_GUARD_MITCHELLS = "How long have you worked for the Cult of the Damned?";
-const char* GOSSIP_ITEM_SALTY_JOHN_THORPE = "I have a reason to believe you're involved in the cultist activity";
+    EVENT_DISCOVERED_1                          = 1,
+    EVENT_DISCOVERED_2                          = 2,
+    EVENT_DISCOVERED_3                          = 3,
+    EVENT_REMOVE_SHADOWFORM                     = 4
+};
 
 class npc_hidden_cultist : public CreatureScript
 {
@@ -1101,28 +1098,23 @@ public:
            uiNpcFlags = creature->GetUInt32Value(UNIT_NPC_FLAGS);
         }
 
+        EventMap events;
+
         uint32 uiEmoteState;
         uint32 uiNpcFlags;
-
-        uint32 uiEventTimer;
-        uint8 uiEventPhase;
 
         uint64 uiPlayerGUID;
 
         void Reset() override
         {
+            events.Reset();
             if (uiEmoteState)
                 me->SetUInt32Value(UNIT_NPC_EMOTESTATE, uiEmoteState);
 
             if (uiNpcFlags)
                 me->SetUInt32Value(UNIT_NPC_FLAGS, uiNpcFlags);
 
-            uiEventTimer = 0;
-            uiEventPhase = 0;
-
             uiPlayerGUID = 0;
-
-            DoCast(SPELL_SHROUD_OF_THE_DEATH_CULTIST);
 
             me->RestoreFaction();
         }
@@ -1133,8 +1125,7 @@ public:
             me->SetUInt32Value(UNIT_NPC_FLAGS, 0);
             if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                 me->SetFacingToObject(player);
-            uiEventTimer = 3000;
-            uiEventPhase = 1;
+            events.ScheduleEvent(EVENT_DISCOVERED_1, 3000);
         }
 
         void SetGUID(uint64 uiGuid, int32 /*iId*/) override
@@ -1149,59 +1140,67 @@ public:
                 AttackStart(player);
         }
 
-        void UpdateAI(uint32 uiDiff) override
+        void MoveInLineOfSight(Unit* who) override
         {
-            if (uiEventTimer && uiEventTimer <= uiDiff)
+            if (who->GetTypeId() == TYPEID_PLAYER && who->HasAura(SPELL_RIGHTEOUS_VISION) && !me->HasAura(SPELL_SHADOWFORM))
             {
-                switch (uiEventPhase)
-                {
-                    case 1:
-                        switch (me->GetEntry())
-                        {
-                            case NPC_SALTY_JOHN_THORPE:
-                                me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
-                                Talk(SAY_HIDDEN_CULTIST_1);
-                                uiEventTimer = 5000;
-                                uiEventPhase = 2;
-                                break;
-                            case NPC_GUARD_MITCHELLS:
-                                Talk(SAY_HIDDEN_CULTIST_2);
-                                uiEventTimer = 5000;
-                                uiEventPhase = 2;
-                                break;
-                            case NPC_TOM_HEGGER:
-                                Talk(SAY_HIDDEN_CULTIST_3);
-                                uiEventTimer = 5000;
-                                uiEventPhase = 2;
-                                break;
-                        }
-                        break;
-                    case 2:
-                        switch (me->GetEntry())
-                        {
-                            case NPC_SALTY_JOHN_THORPE:
-                                Talk(SAY_HIDDEN_CULTIST_4);
-                                if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
-                                    me->SetFacingToObject(player);
-                                uiEventTimer = 3000;
-                                uiEventPhase = 3;
-                                break;
-                            case NPC_GUARD_MITCHELLS:
-                            case NPC_TOM_HEGGER:
-                                AttackPlayer();
-                                uiEventPhase = 0;
-                                break;
-                        }
-                        break;
-                    case 3:
-                        if (me->GetEntry() == NPC_SALTY_JOHN_THORPE)
-                        {
+                DoCast(SPELL_SHADOWFORM);
+                events.ScheduleEvent(EVENT_REMOVE_SHADOWFORM, 30000);
+            }
+
+            ScriptedAI::MoveInLineOfSight(who);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+
+            switch (events.ExecuteEvent())
+            {
+                case EVENT_DISCOVERED_1:
+                    switch (me->GetEntry())
+                    {
+                        case NPC_SALTY_JOHN_THORPE:
+                            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+                            Talk(SAY_HIDDEN_CULTIST_1);
+                            events.ScheduleEvent(EVENT_DISCOVERED_2, 5000);
+                            break;
+                        case NPC_GUARD_MITCHELLS:
+                            Talk(SAY_HIDDEN_CULTIST_2);
+                            events.ScheduleEvent(EVENT_DISCOVERED_2, 5000);
+                            break;
+                        case NPC_TOM_HEGGER:
+                            if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                                Talk(SAY_HIDDEN_CULTIST_3, player);
+                            events.ScheduleEvent(EVENT_DISCOVERED_2, 5000);
+                            break;
+                    }
+                    break;
+                case EVENT_DISCOVERED_2:
+                    switch (me->GetEntry())
+                    {
+                        case NPC_SALTY_JOHN_THORPE:
+                            Talk(SAY_HIDDEN_CULTIST_4);
+                            if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
+                                me->SetFacingToObject(player);
+                            events.ScheduleEvent(EVENT_DISCOVERED_3, 3000);
+                            break;
+                        case NPC_GUARD_MITCHELLS:
+                        case NPC_TOM_HEGGER:
                             AttackPlayer();
-                            uiEventPhase = 0;
-                        }
-                        break;
-                }
-            }else uiEventTimer -= uiDiff;
+                            break;
+                    }
+                    break;
+                case EVENT_DISCOVERED_3:
+                    if (me->GetEntry() == NPC_SALTY_JOHN_THORPE)
+                    {
+                        AttackPlayer();
+                    }
+                    break;
+                case EVENT_REMOVE_SHADOWFORM:
+                    me->RemoveAurasDueToSpell(SPELL_SHADOWFORM);
+                    break;
+            }
 
             if (!UpdateVictim())
                 return;
@@ -1217,35 +1216,13 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
-        uint32 uiGossipText = 0;
-        const char* charGossipItem;
-
-        switch (creature->GetEntry())
-        {
-            case NPC_TOM_HEGGER:
-                uiGossipText = GOSSIP_TEXT_TOM_HEGGER;
-                charGossipItem = GOSSIP_ITEM_TOM_HEGGER;
-                break;
-            case NPC_SALTY_JOHN_THORPE:
-                uiGossipText = GOSSIP_TEXT_SALTY_JOHN_THORPE;
-                charGossipItem = GOSSIP_ITEM_SALTY_JOHN_THORPE;
-                break;
-            case NPC_GUARD_MITCHELLS:
-                uiGossipText = GOSSIP_TEXT_GUARD_MITCHELSS;
-                charGossipItem = GOSSIP_ITEM_GUARD_MITCHELLS;
-                break;
-            default:
-                charGossipItem = "";
-                return false;
-        }
-
         if (player->HasAura(SPELL_RIGHTEOUS_VISION) && player->GetQuestStatus(QUEST_THE_HUNT_IS_ON) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, charGossipItem, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
-        if (creature->IsVendor())
-            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
+        if (creature->GetEntry() == NPC_SALTY_JOHN_THORPE)
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
 
-        SendGossipMenuFor(player, uiGossipText, creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
