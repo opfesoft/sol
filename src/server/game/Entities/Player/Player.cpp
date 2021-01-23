@@ -15744,26 +15744,24 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
 }
 
 void Player::CompleteQuest(uint32 quest_id)
-{ 
-    if (quest_id)
-    {
-        SetQuestStatus(quest_id, QUEST_STATUS_COMPLETE);
+{
+    if (!quest_id)
+        return;
 
-        uint16 log_slot = FindQuestSlot(quest_id);
-        if (log_slot < MAX_QUEST_LOG_SIZE)
-            SetQuestSlotState(log_slot, QUEST_STATE_COMPLETE);
+    SetQuestStatus(quest_id, QUEST_STATUS_COMPLETE);
 
-        Quest const* qInfo = sObjectMgr->GetQuestTemplate(quest_id);
-        if (qInfo && qInfo->HasFlag(QUEST_FLAGS_TRACKING))
-        {
-            RewardQuest(qInfo, 0, this, false);
-        }
+    uint16 log_slot = FindQuestSlot(quest_id);
+    if (log_slot < MAX_QUEST_LOG_SIZE)
+        SetQuestSlotState(log_slot, QUEST_STATE_COMPLETE);
 
-        // Xinef: area auras may change on quest completion!
-        UpdateZoneDependentAuras(GetZoneId());
-        UpdateAreaDependentAuras(GetAreaId());
-        AdditionalSavingAddMask(ADDITIONAL_SAVING_INVENTORY_AND_GOLD | ADDITIONAL_SAVING_QUEST_STATUS);
-    }
+    Quest const* qInfo = sObjectMgr->GetQuestTemplate(quest_id);
+    if (qInfo && qInfo->HasFlag(QUEST_FLAGS_TRACKING))
+        RewardQuest(qInfo, 0, this, false);
+
+    // Xinef: area auras may change on quest completion!
+    UpdateZoneDependentAuras(GetZoneId());
+    UpdateAreaDependentAuras(GetAreaId());
+    AdditionalSavingAddMask(ADDITIONAL_SAVING_INVENTORY_AND_GOLD | ADDITIONAL_SAVING_QUEST_STATUS);
 
     // check if Quest Tracker is enabled
     if (sWorld->getBoolConfig(CONFIG_QUEST_ENABLE_QUEST_TRACKER))
