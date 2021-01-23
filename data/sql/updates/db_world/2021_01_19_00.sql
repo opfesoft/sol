@@ -1,6 +1,22 @@
+-- DB update 2021_01_18_01 -> 2021_01_19_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_world' AND COLUMN_NAME = '2021_01_18_01';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_world CHANGE COLUMN 2021_01_18_01 2021_01_19_00 bit;
+SELECT sql_rev INTO OK FROM version_db_world WHERE sql_rev = '1608817912001240800'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
 INSERT INTO `version_db_world` (`sql_rev`) VALUES ('1608817912001240800');
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='Iniciado indigno dominado' WHERE `ID`=12848 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='Iniciado indigno dominado' WHERE `ID`=12848 AND `locale` IN ('esES', 'esMX');
 DELETE FROM `quest_offer_reward_locale` WHERE `ID`=12848 AND `locale` IN ('esES', 'esMX');
 INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES 
 (12848, 'esES', 'Como esperaba, ¡mi caballero elegido ha triunfado! Estás listo, $n.', 18019),
@@ -38,7 +54,7 @@ INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `Verified
 (12678, 'esES', '¿Lo sientes, $n? Esta sensación es puro poder recorriendo tu cuerpo. Tal cosa no puede existir para los mortales.$B$BYa se han desmantelado las primeras filas. Los geists acabarán el trabajo y prepararán el terreno para Razuvious. Ahora debemos centrarnos en objetivos más tácticos.', 18019),
 (12678, 'esMX', '¿Lo sientes, $n? Esta sensación es puro poder recorriendo tu cuerpo. Tal cosa no puede existir para los mortales.$B$BYa se han desmantelado las primeras filas. Los geists acabarán el trabajo y prepararán el terreno para Razuvious. Ahora debemos centrarnos en objetivos más tácticos.', 18019);
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='Caballo robado con éxito' WHERE `ID`=12680 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='Caballo robado con éxito' WHERE `ID`=12680 AND `locale` IN ('esES', 'esMX');
 DELETE FROM `quest_offer_reward_locale` WHERE `ID`=12680 AND `locale` IN ('esES', 'esMX');
 INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES 
 (12680, 'esES', 'Ahora la verdadera prueba. ¿Puedes dominar a un destrero suelto y coger brutalmente la cosa que más deseas?', 18019),
@@ -49,7 +65,7 @@ INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `Verified
 (12687, 'esES', 'Has conseguido lo que la mayoría de principiantes no ha podido conseguir, $n. Por ello recibirás un buen premio.', 18019),
 (12687, 'esMX', 'Has conseguido lo que la mayoría de principiantes no ha podido conseguir, $n. Por ello recibirás un buen premio.', 18019);
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='Caballeros de la Muerte derrotados en duelo' WHERE `ID`=12733 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='Caballeros de la Muerte derrotados en duelo' WHERE `ID`=12733 AND `locale` IN ('esES', 'esMX');
 DELETE FROM `quest_offer_reward_locale` WHERE `ID`=12733 AND `locale` IN ('esES', 'esMX');
 INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES 
 (12733, 'esES', '¡Después de la victoria viene la gloria, caballero de la Muerte! ¡Bien hecho! Hoy el Rey Exánime te mira con buenos ojos.', 18019),
@@ -92,7 +108,7 @@ INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `Verified
 (12697, 'esES', 'Has luchado mucho para invadir el reino del Cosechador… Espera.$B$B<Gothik consulta sus notas.>$B$BDiscúlpame, $c. Cuesta cambiar las antiguas costumbres.$B$B¿Valanar te envió, entonces? Creo que eres bastante competente.$B$BTengo un regalo para los perros Escarlata. Uno que, estoy seguro, acelerará sus trabajos en las minas.', 18019),
 (12697, 'esMX', 'Has luchado mucho para invadir el reino del Cosechador… Espera.$B$B<Gothik consulta sus notas.>$B$BDiscúlpame, $c. Cuesta cambiar las antiguas costumbres.$B$B¿Valanar te envió, entonces? Creo que eres bastante competente.$B$BTengo un regalo para los perros Escarlata. Uno que, estoy seguro, acelerará sus trabajos en las minas.', 18019);
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='Necrófago escarlata convertido' WHERE `ID`=12698 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='Necrófago escarlata convertido' WHERE `ID`=12698 AND `locale` IN ('esES', 'esMX');
 
 UPDATE `creature_text` SET `BroadcastTextId`=28941 WHERE `CreatureID`=28658 AND `GroupID`=0 AND `ID`=0;
 DELETE FROM `quest_offer_reward_locale` WHERE `ID`=12698 AND `locale` IN ('esES', 'esMX');
@@ -110,7 +126,7 @@ INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `Verified
 (12700, 'esES', 'Nos has hecho un buen servicio, caballero de la Muerte. Pocos de tus hermanos han sobrevivido nuestro ataque a los intrusos Escarlata. Eres uno de los más fuertes.$B$B<El príncipe Valanar asiente con la cabeza.>$B$BHacia el este, pasada la Mina Villa Refugio, está la costa llamada la Punta de la Luz por la Cruzada Escarlata. Un millar de soldados nos separa de sus barcos. ¿Insuperable? No lo creo...', 18019),
 (12700, 'esMX', 'Nos has hecho un buen servicio, caballero de la Muerte. Pocos de tus hermanos han sobrevivido nuestro ataque a los intrusos Escarlata. Eres uno de los más fuertes.$B$B<El príncipe Valanar asiente con la cabeza.>$B$BHacia el este, pasada la Mina Villa Refugio, está la costa llamada la Punta de la Luz por la Cruzada Escarlata. Un millar de soldados nos separa de sus barcos. ¿Insuperable? No lo creo...', 18019);
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='Defensor escarlata asesinado' WHERE `ID`=12701 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='Defensor escarlata asesinado' WHERE `ID`=12701 AND `locale` IN ('esES', 'esMX');
 
 DELETE FROM `quest_offer_reward_locale` WHERE `ID`=12701 AND `locale` IN ('esES', 'esMX');
 INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES 
@@ -302,7 +318,7 @@ INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `Verified
 (12778, 'esES', 'Me has servido bien, $n. La marca de la Plaga se ha quemado en estas tierras Escarlatas. Has cosechado muerte y destrucción hasta donde puede alcanzar la vista y me has ofrecido el último ejército escarlata.$B$BAhora es hora de que acabes lo que empezaste.', 18019),
 (12778, 'esMX', 'Me has servido bien, $n. La marca de la Plaga se ha quemado en estas tierras Escarlatas. Has cosechado muerte y destrucción hasta donde puede alcanzar la vista y me has ofrecido el último ejército escarlata.$B$BAhora es hora de que acabes lo que empezaste.', 18019);
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='Soldados escarlata matados', `ObjectiveText2`='Balista escarlata aniquilado'  WHERE `ID`=12779 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='Soldados escarlata matados', `ObjectiveText2`='Balista escarlata aniquilado'  WHERE `ID`=12779 AND `locale` IN ('esES', 'esMX');
 DELETE FROM `quest_request_items_locale` WHERE `ID`=12779 AND `locale` IN ('esES', 'esMX');
 INSERT INTO `quest_request_items_locale` (`ID`, `locale`, `CompletionText`, `VerifiedBuild`) VALUES 
 (12779, 'esES', 'Mátalos a todos...', 18019),
@@ -318,7 +334,7 @@ INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `Verified
 (12800, 'esES', '¡El Alto Señor y los otros caballeros de la Muerte están preparando el ataque! Aplastaremos todo lo que queda de vida en este lugar.', 18019),
 (12800, 'esMX', '¡El Alto Señor y los otros caballeros de la Muerte están preparando el ataque! Aplastaremos todo lo que queda de vida en este lugar.', 18019);
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='La luz del alba descubierta' WHERE `ID`=12801 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='La luz del alba descubierta' WHERE `ID`=12801 AND `locale` IN ('esES', 'esMX');
 DELETE FROM `quest_request_items_locale` WHERE `ID`=12801 AND `locale` IN ('esES', 'esMX');
 INSERT INTO `quest_request_items_locale` (`ID`, `locale`, `CompletionText`, `VerifiedBuild`) VALUES 
 (12801, 'esES', '<Darion Mograine asiente con la cabeza.>', 18019),
@@ -334,7 +350,7 @@ INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `Verified
 (13165, 'esES', 'El Rey Exánime, herido por la Crematoria, ha vuelto a Rasganorte, pero los últimos soldados aún resisten en el segundo piso.', 18019),
 (13165, 'esMX', 'El Rey Exánime, herido por la Crematoria, ha vuelto a Rasganorte, pero los últimos soldados aún resisten en el segundo piso.', 18019);
 
-UPDATE `quest_template_locale` SET `ObjectiveText1`='Remendejo', `ObjectiveText2`='Miembro de la Plaga asesinado'  WHERE `ID`=13166 AND `locale` IN ('esEs', 'esMX');
+UPDATE `quest_template_locale` SET `ObjectiveText1`='Remendejo', `ObjectiveText2`='Miembro de la Plaga asesinado'  WHERE `ID`=13166 AND `locale` IN ('esES', 'esMX');
 DELETE FROM `quest_request_items_locale` WHERE `ID`=13166 AND `locale` IN ('esES', 'esMX');
 INSERT INTO `quest_request_items_locale` (`ID`, `locale`, `CompletionText`, `VerifiedBuild`) VALUES 
 (13166, 'esES', '¡Acherus será nuestro!', 18019),
@@ -354,3 +370,12 @@ DELETE FROM `quest_offer_reward_locale` WHERE `ID`=13188 AND `locale` IN ('esES'
 INSERT INTO `quest_offer_reward_locale` (`ID`, `locale`, `RewardText`, `VerifiedBuild`) VALUES 
 (13188, 'esES', '<Varian Wrynn mira a la distancia.>$B$BClaro, viejo amigo... Sangre y honor.$B$B<Varian Wrynn fija su mirada en ti.>$B$BSi no fuera por esta carta de Tirion, llevarías grilletes. Solo la protección de uno de los más grandes paladines que han existido podría asegurar tu supervivencia.$B$BNosotros... lucharemos juntos contra la Plaga. ¡Contra el Rey Exánime!$B$B¡GLORIA A LA ALIANZA!', 18019),
 (13188, 'esMX', '<Varian Wrynn mira a la distancia.>$B$BClaro, viejo amigo... Sangre y honor.$B$B<Varian Wrynn fija su mirada en ti.>$B$BSi no fuera por esta carta de Tirion, llevarías grilletes. Solo la protección de uno de los más grandes paladines que han existido podría asegurar tu supervivencia.$B$BNosotros... lucharemos juntos contra la Plaga. ¡Contra el Rey Exánime!$B$B¡GLORIA A LA ALIANZA!', 18019);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
