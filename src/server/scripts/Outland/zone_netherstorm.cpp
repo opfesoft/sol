@@ -1797,14 +1797,13 @@ public:
 ######*/
 enum BessyData
 {
-    Q_ALMABTRIEB    = 10337,
-    N_THADELL       = 20464,
-    SPAWN_FIRST     = 20512,
-    SPAWN_SECOND    = 19881,
-    SAY_THADELL_1   = 0,
-    SAY_THADELL_2   = 1,
-    SAY_BESSY_0     = 0,
-    SAY_BESSY_1     = 1
+    QUEST_WHEN_THE_COWS_COME_HOME = 10337,
+    NPC_THADELL                   = 20464,
+    SPAWN_FIRST                   = 20512,
+    SPAWN_SECOND                  = 19881,
+    SAY_THADELL_0                 =     0,
+    SAY_BESSY_0                   =     0,
+    SAY_BESSY_1                   =     1
 };
 
 class npc_bessy : public CreatureScript
@@ -1812,9 +1811,9 @@ class npc_bessy : public CreatureScript
 public:
     npc_bessy() : CreatureScript("npc_bessy") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
-        if (quest->GetQuestId() == Q_ALMABTRIEB)
+        if (quest->GetQuestId() == QUEST_WHEN_THE_COWS_COME_HOME)
         {
             creature->setFaction(113);
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -1824,7 +1823,7 @@ public:
         return true;
     }
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_bessyAI(creature);
     }
@@ -1833,13 +1832,23 @@ public:
     {
         npc_bessyAI(Creature* creature) : npc_escortAI(creature) { }
 
-        void JustDied(Unit* /*killer*/)
+        void JustDied(Unit* /*killer*/) override
         {
             if (Player* player = GetPlayerForEscort())
-                player->FailQuest(Q_ALMABTRIEB);
+                player->FailQuest(QUEST_WHEN_THE_COWS_COME_HOME);
         }
 
-        void WaypointReached(uint32 waypointId)
+        void UpdateAI(uint32 diff) override
+        {
+            npc_escortAI::UpdateAI(diff);
+
+            if (UpdateVictim())
+                me->SetControlled(true, UNIT_STATE_ROOT);
+            else
+                me->SetControlled(false, UNIT_STATE_ROOT);
+        }
+
+        void WaypointReached(uint32 waypointId) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -1859,18 +1868,16 @@ public:
                     me->SummonCreature(SPAWN_SECOND, 2309.25f, 2183.46f, 91.75f, 6.22f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000);
                     break;
                 case 12:
-                    player->GroupEventHappens(Q_ALMABTRIEB, me);
-                    if (me->FindNearestCreature(N_THADELL, 30))
-                        Talk(SAY_THADELL_1);
+                    player->GroupEventHappens(QUEST_WHEN_THE_COWS_COME_HOME, me);
                     break;
                 case 13:
-                    if (me->FindNearestCreature(N_THADELL, 30))
-                        Talk(SAY_THADELL_2, player);
+                    if (Creature* thadell = me->FindNearestCreature(NPC_THADELL, 30))
+                        thadell->AI()->Talk(SAY_THADELL_0);
                     break;
             }
         }
 
-        void JustSummoned(Creature* summoned)
+        void JustSummoned(Creature* summoned) override
         {
             summoned->AI()->AttackStart(me);
         }
@@ -1878,7 +1885,6 @@ public:
         void Reset()
         {
             me->RestoreFaction();
-            me->SetReactState(REACT_PASSIVE);
         }
     };
 };
