@@ -1624,6 +1624,7 @@ void SpellMgr::LoadSpellProcEvents()
     if (!result)
     {
         sLog->outString(">> Loaded 0 spell proc event conditions. DB table `spell_proc_event` is empty.");
+        sLog->outString();
         return;
     }
 
@@ -1698,6 +1699,7 @@ void SpellMgr::LoadSpellProcEvents()
     while (result->NextRow());
 
     sLog->outString(">> Loaded %u extra spell proc event conditions in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString();
 }
 
 void SpellMgr::LoadSpellBonusess()
