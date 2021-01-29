@@ -907,7 +907,12 @@ public:
 enum Valiancekeepcannons
 {
     GO_VALIANCE_KEEP_CANNON_1                     = 187560,
-    GO_VALIANCE_KEEP_CANNON_2                     = 188692
+    GO_VALIANCE_KEEP_CANNON_2                     = 188692,
+
+    SPELL_VENGEANCE_LANDING_CANNONFIRE            =  42442,
+
+    EVENT_KNEEL                                   =      1,
+    EVENT_FIRE                                    =      2
 };
 
 class npc_valiance_keep_cannoneer : public CreatureScript
@@ -919,29 +924,39 @@ public:
     {
         npc_valiance_keep_cannoneerAI(Creature* creature) : ScriptedAI(creature) { }
 
-        uint32 uiTimer;
+        EventMap events;
 
         void Reset()
         {
-            uiTimer = urand(13000, 18000);
+            events.Reset();
+            events.ScheduleEvent(EVENT_KNEEL, urand(13000, 18000));
         }
 
         void UpdateAI(uint32 diff)
         {
-            if (uiTimer <= diff)
-            {
-                me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
-                GameObject* pCannon = me->FindNearestGameObject(GO_VALIANCE_KEEP_CANNON_1, 10);
-                if (!pCannon)
-                    pCannon = me->FindNearestGameObject(GO_VALIANCE_KEEP_CANNON_2, 10);
-                if (pCannon)
-                    pCannon->Use(me);
-                uiTimer = urand(13000, 18000);
-            }
-            else uiTimer -= diff;
+            events.Update(diff);
 
             if (!UpdateVictim())
+            {
+                switch (events.ExecuteEvent())
+                {
+                    case EVENT_KNEEL:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+                        events.ScheduleEvent(EVENT_FIRE, 1000);
+                        break;
+                    case EVENT_FIRE:
+                        GameObject* pCannon = me->FindNearestGameObject(GO_VALIANCE_KEEP_CANNON_1, 10);
+                        if (!pCannon)
+                            pCannon = me->FindNearestGameObject(GO_VALIANCE_KEEP_CANNON_2, 10);
+                        if (pCannon)
+                            pCannon->Use(me);
+                        events.ScheduleEvent(EVENT_KNEEL, urand(13000, 18000));
+                        break;
+                }
                 return;
+            }
+
+            DoMeleeAttackIfReady();
         }
     };
 
