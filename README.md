@@ -13,6 +13,7 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - [Sol-Docs](https://gitlab.com/opfesoft/sol-docs): Documentation (updated, cleaned up and adapted to Sol)
   - [Build tips](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Build-Tips.md)
   - [Performance](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Performance.md)
+  - [Client config tips](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Client-Config-Tips.md)
   - [GM commands](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/GM-Commands.md)
   - [GM tips](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/GM-Tips.md)
   - [Auth DB](https://gitlab.com/opfesoft/sol-docs/-/tree/master/db/auth)
@@ -44,7 +45,7 @@ You are free to use Sol, but there won't be any support for it. This is solely a
   - A list of skipped AC commits is available here for documentation purposes: [Skipped-AC-Commits](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/Skipped-AC-Commits.md)<br>
     (2020-09-09: Stopped tracking all commits in this list, as Sol follows its own development path and also too many bugs make their way into AC; interesting commits will be tracked as "[TODOs](https://gitlab.com/opfesoft/sol-docs/-/blob/master/misc/TODO.md)" which have to be further verified and/or reworked)
   - Sol aims exclusively at fixing bugs and improving the player experience; this also means to include changes which were not part of retail at the time
-  - Features will only be taken over from AC if they are useful for fixing bugs (with the exception of a few smaller features that are non-intrusive); same for all "cosmetic" changes like renaming constants, DB refactoring etc. which hold no other value than ensuring compatibility with TC (Sol does not need to be compatible with either AC or TC)
+  - Features will only be taken over from AC if they are useful for fixing bugs (with the exception of a few smaller features that are non-intrusive); same for all "cosmetic" changes like renaming constants, DB refactoring etc. which hold no other value than ensuring compatibility with TC (Sol does not aim to be compatible with either AC or TC)
   - Code style changes will not be taken over in order to be able to effectively compare new and old commits
   - The events "Zalazane's Fall" and "Operation: Gnomeregan" will not be implemented as those events are useless without progressing to Cataclysm where the Trolls and Gnomes got their own starting areas.
 
