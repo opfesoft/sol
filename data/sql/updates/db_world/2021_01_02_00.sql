@@ -1,3 +1,19 @@
+-- DB update 2020_12_31_00 -> 2021_01_02_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_world' AND COLUMN_NAME = '2020_12_31_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_world CHANGE COLUMN 2020_12_31_00 2021_01_02_00 bit;
+SELECT sql_rev INTO OK FROM version_db_world WHERE sql_rev = '1609174873784850500'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
 INSERT INTO `version_db_world` (`sql_rev`) VALUES ('1609174873784850500');
 
 UPDATE `creature_template_addon` SET `auras` = '29266' WHERE `entry` = 17508;
@@ -22,8 +38,17 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (1742600, 9, 0, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 12, 1, 0, 0, 0, 0, 0, 0, 0, 'Galaen - Actionlist - Set Orientation to Stored Target'),
 (1742600, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Galaen - Actionlist - Say Line 0'),
 (1742600, 9, 2, 0, 0, 0, 100, 0, 4000, 4000, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Galaen - Actionlist - Say Line 1'),
-(1742600, 9, 3, 0, 0, 0, 100, 0, 5000, 5000, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Galaen - Actionlist - Say Line 2'),
+(1742600, 9, 3, 0, 0, 0, 100, 0, 7000, 7000, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Galaen - Actionlist - Say Line 2'),
 (1742600, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 41, 5000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Galaen - Actionlist - Despawn In 5000 ms');
 
 -- Set correct quest prev for Galaen's Journal - The Fate of Vindicator Saruan based on WOW Head
 UPDATE `quest_template_addon` SET `PrevQuestID` = 9779 WHERE `ID` = 9706;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
