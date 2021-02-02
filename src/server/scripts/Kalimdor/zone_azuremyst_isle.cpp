@@ -161,15 +161,28 @@ public:
 
 enum Overgrind
 {
-    SAY_TEXT        = 0,
-    SAY_EMOTE       = 1,
-    ATTACK_YELL     = 2,
+    SPARK_GUID           = 61966,
 
-    AREA_COVE       = 3579,
-    AREA_ISLE       = 3639,
-    QUEST_GNOMERCY  = 9537,
-    FACTION_HOSTILE = 14,
-    SPELL_DYNAMITE  = 7978
+    SPARK_SAY_0          =     0,
+    SPARK_SAY_1          =     1,
+    SPARK_SAY_2          =     2,
+    SPARK_SAY_3          =     3,
+    SPARK_SAY_4          =     4,
+    SPARK_SAY_5          =     5,
+    SPARK_SAY_6          =     6,
+
+    FACTION_HOSTILE      =    14,
+    SPELL_DYNAMITE       =  7978,
+
+    EVENT_SPARK_DYNAMITE =     1,
+    EVENT_SPARK_STOP_WP  =     2,
+    EVENT_SPARK_KNEEL    =     3,
+    EVENT_SPARK_START_WP =     4,
+    EVENT_SPARK_SAY_2    =     5,
+    EVENT_SPARK_SAY_3    =     6,
+    EVENT_SPARK_SAY_4    =     7,
+    EVENT_SPARK_SAY_5    =     8,
+    EVENT_SPARK_SAY_6    =     9
 };
 
 class npc_engineer_spark_overgrind : public CreatureScript
@@ -181,68 +194,118 @@ public:
     {
         npc_engineer_spark_overgrindAI(Creature* creature) : ScriptedAI(creature)
         {
-            NormFaction = creature->getFaction();
-            NpcFlags = creature->GetUInt32Value(UNIT_NPC_FLAGS);
-
-            if (creature->GetAreaId() == AREA_COVE || creature->GetAreaId() == AREA_ISLE)
+            if (creature->GetGUIDLow() == SPARK_GUID)
+                IsTreeEvent = false;
+            else
                 IsTreeEvent = true;
         }
 
         void Reset()
         {
-            DynamiteTimer = 8000;
-            EmoteTimer = urand(120000, 150000);
+            if (IsTreeEvent)
+                return;
 
-            me->setFaction(NormFaction);
-            me->SetUInt32Value(UNIT_NPC_FLAGS, NpcFlags);
-
-            IsTreeEvent = false;
-        }
-
-        void EnterCombat(Unit* who)
-        {
-            Talk(ATTACK_YELL, who);
+            eventsOOC.Reset();
+            eventsIC.Reset();
+            me->GetMotionMaster()->InitDefault();
+            me->setFaction(me->GetCreatureTemplate()->faction);
+            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            PlayerGUID = 0;
+            eventsOOC.ScheduleEvent(EVENT_SPARK_STOP_WP, urand(120000, 150000));
+            eventsIC.ScheduleEvent(EVENT_SPARK_DYNAMITE, urand(8000, 15000));
         }
 
         void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/)
         {
+            PlayerGUID = player->GetGUID();
+            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            eventsOOC.Reset();
+            me->StopMovingOnCurrentPos();
+            me->SetFacingToObject(player);
             CloseGossipMenuFor(player);
-            me->setFaction(FACTION_HOSTILE);
-            me->Attack(player, true);
+            eventsOOC.ScheduleEvent(EVENT_SPARK_SAY_2, 1000);
         }
 
         void UpdateAI(uint32 diff)
         {
-            if (!me->IsInCombat() && !IsTreeEvent)
-            {
-                if (EmoteTimer <= diff)
-                {
-                    Talk(SAY_TEXT);
-                    Talk(SAY_EMOTE);
-                    EmoteTimer = urand(120000, 150000);
-                } else EmoteTimer -= diff;
-            }
-            else if (IsTreeEvent)
+            if (IsTreeEvent)
                 return;
 
             if (!UpdateVictim())
-                return;
-
-            if (DynamiteTimer <= diff)
             {
-                DoCastVictim(SPELL_DYNAMITE);
-                DynamiteTimer = 8000;
-            } else DynamiteTimer -= diff;
+                eventsOOC.Update(diff);
+
+                switch (eventsOOC.ExecuteEvent())
+                {
+                    case EVENT_SPARK_STOP_WP:
+                        me->StopMovingOnCurrentPos();
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+                        Talk(SPARK_SAY_0);
+                        eventsOOC.ScheduleEvent(EVENT_SPARK_KNEEL, 2000);
+                        break;
+                    case EVENT_SPARK_KNEEL:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+                        eventsOOC.ScheduleEvent(EVENT_SPARK_START_WP, 3000);
+                        break;
+                    case EVENT_SPARK_START_WP:
+                        Talk(SPARK_SAY_1);
+                        me->GetMotionMaster()->ReinitializeMovement();
+                        eventsOOC.ScheduleEvent(EVENT_SPARK_STOP_WP, urand(120000, 150000));
+                        break;
+                    case EVENT_SPARK_SAY_2:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                            Talk(SPARK_SAY_2, player);
+                        eventsOOC.ScheduleEvent(EVENT_SPARK_SAY_3, 3000);
+                        break;
+                    case EVENT_SPARK_SAY_3:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                            Talk(SPARK_SAY_3, player);
+                        eventsOOC.ScheduleEvent(EVENT_SPARK_SAY_4, 7000);
+                        break;
+                    case EVENT_SPARK_SAY_4:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                            Talk(SPARK_SAY_4, player);
+                        eventsOOC.ScheduleEvent(EVENT_SPARK_SAY_5, 4000);
+                        break;
+                    case EVENT_SPARK_SAY_5:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                            Talk(SPARK_SAY_5, player);
+                        eventsOOC.ScheduleEvent(EVENT_SPARK_SAY_6, 2000);
+                        break;
+                    case EVENT_SPARK_SAY_6:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                        {
+                            Talk(SPARK_SAY_6, player);
+                            me->setFaction(FACTION_HOSTILE);
+                            me->GetMotionMaster()->MoveChase(player);
+                            me->Attack(player, true);
+                        }
+                        else
+                            Reset();
+                        break;
+                }
+
+                return;
+            }
+
+            eventsIC.Update(diff);
+
+            switch (eventsIC.ExecuteEvent())
+            {
+                case EVENT_SPARK_DYNAMITE:
+                    DoCastVictim(SPELL_DYNAMITE);
+                    eventsIC.ScheduleEvent(EVENT_SPARK_DYNAMITE, urand(8000, 15000));
+                    break;
+            }
 
             DoMeleeAttackIfReady();
         }
 
     private:
-        uint32 NormFaction;
-        uint32 NpcFlags;
-        uint32 DynamiteTimer;
-        uint32 EmoteTimer;
-        bool   IsTreeEvent;
+        EventMap eventsOOC;
+        EventMap eventsIC;
+        uint64   PlayerGUID;
+        bool     IsTreeEvent;
     };
 
     CreatureAI* GetAI(Creature* creature) const
@@ -375,15 +438,14 @@ enum Geezle
 
     SPELL_TREE_DISGUISE = 30298,
 
-    GEEZLE_SAY_1    = 0,
-    SPARK_SAY_2     = 3,
-    SPARK_SAY_3     = 4,
-    GEEZLE_SAY_4    = 1,
-    SPARK_SAY_5     = 5,
-    SPARK_SAY_6     = 6,
-    GEEZLE_SAY_7    = 2,
-
-    EMOTE_SPARK     = 7,
+    SPARK_SAY_7     = 7,
+    GEEZLE_SAY_0    = 0,
+    SPARK_SAY_8     = 8,
+    SPARK_SAY_9     = 9,
+    GEEZLE_SAY_1    = 1,
+    SPARK_SAY_10    = 10,
+    SPARK_SAY_11    = 11,
+    GEEZLE_SAY_2    = 2,
 
     NPC_SPARK       = 17243,
     GO_NAGA_FLAG    = 181694
@@ -446,30 +508,30 @@ public:
                     return 9000;
                 case 1:
                     DespawnNagaFlag(true);
-                    Spark->AI()->Talk(EMOTE_SPARK);
+                    Spark->AI()->Talk(SPARK_SAY_7);
                     return 1000;
                 case 2:
-                    Talk(GEEZLE_SAY_1, Spark);
+                    Talk(GEEZLE_SAY_0, Spark);
                     Spark->SetInFront(me);
                     me->SetInFront(Spark);
                     return 5000;
                 case 3:
-                    Spark->AI()->Talk(SPARK_SAY_2);
+                    Spark->AI()->Talk(SPARK_SAY_8);
                     return 7000;
                 case 4:
-                    Spark->AI()->Talk(SPARK_SAY_3);
+                    Spark->AI()->Talk(SPARK_SAY_9);
                     return 8000;
                 case 5:
-                    Talk(GEEZLE_SAY_4, Spark);
+                    Talk(GEEZLE_SAY_1, Spark);
                     return 8000;
                 case 6:
-                    Spark->AI()->Talk(SPARK_SAY_5);
+                    Spark->AI()->Talk(SPARK_SAY_10);
                     return 9000;
                 case 7:
-                    Spark->AI()->Talk(SPARK_SAY_6);
+                    Spark->AI()->Talk(SPARK_SAY_11);
                     return 8000;
                 case 8:
-                    Talk(GEEZLE_SAY_7, Spark);
+                    Talk(GEEZLE_SAY_2, Spark);
                     return 2000;
                 case 9:
                     me->GetMotionMaster()->MoveTargetedHome();
