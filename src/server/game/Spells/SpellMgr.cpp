@@ -5842,10 +5842,32 @@ void SpellMgr::LoadDbcDataCorrections()
         case 49177:
             spellInfo->EffectBasePoints[0] = 1; // corrects seat id (points - 1 = seatId)
             break;
-        // The Iron Colossus (13007)
-        case 56513:
-        case 56524:
-            spellInfo->RecoveryTime = (spellInfo->Id == 56524 ? 6000 : 2000);
+        case 56513: // Jormungar Strike
+            spellInfo->RecoveryTime = 2000;
+            break;
+        case 37918: // Arcano-pince
+            spellInfo->RecoveryTime = 3000;
+            break;
+        case 54997: // Cast Net (tooltip says 10s but sniffs say 6s)
+        case 56524: // Acid Breath
+            spellInfo->RecoveryTime = 6000;
+            break;
+        case 47911: // EMP
+        case 48620: // Wing Buffet
+        case 51752: // Stampy's Stompy-Stomp
+            spellInfo->RecoveryTime = 10000;
+            break;
+        case 37727: // Touch of Darkness
+        case 54996: // Ice Slick (tooltip says 20s but sniffs say 12s)
+            spellInfo->RecoveryTime = 12000;
+            break;
+        case 51748: // Signal Helmet to Attack
+            spellInfo->RecoveryTime = 15000;
+            break;
+        case 51756: // Charge
+        case 37919: // Arcano-dismantle
+        case 37917: // Arcano-Cloak
+            spellInfo->RecoveryTime = 20000;
             break;
         // Kaw the Mammoth Destroyer (11879)
         case 46260:
@@ -5935,8 +5957,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_DEAD;
             break;
         // Frankly,  It Makes No Sense... (10672)
-        case 37851:
+        case 37851: // Tag Greater Felfire Diemetradon
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
+            spellInfo->RecoveryTime = 3000;
             break;
         // Honor Challenge (12939)
         case 21855:
