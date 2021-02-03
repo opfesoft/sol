@@ -3338,6 +3338,10 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->manaCost = 0;
             spellInfo->manaPerSecond = 0;
             break;
+        case 11389: // Elixir of Detect Undead
+            spellInfo->manaCost = 0;
+            spellInfo->manaPerSecond = 0;
+            break;
         case 24314: // Threatening Gaze
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST | AURA_INTERRUPT_FLAG_MOVE | AURA_INTERRUPT_FLAG_JUMP;
             break;
