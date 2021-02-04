@@ -3360,12 +3360,12 @@ void ObjectMgr::LoadPlayerInfo()
     {
         uint32 oldMSTime = getMSTime();
 
-        std::string tableName = sWorld->getBoolConfig(CONFIG_START_ALL_SPELLS) ? "playercreateinfo_spell_custom" : "playercreateinfo_spell";
+        std::string tableName = sWorld->getBoolConfig(CONFIG_START_CUSTOM_SPELLS) ? "playercreateinfo_spell_custom" : "playercreateinfo_spell";
         QueryResult result = WorldDatabase.PQuery("SELECT racemask, classmask, Spell FROM %s", tableName.c_str());
 
         if (!result)
         {
-            sLog->outErrorDb(">> Loaded 0 player create spells. DB table `%s` is empty.", sWorld->getBoolConfig(CONFIG_START_ALL_SPELLS) ? "playercreateinfo_spell_custom" : "playercreateinfo_spell");
+            sLog->outErrorDb(">> Loaded 0 player create spells. DB table `%s` is empty.", sWorld->getBoolConfig(CONFIG_START_CUSTOM_SPELLS) ? "playercreateinfo_spell_custom" : "playercreateinfo_spell");
         }
         else
         {
