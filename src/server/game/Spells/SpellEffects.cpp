@@ -2756,9 +2756,7 @@ void Spell::EffectTeleUnitsFaceCaster(SpellEffIndex  /*effIndex*/)
         return;
     }
 
-    float x, y, z;
-    destTarget->GetPosition(x, y, z);
-    unitTarget->NearTeleportTo(x, y, z, unitTarget->GetAngle(m_caster));
+    unitTarget->NearTeleportTo(destTarget->GetPositionX(), destTarget->GetPositionY(), destTarget->GetPositionZ(), destTarget->GetAbsoluteAngle(m_caster), unitTarget == m_caster);
 }
 
 void Spell::EffectLearnSkill(SpellEffIndex effIndex)

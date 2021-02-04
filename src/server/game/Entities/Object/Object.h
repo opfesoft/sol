@@ -504,6 +504,8 @@ struct Position
 
     float GetAngle(const Position* pos) const;
     float GetAngle(float x, float y) const;
+    float GetAbsoluteAngle(const Position* pos) const;
+    float GetAbsoluteAngle(float x, float y) const;
     float GetRelativeAngle(const Position* pos) const
     {
         return GetAngle(pos) - m_orientation;

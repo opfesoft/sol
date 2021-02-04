@@ -1272,6 +1272,19 @@ float Position::GetAngle(const float x, const float y) const
     return ang;
 }
 
+float Position::GetAbsoluteAngle(const Position* obj) const
+{
+    if (!obj)
+        return 0;
+
+    return GetAbsoluteAngle(obj->GetPositionX(), obj->GetPositionY());
+}
+
+float Position::GetAbsoluteAngle(const float x, const float y) const
+{
+    return NormalizeOrientation(std::atan2(y - m_positionY, x - m_positionX));
+}
+
 void Position::GetSinCos(const float x, const float y, float &vsin, float &vcos) const
 {
     float dx = GetPositionX() - x;
