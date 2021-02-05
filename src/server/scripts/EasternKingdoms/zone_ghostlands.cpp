@@ -69,41 +69,33 @@ public:
                 case 5:
                     Talk(SAY_PROGRESS1, player);
                     break;
-                case 11:
+                case 13:
                     Talk(SAY_PROGRESS2, player);
-                    me->SetFacingTo(4.762841f);
                     break;
-                case 18:
+                case 22:
+                    Talk(SAY_PROGRESS3, player);
+                    break;
+                case 23:
                     {
-                        Talk(SAY_PROGRESS3, player);
                         Creature* Summ1 = me->SummonCreature(NPC_MUMMIFIED_HEADHUNTER, 7627.083984f, -7532.538086f, 152.128616f, 1.082733f, TEMPSUMMON_DEAD_DESPAWN, 0);
                         Creature* Summ2 = me->SummonCreature(NPC_SHADOWPINE_ORACLE, 7620.432129f, -7532.550293f, 152.454865f, 0.827478f, TEMPSUMMON_DEAD_DESPAWN, 0);
                         if (Summ1 && Summ2)
                         {
                             Summ1->Attack(me, true);
                             Summ2->Attack(player, true);
+                            AttackStart(Summ1);
                         }
-                        AttackStart(Summ1);
                     }
                     break;
-                case 19:
-                    me->SetWalk(false);
-                    break;
-                case 25:
-                    me->SetWalk(true);
-                    break;
-                case 30:
+                case 42:
                     player->GroupEventHappens(QUEST_ESCAPE_FROM_THE_CATACOMBS, me);
-                    break;
-                case 32:
-                    me->SetFacingTo(2.978281f);
                     Talk(SAY_END1, player);
                     break;
-                case 33:
-                    me->SetFacingTo(5.858011f);
+                case 47:
                     Talk(SAY_END2, player);
-                    Creature* CaptainHelios = me->FindNearestCreature(NPC_CAPTAIN_HELIOS, 50);
-                    if (CaptainHelios)
+                    break;
+                case 48:
+                    if (Creature* CaptainHelios = me->FindNearestCreature(NPC_CAPTAIN_HELIOS, 50))
                         CaptainHelios->AI()->Talk(SAY_CAPTAIN_ANSWER, player);
                     break;
             }
