@@ -1088,7 +1088,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             break;
         case SMART_ACTION_GAME_EVENT_STOP:
         {
-            return false;
             uint32 eventId = e.action.gameEventStop.id;
 
             GameEventMgr::GameEventDataMap const& events = sGameEventMgr->GetEventMap();
@@ -1108,7 +1107,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         }
         case SMART_ACTION_GAME_EVENT_START:
         {
-            return false;
             uint32 eventId = e.action.gameEventStart.id;
 
             GameEventMgr::GameEventDataMap const& events = sGameEventMgr->GetEventMap();
