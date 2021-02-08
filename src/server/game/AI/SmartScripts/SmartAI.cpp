@@ -730,6 +730,10 @@ bool SmartAI::AssistPlayerInCombat(Unit* who)
     if (!IS_PLAYER_GUID(who->GetVictim()->GetCharmerOrOwnerOrOwnGUID()))
         return false;
 
+    //never attack friendly
+    if (me->IsFriendlyTo(who->GetVictim()))
+        return false;
+
     // Xinef: Check if victim can be assisted
     if (!me->IsValidAssistTarget(who->GetVictim()))
         return false;
