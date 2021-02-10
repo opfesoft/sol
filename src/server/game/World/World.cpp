@@ -1951,6 +1951,7 @@ void World::SetInitialWorldSettings()
 
     if (sWorld->getBoolConfig(CONFIG_PRELOAD_ALL_NON_INSTANCED_MAP_GRIDS))
     {
+        sLog->outString();
         sLog->outString("Loading all grids for all non-instanced maps...");
 
         for (uint32 i = 0; i < sMapStore.GetNumRows(); ++i)
