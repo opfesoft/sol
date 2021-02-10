@@ -415,8 +415,7 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo)
     if (!condMeets)
         sourceInfo.mLastFailedCondition = this;
 
-    //bool script = sScriptMgr->OnConditionCheck(this, sourceInfo); // Returns true by default. // pussywizard: optimization
-    return condMeets;// && script;
+    return condMeets;
 }
 
 uint32 Condition::GetSearcherTypeMaskForCondition()
@@ -899,7 +898,7 @@ void ConditionMgr::LoadConditions(bool isReload)
     }
 
     QueryResult result = WorldDatabase.Query("SELECT SourceTypeOrReferenceId, SourceGroup, SourceEntry, SourceId, ElseGroup, ConditionTypeOrReference, ConditionTarget, "
-                                             " ConditionValue1, ConditionValue2, ConditionValue3, NegativeCondition, ErrorType, ErrorTextId, ScriptName FROM conditions");
+                                             " ConditionValue1, ConditionValue2, ConditionValue3, NegativeCondition, ErrorType, ErrorTextId FROM conditions");
 
     if (!result)
     {
@@ -928,7 +927,6 @@ void ConditionMgr::LoadConditions(bool isReload)
         cond->NegativeCondition         = fields[10].GetUInt8();
         cond->ErrorType                 = fields[11].GetUInt32();
         cond->ErrorTextId               = fields[12].GetUInt32();
-        cond->ScriptId                  = sObjectMgr->GetScriptId(fields[13].GetCString());
 
         if (iConditionTypeOrReference >= 0)
             cond->ConditionType = ConditionTypes(iConditionTypeOrReference);

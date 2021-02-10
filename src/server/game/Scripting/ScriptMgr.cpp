@@ -40,7 +40,6 @@ template class ScriptRegistry<OutdoorPvPScript>;
 template class ScriptRegistry<CommandScript>;
 template class ScriptRegistry<WeatherScript>;
 template class ScriptRegistry<AuctionHouseScript>;
-template class ScriptRegistry<ConditionScript>;
 template class ScriptRegistry<VehicleScript>;
 template class ScriptRegistry<DynamicObjectScript>;
 template class ScriptRegistry<TransportScript>;
@@ -101,7 +100,6 @@ void ScriptMgr::Unload()
     SCR_CLEAR(CommandScript);
     SCR_CLEAR(WeatherScript);
     SCR_CLEAR(AuctionHouseScript);
-    SCR_CLEAR(ConditionScript);
     SCR_CLEAR(VehicleScript);
     SCR_CLEAR(DynamicObjectScript);
     SCR_CLEAR(TransportScript);
@@ -142,7 +140,6 @@ void ScriptMgr::LoadDatabase()
     ScriptRegistry<BattlegroundScript>::AddALScripts();
     ScriptRegistry<OutdoorPvPScript>::AddALScripts();
     ScriptRegistry<WeatherScript>::AddALScripts();
-    ScriptRegistry<ConditionScript>::AddALScripts();
     ScriptRegistry<TransportScript>::AddALScripts();
     ScriptRegistry<AchievementCriteriaScript>::AddALScripts();
 
@@ -182,7 +179,6 @@ void ScriptMgr::CheckIfScriptsInDatabaseExist()
                 !ScriptRegistry<CommandScript>::GetScriptById(sid) &&
                 !ScriptRegistry<WeatherScript>::GetScriptById(sid) &&
                 !ScriptRegistry<AuctionHouseScript>::GetScriptById(sid) &&
-                !ScriptRegistry<ConditionScript>::GetScriptById(sid) &&
                 !ScriptRegistry<VehicleScript>::GetScriptById(sid) &&
                 !ScriptRegistry<DynamicObjectScript>::GetScriptById(sid) &&
                 !ScriptRegistry<TransportScript>::GetScriptById(sid) &&
@@ -1000,14 +996,6 @@ void ScriptMgr::OnBeforeAuctionHouseMgrSendAuctionCancelledToBidderMail(AuctionH
 void ScriptMgr::OnBeforeAuctionHouseMgrUpdate()
 {
     FOREACH_SCRIPT(AuctionHouseScript)->OnBeforeAuctionHouseMgrUpdate();
-}
-
-bool ScriptMgr::OnConditionCheck(Condition* condition, ConditionSourceInfo& sourceInfo)
-{
-    ASSERT(condition);
-
-    GET_SCRIPT_RET(ConditionScript, condition->ScriptId, tmpscript, true);
-    return tmpscript->OnConditionCheck(condition, sourceInfo);
 }
 
 void ScriptMgr::OnInstall(Vehicle* veh)
@@ -1856,12 +1844,6 @@ AuctionHouseScript::AuctionHouseScript(const char* name)
     : ScriptObject(name)
 {
     ScriptRegistry<AuctionHouseScript>::AddScript(this);
-}
-
-ConditionScript::ConditionScript(const char* name)
-    : ScriptObject(name)
-{
-    ScriptRegistry<ConditionScript>::AddScript(this);
 }
 
 VehicleScript::VehicleScript(const char* name)

@@ -193,7 +193,6 @@ struct Condition
     uint32                  ErrorType;
     uint32                  ErrorTextId;
     uint32                  ReferenceId;
-    uint32                  ScriptId;
     uint8                   ConditionTarget;
     bool                    NegativeCondition;
 
@@ -212,7 +211,6 @@ struct Condition
         ReferenceId        = 0;
         ErrorType          = 0;
         ErrorTextId        = 0;
-        ScriptId           = 0;
         NegativeCondition  = false;
     }
 

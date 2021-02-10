@@ -695,20 +695,6 @@ class AuctionHouseScript : public ScriptObject
         virtual void OnBeforeAuctionHouseMgrUpdate() { }
 };
 
-class ConditionScript : public ScriptObject
-{
-    protected:
-
-        ConditionScript(const char* name);
-
-    public:
-
-        bool IsDatabaseBound() const { return true; }
-
-        // Called when a single condition is checked for a player.
-        virtual bool OnConditionCheck(Condition* /*condition*/, ConditionSourceInfo& /*sourceInfo*/) { return true; }
-};
-
 class VehicleScript : public ScriptObject
 {
     protected:
@@ -1340,10 +1326,6 @@ class ScriptMgr
         void OnBeforeAuctionHouseMgrSendAuctionOutbiddedMail(AuctionHouseMgr* auctionHouseMgr, AuctionEntry* auction, Player* oldBidder, uint32& oldBidder_accId, Player* newBidder, uint32& newPrice, bool& sendNotification, bool& sendMail);
         void OnBeforeAuctionHouseMgrSendAuctionCancelledToBidderMail(AuctionHouseMgr* auctionHouseMgr, AuctionEntry* auction, Player* bidder, uint32& bidder_accId, bool& sendMail);
         void OnBeforeAuctionHouseMgrUpdate();
-
-    public: /* ConditionScript */
-
-        bool OnConditionCheck(Condition* condition, ConditionSourceInfo& sourceInfo);
 
     public: /* VehicleScript */
 
