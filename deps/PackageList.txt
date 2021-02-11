@@ -1,24 +1,20 @@
-AzerothCore uses (parts of or in whole) the following opensource software :
+Project "Sol" uses (parts of or in whole) the following opensource software :
 
 ACE (ADAPTIVE Communication Environment)
-  http://www.cs.wustl.edu/~schmidt/ACE.html
-  Version: 6.1.4
+  https://github.com/DOCGroup/ACE_TAO
+  Version: external
 
 bzip2 (a freely available, patent free, high-quality data compressor)
   http://www.bzip.org/
   Version: 1.0.6
 
-cotire (CMake module to speed up builds)
-  https://github.com/sakra/cotire
-  Version: 1.8.0 391bf6b7609e14f5976bd5247b68d63cbf8d4d12
-
 G3D (a commercial-grade C++ 3D engine available as Open Source (BSD License)
   http://g3d.sourceforge.net/
-  Version: 8.01-Release
+  Version: 9.0
 
 jemalloc (a general-purpose scalable concurrent malloc-implementation)
   http://www.canonware.com/jemalloc/
-  Version: 5.0.1
+  Version: 5.2.1
 
 libMPQ (a library for reading MPQ files)
   https://libmpq.org/
@@ -32,13 +28,13 @@ OpenSSL (general-purpose cryptography library)
   https://www.openssl.org/
   Version: external
 
-MySQL (the world's most popular open source database software)
-  http://www.mysql.com/
-  Version: 5.5.9 (GA)
+MariaDB (the open source relational database)
+  https://mariadb.org/
+  Version: external
 
 SFMT (SIMD-oriented Fast Mersenne Twister)
   Based on http://agner.org/random/
-  Version: 2010-Aug-03
+  Version: 1.5
 
 utf8-cpp (UTF-8 with C++ in a Portable Way)
   http://utfcpp.sourceforge.net/

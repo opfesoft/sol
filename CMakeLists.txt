@@ -34,8 +34,7 @@ set(AC_PATH_ROOT "${CMAKE_SOURCE_DIR}")
 
 # set macro-directory
 list(APPEND CMAKE_MODULE_PATH
-  "${CMAKE_SOURCE_DIR}/src/cmake/macros"
-  "${CMAKE_SOURCE_DIR}/deps/cotire/CMake")
+  "${CMAKE_SOURCE_DIR}/src/cmake/macros")
 
 include(CheckCXXSourceRuns)
 include(CheckIncludeFiles)
