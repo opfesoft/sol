@@ -3543,7 +3543,7 @@ void SpellMgr::LoadDbcDataCorrections()
             break;
         // Kindred Spirits, damage aura
         case 57458:
-            spellInfo->AttributesEx4 |= SPELL_ATTR4_UNK21;
+            spellInfo->AttributesEx4 |= SPELL_ATTR4_DONT_REMOVE_IN_ARENA;
             break;
         // Chimera Shot - Serpent trigger
         case 53353:
