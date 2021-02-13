@@ -84,3 +84,43 @@ bool PlayerCommand::UnLearn(ChatHandler* handler, Player* target, uint32 spellId
 
     return true;
 }
+
+bool PlayerCommand::SetSkill(ChatHandler* handler, Player* target, char const* skillStr, char const* levelStr, char const* maxPureSkill)
+{
+    if (!skillStr || !levelStr)
+        return false;
+
+    int32 skill = atoi(skillStr);
+    if (skill <= 0)
+    {
+        handler->PSendSysMessage(LANG_INVALID_SKILL_ID, skill);
+        handler->SetSentErrorMessage(true);
+        return false;
+    }
+
+    int32 level = uint32(atol(levelStr));
+
+    SkillLineEntry const* skillLine = sSkillLineStore.LookupEntry(skill);
+    if (!skillLine)
+    {
+        handler->PSendSysMessage(LANG_INVALID_SKILL_ID, skill);
+        handler->SetSentErrorMessage(true);
+        return false;
+    }
+
+    bool targetHasSkill = target->GetSkillValue(skill);
+
+    // If our target does not yet have the skill they are trying to add to them, the chosen level also becomes
+    // the max level of the new profession.
+    uint16 max = maxPureSkill ? atol (maxPureSkill) : targetHasSkill ? target->GetPureMaxSkillValue(skill) : uint16(level);
+
+    if (level <= 0 || level > max || max <= 0)
+        return false;
+
+    // If the player has the skill, we get the current skill step. If they don't have the skill, we
+    // add the skill to the player's book with step 1 (which is the first rank, in most cases something
+    // like 'Apprentice <skill>'.
+    target->SetSkill(skill, targetHasSkill ? target->GetSkillStep(skill) : 1, level, max);
+    handler->PSendSysMessage(LANG_SET_SKILL, skill, skillLine->name[handler->GetSessionDbcLocale()], handler->GetNameLink(target).c_str(), level, max);
+    return true;
+}

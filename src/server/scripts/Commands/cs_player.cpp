@@ -18,7 +18,8 @@ public:
         static std::vector<ChatCommand> playerCommandTable =
         {
             { "learn",               SEC_GAMEMASTER,  true, &HandlePlayerLearnCommand,           "" },
-            { "unlearn",             SEC_GAMEMASTER,  true, &HandlePlayerUnLearnCommand,         "" }
+            { "unlearn",             SEC_GAMEMASTER,  true, &HandlePlayerUnLearnCommand,         "" },
+            { "setskill",            SEC_GAMEMASTER,  true, &HandlePlayerSetSkillCommand,        "" }
         };
 
         static std::vector<ChatCommand> commandTable =
@@ -64,6 +65,25 @@ public:
             return false;
 
         return UnLearn(handler, targetPlayer, spell, all);
+    }
+
+    static bool HandlePlayerSetSkillCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char* playerName = strtok((char*)args, " ");
+        char* skillid = strtok(nullptr, " ");
+        char const* levelStr = strtok(nullptr, " ");
+        char const* maxPureSkill = strtok(nullptr, " ");
+        Player* targetPlayer = FindPlayer(handler, playerName);
+        if (!skillid || !targetPlayer)
+            return false;
+
+        // number or [name] Shift-click form |color|Hskill:skill_id|h[name]|h|r
+        char const* skillStr = handler->extractKeyFromLink(skillid, "Hskill");
+
+        return SetSkill(handler, targetPlayer, skillStr, levelStr, maxPureSkill);
     }
 
 private:

@@ -7,4 +7,5 @@ class PlayerCommand
 public:
     static bool Learn(ChatHandler* handler, Player* targetPlayer, uint32 spell, char const* all);
     static bool UnLearn(ChatHandler* handler, Player* targetPlayer, uint32 spell, char const* all);
+    static bool SetSkill(ChatHandler* handler, Player* target, char const* skillStr, char const* levelStr, char const* maxPureSkill);
 };
