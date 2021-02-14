@@ -3883,6 +3883,17 @@ void SpellMgr::LoadDbcDataCorrections()
         case 61994:
             spellInfo->ManaCostPercentage = 0;
             break;
+        // Life Tap:
+        case 1454:
+        case 1455:
+        case 1456:
+        case 11687:
+        case 11688:
+        case 11689:
+        case 27222:
+        case 57946:
+            spellInfo->EffectRealPointsPerLevel[0] = 0;
+            break;
 
 
         /////////////////////////////////
