@@ -1,0 +1,29 @@
+-- DB update 2021_02_15_05 -> 2021_02_16_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2021_02_15_05';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2021_02_15_05 2021_02_16_00 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1613460870094289747'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1613460870094289747');
+
+UPDATE `creature` SET `orientation` = 2.24445 WHERE `guid` = 79751;
+UPDATE `creature` SET `position_x` = -8634.15, `position_y` = 886.586, `position_z` = 103.182, `orientation` = 5.36805 WHERE `guid` = 7626;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
