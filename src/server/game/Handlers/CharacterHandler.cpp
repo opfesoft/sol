@@ -1029,7 +1029,7 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
         }
 
     // friend status
-    if (AccountMgr::IsGMAccount(GetSecurity())) // pussywizard: only for non-gms
+    if (!AccountMgr::IsGMAccount(GetSecurity()) || (AccountMgr::IsGMAccount(GetSecurity()) && sWorld->getBoolConfig(CONFIG_ALLOW_GM_FRIEND)))
         sSocialMgr->SendFriendStatus(pCurrChar, FRIEND_ONLINE, pCurrChar->GetGUIDLow(), true);
 
     // Place character in world (and load zone) before some object loading

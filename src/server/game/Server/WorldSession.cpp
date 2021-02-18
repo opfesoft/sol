@@ -547,7 +547,7 @@ void WorldSession::LogoutPlayer(bool save)
         }
 
         //! Broadcast a logout message to the player's friends
-        if (AccountMgr::IsGMAccount(GetSecurity())) // pussywizard: only for non-gms
+        if (!AccountMgr::IsGMAccount(GetSecurity()) || (AccountMgr::IsGMAccount(GetSecurity()) && sWorld->getBoolConfig(CONFIG_ALLOW_GM_FRIEND)))
             sSocialMgr->SendFriendStatus(_player, FRIEND_OFFLINE, _player->GetGUIDLow(), true);
         sSocialMgr->RemovePlayerSocial(_player->GetGUIDLow());
 
