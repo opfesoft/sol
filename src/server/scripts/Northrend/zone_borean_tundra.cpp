@@ -949,7 +949,13 @@ public:
                         if (!pCannon)
                             pCannon = me->FindNearestGameObject(GO_VALIANCE_KEEP_CANNON_2, 10);
                         if (pCannon)
-                            pCannon->Use(me);
+                        {
+                            float x, y;
+                            GameObjectTemplate const* got = pCannon->GetGOInfo();
+                            pCannon->GetNearPoint2D(x, y, got->size * 5.3f, pCannon->GetOrientation());
+                            if (Creature* trigger = me->SummonCreature(WORLD_TRIGGER, x, y, pCannon->GetPositionZ() + got->size * 2.4f, pCannon->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 5000))
+                                pCannon->Use(trigger);
+                        }
                         events.ScheduleEvent(EVENT_KNEEL, urand(13000, 18000));
                         break;
                 }
