@@ -105,8 +105,12 @@ class PlayerSocial
         uint32 GetPlayerGUID() const { return m_playerGUID; }
         void SetPlayerGUID(uint32 guid) { m_playerGUID = guid; }
         uint32 GetNumberOfSocialsWithFlag(SocialFlag flag) const;
+        bool SetFriendInfo(uint32 guid, const FriendInfo &fi);
+        bool GetFriendInfoNote(uint32 guid, std::string &note) const;
+        bool GetFriendInfoFlags(uint32 guid, uint8 &flags) const;
     private:
         PlayerSocialMap m_playerSocialMap;
+        mutable ACE_RW_Mutex m_playerSocialMapMutex;
         uint32 m_playerGUID;
 };
 

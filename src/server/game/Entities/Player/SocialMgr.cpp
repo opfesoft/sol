@@ -22,11 +22,13 @@ PlayerSocial::PlayerSocial()
 
 PlayerSocial::~PlayerSocial()
 {
+    ACORE_WRITE_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     m_playerSocialMap.clear();
 }
 
 uint32 PlayerSocial::GetNumberOfSocialsWithFlag(SocialFlag flag) const
 {
+    ACORE_READ_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     uint32 counter = 0;
     for (PlayerSocialMap::const_iterator itr = m_playerSocialMap.begin(); itr != m_playerSocialMap.end(); ++itr)
         if (itr->second.Flags & flag)
@@ -53,6 +55,7 @@ bool PlayerSocial::AddToSocialList(uint32 friendGuid, bool ignore)
     if (ignore)
         flag = SOCIAL_FLAG_IGNORED;
 
+    ACORE_WRITE_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     PlayerSocialMap::const_iterator itr = m_playerSocialMap.find(friendGuid);
     if (itr != m_playerSocialMap.end())
     {
@@ -85,6 +88,7 @@ bool PlayerSocial::AddToSocialList(uint32 friendGuid, bool ignore)
 
 void PlayerSocial::RemoveFromSocialList(uint32 friendGuid, bool ignore)
 {
+    ACORE_WRITE_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     PlayerSocialMap::iterator itr = m_playerSocialMap.find(friendGuid);
     if (itr == m_playerSocialMap.end())                     // not exist
         return;
@@ -119,6 +123,7 @@ void PlayerSocial::RemoveFromSocialList(uint32 friendGuid, bool ignore)
 
 void PlayerSocial::SetFriendNote(uint32 friendGuid, std::string note)
 {
+    ACORE_WRITE_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     PlayerSocialMap::const_iterator itr = m_playerSocialMap.find(friendGuid);
     if (itr == m_playerSocialMap.end())                     // not exist
         return;
@@ -141,6 +146,7 @@ void PlayerSocial::SendSocialList(Player* player)
     if (!player)
         return;
 
+    ACORE_READ_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     uint32 size = m_playerSocialMap.size();
 
     WorldPacket data(SMSG_CONTACT_LIST, (4+4+size*25));     // just can guess size
@@ -174,6 +180,7 @@ void PlayerSocial::SendSocialList(Player* player)
 
 bool PlayerSocial::HasFriend(uint32 friend_guid) const
 {
+    ACORE_READ_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     PlayerSocialMap::const_iterator itr = m_playerSocialMap.find(friend_guid);
     if (itr != m_playerSocialMap.end())
         return itr->second.Flags & SOCIAL_FLAG_FRIEND;
@@ -182,10 +189,46 @@ bool PlayerSocial::HasFriend(uint32 friend_guid) const
 
 bool PlayerSocial::HasIgnore(uint32 ignore_guid) const
 {
+    ACORE_READ_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
     PlayerSocialMap::const_iterator itr = m_playerSocialMap.find(ignore_guid);
     if (itr != m_playerSocialMap.end())
         return itr->second.Flags & SOCIAL_FLAG_IGNORED;
     return false;
+}
+
+bool PlayerSocial::SetFriendInfo(uint32 guid, const FriendInfo &fi)
+{
+    ACORE_WRITE_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
+    m_playerSocialMap[guid] = fi;
+
+    // client's friends list and ignore list limit
+    return m_playerSocialMap.size() >= (SOCIALMGR_FRIEND_LIMIT + SOCIALMGR_IGNORE_LIMIT);
+}
+
+bool PlayerSocial::GetFriendInfoNote(uint32 guid, std::string &note) const
+{
+    ACORE_READ_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
+    PlayerSocialMap::const_iterator itr = m_playerSocialMap.find(guid);
+    if (itr != m_playerSocialMap.end())
+    {
+        note = itr->second.Note;
+        return true;
+    }
+    else
+        return false;
+}
+
+bool PlayerSocial::GetFriendInfoFlags(uint32 guid, uint8 &flags) const
+{
+    ACORE_READ_GUARD(ACE_RW_Mutex, m_playerSocialMapMutex);
+    PlayerSocialMap::const_iterator itr = m_playerSocialMap.find(guid);
+    if (itr != m_playerSocialMap.end())
+    {
+        flags = itr->second.Flags;
+        return true;
+    }
+    else
+        return false;
 }
 
 SocialMgr::SocialMgr()
@@ -214,10 +257,9 @@ void SocialMgr::GetFriendInfo(Player* player, uint32 friendGUID, FriendInfo &fri
     AccountTypes security = player->GetSession()->GetSecurity();
     bool allowTwoSideWhoList = sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_WHO_LIST);
     AccountTypes gmLevelInWhoList = AccountTypes(sWorld->getIntConfig(CONFIG_GM_LEVEL_IN_WHO_LIST));
-
-    PlayerSocialMap::iterator itr = player->GetSocial()->m_playerSocialMap.find(friendGUID);
-    if (itr != player->GetSocial()->m_playerSocialMap.end())
-        friendInfo.Note = itr->second.Note;
+    std::string note = "";
+    if (player->GetSocial()->GetFriendInfoNote(friendGUID, note))
+        friendInfo.Note = note;
 
     // PLAYER see his team only and PLAYER can't see MODERATOR, GAME MASTER, ADMINISTRATOR characters
     // MODERATOR, GAME MASTER, ADMINISTRATOR can see all
@@ -290,16 +332,17 @@ void SocialMgr::BroadcastToFriendListers(Player* player, WorldPacket* packet)
 
     for (SocialMap::const_iterator itr = m_socialMap.begin(); itr != m_socialMap.end(); ++itr)
     {
-        PlayerSocialMap::const_iterator itr2 = itr->second.m_playerSocialMap.find(guid);
-        if (itr2 != itr->second.m_playerSocialMap.end() && (itr2->second.Flags & SOCIAL_FLAG_FRIEND))
-        {
-            Player* pFriend = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER));
+        uint8 flags = 0;
+        if (itr->second.GetFriendInfoFlags(guid, flags))
+            if (flags & SOCIAL_FLAG_FRIEND)
+            {
+                Player* pFriend = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER));
 
-            // PLAYER see his team only and PLAYER can't see MODERATOR, GAME MASTER, ADMINISTRATOR characters
-            // MODERATOR, GAME MASTER, ADMINISTRATOR can see all
-            if (pFriend && (!AccountMgr::IsPlayerAccount(pFriend->GetSession()->GetSecurity()) || ((pFriend->GetTeamId() == teamId || allowTwoSideWhoList) && security <= gmLevelInWhoList)) && player->IsVisibleGloballyFor(pFriend))
-                pFriend->GetSession()->SendPacket(packet);
-        }
+                // PLAYER see his team only and PLAYER can't see MODERATOR, GAME MASTER, ADMINISTRATOR characters
+                // MODERATOR, GAME MASTER, ADMINISTRATOR can see all
+                if (pFriend && (!AccountMgr::IsPlayerAccount(pFriend->GetSession()->GetSecurity()) || ((pFriend->GetTeamId() == teamId || allowTwoSideWhoList) && security <= gmLevelInWhoList)) && player->IsVisibleGloballyFor(pFriend))
+                    pFriend->GetSession()->SendPacket(packet);
+            }
     }
 }
 
@@ -323,10 +366,7 @@ PlayerSocial* SocialMgr::LoadFromDB(PreparedQueryResult result, uint32 guid)
         flags = fields[1].GetUInt8();
         note = fields[2].GetString();
 
-        social->m_playerSocialMap[friendGuid] = FriendInfo(flags, note);
-
-        // client's friends list and ignore list limit
-        if (social->m_playerSocialMap.size() >= (SOCIALMGR_FRIEND_LIMIT + SOCIALMGR_IGNORE_LIMIT))
+        if (social->SetFriendInfo(friendGuid, FriendInfo(flags, note)))
             break;
     }
     while (result->NextRow());
