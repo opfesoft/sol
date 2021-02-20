@@ -22,7 +22,7 @@ INSERT INTO `version_db_world` (`sql_rev`) VALUES ('1613512073209092300');
 UPDATE `creature_template` SET `gossip_menu_id`=57032 , `npcflag`=`npcflag`|1 WHERE `entry`=264;
 DELETE FROM `npc_text` WHERE `ID`=50029;
 INSERT INTO `npc_text` (`ID`, `text0_0`, `BroadcastTextID0`) VALUES
-(50029,'At ease, $c. If you are just passing though I suggest you stick to the roads and only travel by day. If your business is here in Darkshire, consider lending your abilities to the Night Watch. Our skill is unquestionable but our numbers are small.',0);
+(50029,'At ease, $c. If you are just passing through I suggest you stick to the roads and only travel by day. If your business is here in Darkshire, consider lending your abilities to the Night Watch. Our skill is unquestionable but our numbers are small.',0);
 
 DELETE FROM `gossip_menu` WHERE `MenuID` = 57032 AND `TextID` = 50029;
 INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES
