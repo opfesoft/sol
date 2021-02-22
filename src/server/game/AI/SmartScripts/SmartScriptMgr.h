@@ -600,7 +600,7 @@ enum SMART_ACTION
     SMART_ACTION_SOL_START                          = 230,    // placeholder
 
     SMART_ACTION_CIRCLE_MOVE                        = 231,    // radius, clockwise (0/1), stepCount, centerSelf
-    SMART_ACTION_COPY_HEALTH                        = 232,    // use percentage (0/1), copy from target (0/1)
+    SMART_ACTION_SET_HEALTH                         = 232,    // use percentage (0/1), copy from target (0/1), health
 
     SMART_ACTION_SOL_END                            = 233     // placeholder
 };
@@ -1208,7 +1208,8 @@ struct SmartAction
         {
             uint32 usePercentage;
             uint32 copyFromTarget;
-        } copyHealth;
+            uint32 health;
+        } setHealth;
 
         //! Note for any new future actions
         //! All parameters must have type uint32

@@ -3092,7 +3092,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         delete targets;
         break;
     }
-    case SMART_ACTION_COPY_HEALTH:
+    case SMART_ACTION_SET_HEALTH:
     {
         ObjectList* targets = GetTargets(e, unit);
         if (!targets)
@@ -3101,8 +3101,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!me)
             break;
 
-        bool copyFromTarget = e.action.copyHealth.copyFromTarget;
-        bool usePercentage = e.action.copyHealth.usePercentage;
+        bool copyFromTarget = e.action.setHealth.copyFromTarget;
+        bool usePercentage = e.action.setHealth.usePercentage;
 
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             if (Unit* unit = (*itr)->ToUnit())
@@ -3112,6 +3112,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     me->SetHealth(usePercentage ? (me->GetMaxHealth() * unit->GetHealthPct() / 100.0f) : unit->GetHealth());
                     break;
                 }
+                else if (e.action.setHealth.health > 0)
+                    unit->SetHealth(usePercentage ? (unit->GetMaxHealth() * e.action.setHealth.health / 100.0f) : e.action.setHealth.health);
                 else
                     unit->SetHealth(usePercentage ? (unit->GetMaxHealth() * me->GetHealthPct() / 100.0f) : me->GetHealth());
             }

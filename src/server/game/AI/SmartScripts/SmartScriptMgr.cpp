@@ -1245,7 +1245,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_NO_ENVIRONMENT_UPDATE:
         case SMART_ACTION_ZONE_UNDER_ATTACK:
         case SMART_ACTION_CIRCLE_MOVE:
-        case SMART_ACTION_COPY_HEALTH:
+        case SMART_ACTION_SET_HEALTH:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type(%u), event_type(%u), Entry %d SourceType %u Event %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);
