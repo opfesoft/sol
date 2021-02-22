@@ -39,7 +39,11 @@ enum draeneiSurvivor
     SAY_HEAL            = 0,
     SAY_HELP            = 1,
     SPELL_IRRIDATION    = 35046,
-    SPELL_STUNNED       = 28630
+    SPELL_STUNNED       = 28630,
+
+    EVENT_SAY_HELP      = 1,
+    EVENT_SAY_THANKS    = 2,
+    EVENT_RUN_AWAY      = 3
 };
 
 class npc_draenei_survivor : public CreatureScript
@@ -52,27 +56,19 @@ public:
         npc_draenei_survivorAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint64 pCaster;
-
-        uint32 SayThanksTimer;
-        uint32 RunAwayTimer;
-        uint32 SayHelpTimer;
-
         bool CanSayHelp;
+        EventMap events;
 
         void Reset()
         {
+            events.Reset();
             pCaster = 0;
-
-            SayThanksTimer = 0;
-            RunAwayTimer = 0;
-            SayHelpTimer = 10000;
-
             CanSayHelp = true;
 
             DoCast(me, SPELL_IRRIDATION, true);
 
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
+            me->SetRegeneratingHealth(false);
             me->SetHealth(me->CountPctFromMaxHealth(10));
             me->SetStandState(UNIT_STAND_STATE_SLEEP);
         }
@@ -85,9 +81,8 @@ public:
             {
                 //Random switch between 4 texts
                 Talk(SAY_HELP, who);
-
-                SayHelpTimer = 20000;
                 CanSayHelp = false;
+                events.ScheduleEvent(EVENT_SAY_HELP, 20000);
             }
         }
 
@@ -102,50 +97,42 @@ public:
 
                 pCaster = Caster->GetGUID();
 
-                SayThanksTimer = 5000;
+                CanSayHelp = false;
+                events.CancelEvent(EVENT_SAY_HELP);
+                events.ScheduleEvent(EVENT_SAY_THANKS, 5000);
             }
         }
 
         void UpdateAI(uint32 diff)
         {
-            if (SayThanksTimer)
+            events.Update(diff);
+
+            switch (events.ExecuteEvent())
             {
-                if (SayThanksTimer <= diff)
-                {
+                case EVENT_SAY_HELP:
+                    CanSayHelp = true;
+                    events.ScheduleEvent(EVENT_SAY_HELP, 20000);
+                    break;
+                case EVENT_SAY_THANKS:
                     me->RemoveAurasDueToSpell(SPELL_IRRIDATION);
 
                     if (Player* player = ObjectAccessor::GetPlayer(*me, pCaster))
                     {
+                        me->SetFacingToObject(player);
                         Talk(SAY_HEAL, player);
-
                         player->TalkedToCreature(me->GetEntry(), me->GetGUID());
                     }
-
+                    events.ScheduleEvent(EVENT_RUN_AWAY, 3000);
+                    break;
+                case EVENT_RUN_AWAY:
+                    me->DespawnOrUnsummon(2500);
+                    me->RemoveAurasDueToSpell(SPELL_STUNNED);
                     me->GetMotionMaster()->Clear();
-                    me->GetMotionMaster()->MovePoint(0, -4115.053711f, -13754.831055f, 73.508949f);
-
-                    RunAwayTimer = 10000;
-                    SayThanksTimer = 0;
-                } else SayThanksTimer -= diff;
-
-                return;
+                    float x, y, z;
+                    me->GetNearPoint(me, x, y, z, me->GetCombatReach(), 20.0f, me->GetAngle(-4115.053711f, -13754.831055f));
+                    me->GetMotionMaster()->MovePoint(0, x, y, z);
+                    break;
             }
-
-            if (RunAwayTimer)
-            {
-                if (RunAwayTimer <= diff)
-                    me->DespawnOrUnsummon();
-                else
-                    RunAwayTimer -= diff;
-
-                return;
-            }
-
-            if (SayHelpTimer <= diff)
-            {
-                CanSayHelp = true;
-                SayHelpTimer = 20000;
-            } else SayHelpTimer -= diff;
         }
     };
 
