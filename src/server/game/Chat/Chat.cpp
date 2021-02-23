@@ -321,14 +321,29 @@ bool ChatHandler::ExecuteCommandInTable(std::vector<ChatCommand> const& table, c
                         zoneName = zone->area_name[locale];
                 }
 
-                sLog->outCommand(m_session->GetAccountId(), "Command: %s [Player: %s (%ul) (Account: %u) X: %f Y: %f Z: %f Map: %u (%s) Area: %u (%s) Zone: %s Selected: %s (%ul)]",
+                std::string selected;
+                if (Unit* unit = player->GetSelectedUnit())
+                {
+                    selected.reserve(100);
+                    selected += " Selected: ";
+                    selected += unit->GetName().c_str();
+                    selected += " (GUID: ";
+                    selected += std::to_string(GUID_LOPART(guid));
+                    if (Creature* creature = unit->ToCreature())
+                    {
+                        selected += " ID: ";
+                        selected += std::to_string(creature->GetEntry());
+                    }
+                    selected += ")";
+                }
+
+                sLog->outCommand(m_session->GetAccountId(), "Command: %s [Player: %s (%u) (Account: %u) X: %f Y: %f Z: %f Map: %u (%s) Area: %u (%s) Zone: %s%s]",
                     fullcmd.c_str(), player->GetName().c_str(), GUID_LOPART(player->GetGUID()),
                     m_session->GetAccountId(), player->GetPositionX(), player->GetPositionY(),
                     player->GetPositionZ(), player->GetMapId(),
                     player->GetMap()->GetMapName(),
                     areaId, areaName.c_str(), zoneName.c_str(),
-                    (player->GetSelectedUnit()) ? player->GetSelectedUnit()->GetName().c_str() : "",
-                    GUID_LOPART(guid));
+                    selected.c_str());
             }
         }
         // some commands have custom error messages. Don't send the default one in these cases.
