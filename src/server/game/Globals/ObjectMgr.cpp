@@ -6339,14 +6339,7 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
         {
             ASSERT(_hiGoGuid < 0x00FFFFFE && "Gameobject guid overflow!");
             ACORE_GUARD(ACE_Thread_Mutex, _hiGoGuidMutex);
-            if (_hiGoFreeGuids.empty())
-                return _hiGoGuid++;
-            else
-            {
-                uint32 oldGuid = _hiGoFreeGuids.front();
-                _hiGoFreeGuids.pop();
-                return oldGuid;
-            }
+            return _hiGoGuid++;
         }
         case HIGHGUID_CORPSE:
         {
@@ -6407,12 +6400,6 @@ void ObjectMgr::AddFreeGuid(HighGuid guidhigh, uint32 guid)
         {
             ACORE_GUARD(ACE_Thread_Mutex, _hiCreatureGuidMutex);
             _hiCreatureFreeGuids.push(guid);
-            return;
-        }
-        case HIGHGUID_GAMEOBJECT:
-        {
-            ACORE_GUARD(ACE_Thread_Mutex, _hiGoGuidMutex);
-            _hiGoFreeGuids.push(guid);
             return;
         }
         default:

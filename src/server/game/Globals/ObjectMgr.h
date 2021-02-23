@@ -1355,7 +1355,7 @@ class ObjectMgr
         uint32 _hiPetGuid; ACE_Thread_Mutex _hiPetGuidMutex;
         uint32 _hiVehicleGuid; ACE_Thread_Mutex _hiVehicleGuidMutex;
         uint32 _hiItemGuid; std::queue<std::pair<uint32,uint32>> _hiItemGuidFreeRanges; ACE_Thread_Mutex _hiItemGuidMutex;
-        uint32 _hiGoGuid, _hiGoGuidReserved, _hiGoGuidReservedMax; std::queue<uint32> _hiGoFreeGuids; ACE_Thread_Mutex _hiGoGuidMutex;
+        uint32 _hiGoGuid, _hiGoGuidReserved, _hiGoGuidReservedMax; ACE_Thread_Mutex _hiGoGuidMutex;
         uint32 _hiDoGuid; ACE_Thread_Mutex _hiDoGuidMutex;
         uint32 _hiCorpseGuid; ACE_Thread_Mutex _hiCorpseGuidMutex;
         uint32 _hiMoTransGuid; ACE_Thread_Mutex _hiMoTransGuidMutex;
