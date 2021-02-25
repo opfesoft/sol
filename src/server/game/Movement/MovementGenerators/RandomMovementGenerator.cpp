@@ -225,9 +225,10 @@ void RandomMovementGenerator<Creature>::DoInitialize(Creature* creature)
     {
         _initialPosition.Relocate(creature);
         _destinationPoints.clear();
+        float sectorSize = M_PI * 2.0f / RANDOM_POINTS_NUMBER;
         for (uint8 i = 0; i < RANDOM_POINTS_NUMBER; ++i)
         {
-            float angle = (M_PI*2.0f/(float)RANDOM_POINTS_NUMBER)*i;
+            float angle = sectorSize * i + frand(0.0f, sectorSize);
             float factor = 0.5f + rand_norm()*0.5f;
             _destinationPoints.push_back(G3D::Vector3(_initialPosition.GetPositionX() + _wanderDistance*cos(angle)*factor, _initialPosition.GetPositionY() + _wanderDistance*sin(angle)*factor, _initialPosition.GetPositionZ()));
         }
