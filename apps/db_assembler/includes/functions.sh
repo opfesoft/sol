@@ -26,83 +26,81 @@ function dbasm_assemble() {
     suffix_custom="_custom"
 
     curTime=`date +%Y_%m_%d_%H_%M_%S`
-
-    # Enable directory recursion using wildcard pattern "**"
-    shopt -s globstar
+    echo "--- $db ---"
 
     if [ $with_base = true ]; then
-        echo "" > $OUTPUT_FOLDER$database$suffix_base".sql"
-
+        baseFile=$OUTPUT_FOLDER$database$suffix_base".sql"
+        printf "" > $baseFile
 
         if [ ! ${#base[@]} -eq 0 ]; then
-            echo "Generating $OUTPUT_FOLDER$database$suffix_base ..."
-
-            for d in "${base[@]}"
-            do
-                echo "Searching on $d ..."
-                if [ ! -z $d ]; then
-                    for entry in "$d"/**/*.sql
-                    do
-                        if [[ -e $entry ]]; then
-                            cat "$entry" >> $OUTPUT_FOLDER$database$suffix_base".sql"
-                        fi
-                    done
-                fi
+            echo "Generate $baseFile"
+            echo "Search directories:"
+            for i in ${base[@]}; do
+                echo "  $i"
             done
+            baseFileCount=0
+
+            while read entry; do
+                echo "-- $entry" >> $baseFile
+                cat "$entry" >> $baseFile
+                printf "\n\n" >> $baseFile
+                baseFileCount=$((baseFileCount+1))
+            done < <(find ${base[@]} -type f -name '*.sql' | sort)
+
+            printf "Total base files found: %s\n\n" $baseFileCount
         fi
     fi
 
     if [ $with_updates = true ]; then
         updFile=$OUTPUT_FOLDER$database$suffix_upd".sql"
-
-        echo "" > $updFile
+        printf "" > $updFile
 
         if [ ! ${#updates[@]} -eq 0 ]; then
-            echo "Generating $OUTPUT_FOLDER$database$suffix_upd ..."
-
-            for d in "${updates[@]}"
-            do
-                echo "Searching on $d ..."
-                if [ ! -z $d ]; then
-                    for entry in "$d"/**/*.sql
-                    do
-                        if [[ ! -e $entry ]]; then
-                            continue
-                        fi
-
-                        echo "-- $file" >> $updFile
-                        cat "$entry" >> $updFile
-                    done
-                fi
+            echo "Generate $updFile"
+            echo "Search directories:"
+            echo "(file names instead of file paths will be used to determine the order of the SQL update files!)"
+            for i in ${updates[@]}; do
+                echo "  $i"
             done
+            updateFileCount=0
+
+            # sort by file name instead of file path because the SQL update files use the date as file name
+            # and should be concatenated in the right order even if using multiple update directories
+            while read entry; do
+                echo "-- $entry" >> $updFile
+                cat "$entry" >> $updFile
+                printf "\n\n" >> $updFile
+                updateFileCount=$((updateFileCount+1))
+            done < <(find ${updates[@]} -type f -name '*.sql' | awk -F'/' '{printf("%s %s\n", $0, $(NF))}' | sort -k2 | awk '{print $1}')
+
+            printf "Total update files found: %s\n\n" $updateFileCount
         fi
     fi
 
     if [ $with_custom = true ]; then
         custFile=$OUTPUT_FOLDER$database$suffix_custom".sql"
-
-        echo "" > $custFile
+        printf "" > $custFile
 
         if [ ! ${#custom[@]} -eq 0 ]; then
-            echo "Generating $OUTPUT_FOLDER$database$suffix_custom ..."
-
-            for d in "${custom[@]}"
-            do
-                echo "Searching on $d ..."
-                if [ ! -z $d ]; then
-                    for entry in "$d"/**/*.sql
-                    do
-                        if [[ ! -e $entry ]]; then
-                            continue
-                        fi
-
-                        echo "-- $file" >> $custFile
-                        cat "$entry" >> $custFile
-                    done
-                fi
+            echo "Generate $custFile"
+            echo "Search directories:"
+            for i in ${custom[@]}; do
+                echo "  $i"
             done
+            customFileCount=0
+
+            while read entry; do
+                echo "-- $entry" >> $custFile
+                cat "$entry" >> $custFile
+                printf "\n\n" >> $custFile
+                customFileCount=$((customFileCount+1))
+            done < <(find ${custom[@]} -type f -name '*.sql' | sort)
+
+            printf "Total custom files found: %s\n\n" $customFileCount
         fi
     fi
+
+    echo
 }
 
 function dbasm_run() {
