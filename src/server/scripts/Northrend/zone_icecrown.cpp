@@ -403,6 +403,7 @@ class npc_tirions_gambit_tirion : public CreatureScript
             {
                 me->setActive(false);
                 me->SetStandState(UNIT_STAND_STATE_STAND);
+                me->LoadEquipment(0, true);
             }
 
             void SetData(uint32 type, uint32 data) override
@@ -560,7 +561,7 @@ class npc_tirions_gambit_tirion : public CreatureScript
                         break;
                     case EVENT_SCENE_0+6:
                         DoSummonAction(NPC_TIRION_LICH_KING, ACTION_SUMMON_TALK, 0);
-                        me->LoadEquipment(2, true);
+                        me->LoadEquipment(1, true);
                         SetEscortPaused(false);
                         events.ScheduleEvent(EVENT_SCENE_0+7, 6000);
                         break;

@@ -357,9 +357,9 @@ bool Creature::InitEntry(uint32 Entry, const CreatureData* data)
     SetByteValue(UNIT_FIELD_BYTES_0, 2, minfo->gender);
 
     // Load creature equipment
-    if (!data || data->equipmentId == 0)                    // use default from the template
+    if (!data)                       // use default from the template
         LoadEquipment();
-    else
+    else if (data->equipmentId != 0) // only load equipment if ID is specified
     {
         m_originalEquipmentId = data->equipmentId;
         LoadEquipment(data->equipmentId);
