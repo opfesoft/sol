@@ -404,12 +404,17 @@ class npc_tirions_gambit_tirion : public CreatureScript
                 me->setActive(false);
                 me->SetStandState(UNIT_STAND_STATE_STAND);
                 me->LoadEquipment(0, true);
+                events.Reset();
+                summons.DespawnAll();
+                me->SummonCreature(NPC_DISGUISED_CRUSADER, 6243.45f, 2667.72f, 570.333f, 5.41052f, TEMPSUMMON_MANUAL_DESPAWN);
+                me->SummonCreature(NPC_DISGUISED_CRUSADER, 6250.45f, 2656.44f, 570.333f, 2.19912f, TEMPSUMMON_MANUAL_DESPAWN);
+                me->SummonCreature(NPC_DISGUISED_CRUSADER, 6252.46f, 2665.36f, 570.333f, 3.97935f, TEMPSUMMON_MANUAL_DESPAWN);
             }
 
             void SetData(uint32 type, uint32 data) override
             {
                 if (type == 1 && data == 1)
-                    events.ScheduleEvent(EVENT_SCENE_0+30, 10000);
+                    events.ScheduleEvent(EVENT_SCENE_0+30, 2000);
             }
 
             void DoAction(int32 param) override
@@ -419,19 +424,26 @@ class npc_tirions_gambit_tirion : public CreatureScript
                     me->setActive(true);
 
                     Talk(0);
-                    events.Reset();
-                    summons.DespawnAll();
                     Start(false, false);
 
-                    int8 i = -1;
-                    std::list<Creature*> cList;
-                    GetCreatureListWithEntryInGrid(cList, me, NPC_DISGUISED_CRUSADER, 15.0f);
-                    for (std::list<Creature*>::const_iterator itr = cList.begin(); itr != cList.end(); ++itr, ++i)
-                    {
-                        (*itr)->SetWalk(true);
-                        (*itr)->GetMotionMaster()->MoveFollow(me, 1.0f, Position::NormalizeOrientation(M_PI*i/2.0f));
-                        summons.Summon(*itr);
-                    }
+                    int8 i = 0;
+                    for (SummonList::const_iterator itr = summons.begin(); itr != summons.end(); ++itr, ++i)
+                        if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
+                            if (summon->GetEntry() == NPC_DISGUISED_CRUSADER)
+                            {
+                                switch (i)
+                                {
+                                    case 0:
+                                        summon->GetMotionMaster()->MovePoint(1, 6236.79f, 2662.24f, 570.25f);
+                                        break;
+                                    case 1:
+                                        summon->GetMotionMaster()->MovePoint(1, 6244.9f, 2655.41f, 570.25f);
+                                        break;
+                                    case 2:
+                                        summon->GetMotionMaster()->MovePoint(1, 6249.84f, 2653.86f, 570.25f);
+                                        break;
+                                }
+                            }
                 }
             }
 
@@ -440,6 +452,11 @@ class npc_tirions_gambit_tirion : public CreatureScript
                 summons.Summon(summon);
                 if (summon->GetEntry() == NPC_CHOSEN_ZEALOT || summon->GetEntry() == NPC_TIRION_LICH_KING)
                     summon->SetWalk(true);
+                else if (summon->GetEntry() == NPC_DISGUISED_CRUSADER)
+                {
+                    summon->SetWalk(true);
+                    summon->LoadEquipment(0, true);
+                }
                 else if (summon->GetEntry() != NPC_INVOKER_BASALEPH)
                 {
                     summon->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_READY2H);
@@ -457,14 +474,34 @@ class npc_tirions_gambit_tirion : public CreatureScript
             {
                 switch (pointId)
                 {
+                    case 1:
+                    {
+                        int8 i = 1;
+                        for (SummonList::const_iterator itr = summons.begin(); itr != summons.end(); ++itr, --i)
+                            if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
+                                if (summon->GetEntry() == NPC_DISGUISED_CRUSADER)
+                                {
+                                    summon->GetMotionMaster()->Clear(false);
+                                    summon->GetMotionMaster()->MoveFollow(me, 1.0f, Position::NormalizeOrientation(M_PI*i/2.0f+M_PI));
+                                }
+                        break;
+                    }
                     case 6:
                         me->SummonCreature(NPC_INVOKER_BASALEPH, 6130.26f, 2764.83f, 573.92f, 5.19f, TEMPSUMMON_TIMED_DESPAWN, 10*MINUTE*IN_MILLISECONDS);
                         Talk(1);
                         break;
+                    case 9:
+                    {
+                        std::list<Creature*> zealotList;
+                        me->GetCreaturesWithEntryInRange(zealotList, 100.0f, NPC_CHOSEN_ZEALOT);
+                        for (std::list<Creature*>::const_iterator itr = zealotList.begin(); itr != zealotList.end(); ++itr)
+                            (*itr)->Respawn();
+                        break;
+                    }
                     case 15:
                     {
-                        uint8 i = 1;
-                        for (SummonList::const_iterator itr = summons.begin(); itr != summons.end(); ++itr, ++i)
+                        uint8 i = 3;
+                        for (SummonList::const_iterator itr = summons.begin(); itr != summons.end(); ++itr, --i)
                             if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
                                 if (summon->GetEntry() == NPC_DISGUISED_CRUSADER)
                                 {
@@ -473,11 +510,11 @@ class npc_tirions_gambit_tirion : public CreatureScript
                                 }
                         break;
                     }
-                    case 17:
+                    case 17: // add small pause (1 ms) for waypoint to prevent stutter (see script_waypoint entry 32239)
                         SetEscortPaused(true);
                         events.ScheduleEvent(EVENT_START_SCENE, 7000);
                         break;
-                    case 19:
+                    case 19: // add small pause (1 ms) for waypoint to prevent stutter (see script_waypoint entry 32239)
                         SetEscortPaused(true);
                         events.ScheduleEvent(EVENT_SCENE_0+8, 5000);
                         break;
@@ -553,7 +590,11 @@ class npc_tirions_gambit_tirion : public CreatureScript
                     case EVENT_SCENE_0+4:
                         Talk(4);
                         me->SetFacingTo(4.42f);
-                        events.ScheduleEvent(EVENT_SCENE_0+5, 25000);
+                        events.ScheduleEvent(EVENT_SCENE_0+400, 17000);
+                        break;
+                    case EVENT_SCENE_0+400:
+                        me->SetFacingTo(3.23155);
+                        events.ScheduleEvent(EVENT_SCENE_0+5, 8000);
                         break;
                     case EVENT_SCENE_0+5:
                         DoSummonAction(NPC_TIRION_LICH_KING, ACTION_SUMMON_ORIENTATION, 11);
@@ -605,6 +646,7 @@ class npc_tirions_gambit_tirion : public CreatureScript
                             if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
                                 if (summon->GetEntry() == NPC_DISGUISED_CRUSADER)
                                 {
+                                    summon->LoadEquipment(1, true);
                                     summon->SetWalk(false);
                                     summon->GetMotionMaster()->MovePoint(2, 6132.38f + 4*cos(2*M_PI*(i/3.0)), 2760.76f + 4*sin(2*M_PI*(i/3.0)), me->GetPositionZ());
                                 }
@@ -635,27 +677,17 @@ class npc_tirions_gambit_tirion : public CreatureScript
                         DoSummonAction(NPC_TIRION_LICH_KING, ACTION_SUMMON_TALK, 6);
 
                         std::list<Creature*> zealotList;
-                        Position pos1 = {6160.0f, 2765.0f, 573.92f, 0.0f};
-                        Position pos2 = {6115.0f, 2742.0f, 573.92f, 0.0f};
                         me->GetCreaturesWithEntryInRange(zealotList, 100.0f, NPC_CHOSEN_ZEALOT);
                         for (std::list<Creature*>::const_iterator itr = zealotList.begin(); itr != zealotList.end(); ++itr)
                         {
                             (*itr)->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_READY_UNARMED);
-                            if ((*itr)->GetPositionX() > 6150.0f)
-                            {
-                                Position tpos = pos1;
-                                (*itr)->MovePosition(tpos, frand(1.0f, 14.0f), frand(3.14f, 4.14f));
-                                (*itr)->GetMotionMaster()->MovePoint(3, tpos.GetPositionX(), tpos.GetPositionY(), tpos.GetPositionZ());
-                            }
-                            else
-                            {
-                                Position tpos = pos2;
-                                (*itr)->MovePosition(tpos, frand(1.0f, 14.0f), frand(0.0f, 1.0f));
-                                (*itr)->GetMotionMaster()->MovePoint(3, tpos.GetPositionX(), tpos.GetPositionY(), tpos.GetPositionZ());
-                            }
+                            (*itr)->SetStandState(UNIT_STAND_STATE_STAND);
+                            float x, y, z;
+                            me->GetContactPoint((*itr), x, y, z, frand(12.0f, 15.0f));
+                            (*itr)->GetMotionMaster()->MovePoint(3, x, y, z);
                         }
 
-                        events.ScheduleEvent(EVENT_SCENE_0+19, 3000);
+                        events.ScheduleEvent(EVENT_SCENE_0+19, 6000);
                         break;
                     }
                     case EVENT_SCENE_0+19:
@@ -673,7 +705,7 @@ class npc_tirions_gambit_tirion : public CreatureScript
                                     if (summon->GetEntry() == NPC_TIRION_MOGRAINE)
                                         summon->SetHomePosition(6135.97f, 2753.84f, 573.92f, 3.70f);
                                     else
-                                        summon->SetHomePosition(6138.36f+frand(-2.0f, 2.0f), 2749.25f+frand(-2.0f, 2.0f), 573.92f, 2.03f);
+                                        summon->SetHomePosition(6138.36f+frand(-3.0f, 3.0f), 2749.25f+frand(-3.0f, 3.0f), 573.92f, 2.03f);
                                 }
                             }
                         DoSummonAction(NPC_TIRION_THASSARIAN, ACTION_SUMMON_TALK, 0);
@@ -687,23 +719,13 @@ class npc_tirions_gambit_tirion : public CreatureScript
                             if (target)
                                 (*itr)->AI()->AttackStart(target);
                         }
+                        if (Creature* basaleph = me->FindNearestCreature(NPC_INVOKER_BASALEPH, 100.0f))
+                            if (target)
+                                basaleph->AI()->AttackStart(target);
 
                         break;
                     }
-                    case EVENT_SCENE_0+30:
-                        for (SummonList::const_iterator itr = summons.begin(); itr != summons.end(); ++itr)
-                            if (Creature* summon = ObjectAccessor::GetCreature(*me, *itr))
-                                if (summon->GetEntry() >= NPC_TIRION_EBON_KNIGHT && summon->GetEntry() <= NPC_TIRION_MOGRAINE)
-                                {
-                                    if (summon->GetEntry() == NPC_TIRION_MOGRAINE)
-                                        summon->GetMotionMaster()->MovePoint(6, 6135.97f, 2753.84f, 573.92f);
-                                    else
-                                        summon->GetMotionMaster()->MovePoint(6, 6138.36f+frand(-2.0f, 2.0f), 2749.25f+frand(-2.0f, 2.0f), 573.92f);
-                                }
-
-                        events.ScheduleEvent(EVENT_SCENE_0+310, 4000);
-                        break;
-                    case EVENT_SCENE_0+310:
+                    case EVENT_SCENE_0+30: // triggered when Mograine reaches his home position (see SAI entry 32312)
                         DoSummonAction(NPC_TIRION_MOGRAINE, ACTION_SUMMON_TALK, 0);
                         DoSummonAction(NPC_TIRION_LICH_KING, ACTION_SUMMON_STAND_STATE, UNIT_STAND_STATE_STAND);
                         me->SummonGameObject(GO_ESCAPE_PORTAL, 6133.83f, 2757.24f, 573.914f, 1.97f, 0.0f, 0.0f, 0.0f, 0.0f, 60);
