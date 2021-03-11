@@ -250,12 +250,14 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
 
         float dx = x + cos(followAngle + pathAngle) * followDist;
         float dy = y + sin(followAngle + pathAngle) * followDist;
-        float dz = z;
+        float dz = z + 2.0f;
 
         acore::NormalizeMapCoord(dx);
         acore::NormalizeMapCoord(dy);
 
-        member->UpdateGroundPositionZ(dx, dy, dz);
+        Position p = {dx, dy, dz, 0.0f};
+        member->MovePosition(p, 0.0f, 0.0f);
+        p.m_orientation = pathAngle;
 
         member->SetUnitMovementFlags(m_leader->GetUnitMovementFlags());
         // pussywizard: setting the same movementflags is not enough, spline decides whether leader walks/runs, so spline param is now passed as "run" parameter to this function
@@ -267,13 +269,13 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
         // xinef: if we move members to position without taking care of sizes, we should compare distance without sizes
         // xinef: change members speed basing on distance - if too far speed up, if too close slow down
         UnitMoveType mtype = Movement::SelectSpeedType(member->GetUnitMovementFlags());
-        float speedRate = m_leader->GetSpeedRate(mtype) * member->GetExactDist(dx, dy, dz) / pathDist;
+        float speedRate = m_leader->GetSpeedRate(mtype) * member->GetExactDist(&p) / pathDist;
 
         if (speedRate > 0.01f) // don't move if speed rate is too low
         {
             member->SetSpeedRate(mtype, speedRate);
-            member->GetMotionMaster()->MovePoint(0, dx, dy, dz);
-            member->SetHomePosition(dx, dy, dz, pathAngle);
+            member->GetMotionMaster()->MovePoint(0, p);
+            member->SetHomePosition(p);
         }
     }
 }

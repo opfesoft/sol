@@ -2617,22 +2617,25 @@ void WorldObject::MovePosition(Position &pos, float dist, float angle)
     floor = GetMap()->GetHeight(GetPhaseMask(), destx, desty, pos.m_positionZ, true);
     destz = fabs(ground - pos.m_positionZ) <= fabs(floor - pos.m_positionZ) ? ground : floor;
 
-    float step = dist/10.0f;
-
-    for (uint8 j = 0; j < 10; ++j)
+    if (dist != 0.0f) // no need to go through the loop if dist is 0
     {
-        // do not allow too big z changes
-        if (fabs(pos.m_positionZ - destz) > 6.0f)
+        float step = dist/10.0f;
+
+        for (uint8 j = 0; j < 10; ++j)
         {
-            destx -= step * cos(angle);
-            desty -= step * sin(angle);
-            ground = GetMap()->GetHeight(GetPhaseMask(), destx, desty, MAX_HEIGHT, true);
-            floor = GetMap()->GetHeight(GetPhaseMask(), destx, desty, pos.m_positionZ, true);
-            destz = fabs(ground - pos.m_positionZ) <= fabs(floor - pos.m_positionZ) ? ground : floor;
+            // do not allow too big z changes
+            if (fabs(pos.m_positionZ - destz) > 6.0f)
+            {
+                destx -= step * cos(angle);
+                desty -= step * sin(angle);
+                ground = GetMap()->GetHeight(GetPhaseMask(), destx, desty, MAX_HEIGHT, true);
+                floor = GetMap()->GetHeight(GetPhaseMask(), destx, desty, pos.m_positionZ, true);
+                destz = fabs(ground - pos.m_positionZ) <= fabs(floor - pos.m_positionZ) ? ground : floor;
+            }
+            // we have correct destz now
+            else
+                break;
         }
-        // we have correct destz now
-        else
-            break;
     }
 
     pos.Relocate(destx, desty, destz);
