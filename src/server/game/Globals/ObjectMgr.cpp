@@ -1637,6 +1637,29 @@ void ObjectMgr::LoadTempSummons()
 
 void ObjectMgr::LoadCreatures()
 {
+    uint32 countCleanup = 0;
+
+    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_CREATURE_BY_ID);
+    stmt->setUInt32(0, 1);
+    PreparedQueryResult resultCleanup = WorldDatabase.Query(stmt);
+    if (resultCleanup)
+        do
+        {
+            Field* fields = resultCleanup->Fetch();
+            uint32 guid = fields[0].GetUInt32();
+            PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_CREATURE_WITH_ID);
+            stmt->setUInt32(0, guid);
+            stmt->setUInt32(1, VISUAL_WAYPOINT);
+            WorldDatabase.DirectExecute(stmt);
+            ++countCleanup;
+        } while (resultCleanup->NextRow());
+
+    stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_ALL_WPGUID);
+    WorldDatabase.DirectExecute(stmt);
+
+    if (countCleanup > 0)
+        sLog->outString(">> Cleaned up %u visual waypoints", countCleanup);
+
     uint32 oldMSTime = getMSTime();
 
     //                                               0              1   2    3        4             5           6           7           8            9              10
