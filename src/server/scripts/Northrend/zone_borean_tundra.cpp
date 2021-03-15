@@ -1086,7 +1086,7 @@ public:
 
 enum HiddenCultist
 {
-    SPELL_SHADOWFORM                            = 40973, //not the correct spell, but suffices
+    SPELL_SHROUD_OF_THE_DEATH_CULTIST           = 46077,
     SPELL_RIGHTEOUS_VISION                      = 46078, //player aura
 
     QUEST_THE_HUNT_IS_ON                        = 11794,
@@ -1102,8 +1102,7 @@ enum HiddenCultist
 
     EVENT_DISCOVERED_1                          = 1,
     EVENT_DISCOVERED_2                          = 2,
-    EVENT_DISCOVERED_3                          = 3,
-    EVENT_REMOVE_SHADOWFORM                     = 4
+    EVENT_DISCOVERED_3                          = 3
 };
 
 class npc_hidden_cultist : public CreatureScript
@@ -1137,6 +1136,8 @@ public:
 
             uiPlayerGUID = 0;
 
+            DoCast(SPELL_SHROUD_OF_THE_DEATH_CULTIST);
+
             me->RestoreFaction();
         }
 
@@ -1159,17 +1160,6 @@ public:
             me->setFaction(14);
             if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                 AttackStart(player);
-        }
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            if (who->GetTypeId() == TYPEID_PLAYER && who->HasAura(SPELL_RIGHTEOUS_VISION) && !me->HasAura(SPELL_SHADOWFORM))
-            {
-                DoCast(SPELL_SHADOWFORM);
-                events.ScheduleEvent(EVENT_REMOVE_SHADOWFORM, 30000);
-            }
-
-            ScriptedAI::MoveInLineOfSight(who);
         }
 
         void UpdateAI(uint32 diff) override
@@ -1217,9 +1207,6 @@ public:
                     {
                         AttackPlayer();
                     }
-                    break;
-                case EVENT_REMOVE_SHADOWFORM:
-                    me->RemoveAurasDueToSpell(SPELL_SHADOWFORM);
                     break;
             }
 
