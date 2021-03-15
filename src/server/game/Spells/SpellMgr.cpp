@@ -6054,9 +6054,14 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
             spellInfo->spellLevel = 0;
             break;
-        // Drain Life - Bryntroll Normal / Heroic
-        case 71838:
-        case 71839:
+        case 6789:  // Warlock - Death Coil (Rank 1)
+        case 17925: // Warlock - Death Coil (Rank 2)
+        case 17926: // Warlock - Death Coil (Rank 3)
+        case 27223: // Warlock - Death Coil (Rank 4)
+        case 47859: // Warlock - Death Coil (Rank 5)
+        case 47860: // Warlock - Death Coil (Rank 6)
+        case 71838: // Drain Life - Bryntroll Normal
+        case 71839: // Drain Life - Bryntroll Heroic
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CANT_CRIT;
             spellInfo->AttributesEx4 |= SPELL_ATTR4_IGNORE_RESISTANCES;
             break;
