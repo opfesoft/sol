@@ -2042,7 +2042,8 @@ enum RedSnapperVeryTasty
     ITEM_RED_SNAPPER             = 23614,
 
     SPELL_CAST_NET               = 29866,
-    SPELL_NEW_SUMMON_TEST        = 49214,
+
+    NPC_ANGRY_MURLOC             = 17102,
 
     GO_SCHOOL_OF_RED_SNAPPER     = 181616
 };
@@ -2076,7 +2077,9 @@ class spell_q9452_cast_net: public SpellScriptLoader
                 if (roll_chance_i(66))
                     caster->AddItem(ITEM_RED_SNAPPER, 1);
                 else
-                    caster->CastSpell(caster, SPELL_NEW_SUMMON_TEST, true);
+                    if (GameObject* go = caster->FindNearestGameObject(GO_SCHOOL_OF_RED_SNAPPER, 3.0f))
+                        if (Creature* creature = caster->SummonCreature(NPC_ANGRY_MURLOC, go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000))
+                            creature->AI()->AttackStart(caster);
             }
 
             void HandleActiveObject(SpellEffIndex effIndex)
