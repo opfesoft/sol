@@ -2979,6 +2979,8 @@ class Player : public Unit, public GridObject<Player>
         uint32 manaBeforeDuel;
 
         bool m_isInstantFlightOn;
+
+        uint32 m_flightSpellActivated;
 };
 
 void AddItemsSetItem(Player* player, Item* item);
