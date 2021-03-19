@@ -94,6 +94,7 @@ class boss_koralon : public CreatureScript
             {
                 if (rotateTimer)
                 {
+                    me->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, 0);
                     rotateTimer += diff;
                     if (rotateTimer >= 3000)
                     {
