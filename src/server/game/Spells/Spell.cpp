@@ -5072,6 +5072,9 @@ SpellCastResult Spell::CheckRuneCost(uint32 runeCostID)
         return SPELL_CAST_OK;
 
     Player* player = m_caster->ToPlayer();
+    // If "cheat power" is enabled don't check the cost as you're able to use the spell anyways (infinite power)
+    if (player->GetCommandStatus(CHEAT_POWER))
+        return SPELL_CAST_OK;
 
     if (player->getClass() != CLASS_DEATH_KNIGHT)
         return SPELL_CAST_OK;
@@ -6669,6 +6672,11 @@ SpellCastResult Spell::CheckPower()
     // item cast not used power
     if (m_CastItem)
         return SPELL_CAST_OK;
+
+    // While "cheat power" is enabled don't check if power is needed to cast the spell
+    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+        if (m_caster->ToPlayer()->GetCommandStatus(CHEAT_POWER))
+            return SPELL_CAST_OK;
 
     // health as power used - need check health amount
     if (m_spellInfo->PowerType == POWER_HEALTH)

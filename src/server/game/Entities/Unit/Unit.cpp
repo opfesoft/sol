@@ -697,14 +697,14 @@ uint32 Unit::DealDamage(Unit* attacker, Unit* victim, uint32 damage, CleanDamage
     {
         // Signal to pets that their owner was attacked
         Pet* pet = victim->ToPlayer()->GetPet();
-
-        if (victim->GetTypeId() == TYPEID_PLAYER)
-            if (victim->ToPlayer()->GetCommandStatus(CHEAT_GOD))
-                return 0;
-
         if (pet && pet->IsAlive())
             pet->AI()->OwnerAttackedBy(attacker);
     }
+
+    // Don't deal damage to player if "cheat god" is enabled
+    if (victim->GetTypeId() == TYPEID_PLAYER)
+        if (victim->ToPlayer()->GetCommandStatus(CHEAT_GOD))
+            return 0;
 
     // Signal the pet it was attacked so the AI can respond if needed
     if (victim->GetTypeId() == TYPEID_UNIT && attacker != victim && victim->IsPet() && victim->IsAlive())
@@ -5572,14 +5572,23 @@ void Unit::SendSpellNonMeleeReflectLog(SpellNonMeleeDamage* log, Unit* attacker)
         return;
 
     WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG, (16+4+4+4+1+4+4+1+1+4+4+1)); // we guess size
+    uint32 damage = log->damage;
+    uint32 absorb = log->absorb;
+
+    // If "cheat god" is enabled swap absorb with damage and set damage to 0; this way you can still debug damage but won't loose health
+    if (log->target->GetTypeId() == TYPEID_PLAYER && log->target->ToPlayer()->GetCommandStatus(CHEAT_GOD))
+    {
+        absorb = damage;
+        damage = 0;
+    }
     data.append(log->target->GetPackGUID());
     data.append(attacker->GetPackGUID());
     data << uint32(log->SpellID);
-    data << uint32(log->damage);                            // damage amount
-    int32 overkill = log->damage - log->target->GetHealth();
+    data << uint32(damage);                                 // damage amount
+    int32 overkill = damage - log->target->GetHealth();
     data << uint32(overkill > 0 ? overkill : 0);            // overkill
     data << uint8 (log->schoolMask);                        // damage school
-    data << uint32(log->absorb);                            // AbsorbedDamage
+    data << uint32(absorb);                                 // AbsorbedDamage
     data << uint32(log->resist);                            // resist
     data << uint8 (log->physicalLog);                       // if 1, then client show spell name (example: %s's ranged shot hit %s for %u school or %s suffers %u school damage from %s's spell_name
     data << uint8 (log->unused);                            // unused
@@ -5592,14 +5601,23 @@ void Unit::SendSpellNonMeleeReflectLog(SpellNonMeleeDamage* log, Unit* attacker)
 void Unit::SendSpellNonMeleeDamageLog(SpellNonMeleeDamage* log)
 {
     WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG, (16+4+4+4+1+4+4+1+1+4+4+1)); // we guess size
+    uint32 damage = log->damage;
+    uint32 absorb = log->absorb;
+
+    // If "cheat god" is enabled swap absorb with damage and set damage to 0; this way you can still debug damage but won't loose health
+    if (log->target->GetTypeId() == TYPEID_PLAYER && log->target->ToPlayer()->GetCommandStatus(CHEAT_GOD))
+    {
+        absorb = damage;
+        damage = 0;
+    }
     data.append(log->target->GetPackGUID());
     data.append(log->attacker->GetPackGUID());
     data << uint32(log->SpellID);
-    data << uint32(log->damage);                            // damage amount
-    int32 overkill = log->damage - log->target->GetHealth();
+    data << uint32(damage);                                 // damage amount
+    int32 overkill = damage - log->target->GetHealth();
     data << uint32(overkill > 0 ? overkill : 0);            // overkill
     data << uint8 (log->schoolMask);                        // damage school
-    data << uint32(log->absorb);                            // AbsorbedDamage
+    data << uint32(absorb);                                 // AbsorbedDamage
     data << uint32(log->resist);                            // resist
     data << uint8 (log->physicalLog);                       // if 1, then client show spell name (example: %s's ranged shot hit %s for %u school or %s suffers %u school damage from %s's spell_name
     data << uint8 (log->unused);                            // unused
@@ -5648,13 +5666,25 @@ void Unit::SendPeriodicAuraLog(SpellPeriodicAuraLogInfo* pInfo)
     {
         case SPELL_AURA_PERIODIC_DAMAGE:
         case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
-            data << uint32(pInfo->damage);                  // damage
+        {
+            uint32 damage = pInfo->damage;
+            uint32 absorb = pInfo->absorb;
+
+            // If "cheat god" is enabled swap absorb with damage and set damage to 0; this way you can still debug damage but won't loose health
+            if (GetTypeId() == TYPEID_PLAYER && ToPlayer()->GetCommandStatus(CHEAT_GOD))
+            {
+                absorb = damage;
+                damage = 0;
+            }
+
+            data << uint32(damage);                         // damage
             data << uint32(pInfo->overDamage);              // overkill?
             data << uint32(aura->GetSpellInfo()->GetSchoolMask());
-            data << uint32(pInfo->absorb);                  // absorb
+            data << uint32(absorb);                         // absorb
             data << uint32(pInfo->resist);                  // resist
             data << uint8(pInfo->critical);                 // new 3.1.2 critical tick
             break;
+        }
         case SPELL_AURA_PERIODIC_HEAL:
         case SPELL_AURA_OBS_MOD_HEALTH:
             data << uint32(pInfo->damage);                  // damage
@@ -5720,28 +5750,38 @@ void Unit::SendAttackStateUpdate(CalcDamageInfo* damageInfo)
     sLog->outDebug(LOG_FILTER_UNITS, "WORLD: Sending SMSG_ATTACKERSTATEUPDATE");
 #endif
 
+    uint32 damage = damageInfo->damage;
+    uint32 absorb = damageInfo->absorb;
+
+    // If "cheat god" is enabled swap absorb with damage and set damage to 0; this way you can still debug damage but won't loose health
+    if (damageInfo->target->GetTypeId() == TYPEID_PLAYER && damageInfo->target->ToPlayer()->GetCommandStatus(CHEAT_GOD))
+    {
+        absorb = damage;
+        damage = 0;
+    }
+
     uint32 count = 1;
     size_t maxsize = 4+5+5+4+4+1+4+4+4+4+4+1+4+4+4+4+4*12;
     WorldPacket data(SMSG_ATTACKERSTATEUPDATE, maxsize);    // we guess size
     data << uint32(damageInfo->HitInfo);
     data.append(damageInfo->attacker->GetPackGUID());
     data.append(damageInfo->target->GetPackGUID());
-    data << uint32(damageInfo->damage);                     // Full damage
-    int32 overkill = damageInfo->damage - damageInfo->target->GetHealth();
+    data << uint32(damage);                                 // Full damage
+    int32 overkill = damage - damageInfo->target->GetHealth();
     data << uint32(overkill < 0 ? 0 : overkill);            // Overkill
     data << uint8(count);                                   // Sub damage count
 
     for (uint32 i = 0; i < count; ++i)
     {
         data << uint32(damageInfo->damageSchoolMask);       // School of sub damage
-        data << float(damageInfo->damage);                  // sub damage
-        data << uint32(damageInfo->damage);                 // Sub Damage
+        data << float(damage);                              // sub damage
+        data << uint32(damage);                             // Sub Damage
     }
 
     if (damageInfo->HitInfo & (HITINFO_FULL_ABSORB | HITINFO_PARTIAL_ABSORB))
     {
         for (uint32 i = 0; i < count; ++i)
-            data << uint32(damageInfo->absorb);             // Absorb
+            data << uint32(absorb);                         // Absorb
     }
 
     if (damageInfo->HitInfo & (HITINFO_FULL_RESIST | HITINFO_PARTIAL_RESIST))
