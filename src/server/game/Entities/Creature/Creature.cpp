@@ -138,6 +138,12 @@ bool AssistDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
                 assistant->CombatStart(victim);
                 if (assistant->IsAIEnabled)
                     assistant->AI()->AttackStart(victim);
+
+                // Share the timer between assisting creatures.
+                // Causing damage to one of the creatures will set the timer for all of them.
+                // The shared timers are split and reset if combat is stopped.
+                if (Creature* owner = m_owner.ToCreature())
+                    assistant->SetLastDamagedTimePointer(owner->GetLastDamagedTimePointer());
             }
         }
     }
@@ -161,7 +167,7 @@ m_corpseRemoveTime(0), m_respawnTime(0), m_respawnDelay(300), m_corpseDelay(60),
 m_transportCheckTimer(1000), lootPickPocketRestoreTime(0),  m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
-m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), _lastDamagedTime(0)
+m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
     m_valuesCount = UNIT_END;
@@ -182,6 +188,7 @@ m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureDat
     TriggerJustRespawned = false;
     m_isTempWorldObject = false;
     _focusSpell = NULL;
+    _lastDamagedTime.reset(new time_t(0));
 }
 
 Creature::~Creature()
@@ -2854,4 +2861,27 @@ float Creature::GetAttackDistance(Unit const* player) const
         retDistance = 5.0f;
 
     return (retDistance*aggroRate);
+}
+
+time_t Creature::GetLastDamagedTime() const
+{
+    return *_lastDamagedTime.get();
+}
+
+void Creature::SetLastDamagedTime(time_t val)
+{
+    if (val == 0 && *_lastDamagedTime.get() != 0)
+        _lastDamagedTime.reset(new time_t(0));
+    else
+        *_lastDamagedTime.get() = val;
+}
+
+LastDamagedTime const& Creature::GetLastDamagedTimePointer() const
+{
+    return _lastDamagedTime;
+}
+
+void Creature::SetLastDamagedTimePointer(LastDamagedTime const& lastDamagedTime)
+{
+    _lastDamagedTime = lastDamagedTime;
 }

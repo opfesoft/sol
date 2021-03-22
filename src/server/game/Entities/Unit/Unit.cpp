@@ -9539,6 +9539,8 @@ void Unit::CombatStop(bool includingCast)
     RemoveAllAttackers();
     if (GetTypeId() == TYPEID_PLAYER)
         ToPlayer()->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
+    else if (Creature* creature = ToCreature())
+        creature->SetLastDamagedTime(0);
     ClearInCombat();
 
     // xinef: just in case

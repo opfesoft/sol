@@ -412,6 +412,7 @@ struct TrainerSpellData
 };
 
 typedef std::map<uint32, time_t> CreatureSpellCooldowns;
+typedef acore::AutoPtr<time_t, ACE_Null_Mutex> LastDamagedTime;
 
 // max different by z coordinate for creature aggro reaction
 #define CREATURE_Z_ATTACK_RANGE 3
@@ -708,8 +709,10 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         void ReleaseFocus(Spell const* focusSpell);
 
         // Part of Evade mechanics
-        time_t GetLastDamagedTime() const { return _lastDamagedTime; }
-        void SetLastDamagedTime(time_t val) { _lastDamagedTime = val; }
+        time_t GetLastDamagedTime() const;
+        void SetLastDamagedTime(time_t val);
+        LastDamagedTime const& GetLastDamagedTimePointer() const;
+        void SetLastDamagedTimePointer(LastDamagedTime const& lastDamagedTime);
 
         uint64 GetDespawnTime() const { return m_despawnTime; }
 
@@ -779,7 +782,10 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         CreatureGroup* m_formation;
         bool TriggerJustRespawned;
 
-        time_t _lastDamagedTime; // Part of Evade mechanics
+        // This timer is shared between assisting creatures (affects both initial and scripted call for help).
+        // Causing damage to one of the creatures will set the timer for all of them.
+        // The shared timers are split and reset if combat is stopped.
+        LastDamagedTime _lastDamagedTime;
 
         Spell const* _focusSpell;   ///> Locks the target during spell cast for proper facing
 };

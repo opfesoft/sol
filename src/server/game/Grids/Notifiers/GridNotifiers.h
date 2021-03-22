@@ -1076,6 +1076,12 @@ namespace acore
 
                 if (u->AI())
                     u->AI()->AttackStart(i_enemy);
+
+                // Share the timer between assisting creatures.
+                // Causing damage to one of the creatures will set the timer for all of them.
+                // The shared timers are split and reset if combat is stopped.
+                if (Creature* creature = i_funit->ToCreature())
+                    u->SetLastDamagedTimePointer(creature->GetLastDamagedTimePointer());
             }
         private:
             Unit* const i_funit;
