@@ -462,6 +462,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         ///// TODO RENAME THIS!!!!!
         bool isCanInteractWithBattleMaster(Player* player, bool msg) const;
         bool isCanTrainingAndResetTalentsOf(Player* player) const;
+        bool IsValidTrainerForPlayer(Player* player, uint32* npcFlags = nullptr) const;
         bool CanCreatureAttack(Unit const* victim, bool skipDistCheck = false) const;
         bool IsImmunedToSpell(SpellInfo const* spellInfo) override;
 
