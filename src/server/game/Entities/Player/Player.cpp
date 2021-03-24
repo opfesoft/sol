@@ -2964,7 +2964,7 @@ bool Player::IsInWater(bool allowAbove) const
 bool Player::IsUnderWater() const
 { 
     return IsInWater() &&
-        GetPositionZ() < (GetBaseMap()->GetWaterLevel(GetPositionX(), GetPositionY())-2);
+        GetPositionZ() < (GetBaseMap()->GetWaterLevel(GetPositionX(), GetPositionY()) - GetCollisionHeight(IsMounted()));
 }
 
 bool Player::IsFalling() const
@@ -24591,7 +24591,7 @@ void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
         return;
 
     LiquidData liquid_status;
-    ZLiquidStatus res = m->getLiquidStatus(x, y, z, MAP_ALL_LIQUIDS, &liquid_status);
+    ZLiquidStatus res = m->getLiquidStatus(x, y, z, MAP_ALL_LIQUIDS, &liquid_status, GetCollisionHeight(IsMounted()));
     if (!res)
     {
         m_MirrorTimerFlags &= ~(UNDERWATER_INWATER | UNDERWATER_INLAVA | UNDERWATER_INSLIME | UNDERWARER_INDARKWATER);

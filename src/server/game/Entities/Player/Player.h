@@ -2551,8 +2551,17 @@ class Player : public Unit, public GridObject<Player>
         bool CanFly() const override { return m_movementInfo.HasMovementFlag(MOVEMENTFLAG_CAN_FLY); }
 
         //! Return collision height sent to client
-        float GetCollisionHeight(bool mounted)
+        float GetCollisionHeight(bool mounted) const
         {
+            CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());
+            ASSERT(displayInfo);
+            CreatureModelDataEntry const* modelData = sCreatureModelDataStore.LookupEntry(displayInfo->ModelId);
+            ASSERT(modelData);
+
+            float scaleMod = GetFloatValue(OBJECT_FIELD_SCALE_X); // 99% sure about this
+            float defaultHeight = DEFAULT_WORLD_OBJECT_SIZE * scaleMod;
+            float collisionHeight = 0.0f;
+
             if (mounted)
             {
                 CreatureDisplayInfoEntry const* mountDisplayInfo = sCreatureDisplayInfoStore.LookupEntry(GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID));
@@ -2563,25 +2572,15 @@ class Player : public Unit, public GridObject<Player>
                 if (!mountModelData)
                     return GetCollisionHeight(false);
 
-                CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());
-                ASSERT(displayInfo);
-                CreatureModelDataEntry const* modelData = sCreatureModelDataStore.LookupEntry(displayInfo->ModelId);
-                ASSERT(modelData);
-
-                float scaleMod = GetFloatValue(OBJECT_FIELD_SCALE_X); // 99% sure about this
-
-                return scaleMod * mountModelData->MountHeight + modelData->CollisionHeight * 0.5f;
+                collisionHeight = scaleMod * (mountModelData->MountHeight + modelData->CollisionHeight * modelData->Scale * displayInfo->scale * 0.5f);
             }
             else
             {
                 //! Dismounting case - use basic default model data
-                CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());
-                ASSERT(displayInfo);
-                CreatureModelDataEntry const* modelData = sCreatureModelDataStore.LookupEntry(displayInfo->ModelId);
-                ASSERT(modelData);
-
-                return modelData->CollisionHeight;
+                collisionHeight = scaleMod * modelData->CollisionHeight * modelData->Scale * displayInfo->scale;
             }
+
+            return collisionHeight == 0.0f ? defaultHeight : collisionHeight;
         }
 
         // OURS
