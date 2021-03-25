@@ -27,7 +27,6 @@ namespace AccountMgr
 {
     AccountOpResult CreateAccount(std::string username, std::string password);
     AccountOpResult DeleteAccount(uint32 accountId);
-    AccountOpResult ChangeUsername(uint32 accountId, std::string newUsername, std::string newPassword);
     AccountOpResult ChangePassword(uint32 accountId, std::string newPassword);
     bool CheckPassword(uint32 accountId, std::string password);
 
@@ -36,7 +35,6 @@ namespace AccountMgr
     uint32 GetSecurity(uint32 accountId, int32 realmId);
     bool GetName(uint32 accountId, std::string& name);
     uint32 GetCharactersCount(uint32 accountId);
-    std::string CalculateShaPassHash(std::string const& name, std::string const& password);
 
     bool IsPlayerAccount(uint32 gmlevel);
     bool IsGMAccount(uint32 gmlevel);

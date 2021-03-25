@@ -28,8 +28,6 @@ enum eStatus
 class AuthSocket: public RealmSocket::Session
 {
 public:
-    const static int s_BYTE_SIZE = 32;
-
     AuthSocket(RealmSocket& socket);
     virtual ~AuthSocket(void);
 

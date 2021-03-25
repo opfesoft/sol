@@ -12,6 +12,7 @@
 #include "Util.h"
 #include "SHA1.h"
 #include "WorldSession.h"
+#include "AccSecUtil.h"
 
 namespace AccountMgr
 {
@@ -33,10 +34,11 @@ namespace AccountMgr
         PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_ACCOUNT);
 
         stmt->setString(0, username);
-        stmt->setString(1, CalculateShaPassHash(username, password));
-        stmt->setInt8(2, uint8(sWorld->getIntConfig(CONFIG_EXPANSION)));
+        stmt->setInt8(1, uint8(sWorld->getIntConfig(CONFIG_EXPANSION)));
 
         LoginDatabase.Execute(stmt);
+
+        AccSecUtil::SetVSFields(username, password);
 
         stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_REALM_CHARACTERS_INIT);
 
@@ -121,37 +123,6 @@ namespace AccountMgr
         return AOR_OK;
     }
 
-
-    AccountOpResult ChangeUsername(uint32 accountId, std::string newUsername, std::string newPassword)
-    {
-        // Check if accounts exists
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BY_ID);
-        stmt->setUInt32(0, accountId);
-        PreparedQueryResult result = LoginDatabase.Query(stmt);
-
-        if (!result)
-            return AOR_NAME_NOT_EXIST;
-
-        if (utf8length(newUsername) > MAX_ACCOUNT_STR)
-            return AOR_NAME_TOO_LONG;
-
-        if (utf8length(newPassword) > MAX_PASS_STR)
-            return AOR_PASS_TOO_LONG;                           // password's too long
-
-        Utf8ToUpperOnlyLatin(newUsername);
-        Utf8ToUpperOnlyLatin(newPassword);
-
-        stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_USERNAME);
-
-        stmt->setString(0, newUsername);
-        stmt->setString(1, CalculateShaPassHash(newUsername, newPassword));
-        stmt->setUInt32(2, accountId);
-
-        LoginDatabase.Execute(stmt);
-
-        return AOR_OK;
-    }
-
     AccountOpResult ChangePassword(uint32 accountId, std::string newPassword)
     {
         std::string username;
@@ -171,12 +142,7 @@ namespace AccountMgr
         Utf8ToUpperOnlyLatin(username);
         Utf8ToUpperOnlyLatin(newPassword);
 
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_PASSWORD);
-
-        stmt->setString(0, CalculateShaPassHash(username, newPassword));
-        stmt->setUInt32(1, accountId);
-
-        LoginDatabase.Execute(stmt);
+        AccSecUtil::SetVSFields(username, newPassword);
 
         sScriptMgr->OnPasswordChange(accountId);
         return AOR_OK;
@@ -235,12 +201,7 @@ namespace AccountMgr
         Utf8ToUpperOnlyLatin(username);
         Utf8ToUpperOnlyLatin(password);
 
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_CHECK_PASSWORD);
-        stmt->setUInt32(0, accountId);
-        stmt->setString(1, CalculateShaPassHash(username, password));
-        PreparedQueryResult result = LoginDatabase.Query(stmt);
-
-        return (result) ? true : false;
+        return AccSecUtil::CheckPassword(username, password);
     }
 
     uint32 GetCharactersCount(uint32 accountId)
@@ -251,18 +212,6 @@ namespace AccountMgr
         PreparedQueryResult result = CharacterDatabase.Query(stmt);
 
         return (result) ? (*result)[0].GetUInt64() : 0;
-    }
-
-    std::string CalculateShaPassHash(std::string const& name, std::string const& password)
-    {
-        SHA1Hash sha;
-        sha.Initialize();
-        sha.UpdateData(name);
-        sha.UpdateData(":");
-        sha.UpdateData(password);
-        sha.Finalize();
-
-        return ByteArrayToHexStr(sha.GetDigest(), sha.GetLength());
     }
 
     bool IsPlayerAccount(uint32 gmlevel)

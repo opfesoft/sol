@@ -14,6 +14,7 @@
 #include "World.h"
 #include "SHA1.h"
 #include "ServerMotd.h"
+#include "AccSecUtil.h"
 
 RASocket::RASocket()
 {
@@ -205,16 +206,7 @@ int RASocket::check_password(const std::string& user, const std::string& pass)
     std::string safe_pass = pass;
     Utf8ToUpperOnlyLatin(safe_pass);
 
-    std::string hash = AccountMgr::CalculateShaPassHash(safe_user, safe_pass);
-
-    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_CHECK_PASSWORD_BY_NAME);
-
-    stmt->setString(0, safe_user);
-    stmt->setString(1, hash);
-
-    PreparedQueryResult result = LoginDatabase.Query(stmt);
-
-    if (!result)
+    if (!AccSecUtil::CheckPassword(safe_user, safe_pass))
     {
         sLog->outRemote("Wrong password for user: %s", user.c_str());
         return -1;

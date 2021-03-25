@@ -17,6 +17,7 @@
 #include "AuthCodes.h"
 #include "TOTP.h"
 #include "SHA1.h"
+#include "AccSecUtil.h"
 #include "openssl/crypto.h"
 
 #define ChunkSize 2048
@@ -262,45 +263,6 @@ void AuthSocket::OnRead()
     }
 }
 
-// Make the SRP6 calculation from hash in dB
-void AuthSocket::_SetVSFields(const std::string& rI)
-{
-    s.SetRand(s_BYTE_SIZE * 8);
-
-    BigNumber I;
-    I.SetHexStr(rI.c_str());
-
-    // In case of leading zeros in the rI hash, restore them
-    uint8 mDigest[SHA_DIGEST_LENGTH];
-    memset(mDigest, 0, SHA_DIGEST_LENGTH);
-    if (I.GetNumBytes() <= SHA_DIGEST_LENGTH)
-        memcpy(mDigest, I.AsByteArray().get(), I.GetNumBytes());
-
-    std::reverse(mDigest, mDigest + SHA_DIGEST_LENGTH);
-
-    SHA1Hash sha;
-    sha.UpdateData(s.AsByteArray().get(), s.GetNumBytes());
-    sha.UpdateData(mDigest, SHA_DIGEST_LENGTH);
-    sha.Finalize();
-    BigNumber x;
-    x.SetBinary(sha.GetDigest(), sha.GetLength());
-    v = g.ModExp(x, N);
-
-    // No SQL injection (username escaped)
-    char *v_hex, *s_hex;
-    v_hex = v.AsHexStr();
-    s_hex = s.AsHexStr();
-
-    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_VS);
-    stmt->setString(0, v_hex);
-    stmt->setString(1, s_hex);
-    stmt->setString(2, _login);
-    LoginDatabase.Execute(stmt);
-
-    OPENSSL_free(v_hex);
-    OPENSSL_free(s_hex);
-}
-
 std::map<std::string, uint32> LastLoginAttemptTimeForIP;
 uint32 LastLoginAttemptCleanTime = 0;
 ACE_Thread_Mutex LastLoginAttemptMutex;
@@ -423,12 +385,12 @@ bool AuthSocket::_HandleLogonChallenge()
 
             // If the IP is 'locked', check that the player comes indeed from the correct IP address
             bool locked = false;
-            if (fields[2].GetUInt8() == 1)                  // if ip is locked
+            if (fields[1].GetUInt8() == 1)                  // if ip is locked
             {
-                sLog->outDebug(LOG_FILTER_NETWORKIO, "[AuthChallenge] Account '%s' is locked to IP - '%s'", _login.c_str(), fields[3].GetCString());
+                sLog->outDebug(LOG_FILTER_NETWORKIO, "[AuthChallenge] Account '%s' is locked to IP - '%s'", _login.c_str(), fields[2].GetCString());
                 sLog->outDebug(LOG_FILTER_NETWORKIO, "[AuthChallenge] Player address is '%s'", ip_address.c_str());
 
-                if (strcmp(fields[4].GetCString(), ip_address.c_str()) != 0)
+                if (strcmp(fields[3].GetCString(), ip_address.c_str()) != 0)
                 {
                     sLog->outDebug(LOG_FILTER_NETWORKIO, "[AuthChallenge] Account IP differs");
                     pkt << uint8(WOW_FAIL_LOCKED_ENFORCED);
@@ -440,7 +402,7 @@ bool AuthSocket::_HandleLogonChallenge()
             else
             {
                 sLog->outDebug(LOG_FILTER_NETWORKIO, "[AuthChallenge] Account '%s' is not locked to ip", _login.c_str());
-                std::string accountCountry = fields[3].GetString();
+                std::string accountCountry = fields[2].GetString();
                 if (accountCountry.empty() || accountCountry == "00")
                     sLog->outDebug(LOG_FILTER_NETWORKIO, "[AuthChallenge] Account '%s' is not locked to country", _login.c_str());
                 else if (!accountCountry.empty())
@@ -475,7 +437,7 @@ bool AuthSocket::_HandleLogonChallenge()
 
                 // If the account is banned, reject the logon attempt
                 stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BANNED);
-                stmt->setUInt32(0, fields[1].GetUInt32());
+                stmt->setUInt32(0, fields[0].GetUInt32());
                 PreparedQueryResult banresult = LoginDatabase.Query(stmt);
                 if (banresult)
                 {
@@ -492,25 +454,15 @@ bool AuthSocket::_HandleLogonChallenge()
                 }
                 else
                 {
-                    // Get the password from the account table, upper it, and make the SRP6 calculation
-                    std::string rI = fields[0].GetString();
-
-                    // Don't calculate (v, s) if there are already some in the database
-                    std::string databaseV = fields[6].GetString();
-                    std::string databaseS = fields[7].GetString();
+                    std::string databaseV = fields[5].GetString();
+                    std::string databaseS = fields[6].GetString();
 
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
                     sLog->outDebug(LOG_FILTER_NETWORKIO, "database authentication values: v='%s' s='%s'", databaseV.c_str(), databaseS.c_str());
 #endif
 
-                    // multiply with 2 since bytes are stored as hexstring
-                    if (databaseV.size() != s_BYTE_SIZE * 2 || databaseS.size() != s_BYTE_SIZE * 2)
-                        _SetVSFields(rI);
-                    else
-                    {
-                        s.SetHexStr(databaseS.c_str());
-                        v.SetHexStr(databaseV.c_str());
-                    }
+                    s.SetHexStr(databaseS.c_str());
+                    v.SetHexStr(databaseV.c_str());
 
                     b.SetRand(19 * 8);
                     BigNumber gmod = g.ModExp(b, N);
@@ -537,8 +489,8 @@ bool AuthSocket::_HandleLogonChallenge()
                     pkt.append(unk3.AsByteArray(16).get(), 16);
                     uint8 securityFlags = 0;
 					
-					// Check if token is used
-                    _tokenKey = fields[8].GetString();
+                    // Check if token is used
+                    _tokenKey = fields[7].GetString();
                     if (!_tokenKey.empty())
                         securityFlags = 4;
 					
@@ -562,7 +514,7 @@ bool AuthSocket::_HandleLogonChallenge()
                     if (securityFlags & 0x04)               // Security token input
                         pkt << uint8(1);
 
-                    uint8 secLevel = fields[5].GetUInt8();
+                    uint8 secLevel = fields[4].GetUInt8();
                     _accountSecurityLevel = secLevel <= SEC_ADMINISTRATOR ? AccountTypes(secLevel) : SEC_ADMINISTRATOR;
 
                     _localizationName.resize(4);
