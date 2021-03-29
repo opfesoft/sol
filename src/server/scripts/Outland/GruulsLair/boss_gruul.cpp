@@ -114,6 +114,8 @@ class boss_gruul : public CreatureScript
                     case EVENT_HURTFUL_STRIKE:
                         if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 1, 5.0f))
                             me->CastSpell(target, SPELL_HURTFUL_STRIKE, false);
+                        else
+                            me->CastSpell(me->GetVictim(), SPELL_HURTFUL_STRIKE, false);
                         events.ScheduleEvent(EVENT_HURTFUL_STRIKE, 15000);
                         break;
                     case EVENT_GROUND_SLAM:
@@ -122,14 +124,17 @@ class boss_gruul : public CreatureScript
                         events.DelayEvents(8001);
                         events.ScheduleEvent(EVENT_GROUND_SLAM, 60000);
                         events.ScheduleEvent(EVENT_SHATTER, 8000);
+                        me->SetControlled(true, UNIT_STATE_ROOT);
                         break;
                     case EVENT_SHATTER:
                         Talk(SAY_SHATTER);
+                        me->SetControlled(false, UNIT_STATE_ROOT);
                         me->CastSpell(me, SPELL_SHATTER, false);
                         break;
                 }
 
-                DoMeleeAttackIfReady();
+                if (!me->HasUnitState(UNIT_STATE_ROOT))
+                    DoMeleeAttackIfReady();
             }
 
             private:
