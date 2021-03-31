@@ -385,7 +385,8 @@ public:
         GameObject* object = nullptr;
 
         // by DB guid
-        if (GameObjectData const* gameObjectData = sObjectMgr->GetGOData(guidLow))
+        GameObjectData const* gameObjectData = sObjectMgr->GetGOData(guidLow);
+        if (gameObjectData)
             object = handler->GetObjectGlobalyWithGuidOrNearWithDbGuid(guidLow, gameObjectData->id);
 
         if (!object)
@@ -412,16 +413,45 @@ public:
         }
         else
         {
-            Player* player = handler->GetSession()->GetPlayer();
-            oz = player->GetOrientation();
+            if (Player* player = handler->GetSession()->GetPlayer())
+                oz = player->GetOrientation();
         }
 
-        object->SetWorldRotationAngles(oz, oy, ox);
-        object->DestroyForNearbyPlayers();
-        object->UpdateObjectVisibility();
+        bool useRotation = false;
+        GameObjectAddon const* addon = sObjectMgr->GetGameObjectAddon(guidLow);
+        if (addon && addon->useRotation)
+            useRotation = true;
 
+        if (useRotation)
+            object->SetWorldRotationAngles(oz, oy, ox);
+        else
+            object->SetOrientation(oz);
+
+        object->SetPhaseMask(gameObjectData->phaseMask, false);
         object->SaveToDB();
-        object->Refresh();
+        object->SetPhaseMask(0, true);
+
+        if (Player* player = handler->GetSession()->GetPlayer())
+        {
+            player->RemoveGameObject(1, true);
+            if (GameObject* go = sObjectMgr->IsGameObjectStaticTransport(object->GetEntry()) ? new StaticTransport() : new GameObject())
+            {
+                Map* map = player->GetMap();
+                if (go->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_GAMEOBJECT), object->GetEntry(), map, player->GetPhaseMask(), object->GetPositionX(), object->GetPositionY(), object->GetPositionZ(), object->GetOrientation(), object->GetWorldRotation(), 100, GO_STATE_READY))
+                {
+                    if (useRotation)
+                        go->SetWorldRotation(object->GetWorldRotation());
+                    else
+                        go->SetOrientation(object->GetOrientation());
+                    go->SetSpellId(1);
+                    go->SetRespawnTime(DAY);
+                    player->AddGameObject(go);
+                    map->AddToMap(go, true);
+                }
+                else
+                    delete go;
+            }
+        }
 
         handler->PSendSysMessage(LANG_COMMAND_TURNOBJMESSAGE, object->GetGUIDLow(), object->GetGOInfo()->name.c_str(), object->GetGUIDLow(), oz, oy, ox);
 

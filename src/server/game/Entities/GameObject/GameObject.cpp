@@ -264,9 +264,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map* map, uint32 phaseMa
             SetWorldRotation(rotation);
             break;
         default:
-            // xinef: hackfix - but make it possible to use original WorldRotation (using special gameobject addon data) 
-            // pussywizard: temporarily calculate WorldRotation from orientation, do so until values in db are correct
-            if (addon && addon->invisibilityType == INVISIBILITY_GENERAL && addon->InvisibilityValue == 0)
+            if (addon && addon->useRotation)
                 SetWorldRotation(rotation);
             else
                 SetWorldRotationAngles(NormalizeOrientation(GetOrientation()), 0.0f, 0.0f);

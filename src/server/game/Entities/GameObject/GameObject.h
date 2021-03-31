@@ -602,6 +602,7 @@ struct GameObjectAddon
 {
     InvisibilityType invisibilityType;
     uint32 InvisibilityValue;
+    bool useRotation;
 };
 
 typedef std::unordered_map<uint32, GameObjectAddon> GameObjectAddonContainer;
@@ -685,6 +686,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
         // z_rot, y_rot, x_rot - rotation angles around z, y and x axes
         void SetWorldRotationAngles(float z_rot, float y_rot, float x_rot);
         void SetWorldRotation(G3D::Quat const& rot);
+        G3D::Quat GetWorldRotation() const { return m_worldRotation; }
         void SetTransportPathRotation(float qx, float qy, float qz, float qw);
         int64 GetPackedWorldRotation() const { return m_packedRotation; }
 

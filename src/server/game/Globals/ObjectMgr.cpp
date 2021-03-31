@@ -1016,8 +1016,8 @@ void ObjectMgr::LoadGameObjectAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                               0     1                 2
-    QueryResult result = WorldDatabase.Query("SELECT guid, invisibilityType, invisibilityValue FROM gameobject_addon");
+    //                                               0     1                 2                  3
+    QueryResult result = WorldDatabase.Query("SELECT guid, invisibilityType, invisibilityValue, useRotation FROM gameobject_addon");
 
     if (!result)
     {
@@ -1043,6 +1043,7 @@ void ObjectMgr::LoadGameObjectAddons()
         GameObjectAddon& gameObjectAddon = _gameObjectAddonStore[guid];
         gameObjectAddon.invisibilityType = InvisibilityType(fields[1].GetUInt8());
         gameObjectAddon.InvisibilityValue = fields[2].GetUInt32();
+        gameObjectAddon.useRotation = fields[3].GetBool();
 
         if (gameObjectAddon.invisibilityType >= TOTAL_INVISIBILITY_TYPES)
         {
