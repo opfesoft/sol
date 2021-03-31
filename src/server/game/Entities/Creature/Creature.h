@@ -73,6 +73,7 @@ enum CreatureFlagsExtra : uint32
 #define MAX_KILL_CREDIT 2
 #define CREATURE_REGEN_INTERVAL 2 * IN_MILLISECONDS
 #define PET_FOCUS_REGEN_INTERVAL 4 * IN_MILLISECONDS
+#define CREATURE_IDLE_LOS_CHECK_INTERVAL 5 * IN_MILLISECONDS
 
 #define MAX_CREATURE_QUEST_ITEMS 6
 
@@ -789,6 +790,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         LastDamagedTime _lastDamagedTime;
 
         Spell const* _focusSpell;   ///> Locks the target during spell cast for proper facing
+
+        int32 m_idleLosCheckTimer;
 };
 
 class AssistDelayEvent : public BasicEvent

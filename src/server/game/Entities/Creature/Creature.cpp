@@ -170,6 +170,7 @@ m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_m
 m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
+    m_idleLosCheckTimer = CREATURE_IDLE_LOS_CHECK_INTERVAL;
     m_valuesCount = UNIT_END;
 
     for (uint8 i = 0; i < CREATURE_MAX_SPELLS; ++i)
@@ -613,6 +614,16 @@ void Creature::Update(uint32 diff)
                     Regenerate(POWER_MANA);
  
                 m_regenTimer += CREATURE_REGEN_INTERVAL;
+            }
+            if (GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+            {
+                m_idleLosCheckTimer -= diff;
+                if (m_idleLosCheckTimer <= 0)
+                {
+                    acore::CreatureRelocationNotifier relocate(*this);
+                    this->VisitNearbyObject(this->GetVisibilityRange()+VISIBILITY_COMPENSATION, relocate);
+                    m_idleLosCheckTimer += CREATURE_IDLE_LOS_CHECK_INTERVAL;
+                }
             }
             break;
         }
