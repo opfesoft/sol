@@ -60,7 +60,7 @@ enum AchievementCriteriaDataType
 
 enum AchievementCommonCategories
 {  
-    ACHIEVEMENT_CATEOGRY_GENERAL                       = -1,
+    ACHIEVEMENT_PARENT_ROOT                            = -1,
     ACHIEVEMENT_CATEGORY_STATISTICS                    =  1
 };
 

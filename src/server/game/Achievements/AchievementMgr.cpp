@@ -2344,15 +2344,12 @@ bool AchievementGlobalMgr::isStatisticAchievement(AchievementEntry const* achiev
 
     AchievementCategoryEntry const* cat = sAchievementCategoryStore.LookupEntry(achievement->categoryId);
     do {
-        switch(cat->ID) {
-            case ACHIEVEMENT_CATEGORY_STATISTICS:
-                return true;
-            case ACHIEVEMENT_CATEOGRY_GENERAL:
-                return false;
-            default:
-                cat = sAchievementCategoryStore.LookupEntry(cat->parentCategory);
-                break;
-        }
+        if (cat->ID == ACHIEVEMENT_CATEGORY_STATISTICS)
+            return true;
+        else if (cat->parentCategory == ACHIEVEMENT_PARENT_ROOT)
+            return false;
+        else
+            cat = sAchievementCategoryStore.LookupEntry(cat->parentCategory);
     } while (cat);
 
     return false;
