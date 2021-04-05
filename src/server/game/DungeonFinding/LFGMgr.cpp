@@ -2054,6 +2054,10 @@ void LFGMgr::FinishDungeon(uint64 gguid, const uint32 dungeonId, const Map* curr
             continue;
         }
 
+        // Remove Dungeon Finder Cooldown if still exists
+        if (player->HasAura(LFG_SPELL_DUNGEON_COOLDOWN))
+            player->RemoveAurasDueToSpell(LFG_SPELL_DUNGEON_COOLDOWN);
+
         // Xinef: Update achievements, set correct amount of randomly grouped players
         if (dungeon->difficulty == DUNGEON_DIFFICULTY_HEROIC)
             if (uint8 count = GetRandomPlayersCount(player->GetGUID()))
