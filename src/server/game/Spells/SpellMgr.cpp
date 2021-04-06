@@ -3345,6 +3345,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 24314: // Threatening Gaze
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST | AURA_INTERRUPT_FLAG_MOVE | AURA_INTERRUPT_FLAG_JUMP;
             break;
+        case 4074:  // Explosive Sheep 3 minute duration
+            spellInfo->DurationIndex = 25;
+            break;
 
 
         /////////////////////////////////////////////
