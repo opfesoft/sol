@@ -3815,6 +3815,22 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->excludeTargetAuraSpell = 57724; // Sated
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
             break;
+        // Flurry attack speed increase was set to 5/10/15/20/25% with patch 3.0.2 (client data is wrong)
+        case 16257: // Flurry Rank 1
+            spellInfo->EffectBasePoints[EFFECT_0] = 4;
+            break;
+        case 16277: // Flurry Rank 2
+            spellInfo->EffectBasePoints[EFFECT_0] = 9;
+            break;
+        case 16278: // Flurry Rank 3
+            spellInfo->EffectBasePoints[EFFECT_0] = 14;
+            break;
+        case 16279: // Flurry Rank 4
+            spellInfo->EffectBasePoints[EFFECT_0] = 19;
+            break;
+        case 16280: // Flurry Rank 5
+            spellInfo->EffectBasePoints[EFFECT_0] = 24;
+            break;
 
         /////////////////////////////////
         ///// WARLOCK
