@@ -467,7 +467,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
 
     ItemPosCountVec dest;
     InventoryResult msg = target->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, item.itemid, item.count);
-    if (item.follow_loot_rules && !item.AllowedForPlayer(target))
+    if (!item.AllowedForPlayer(target, true))
         msg = EQUIP_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
     if (msg != EQUIP_ERR_OK)
     {
@@ -478,7 +478,6 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
         else
             _player->SendLootError(lootguid, LOOT_ERROR_MASTER_OTHER);
 
-        target->SendEquipError(msg, NULL, NULL, item.itemid);
         return;
     }
 
