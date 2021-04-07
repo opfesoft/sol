@@ -6284,12 +6284,11 @@ bool Player::UpdateFishingSkill()
 #endif
 
     uint32 SkillValue = GetPureSkillValue(SKILL_FISHING);
+    if (SkillValue >= GetMaxSkillValue(SKILL_FISHING))
+        return false;
 
-    int32 chance = SkillValue < 75 ? 100 : 2500/(SkillValue-50);
-
-    uint32 gathering_skill_gain = sWorld->getIntConfig(CONFIG_SKILL_GAIN_GATHERING);
-
-    return UpdateSkillPro(SKILL_FISHING, chance*10, gathering_skill_gain);
+    int32 probability = SkillValue > 0 ? 1000 / fishingSkillAvgTries[std::distance(std::begin(fishingSkillSteps), std::lower_bound(std::begin(fishingSkillSteps), std::end(fishingSkillSteps), SkillValue))] : 0;
+    return UpdateSkillPro(SKILL_FISHING, probability, sWorld->getIntConfig(CONFIG_SKILL_GAIN_GATHERING));
 }
 
 // levels sync. with spell requirement for skill levels to learn

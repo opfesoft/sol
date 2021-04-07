@@ -2629,6 +2629,8 @@ class Player : public Unit, public GridObject<Player>
         SpellModList const& GetSpellModList(uint32 type) const { return m_spellMods[type]; }
 
         static std::unordered_map<int, bgZoneRef> bgZoneIdToFillWorldStates; // zoneId -> FillInitialWorldStates
+        static constexpr std::array<uint32, 10> fishingSkillSteps{ 115, 135, 160, 190, 215, 295, 315, 355, 425, 450 };
+        static constexpr std::array<uint8, 11> fishingSkillAvgTries{ 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 1 };
 
     protected:
         // Gamemaster whisper whitelist
