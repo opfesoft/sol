@@ -1157,6 +1157,8 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_ITEMDELETE_QUALITY]    = sConfigMgr->GetIntDefault("ItemDelete.Quality", 3);
     m_int_configs[CONFIG_ITEMDELETE_ITEM_LEVEL] = sConfigMgr->GetIntDefault("ItemDelete.ItemLevel", 80);
 
+    m_int_configs[CONFIG_FFA_PVP_TIMER] = sConfigMgr->GetIntDefault("FFAPvPTimer", 30);
+
     ///- Read the "Data" directory from the config file
     std::string dataPath = sConfigMgr->GetStringDefault("DataDir", "./");
     if (dataPath.empty() || (dataPath.at(dataPath.length()-1) != '/' && dataPath.at(dataPath.length()-1) != '\\'))

@@ -3389,6 +3389,13 @@ ICC.Buff.Horde    = 73822
 ICC.Buff.Alliance = 73828
 
 #
+#     FFAPvPTimer
+#        Description: Specify time offset when player unset FFAPvP flag when leaving FFAPvP area. (e.g. Gurubashi Arena)
+#        Default:     30 sec
+
+FFAPvPTimer = 30
+
+#
 ###################################################################################################
 
 ###################################################################################################

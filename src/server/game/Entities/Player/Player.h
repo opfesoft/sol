@@ -278,6 +278,7 @@ struct PvPInfo
     bool IsInNoPvPArea;                 ///> Marks if player is in a sanctuary or friendly capital city
     bool IsInFFAPvPArea;                ///> Marks if player is in an FFAPvP area (such as Gurubashi Arena)
     time_t EndTimer;                    ///> Time when player unflags himself for PvP (flag removed after 5 minutes)
+    time_t FFAPvPEndTimer;              ///> Time when player unflags himself for FFA PvP (flag removed after 30 sec)
 };
 
 struct DuelInfo
@@ -1835,7 +1836,8 @@ class Player : public Unit, public GridObject<Player>
         bool IsActionButtonDataValid(uint8 button, uint32 action, uint8 type);
 
         PvPInfo pvpInfo;
-        void UpdatePvPState(bool onlyFFA = false);
+        void UpdatePvPState();
+        void UpdateFFAPvPState(bool reset = true);
         void SetPvP(bool state)
         {
             Unit::SetPvP(state);
@@ -1856,6 +1858,7 @@ class Player : public Unit, public GridObject<Player>
 
         void UpdateAfkReport(time_t currTime);
         void UpdatePvPFlag(time_t currTime);
+        void UpdateFFAPvPFlag(time_t currTime);
         void UpdateContestedPvP(uint32 currTime);
         void SetContestedPvPTimer(uint32 newTime) {m_contestedPvPTimer = newTime;}
         void ResetContestedPvP()
