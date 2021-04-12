@@ -202,6 +202,7 @@ void BattlegroundWS::EventPlayerDroppedFlag(Player* player)
 
     SetFlagPicker(0, GetOtherTeamId(player->GetTeamId()));
     player->RemoveAurasDueToSpell(BG_WS_SPELL_WARSONG_FLAG);
+    player->RemoveAurasDueToSpell(BG_WS_SPELL_SILVERWING_FLAG);
     player->RemoveAurasDueToSpell(BG_WS_SPELL_FOCUSED_ASSAULT);
     player->RemoveAurasDueToSpell(BG_WS_SPELL_BRUTAL_ASSAULT);
 
@@ -343,6 +344,8 @@ void BattlegroundWS::RemovePlayer(Player* player)
 {
     if (GetFlagPickerGUID(TEAM_ALLIANCE) == player->GetGUID() || GetFlagPickerGUID(TEAM_HORDE) == player->GetGUID())
         EventPlayerDroppedFlag(player);
+    player->RemoveAurasDueToSpell(BG_WS_SPELL_FOCUSED_ASSAULT);
+    player->RemoveAurasDueToSpell(BG_WS_SPELL_BRUTAL_ASSAULT);
 }
 
 void BattlegroundWS::UpdateFlagState(TeamId teamId, uint32 value)
