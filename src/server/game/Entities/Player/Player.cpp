@@ -16585,7 +16585,10 @@ bool Player::CanShareQuest(uint32 quest_id) const
 
             // pussywizard: in pool and not currently available (wintergrasp weekly, dalaran weekly) - can't share
             if (sPoolMgr->IsPartOfAPool<Quest>(quest_id) && !sPoolMgr->IsSpawnedObject<Quest>(quest_id))
+            {
+                SendPushToPartyResponse(this, QUEST_PARTY_MSG_CANT_BE_SHARED_TODAY);
                 return false;
+            }
 
             return true;
         }
@@ -17464,7 +17467,7 @@ void Player::SendQuestConfirmAccept(const Quest* quest, Player* pReceiver)
     }
 }
 
-void Player::SendPushToPartyResponse(Player* player, uint8 msg)
+void Player::SendPushToPartyResponse(Player const* player, uint8 msg) const
 { 
     if (player)
     {
