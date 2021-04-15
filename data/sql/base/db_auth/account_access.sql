@@ -16,25 +16,9 @@ CREATE TABLE `account_access`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-LOCK TABLES `account_access` WRITE;
-/*!40000 ALTER TABLE `account_access` DISABLE KEYS */;
-INSERT INTO `account_access` VALUES 
-(1,4,-1),
-(2,4,-1),
-(3,4,-1),
-(4,4,-1),
-(5,4,-1),
-(6,4,-1),
-(7,4,-1),
-(8,4,-1),
-(9,4,-1),
-(10,4,-1);
-/*!40000 ALTER TABLE `account_access` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
