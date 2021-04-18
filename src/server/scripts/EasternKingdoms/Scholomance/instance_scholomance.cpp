@@ -421,7 +421,7 @@ class spell_scholomance_shadow_portal_rooms : public SpellScriptLoader
                         gateId = GO_GATE_ILLUCIA;
                         break;
                     case SPELL_SHADOW_PORTAL_BAROVFAMILYVAULT:
-                        summonPos = ROOM_BAROV_FAMILY_VAULT*4;
+                        summonPos = ROOM_BAROV_FAMILY_VAULT*3;
                         gateId = GO_GATE_BAROV;
                         break;
                     case SPELL_SHADOW_PORTAL_VAULTOFTHERAVENIAN:
