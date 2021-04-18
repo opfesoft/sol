@@ -8,6 +8,8 @@
 #define VMAPEXPORT_H
 
 #include <string>
+#include <unordered_map>
+#include "loadlib/loadlib.h"
 
 enum ModelFlags
 {
@@ -16,8 +18,13 @@ enum ModelFlags
     MOD_HAS_BOUND = 1<<2
 };
 
+struct WMODoodadData;
+
 extern const char * szWorkDirWmo;
 extern const char * szRawVMAPMagic;                         // vmap magic string for extracted raw vmap data
+extern std::unordered_map<std::string, WMODoodadData> WmoDoodads;
+
+uint32 GenerateUniqueObjectId(uint32 clientId, uint16 clientDoodadId);
 
 bool FileExists(const char * file);
 void strToLower(char* str);

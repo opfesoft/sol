@@ -43,7 +43,7 @@ namespace VMAP
     //=================================================================
 
     TileAssembler::TileAssembler(const std::string& pSrcDirName, const std::string& pDestDirName)
-        : iDestDir(pDestDirName), iSrcDir(pSrcDirName), iFilterMethod(NULL), iCurrentUniqueNameId(0)
+        : iDestDir(pDestDirName), iSrcDir(pSrcDirName)
     {
         //mkdir(iDestDir);
         //init();
@@ -211,9 +211,8 @@ namespace VMAP
         ModelSpawn spawn;
         while (!feof(dirf))
         {
-            check = 0;
-            // read mapID, tileX, tileY, Flags, adtID, ID, Pos, Rot, Scale, Bound_lo, Bound_hi, name
-            check += fread(&mapID, sizeof(uint32), 1, dirf);
+            // read mapID, tileX, tileY, Flags, NameSet, UniqueId, Pos, Rot, Scale, Bound_lo, Bound_hi, name
+            check = fread(&mapID, sizeof(uint32), 1, dirf);
             if (check == 0) // EoF...
                 break;
             check += fread(&tileX, sizeof(uint32), 1, dirf);
@@ -228,8 +227,10 @@ namespace VMAP
                 printf("spawning Map %d\n", mapID);
                 mapData[mapID] = current = new MapSpawns();
             }
-            else current = (*map_iter).second;
-            current->UniqueEntries.insert(pair<uint32, ModelSpawn>(spawn.ID, spawn));
+            else
+                current = map_iter->second;
+
+            current->UniqueEntries.emplace(spawn.ID, spawn);
             current->TileEntries.insert(pair<uint32, uint32>(StaticMapTree::packTileID(tileX, tileY), spawn.ID));
         }
         bool success = (ferror(dirf) == 0);

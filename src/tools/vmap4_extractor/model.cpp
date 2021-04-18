@@ -124,11 +124,6 @@ Vec3D fixCoordSystem(Vec3D v)
     return Vec3D(v.x, v.z, -v.y);
 }
 
-Vec3D fixCoordSystem2(Vec3D v)
-{
-    return Vec3D(v.x, v.z, v.y);
-}
-
 ModelInstance::ModelInstance(MPQFile& f, char const* ModelInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE *pDirfile)
 {
     float ff[3];
@@ -139,10 +134,8 @@ ModelInstance::ModelInstance(MPQFile& f, char const* ModelInstName, uint32 mapID
     rot = Vec3D(ff[0], ff[1], ff[2]);
     f.read(&scale, 2);
     f.read(&flags, 2);
-    // scale factor - divide by 1024. blizzard devs must be on crack, why not just use a float?
-    sc = scale / 1024.0f;
 
-    char tempname[512];
+    char tempname[1036];
     sprintf(tempname, "%s/%s", szWorkDirWmo, ModelInstName);
     FILE* input = fopen(tempname, "r+b");
 
@@ -160,37 +153,26 @@ ModelInstance::ModelInstance(MPQFile& f, char const* ModelInstName, uint32 mapID
     if (count != 1 || nVertices == 0)
         return;
 
-    uint16 adtId = 0;// not used for models
-    uint32 flags = MOD_M2;
-    if (tileX == 65 && tileY == 65)
-        flags |= MOD_WORLDSPAWN;
+    // scale factor - divide by 1024. blizzard devs must be on crack, why not just use a float?
+    float sc = scale / 1024.0f;
 
-    //write mapID, tileX, tileY, Flags, ID, Pos, Rot, Scale, name
+    uint16 nameSet = 0; // not used for models
+    uint32 uniqueId = GenerateUniqueObjectId(id, 0);
+    uint32 newFlags = MOD_M2;
+    if (tileX == 65 && tileY == 65)
+        newFlags |= MOD_WORLDSPAWN;
+
+    // write mapID, tileX, tileY, Flags, NameSet, UniqueId, Pos, Rot, Scale, name
     fwrite(&mapID, sizeof(uint32), 1, pDirfile);
     fwrite(&tileX, sizeof(uint32), 1, pDirfile);
     fwrite(&tileY, sizeof(uint32), 1, pDirfile);
-    fwrite(&flags, sizeof(uint32), 1, pDirfile);
-    fwrite(&adtId, sizeof(uint16), 1, pDirfile);
-    fwrite(&id, sizeof(uint32), 1, pDirfile);
+    fwrite(&newFlags, sizeof(uint32), 1, pDirfile);
+    fwrite(&nameSet, sizeof(uint16), 1, pDirfile);
+    fwrite(&uniqueId, sizeof(uint32), 1, pDirfile);
     fwrite(&pos, sizeof(float), 3, pDirfile);
     fwrite(&rot, sizeof(float), 3, pDirfile);
     fwrite(&sc, sizeof(float), 1, pDirfile);
     uint32 nlen=strlen(ModelInstName);
     fwrite(&nlen, sizeof(uint32), 1, pDirfile);
     fwrite(ModelInstName, sizeof(char), nlen, pDirfile);
-
-    /* int realx1 = (int) ((float) pos.x / 533.333333f);
-    int realy1 = (int) ((float) pos.z / 533.333333f);
-    int realx2 = (int) ((float) pos.x / 533.333333f);
-    int realy2 = (int) ((float) pos.z / 533.333333f);
-    fprintf(pDirfile,"%s/%s %f,%f,%f_%f,%f,%f %f %d %d %d,%d %d\n",
-        MapName,
-        ModelInstName,
-        (float) pos.x, (float) pos.y, (float) pos.z,
-        (float) rot.x, (float) rot.y, (float) rot.z,
-        sc,
-        nVertices,
-        realx1, realy1,
-        realx2, realy2
-        ); */
 }

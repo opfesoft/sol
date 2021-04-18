@@ -18,12 +18,12 @@ char * wdtGetPlainName(char * FileName)
     return FileName;
 }
 
-WDTFile::WDTFile(char* file_name, char* file_name1) : WDT(file_name), gWmoInstansName(NULL), gnWMO(0)
+WDTFile::WDTFile(char* file_name, char* file_name1) : WDT(file_name)
 {
     filename.append(file_name1,strlen(file_name1));
 }
 
-bool WDTFile::init(char* /*map_id*/, unsigned int mapID)
+bool WDTFile::init(uint32 mapID)
 {
     if (WDT.isEof())
     {
@@ -61,17 +61,20 @@ bool WDTFile::init(char* /*map_id*/, unsigned int mapID)
             // global map objects
             if (size)
             {
-                char *buf = new char[size];
+                char* buf = new char[size];
                 WDT.read(buf, size);
-                char *p=buf;
-                int q = 0;
-                gWmoInstansName = new string[size];
+                char* p = buf;
                 while (p < buf + size)
                 {
-                    char* s=wdtGetPlainName(p);
+                    std::string path(p);
+                    char* s = wdtGetPlainName(p);
                     fixnamen(s,strlen(s));
-                    p=p+strlen(p)+1;
-                    gWmoInstansName[q++] = s;
+                    fixname2(s,strlen(s));
+
+                    _wmoNames.push_back(s);
+                    ExtractSingleWmo(path);
+
+                    p += strlen(p) + 1;
                 }
                 delete[] buf;
             }
@@ -81,16 +84,14 @@ bool WDTFile::init(char* /*map_id*/, unsigned int mapID)
             // global wmo instance data
             if (size)
             {
-                gnWMO = (int)size / 64;
-
+                int gnWMO = (int)size / 64;
                 for (int i = 0; i < gnWMO; ++i)
                 {
                     int id;
                     WDT.read(&id, 4);
-                    WMOInstance inst(WDT,gWmoInstansName[id].c_str(), mapID, 65, 65, dirfile);
+                    WMOInstance inst(WDT, _wmoNames[id].c_str(), mapID, 65, 65, dirfile);
+                    inst.ExtractDoodadSet(WmoDoodads[_wmoNames[id]], mapID, 65, 65, dirfile);
                 }
-
-                delete[] gWmoInstansName;
             }
         }
         WDT.seek((int)nextpos);

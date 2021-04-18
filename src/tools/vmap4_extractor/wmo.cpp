@@ -6,7 +6,10 @@
 
 #include "vmapexport.h"
 #include "wmo.h"
+#include "adtfile.h"
 #include "vec3d.h"
+#include "Errors.h"
+#include <G3D/Quat.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
@@ -63,7 +66,53 @@ bool WMORoot::open()
             f.read(bbcorn1, 12);
             f.read(bbcorn2, 12);
             f.read(&liquidType, 4);
-            break;
+        }
+        else if (!strcmp(fourcc, "MODS"))
+        {
+            DoodadData.Sets.resize(size / 32);
+            for (WMO::MODS &mods : DoodadData.Sets)
+            {
+                f.read(&mods.Name, 20);
+                f.read(&mods.StartIndex, 4);
+                f.read(&mods.Count, 4);
+                f.read(&mods._pad, 4);
+            }
+        }
+        else if (!strcmp(fourcc,"MODN"))
+        {
+            char* ptr = f.getPointer();
+            char* end = ptr + size;
+            DoodadData.Paths = std::make_unique<char[]>(size);
+            memcpy(DoodadData.Paths.get(), ptr, size);
+            while (ptr < end)
+            {
+                std::string path = ptr;
+
+                char* s = GetPlainName(ptr);
+                fixnamen(s, strlen(s));
+                fixname2(s, strlen(s));
+
+                uint32 doodadNameIndex = ptr - f.getPointer();
+                ptr += path.length() + 1;
+
+                if (ExtractSingleModel(path))
+                    ValidDoodadNames.insert(doodadNameIndex);
+            }
+        }
+        else if (!strcmp(fourcc,"MODD"))
+        {
+            DoodadData.Spawns.resize(size / 40);
+            for (WMO::MODD &modd : DoodadData.Spawns)
+            {
+                uint8 b[4] = { 0 };
+                f.read(&b, 4);
+                modd.NameIndex = b[0] | (b[1] << 8) | (b[2] << 16);
+                modd.Unused = b[3];
+                f.read(&modd.Position, 12);
+                f.read(&modd.Rotation, 16);
+                f.read(&modd.Scale, 4);
+                f.read(&modd.Color, 4);
+            }
         }
         /*
         else if (!strcmp(fourcc,"MOTX"))
@@ -79,15 +128,6 @@ bool WMORoot::open()
         {
         }
         else if (!strcmp(fourcc,"MOLT"))
-        {
-        }
-        else if (!strcmp(fourcc,"MODN"))
-        {
-        }
-        else if (!strcmp(fourcc,"MODS"))
-        {
-        }
-        else if (!strcmp(fourcc,"MODD"))
         {
         }
         else if (!strcmp(fourcc,"MOSB"))
@@ -205,6 +245,11 @@ bool WMOGroup::open()
             MOBA = new uint16[size/2];
             moba_size = size/2;
             f.read(MOBA, size);
+        }
+        else if (!strcmp(fourcc,"MODR"))
+        {
+            DoodadReferences.resize(size / sizeof(uint16));
+            f.read(DoodadReferences.data(), size);
         }
         else if (!strcmp(fourcc,"MLIQ"))
         {
@@ -473,7 +518,7 @@ WMOGroup::~WMOGroup()
 }
 
 WMOInstance::WMOInstance(MPQFile& f, char const* WmoInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE* pDirfile)
-    : currx(0), curry(0), wmo(NULL), doodadset(0), pos(), indx(0), id(0), d2(0), d3(0)
+    : currx(0), curry(0), wmo(NULL), pos(), boundLo(), boundHi(), rot(), id(0), flags(0), doodadSet(0), nameSet(0), scale(0)
 {
     float ff[3];
     f.read(&id, 4);
@@ -482,14 +527,13 @@ WMOInstance::WMOInstance(MPQFile& f, char const* WmoInstName, uint32 mapID, uint
     f.read(ff,12);
     rot = Vec3D(ff[0],ff[1],ff[2]);
     f.read(ff,12);
-    pos2 = Vec3D(ff[0],ff[1],ff[2]);
+    boundLo = Vec3D(ff[0],ff[1],ff[2]);
     f.read(ff,12);
-    pos3 = Vec3D(ff[0],ff[1],ff[2]);
-    f.read(&d2,4);
-
-    uint16 trash,adtId;
-    f.read(&adtId,2);
-    f.read(&trash,2);
+    boundHi = Vec3D(ff[0],ff[1],ff[2]);
+    f.read(&flags,2);
+    f.read(&doodadSet,2);
+    f.read(&nameSet,2);
+    f.read(&scale,2);
 
     //-----------add_in _dir_file----------------
 
@@ -512,46 +556,120 @@ WMOInstance::WMOInstance(MPQFile& f, char const* WmoInstName, uint32 mapID, uint
     if (count != 1 || nVertices == 0)
         return;
 
+    Vec3D newPos = pos;
+
     float x,z;
-    x = pos.x;
-    z = pos.z;
+    x = newPos.x;
+    z = newPos.z;
     if(x==0 && z == 0)
     {
-        pos.x = 533.33333f*32;
-        pos.z = 533.33333f*32;
+        newPos.x = 533.33333f*32;
+        newPos.z = 533.33333f*32;
     }
-    pos = fixCoords(pos);
-    pos2 = fixCoords(pos2);
-    pos3 = fixCoords(pos3);
+    newPos = fixCoords(newPos);
+    Vec3D newBoundLo = fixCoords(boundLo);
+    Vec3D newBoundHi = fixCoords(boundHi);
 
-    float scale = 1.0f;
-    uint32 flags = MOD_HAS_BOUND;
-    if(tileX == 65 && tileY == 65) flags |= MOD_WORLDSPAWN;
-    //write mapID, tileX, tileY, Flags, ID, Pos, Rot, Scale, Bound_lo, Bound_hi, name
+    float newScale = 1.0f;
+    uint32 uniqueId = GenerateUniqueObjectId(id, 0);
+    uint32 newFlags = MOD_HAS_BOUND;
+    if(tileX == 65 && tileY == 65)
+        newFlags |= MOD_WORLDSPAWN;
+    // write mapID, tileX, tileY, Flags, NameSet, UniqueId, Pos, Rot, Scale, Bound_lo, Bound_hi, name
     fwrite(&mapID, sizeof(uint32), 1, pDirfile);
     fwrite(&tileX, sizeof(uint32), 1, pDirfile);
     fwrite(&tileY, sizeof(uint32), 1, pDirfile);
-    fwrite(&flags, sizeof(uint32), 1, pDirfile);
-    fwrite(&adtId, sizeof(uint16), 1, pDirfile);
-    fwrite(&id, sizeof(uint32), 1, pDirfile);
-    fwrite(&pos, sizeof(float), 3, pDirfile);
+    fwrite(&newFlags, sizeof(uint32), 1, pDirfile);
+    fwrite(&nameSet, sizeof(uint16), 1, pDirfile);
+    fwrite(&uniqueId, sizeof(uint32), 1, pDirfile);
+    fwrite(&newPos, sizeof(float), 3, pDirfile);
     fwrite(&rot, sizeof(float), 3, pDirfile);
-    fwrite(&scale, sizeof(float), 1, pDirfile);
-    fwrite(&pos2, sizeof(float), 3, pDirfile);
-    fwrite(&pos3, sizeof(float), 3, pDirfile);
+    fwrite(&newScale, sizeof(float), 1, pDirfile);
+    fwrite(&newBoundLo, sizeof(float), 3, pDirfile);
+    fwrite(&newBoundHi, sizeof(float), 3, pDirfile);
     uint32 nlen=strlen(WmoInstName);
     fwrite(&nlen, sizeof(uint32), 1, pDirfile);
     fwrite(WmoInstName, sizeof(char), nlen, pDirfile);
+}
 
-    /* fprintf(pDirfile,"%s/%s %f,%f,%f_%f,%f,%f 1.0 %d %d %d,%d %d\n",
-        MapName,
-        WmoInstName,
-        (float) x, (float) pos.y, (float) z,
-        (float) rot.x, (float) rot.y, (float) rot.z,
-        nVertices,
-        realx1, realy1,
-        realx2, realy2
-        ); */
+void WMOInstance::ExtractDoodadSet(WMODoodadData const& doodadData, uint32 mapID, uint32 tileX, uint32 tileY, FILE* pDirfile)
+{
+    if (doodadSet >= doodadData.Sets.size())
+        return;
 
-    // fclose(dirfile);
+    G3D::Vector3 wmoPosition(pos.z, pos.x, pos.y);
+    G3D::Matrix3 wmoRotation = G3D::Matrix3::fromEulerAnglesZYX(G3D::toRadians(rot.y), G3D::toRadians(rot.x), G3D::toRadians(rot.z));
+
+    uint16 doodadId = 0;
+    WMO::MODS const& doodadSetData = doodadData.Sets[doodadSet];
+    for (uint16 doodadIndex : doodadData.References)
+    {
+        if (doodadIndex < doodadSetData.StartIndex ||
+            doodadIndex >= doodadSetData.StartIndex + doodadSetData.Count)
+            continue;
+
+        WMO::MODD const& doodad = doodadData.Spawns[doodadIndex];
+
+        char ModelInstName[1024];
+        sprintf(ModelInstName, "%s", GetPlainName(&doodadData.Paths[doodad.NameIndex]));
+        uint32 nlen = strlen(ModelInstName);
+        fixnamen(ModelInstName, nlen);
+        fixname2(ModelInstName, nlen);
+        if (nlen > 3)
+        {
+            char const* extension = &ModelInstName[nlen - 4];
+            if (!strcmp(extension, ".mdx") || !strcmp(extension, ".mdl"))
+            {
+                ModelInstName[nlen - 2] = '2';
+                ModelInstName[nlen - 1] = '\0';
+            }
+        }
+
+        char tempname[1036];
+        sprintf(tempname, "%s/%s", szWorkDirWmo, ModelInstName);
+        FILE* input = fopen(tempname, "r+b");
+        if (!input)
+            continue;
+
+        fseek(input, 8, SEEK_SET); // get the correct no of vertices
+        int nVertices;
+        int count = fread(&nVertices, sizeof(int), 1, input);
+        fclose(input);
+
+        if (count != 1 || nVertices == 0)
+            continue;
+
+        ASSERT(doodadId < std::numeric_limits<uint16>::max());
+        ++doodadId;
+
+        G3D::Vector3 position = wmoPosition + (wmoRotation * G3D::Vector3(doodad.Position.x, doodad.Position.y, doodad.Position.z));
+
+        Vec3D rotation;
+        (G3D::Quat(doodad.Rotation.X, doodad.Rotation.Y, doodad.Rotation.Z, doodad.Rotation.W)
+            .toRotationMatrix() * wmoRotation)
+            .toEulerAnglesXYZ(rotation.z, rotation.x, rotation.y);
+
+        rotation.z = G3D::toDegrees(rotation.z);
+        rotation.x = G3D::toDegrees(rotation.x);
+        rotation.y = G3D::toDegrees(rotation.y);
+
+        uint16 newNameSet = 0; // not used for models
+        uint32 uniqueId = GenerateUniqueObjectId(id, doodadId);
+        uint32 newFlags = MOD_M2;
+        if (tileX == 65 && tileY == 65)
+            newFlags |= MOD_WORLDSPAWN;
+
+        // write mapID, tileX, tileY, Flags, NameSet, UniqueId, Pos, Rot, Scale, name
+        fwrite(&mapID, sizeof(uint32), 1, pDirfile);
+        fwrite(&tileX, sizeof(uint32), 1, pDirfile);
+        fwrite(&tileY, sizeof(uint32), 1, pDirfile);
+        fwrite(&newFlags, sizeof(uint32), 1, pDirfile);
+        fwrite(&newNameSet, sizeof(uint16), 1, pDirfile);
+        fwrite(&uniqueId, sizeof(uint32), 1, pDirfile);
+        fwrite(&position, sizeof(Vec3D), 1, pDirfile);
+        fwrite(&rotation, sizeof(Vec3D), 1, pDirfile);
+        fwrite(&doodad.Scale, sizeof(float), 1, pDirfile);
+        fwrite(&nlen, sizeof(uint32), 1, pDirfile);
+        fwrite(ModelInstName, sizeof(char), nlen, pDirfile);
+    }
 }

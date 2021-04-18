@@ -24,8 +24,8 @@ using G3D::AABox;
 
 struct GameobjectModelData
 {
-    GameobjectModelData(const std::string& name_, const AABox& box) :
-        bound(box), name(name_) {}
+    GameobjectModelData(char const* name_, uint32 nameLength, Vector3 const& lowBound, Vector3 const& highBound) :
+        bound(lowBound, highBound), name(name_, nameLength) {}
 
     AABox bound;
     std::string name;
@@ -66,10 +66,14 @@ void LoadGameObjectModelList()
             break;
         }
 
-        model_list.insert
-        (
-            ModelList::value_type( displayId, GameobjectModelData(std::string(buff, name_length), AABox(v1, v2)) )
-        );
+        if (v1.isNaN() || v2.isNaN())
+        {
+            sLog->outError("File '%s' Model '%s' has invalid v1%s v2%s values!",
+                VMAP::GAMEOBJECT_MODELS, std::string(buff, name_length).c_str(), v1.toString().c_str(), v2.toString().c_str());
+            continue;
+        }
+
+        model_list.emplace(std::piecewise_construct, std::forward_as_tuple(displayId), std::forward_as_tuple(&buff[0], name_length, v1, v2));
     }
 
     fclose(model_list_file);

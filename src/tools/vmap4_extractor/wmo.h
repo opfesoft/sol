@@ -11,6 +11,9 @@
 
 #include <string>
 #include <set>
+#include <vector>
+#include <memory>
+#include <unordered_set>
 #include "vec3d.h"
 #include "loadlib/loadlib.h"
 
@@ -31,8 +34,37 @@ class WMOInstance;
 class WMOManager;
 class MPQFile;
 
+namespace WMO
+{
+    struct MODS
+    {
+        char Name[20];
+        uint32 StartIndex;     // index of first doodad instance in this set
+        uint32 Count;          // number of doodad instances in this set
+        char _pad[4];
+    };
+
+    struct MODD
+    {
+        uint32 NameIndex;
+        uint32 Unused;
+        Vec3D Position;
+        Quaternion Rotation;
+        float Scale;
+        uint32 Color;
+    };
+}
+
 /* for whatever reason a certain company just can't stick to one coordinate system... */
 static inline Vec3D fixCoords(const Vec3D &v){ return Vec3D(v.z, v.x, v.y); }
+
+struct WMODoodadData
+{
+    std::vector<WMO::MODS> Sets;
+    std::unique_ptr<char[]> Paths;
+    std::vector<WMO::MODD> Spawns;
+    std::unordered_set<uint16> References;
+};
 
 class WMORoot
 {
@@ -43,6 +75,9 @@ public:
     uint32 nTextures, nGroups, nP, nLights, nModels, nDoodads, nDoodadSets, RootWMOID, liquidType;
     float bbcorn1[3];
     float bbcorn2[3];
+
+    WMODoodadData DoodadData;
+    std::unordered_set<uint32> ValidDoodadNames;
 
     WMORoot(std::string& filename);
 
@@ -98,6 +133,8 @@ public:
     int nTriangles; // number when loaded
     uint32 liquflags;
 
+    std::vector<uint16> DoodadReferences;
+
     WMOGroup(std::string const& filename);
     ~WMOGroup();
 
@@ -113,12 +150,12 @@ public:
     int currx;
     int curry;
     WMOGroup* wmo;
-    int doodadset;
-    Vec3D pos;
-    Vec3D pos2, pos3, rot;
-    uint32 indx, id, d2, d3;
+    Vec3D pos, boundLo, boundHi, rot;
+    uint32 id;
+    uint16 flags, doodadSet, nameSet, scale;
 
     WMOInstance(MPQFile&f , char const* WmoInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE* pDirfile);
+    void ExtractDoodadSet(WMODoodadData const& doodadData, uint32 mapID, uint32 tileX, uint32 tileY, FILE* pDirfile);
 
     static void reset();
 };
