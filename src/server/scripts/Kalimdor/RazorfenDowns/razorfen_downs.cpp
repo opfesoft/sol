@@ -79,7 +79,7 @@ class npc_belnistrasz : public CreatureScript
                     channeling = false;
                     eventProgress = 0;
                     spawnerCount  = 0;
-                    me->SetFlag(UNIT_NPC_FLAGS, GOSSIP_OPTION_QUESTGIVER);
+                    me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
                     me->SetReactState(REACT_AGGRESSIVE);
                 }
             }
@@ -108,7 +108,7 @@ class npc_belnistrasz : public CreatureScript
                 {
                     eventInProgress = true;
                     Talk(SAY_QUEST_ACCEPTED);
-                    me->RemoveFlag(UNIT_NPC_FLAGS, GOSSIP_OPTION_QUESTGIVER);
+                    me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
                     me->setFaction(FACTION_ESCORT);
                     me->GetMotionMaster()->MovePath(PATH_ESCORT, false);
                 }
