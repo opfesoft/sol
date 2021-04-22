@@ -5172,6 +5172,7 @@ void Player::BuildPlayerRepop()
     SetHealth(1);
 
     SetMovement(MOVE_WATER_WALK);
+    SetWaterWalking(true);
     if (!GetSession()->isLogingOut())
         SetMovement(MOVE_UNROOT);
 
