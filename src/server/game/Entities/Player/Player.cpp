@@ -886,11 +886,6 @@ Player::Player(WorldSession* session): Unit(true), m_mover(this)
 
     m_ChampioningFaction = 0;
 
-    m_timeSyncCounter = 0;
-    m_timeSyncTimer = 0;
-    m_timeSyncClient = 0;
-    m_timeSyncServer = 0;
-
     for (uint8 i = 0; i < MAX_POWERS; ++i)
         m_powerFraction[i] = 0;
 
@@ -1758,14 +1753,6 @@ void Player::Update(uint32 p_time)
         }
         else
             m_zoneUpdateTimer -= p_time;
-    }
-
-    if (m_timeSyncTimer > 0)
-    {
-        if (p_time >= m_timeSyncTimer)
-            SendTimeSync();
-        else
-            m_timeSyncTimer -= p_time;
     }
 
     if (IsAlive())
@@ -23297,8 +23284,8 @@ void Player::SendInitialPacketsAfterAddToMap()
 { 
     UpdateVisibilityForPlayer(true);
 
-    ResetTimeSync();
-    SendTimeSync();
+    GetSession()->ResetTimeSync();
+    GetSession()->SendTimeSync();
 
     CastSpell(this, 836, true);                             // LOGINEFFECT
 
@@ -27018,25 +27005,6 @@ bool Player::IsTankTalentSpec() const
 {
     uint8 tree = GetMostPointsTalentTree();
     return ((getClass() == CLASS_PALADIN && tree == 1) || (getClass() == CLASS_WARRIOR && tree == 2) || (getClass() == CLASS_DRUID && tree == 1) || (getClass() == CLASS_DEATH_KNIGHT && tree == 1));
-}
-
-void Player::ResetTimeSync()
-{ 
-    m_timeSyncCounter = 0;
-    m_timeSyncTimer = 0;
-    m_timeSyncClient = 0;
-    m_timeSyncServer = World::GetGameTimeMS();
-}
-
-void Player::SendTimeSync()
-{ 
-    WorldPacket data(SMSG_TIME_SYNC_REQ, 4);
-    data << uint32(m_timeSyncCounter++);
-    GetSession()->SendPacket(&data);
-
-    // Schedule next sync in 10 sec
-    m_timeSyncTimer = 10000;
-    m_timeSyncServer = World::GetGameTimeMS();
 }
 
 void Player::SetReputation(uint32 factionentry, uint32 value)
