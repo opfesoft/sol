@@ -16,6 +16,8 @@ AC_PATH_CONF="$AC_PATH_ROOT/conf"
 AC_PATH_MODULES="$AC_PATH_ROOT/modules"
 AC_PATH_DEPS="$AC_PATH_ROOT/deps"
 
+AC_PATH_ROOT=$(pwd)
+
 source "$AC_PATH_CONF/config.sh.dist" # add default configuration parameters
 
 if [ -f "$AC_PATH_CONF/config.sh"  ]; then
