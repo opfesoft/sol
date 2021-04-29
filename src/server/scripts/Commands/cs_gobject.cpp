@@ -473,7 +473,8 @@ public:
         GameObject* object = nullptr;
 
         // by DB guid
-        if (GameObjectData const* gameObjectData = sObjectMgr->GetGOData(guidLow))
+        GameObjectData const* gameObjectData = sObjectMgr->GetGOData(guidLow);
+        if (gameObjectData)
             object = handler->GetObjectGlobalyWithGuidOrNearWithDbGuid(guidLow, gameObjectData->id);
 
         if (!object)
@@ -487,21 +488,25 @@ public:
         char* toY = strtok(nullptr, " ");
         char* toZ = strtok(nullptr, " ");
 
+        float x = 0.f, y = 0.f, z = 0.f;
+
         if (!toX)
         {
-            Player* player = handler->GetSession()->GetPlayer();
-            object->GetMap()->GameObjectRelocation(object, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), object->GetOrientation());
-            object->DestroyForNearbyPlayers();
-            object->UpdateObjectVisibility();
+            if (Player* player = handler->GetSession()->GetPlayer())
+            {
+                x = player->GetPositionX();
+                y = player->GetPositionY();
+                z = player->GetPositionZ();
+            }
         }
         else
         {
             if (!toY || !toZ)
                 return false;
 
-            float x = (float)atof(toX);
-            float y = (float)atof(toY);
-            float z = (float)atof(toZ);
+            x = (float)atof(toX);
+            y = (float)atof(toY);
+            z = (float)atof(toZ);
 
             if (!MapManager::IsValidMapCoord(object->GetMapId(), x, y, z))
             {
@@ -515,8 +520,27 @@ public:
             object->UpdateObjectVisibility();
         }
 
+        object->SetPhaseMask(gameObjectData->phaseMask, false);
         object->SaveToDB();
-        object->Refresh();
+        object->SetPhaseMask(0, true);
+
+        if (Player* player = handler->GetSession()->GetPlayer())
+        {
+            player->RemoveGameObject(1, true);
+            if (GameObject* go = sObjectMgr->IsGameObjectStaticTransport(object->GetEntry()) ? new StaticTransport() : new GameObject())
+            {
+                Map* map = player->GetMap();
+                if (go->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_GAMEOBJECT), object->GetEntry(), map, player->GetPhaseMask(), x, y, z, object->GetOrientation(), object->GetWorldRotation(), 100, GO_STATE_READY))
+                {
+                    go->SetSpellId(1);
+                    go->SetRespawnTime(DAY);
+                    player->AddGameObject(go);
+                    map->AddToMap(go, true);
+                }
+                else
+                    delete go;
+            }
+        }
 
         handler->PSendSysMessage(LANG_COMMAND_MOVEOBJMESSAGE, object->GetGUIDLow(), object->GetGOInfo()->name.c_str(), object->GetGUIDLow());
 
