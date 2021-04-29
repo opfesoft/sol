@@ -805,22 +805,52 @@ class npc_karynaku : public CreatureScript
 
 enum Earthmender
 {
-    SAY_WIL_START               = 0,
-    SAY_WIL_AGGRO               = 1,
-    SAY_WIL_PROGRESS1           = 2,
-    SAY_WIL_PROGRESS2           = 3,
-    SAY_WIL_FIND_EXIT           = 4,
-    SAY_WIL_JUST_AHEAD          = 5,
-    SAY_WIL_END                 = 6,
+    SAY_WIL_FREE                = 0,
+    SAY_WIL_START               = 1,
+    SAY_WIL_CHAT1               = 2,
+    SAY_WIL_CHAT2               = 3,
+    SAY_WIL_FREE_WATER_SPIRITS  = 4,
+    SAY_WIL_CHAT3               = 5,
+    SAY_WIL_CHAT4               = 6,
+    SAY_WIL_CHAT5               = 7,
+    SAY_WIL_FIND_EXIT           = 8,
+    SAY_WIL_JUST_AHEAD          = 9,
+    SAY_WIL_END                 = 10,
+    SAY_WIL_AGGRO               = 11,
+    SAY_CAPTURED_WATER_SPIRIT   = 0,
+    SAY_COILSKAR_ASSASSIN       = 0,
 
     SPELL_CHAIN_LIGHTNING       = 16006,
-    SPELL_EARTHBING_TOTEM       = 15786,
+    SPELL_EARTHBIND_TOTEM       = 15786,
     SPELL_FROST_SHOCK           = 12548,
     SPELL_HEALING_WAVE          = 12491,
+    SPELL_WATERY_PRISON         = 35928,
+    SPELL_BREAK_WATER_PRISON    = 35933,
+    SPELL_WATER_BUBBLE          = 35929,
 
     QUEST_ESCAPE_COILSCAR       = 10451,
     NPC_COILSKAR_ASSASSIN       = 21044,
-    FACTION_EARTHEN             = 1726                      //guessed
+    NPC_WIL_TRIGGER             = 21041,
+    NPC_CAPTURED_WATER_SPIRIT   = 21029,
+
+    FACTION_WIL_ESCORTEE        =   250,
+    FACTION_WIL_FRIENDLY        =    35,
+
+    POINT_ID_1                  =   998,
+    POINT_ID_2                  =   999,
+
+    EVENT_FREED1                =     1,
+    EVENT_FREED2                =     2,
+    EVENT_DESPAWN               =     3,
+    EVENT_HEAL                  =     4,
+    EVENT_CHAIN_LIGHTNING       =     5,
+    EVENT_EARTHBIND_TOTEM       =     6,
+    EVENT_FROST_SHOCK           =     7,
+    EVENT_WATER_SPIRIT_TALK     =     8,
+    EVENT_SPAWN_ASSASSIN1       =     9,
+    EVENT_SPAWN_ASSASSIN2       =    10,
+    EVENT_FREE_WATER_SPIRITS    =    11,
+    EVENT_CONTINUE_ESCORT       =    12
 };
 
 class npc_earthmender_wilda : public CreatureScript
@@ -828,36 +858,116 @@ class npc_earthmender_wilda : public CreatureScript
 public:
     npc_earthmender_wilda() : CreatureScript("npc_earthmender_wilda") { }
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest)
+    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest) override
     {
         if (quest->GetQuestId() == QUEST_ESCAPE_COILSCAR)
         {
             creature->AI()->Talk(SAY_WIL_START, player);
-            creature->setFaction(FACTION_EARTHEN);
+            creature->setFaction(FACTION_WIL_ESCORTEE);
 
             if (npc_earthmender_wildaAI* pEscortAI = CAST_AI(npc_earthmender_wilda::npc_earthmender_wildaAI, creature->AI()))
+            {
+                pEscortAI->CancelDespawn();
                 pEscortAI->Start(false, false, player->GetGUID(), quest);
+            }
         }
         return true;
     }
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_earthmender_wildaAI(creature);
     }
 
     struct npc_earthmender_wildaAI : public npc_escortAI
     {
-        npc_earthmender_wildaAI(Creature* creature) : npc_escortAI(creature) { }
-
-        uint32 m_uiHealingTimer;
-
-        void Reset()
+        npc_earthmender_wildaAI(Creature* creature) : npc_escortAI(creature)
         {
-            m_uiHealingTimer = 0;
+            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+            freed = false;
         }
 
-        void WaypointReached(uint32 waypointId)
+        constexpr static uint32 triggerGuids[6] = { 3008823, 3008824, 3008825, 3008826, 3008827, 3008828 };
+        constexpr static uint32 capturedWaterSpiritGuids[5] = { 3008817, 3008818, 3008819, 3008820, 3008821 };
+        EventMap events;
+        EventMap eventsOOC;
+        EventMap eventsIC;
+        bool freed;
+        bool followed;
+
+        void JustRespawned() override
+        {
+            npc_escortAI::JustRespawned();
+            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+            freed = false;
+            followed = false;
+            events.Reset();
+            eventsOOC.Reset();
+            eventsIC.Reset();
+        }
+
+        void Reset() override
+        {
+            me->SetSpeed(MOVE_RUN, me->GetCreatureTemplate()->speed_run);
+            eventsIC.Reset();
+        }
+
+        void EnterEvadeMode() override
+        {
+            if (Spell* s = me->GetCurrentSpell(CURRENT_GENERIC_SPELL))
+                if (s->m_spellInfo->Id == SPELL_BREAK_WATER_PRISON)
+                    return;
+            npc_escortAI::EnterEvadeMode();
+        }
+
+        void SetData(uint32 /*type*/, uint32 /*data*/) override
+        {
+            me->setActive(true);
+
+            for (int i = 1; i < 6; i++)
+                if (Creature* trigger = me->GetMap()->GetCreature(MAKE_NEW_GUID(triggerGuids[i], NPC_WIL_TRIGGER, HIGHGUID_UNIT)))
+                    trigger->DespawnOrUnsummon(1);
+
+            eventsOOC.ScheduleEvent(EVENT_DESPAWN, 180000);
+            me->SetSpeed(MOVE_RUN, 0.3f);
+
+            if (Creature* trigger = me->GetMap()->GetCreature(MAKE_NEW_GUID(triggerGuids[0], NPC_WIL_TRIGGER, HIGHGUID_UNIT)))
+                trigger->CastSpell(me, SPELL_WATERY_PRISON);
+            me->GetMotionMaster()->MovePoint(POINT_ID_1, -2635.57, 1360.89, 35.8221, false, true);
+        }
+
+        void CancelDespawn()
+        {
+            eventsOOC.CancelEvent(EVENT_DESPAWN);
+        }
+
+        void EscortStopped() override
+        {
+            if (followed)
+            {
+                for (int i = 0; i < 5; i++)
+                    if (Creature* capturedWaterSpirit = me->GetMap()->GetCreature(MAKE_NEW_GUID(capturedWaterSpiritGuids[i], NPC_CAPTURED_WATER_SPIRIT, HIGHGUID_UNIT)))
+                        capturedWaterSpirit->DespawnOrUnsummon(1);
+                followed = false;
+            }
+        }
+
+        void MovementInform(uint32 type, uint32 point) override
+        {
+            npc_escortAI::MovementInform(type, point);
+
+            if (type == POINT_MOTION_TYPE)
+                if (point == POINT_ID_1)
+                {
+                    if (Creature* trigger = me->GetMap()->GetCreature(MAKE_NEW_GUID(triggerGuids[0], NPC_WIL_TRIGGER, HIGHGUID_UNIT)))
+                        trigger->DespawnOrUnsummon(1);
+                    me->SetSpeed(MOVE_RUN, me->GetCreatureTemplate()->speed_run);
+                    eventsOOC.ScheduleEvent(EVENT_FREED1, 3000);
+                    freed = true;
+                }
+        }
+
+        void WaypointReached(uint32 waypointId) override
         {
             Player* player = GetPlayerForEscort();
             if (!player)
@@ -865,107 +975,181 @@ public:
 
             switch (waypointId)
             {
+                case 2:
+                    Talk(SAY_WIL_CHAT1);
+                    break;
+                case 9:
+                    Talk(SAY_WIL_CHAT2);
+                    break;
+                case 12:
+                    SetEscortPaused(true);
+                    Talk(SAY_WIL_FREE_WATER_SPIRITS, player);
+                    DoCast(me, SPELL_BREAK_WATER_PRISON);
+                    events.ScheduleEvent(EVENT_SPAWN_ASSASSIN1, 5000);
+                    events.ScheduleEvent(EVENT_SPAWN_ASSASSIN2, 10000);
+                    events.ScheduleEvent(EVENT_FREE_WATER_SPIRITS, 17000);
+                    break;
                 case 13:
-                    Talk(SAY_WIL_PROGRESS1, player);
-                    DoSpawnAssassin();
-                    break;
-                case 14:
-                    DoSpawnAssassin();
-                    break;
-                case 15:
                     Talk(SAY_WIL_FIND_EXIT, player);
                     break;
-                case 19:
-                    DoRandomSay();
+                case 15:
+                    DoSpawnAssassin();
+                    break;
+                case 18:
+                    Talk(SAY_WIL_CHAT3);
                     break;
                 case 20:
                     DoSpawnAssassin();
                     break;
-                case 26:
-                    DoRandomSay();
-                    break;
                 case 27:
                     DoSpawnAssassin();
                     break;
-                case 33:
-                    DoRandomSay();
+                case 28:
+                    DoSpawnAssassin();
                     break;
                 case 34:
-                    DoSpawnAssassin();
+                    Talk(SAY_WIL_CHAT4);
                     break;
                 case 37:
-                    DoRandomSay();
-                    break;
-                case 38:
                     DoSpawnAssassin();
                     break;
-                case 39:
-                    Talk(SAY_WIL_JUST_AHEAD, player);
-                    break;
-                case 43:
-                    DoRandomSay();
+                case 42:
+                    DoSpawnAssassin();
                     break;
                 case 44:
+                    Talk(SAY_WIL_JUST_AHEAD, player);
+                    break;
+                case 46:
+                    Talk(SAY_WIL_CHAT5);
+                    break;
+                case 51:
                     DoSpawnAssassin();
                     break;
-                case 50:
+                case 58:
                     Talk(SAY_WIL_END, player);
                     player->GroupEventHappens(QUEST_ESCAPE_COILSCAR, me);
                     break;
             }
         }
 
-        void JustSummoned(Creature* summoned)
-        {
-            if (summoned->GetEntry() == NPC_COILSKAR_ASSASSIN)
-                summoned->AI()->AttackStart(me);
-        }
-
-        //this is very unclear, random say without no real relevance to script/event
-        void DoRandomSay()
-        {
-            Talk(SAY_WIL_PROGRESS2);
-        }
-
         void DoSpawnAssassin()
         {
-            //unknown where they actually appear
-            DoSummon(NPC_COILSKAR_ASSASSIN, me, 15.0f, 5000, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT);
-        }
-
-        void EnterCombat(Unit* who)
-        {
-            //don't always use
-            if (rand()%5)
-                return;
-
-            //only aggro text if not player
-            if (who->GetTypeId() != TYPEID_PLAYER)
+            if (Creature* assassin = DoSummon(NPC_COILSKAR_ASSASSIN, me, 15.0f, 5000, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT))
             {
-                //appears to be random
-                if (urand(0, 1))
+                if (!(rand() % 5))
+                    assassin->AI()->Talk(SAY_COILSKAR_ASSASSIN);
+                if (!(rand() % 5))
                     Talk(SAY_WIL_AGGRO);
+                assassin->AI()->AttackStart(me);
             }
         }
 
-        void UpdateAI(uint32 uiDiff)
+        void EnterCombat(Unit* /*who*/) override
         {
-            npc_escortAI::UpdateAI(uiDiff);
+            eventsIC.Reset();
+            eventsIC.ScheduleEvent(EVENT_HEAL, 15000);
+            eventsIC.ScheduleEvent(EVENT_EARTHBIND_TOTEM, 0);
+            eventsIC.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 100);
+            eventsIC.ScheduleEvent(EVENT_FROST_SHOCK, 6000);
+        }
+
+        void UpdateEscortAI(uint32 uiDiff) override
+        {
+            if (freed && me->HasUnitMovementFlag(MOVEMENTFLAG_CAN_FLY))
+            {
+                me->SetCanFly(false);
+                me->SetDisableGravity(false);
+            }
+            else if (!freed && !me->HasUnitMovementFlag(MOVEMENTFLAG_CAN_FLY))
+            {
+                me->SetCanFly(true);
+                me->SetDisableGravity(true);
+            }
+
+            events.Update(uiDiff);
+
+            switch(events.ExecuteEvent())
+            {
+                case EVENT_SPAWN_ASSASSIN1:
+                    DoSpawnAssassin();
+                    break;
+                case EVENT_SPAWN_ASSASSIN2:
+                    DoSpawnAssassin();
+                    break;
+                case EVENT_FREE_WATER_SPIRITS:
+                    for (int i = 0; i < 5; i++)
+                        if (Creature* capturedWaterSpirit = me->GetMap()->GetCreature(MAKE_NEW_GUID(capturedWaterSpiritGuids[i], NPC_CAPTURED_WATER_SPIRIT, HIGHGUID_UNIT)))
+                        {
+                            capturedWaterSpirit->RemoveAurasDueToSpell(SPELL_WATER_BUBBLE);
+                            capturedWaterSpirit->GetMotionMaster()->MoveFollow(me, 1.5f, 0.5f * M_PI + (1.0f / 6.0f) * (1.0f + i) * M_PI);
+                        }
+                    EnterEvadeMode();
+                    followed = true;
+                    events.ScheduleEvent(EVENT_WATER_SPIRIT_TALK, 10000);
+                    break;
+                case EVENT_WATER_SPIRIT_TALK:
+                    for (int i = 0; i < 5; i++)
+                        if (Creature* capturedWaterSpirit = me->GetMap()->GetCreature(MAKE_NEW_GUID(capturedWaterSpiritGuids[i], NPC_CAPTURED_WATER_SPIRIT, HIGHGUID_UNIT)))
+                            capturedWaterSpirit->AI()->Talk(SAY_CAPTURED_WATER_SPIRIT);
+                    eventsOOC.ScheduleEvent(EVENT_CONTINUE_ESCORT, 3000);
+                    break;
+            }
 
             if (!UpdateVictim())
+            {
+                eventsOOC.Update(uiDiff);
+
+                switch(eventsOOC.ExecuteEvent())
+                {
+                    case EVENT_FREED1:
+                        me->GetMotionMaster()->MovePoint(POINT_ID_2, -2638.89, 1358.96, 35.9606, false, true);
+                        eventsOOC.ScheduleEvent(EVENT_FREED2, 2000);
+                        break;
+                    case EVENT_FREED2:
+                        Talk(SAY_WIL_FREE);
+                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                        break;
+                    case EVENT_DESPAWN:
+                        me->DespawnOrUnsummon(1);
+                        break;
+                    case EVENT_CONTINUE_ESCORT:
+                        SetEscortPaused(false);
+                        break;
+                }
+
+                return;
+            }
+
+            eventsIC.Update(uiDiff);
+
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
-            /// @todo add more abilities
-            if (!HealthAbovePct(30))
+            switch(eventsIC.ExecuteEvent())
             {
-                if (m_uiHealingTimer <= uiDiff)
-                {
-                    DoCast(me, SPELL_HEALING_WAVE);
-                    m_uiHealingTimer = 15000;
-                }
-                else
-                    m_uiHealingTimer -= uiDiff;
+                case EVENT_HEAL:
+                    if (!HealthAbovePct(30))
+                    {
+                        DoCast(me, SPELL_HEALING_WAVE);
+                        eventsIC.ScheduleEvent(EVENT_HEAL, 15000);
+                    }
+                    else
+                        eventsIC.ScheduleEvent(EVENT_HEAL, 5000);
+                    break;
+                case EVENT_EARTHBIND_TOTEM:
+                    DoCast(me, SPELL_EARTHBIND_TOTEM);
+                    break;
+                case EVENT_CHAIN_LIGHTNING:
+                    DoCast(me->GetVictim(), SPELL_CHAIN_LIGHTNING);
+                    eventsIC.ScheduleEvent(EVENT_CHAIN_LIGHTNING, urand(10000, 15000));
+                    break;
+                case EVENT_FROST_SHOCK:
+                    DoCast(me->GetVictim(), SPELL_FROST_SHOCK);
+                    eventsIC.ScheduleEvent(EVENT_FROST_SHOCK, urand(10000, 15000));
+                    break;
             }
+
+            DoMeleeAttackIfReady();
         }
     };
 };

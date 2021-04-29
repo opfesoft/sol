@@ -109,6 +109,8 @@ void npc_escortAI::MoveInLineOfSight(Unit* who)
 
 void npc_escortAI::JustDied(Unit* /*killer*/)
 {
+    EscortStopped();
+
     if (!HasEscortState(STATE_ESCORT_ESCORTING) || !m_uiPlayerGUID || !m_pQuestForEscort)
         return;
 
@@ -224,6 +226,8 @@ void npc_escortAI::UpdateAI(uint32 diff)
                         me->DespawnOrUnsummon();
                 }
 
+                EscortStopped();
+
                 // xinef: remove escort state, escort was finished (lack of this line resulted in skipping UpdateEscortAI calls after finished escort)
                 RemoveEscortState(STATE_ESCORT_ESCORTING);
                 return;
@@ -263,6 +267,7 @@ void npc_escortAI::UpdateAI(uint32 diff)
                 else
                     me->DespawnOrUnsummon();
 
+                EscortStopped();
                 return;
             }
 

@@ -57,6 +57,7 @@ struct npc_escortAI : public ScriptedAI
 
         void UpdateAI(uint32 diff);                   //the "internal" update, calls UpdateEscortAI()
         virtual void UpdateEscortAI(uint32 diff);     //used when it's needed to add code in update (abilities, scripted events, etc)
+        virtual void EscortStopped() {}               //called if the escort is about to stop either because it is finished or it has failed (can be used e.g. for clean up)
 
         void MovementInform(uint32, uint32);
 
