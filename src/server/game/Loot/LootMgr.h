@@ -110,6 +110,7 @@ enum LootSlotType
 class Player;
 class LootStore;
 class ConditionMgr;
+class GameObject;
 struct Loot;
 
 struct LootStoreItem
@@ -312,6 +313,7 @@ struct Loot
     
     // GUIDLow of container that holds this loot (item_instance.entry), set for items that can be looted
     uint32 containerId;
+    GameObject* sourceGameObject{nullptr};
 
     Loot(uint32 _gold = 0) : gold(_gold), unlootedCount(0), roundRobinPlayer(0), loot_type(LOOT_NONE), containerId(0) { }
     ~Loot() { clear(); }
