@@ -10922,26 +10922,7 @@ uint32 Unit::SpellDamageBonusTaken(Unit* caster, SpellInfo const* spellProto, ui
             if (spellProto->ValidateAttribute6SpellDamageMods(caster, *i, damagetype == DOT))
                 AddPct(TakenTotalMod, (*i)->GetAmount());
 
-
-    // .. taken pct: dummy auras
-    AuraEffectList const& mDummyAuras = GetAuraEffectsByType(SPELL_AURA_DUMMY);
-    for (AuraEffectList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
-    {
-        switch ((*i)->GetSpellInfo()->SpellIconID)
-        {
-            // Cheat Death
-            case 2109:
-                if ((*i)->GetMiscValue() & SPELL_SCHOOL_MASK_NORMAL)
-                {
-                    // Patch 2.4.3: The resilience required to reach the 90% damage reduction cap
-                    //  is 22.5% critical strike damage reduction, or 444 resilience.
-                    // To calculate for 90%, we multiply the 100% by 4 (22.5% * 4 = 90%)
-                    float mod = -1.0f * GetMeleeCritDamageReduction(400);
-                    AddPct(TakenTotalMod, std::max(mod, float((*i)->GetAmount())));
-                }
-                break;
-        }
-    }
+    processDummyAuras(TakenTotalMod);
 
     // From caster spells
     if (caster)
@@ -11034,6 +11015,38 @@ uint32 Unit::SpellDamageBonusTaken(Unit* caster, SpellInfo const* spellProto, ui
     float tmpDamage = (float(pdamage) + TakenTotal) * TakenTotalMod;
 
     return uint32(std::max(tmpDamage, 0.0f));
+}
+
+void Unit::processDummyAuras(float &TakenTotalMod)
+{
+    // note: old code coming from TC, just extracted here to remove the code duplication + solve potential crash
+    // see: https://github.com/TrinityCore/TrinityCore/commit/c85710e148d75450baedf6632b9ca6fd40b4148e
+
+    // .. taken pct: dummy auras
+    auto const& mDummyAuras = GetAuraEffectsByType(SPELL_AURA_DUMMY);
+    for (auto i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
+    {
+        if (!(*i) || !(*i)->GetSpellInfo())
+            continue;
+
+        if (auto spellIconId = (*i)->GetSpellInfo()->SpellIconID)
+        {
+            switch (spellIconId)
+            {
+                // Cheat Death
+                case 2109:
+                    if ((*i)->GetMiscValue() & SPELL_SCHOOL_MASK_NORMAL)
+                    {
+                        // Patch 2.4.3: The resilience required to reach the 90% damage reduction cap
+                        //  is 22.5% critical strike damage reduction, or 444 resilience.
+                        // To calculate for 90%, we multiply the 100% by 4 (22.5% * 4 = 90%)
+                        float mod = -1.0f * GetMeleeCritDamageReduction(400);
+                        AddPct(TakenTotalMod, std::max(mod, float((*i)->GetAmount())));
+                    }
+                    break;
+            }
+        }
+    }
 }
 
 int32 Unit::SpellBaseDamageBonusDone(SpellSchoolMask schoolMask)
@@ -12260,25 +12273,7 @@ uint32 Unit::MeleeDamageBonusTaken(Unit* attacker, uint32 pdamage, WeaponAttackT
         }
     }
 
-    // .. taken pct: dummy auras
-    AuraEffectList const& mDummyAuras = GetAuraEffectsByType(SPELL_AURA_DUMMY);
-    for (AuraEffectList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
-    {
-        switch ((*i)->GetSpellInfo()->SpellIconID)
-        {
-            // Cheat Death
-            case 2109:
-                if ((*i)->GetMiscValue() & SPELL_SCHOOL_MASK_NORMAL)
-                {
-                    // Patch 2.4.3: The resilience required to reach the 90% damage reduction cap
-                    //  is 22.5% critical strike damage reduction, or 444 resilience.
-                    // To calculate for 90%, we multiply the 100% by 4 (22.5% * 4 = 90%)
-                    float mod = -1.0f * GetMeleeCritDamageReduction(400);
-                    AddPct(TakenTotalMod, std::max(mod, float((*i)->GetAmount())));
-                }
-                break;
-        }
-    }
+    processDummyAuras(TakenTotalMod);
 
     // .. taken pct: class scripts
     /*AuraEffectList const& mclassScritAuras = GetAuraEffectsByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
