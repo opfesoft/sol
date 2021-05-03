@@ -136,6 +136,21 @@ enum BG_WS_Objectives
     WS_EVENT_START_BATTLE       = 8563
 };
 
+enum BG_WS_Trigger
+{
+    BG_WS_TRIGGER_ALLIANCE_FLAG_SPAWN           = 3646,
+    BG_WS_TRIGGER_HORDE_FLAG_SPAWN              = 3647,
+
+    BG_WS_TRIGGER_ALLIANCE_ELIXIR_SPEED_SPAWN   = 3686,
+    BG_WS_TRIGGER_HORDE_ELIXIR_SPEED_SPAWN      = 3687,
+
+    BG_WS_TRIGGER_ALLIANCE_ELIXIR_REGEN_SPAWN   = 3706,
+    BG_WS_TRIGGER_HORDE_ELIXIR_REGEN_SPAWN      = 3708,
+
+    BG_WS_TRIGGER_ALLIANCE_ELIXIR_BERSERK_SPAWN = 3707,
+    BG_WS_TRIGGER_HORDE_ELIXIR_BERSERK_SPAWN    = 3709,
+};
+
 struct BattlegroundWGScore : public BattlegroundScore
 {
     BattlegroundWGScore(Player* player): BattlegroundScore(player), FlagCaptures(0), FlagReturns(0) { }
@@ -164,6 +179,7 @@ class BattlegroundWS : public Battleground
         void SetFlagPicker(uint64 guid, TeamId teamId) { _flagKeepers[teamId] = guid; }
         void RespawnFlagAfterDrop(TeamId teamId);
         uint8 GetFlagState(TeamId teamId) const { return _flagState[teamId]; }
+        void CheckFlagKeeperInArea(TeamId teamId);
 
         /* Battleground Events */
         void EventPlayerDroppedFlag(Player* player);
