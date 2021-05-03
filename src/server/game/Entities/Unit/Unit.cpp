@@ -169,7 +169,6 @@ i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this), 
     m_rootTimes = 0;
 
     m_state = 0;
-    m_petCatchUp = false;
     m_deathState = ALIVE;
 
     for (uint8 i = 0; i < CURRENT_MAX_SPELL; ++i)
@@ -13219,7 +13218,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
             if (GetTypeId() == TYPEID_UNIT)
             {
                 bool npcFollowingPlayer = false;
-                float offset, angle;
+                float offset = 0.f, angle = 0.f;
                 Unit* pOwner = GetCharmerOrOwner();
                 if (!pOwner) // charmer or owner not found; check if the creature is following a player
                     if (MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(MOTION_SLOT_ACTIVE))
@@ -13240,9 +13239,10 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                         if (speed < pOwner->GetSpeedRate(mtype)+0.1f)
                             speed = pOwner->GetSpeedRate(mtype)+0.1f; // pets derive speed from owner when not in combat
                     }
-                    else
+                    // special treatment for player pets in order to avoid stuttering;
+                    // skip calculation if neither the owner nor the pet is moving
+                    else if (isMoving() || pOwner->isMoving())
                     {
-                        // special treatment for player pets in order to avoid stuttering
                         float ownerSpeed = pOwner->GetSpeedRate(mtype);
                         float distOwner;
 
@@ -13250,41 +13250,29 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                         {
                             float x, y, z;
                             pOwner->GetClosePoint(x, y, z, 0.0f, offset, angle, this, true);
-                            distOwner = GetDistance(x, y, z);
+                            distOwner = GetExactDist(x, y, z);
                         }
                         else
-                            distOwner = GetDistance(pOwner);
-
-                        float minDist = 2.5f;
+                            distOwner = GetExactDist(pOwner);
 
                         if (ToCreature()->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
-                        {
-                            // different minimum distance for vanity pets
-                            minDist = 5.0f;
-
                             if (mtype == MOVE_FLIGHT)
                                 mtype = MOVE_RUN; // vanity pets use run speed for flight
-                        }
-
-                        float maxDist = ownerSpeed >= 1.0f ? minDist * ownerSpeed * 1.5f : minDist * 1.5f;
-
-                        if (distOwner < minDist && m_petCatchUp)
-                            m_petCatchUp = false;
-
-                        if (distOwner > maxDist && !m_petCatchUp)
-                            m_petCatchUp = true;
 
                         float speedFactor;
-                        if (isSwimming())
-                            speedFactor = m_petCatchUp ? 1.08f : 0.98f;
+
+                        if (ownerSpeed < 2.0f)
+                            speedFactor = 0.62f * std::pow(1.09f, distOwner);
                         else
-                            speedFactor = m_petCatchUp ? 1.05f : 0.95f;
+                            speedFactor = 0.86f * std::pow(1.02f, distOwner);
 
                         if (npcFollowingPlayer && (ownerSpeed * speedFactor > speed * ToCreature()->GetCreatureTemplate()->speed_run))
                             speed *= ToCreature()->GetCreatureTemplate()->speed_run;
                         else
                             speed = ownerSpeed * speedFactor;
                     }
+                    else
+                        speed = pOwner->GetSpeedRate(mtype);
                 }
                 else
                     speed *= ToCreature()->GetCreatureTemplate()->speed_run;    // at this point, MOVE_WALK is never reached
