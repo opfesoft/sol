@@ -4656,13 +4656,17 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->rangeIndex = 1;
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
             break;
-        //Alexstrasza - Gift
+        // Alexstrasza - Gift
         case 61028:
             spellInfo->EffectImplicitTargetA[0] = TARGET_DEST_DEST;
             break;
         // Vortex (freeze anim)
         case 55883:
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CHANGE_MAP;
+            break;
+        // Exit Portal
+        case 60474:
+            spellInfo->AttributesEx6 |= SPELL_ATTR6_CASTABLE_WHILE_ON_VEHICLE;
             break;
 
         //////////////////////////////////////////
