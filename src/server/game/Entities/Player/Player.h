@@ -1090,6 +1090,7 @@ private:
     float _groupRate;
     Player* _maxNotGrayMember;
     uint32 _count;
+    uint32 _aliveSumLevel;
     uint32 _sumLevel;
     uint32 _xp;
     bool _isFullXP;
