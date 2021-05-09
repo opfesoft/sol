@@ -69,7 +69,7 @@ public:
         {
             for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             {
-                if (Encounter[i] == IN_PROGRESS)
+                if (Encounter[i] == IN_PROGRESS && i != BRANN_BRONZEBEARD)
                     return true;
             }
             return false;
