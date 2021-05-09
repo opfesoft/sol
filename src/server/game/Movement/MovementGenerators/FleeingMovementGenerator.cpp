@@ -142,7 +142,7 @@ bool FleeingMovementGenerator<T>::_getPoint(T* owner, float &x, float &y, float 
     {
         x = pos.m_positionX;
         y = pos.m_positionY;
-        z = pos.m_positionZ;
+        z = new_z;
         return true;
     }
 
@@ -152,6 +152,7 @@ bool FleeingMovementGenerator<T>::_getPoint(T* owner, float &x, float &y, float 
 template<class T>
 void FleeingMovementGenerator<T>::DoInitialize(T* owner)
 {
+    owner->StopMoving();
     i_recalculateSpeed = false;
 
     if (!owner)
@@ -187,6 +188,7 @@ void FleeingMovementGenerator<Player>::DoFinalize(Player* owner)
 {
     owner->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FLEEING);
     owner->ClearUnitState(UNIT_STATE_FLEEING|UNIT_STATE_FLEEING_MOVE);
+    owner->StopMoving();
 }
 
 template<>
@@ -270,6 +272,11 @@ void TimedFleeingMovementGenerator::Finalize(Unit* owner)
 {
     owner->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FLEEING);
     owner->ClearUnitState(UNIT_STATE_FLEEING|UNIT_STATE_FLEEING_MOVE);
+    if (Creature* creature = owner->ToCreature())
+    {
+        creature->SetNoSearchAssistance(false);
+        creature->UpdateSpeed(MOVE_RUN, false);
+    }
     if (owner->GetVictim())
         owner->SetTarget(owner->GetVictim()->GetGUID());
 }

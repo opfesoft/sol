@@ -169,6 +169,7 @@ i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this), 
     m_rootTimes = 0;
 
     m_state = 0;
+    m_petCatchUp = false;
     m_deathState = ALIVE;
 
     for (uint8 i = 0; i < CURRENT_MAX_SPELL; ++i)
@@ -3588,7 +3589,7 @@ void Unit::UpdateEnvironmentIfNeeded(const uint8 option)
     {
         if (!c->CanFly() || z < liquidData.level-2.0f)
         {
-            if (!HasUnitState(UNIT_STATE_NO_ENVIRONMENT_UPD) && c->CanSwim() && (!HasUnitMovementFlag(MOVEMENTFLAG_SWIMMING) || !HasUnitMovementFlag(MOVEMENTFLAG_DISABLE_GRAVITY)))
+            if (!HasUnitState(UNIT_STATE_NO_ENVIRONMENT_UPD) && (c->CanSwim() || c->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET) && (!HasUnitMovementFlag(MOVEMENTFLAG_SWIMMING) || !HasUnitMovementFlag(MOVEMENTFLAG_DISABLE_GRAVITY)))
             {
                 SetSwim(true);
                 SetDisableGravity(true);
@@ -3605,7 +3606,7 @@ void Unit::UpdateEnvironmentIfNeeded(const uint8 option)
 
     if (!m_last_isinwater_status)
     {
-        if (!HasUnitState(UNIT_STATE_NO_ENVIRONMENT_UPD) && c->CanWalk() && HasUnitMovementFlag(MOVEMENTFLAG_SWIMMING))
+        if (!HasUnitState(UNIT_STATE_NO_ENVIRONMENT_UPD) && (c->CanWalk() || c->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET) && HasUnitMovementFlag(MOVEMENTFLAG_SWIMMING))
         {
             SetSwim(false);
             if (!c->CanFly()) // if can fly, this will be removed below if needed
@@ -13218,61 +13219,78 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
             if (GetTypeId() == TYPEID_UNIT)
             {
                 bool npcFollowingPlayer = false;
+                bool isFollowing = false;
+                MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(MOTION_SLOT_ACTIVE);
+                if (movementGenerator && movementGenerator->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+                    isFollowing = true;
                 float offset = 0.f, angle = 0.f;
                 Unit* pOwner = GetCharmerOrOwner();
-                if (!pOwner) // charmer or owner not found; check if the creature is following a player
-                    if (MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(MOTION_SLOT_ACTIVE))
-                        if (movementGenerator && movementGenerator->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
-                            if (Unit* target = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetTarget())
-                                if (target && target->GetTypeId() == TYPEID_PLAYER)
-                                {
-                                    pOwner = target;
-                                    npcFollowingPlayer = true;
-                                    offset = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetOffset();
-                                    angle = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetAngle();
-                                }
+                if (!pOwner && isFollowing) // charmer or owner not found; check if the creature is following a player
+                    if (Unit* target = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetTarget())
+                        if (target && target->GetTypeId() == TYPEID_PLAYER)
+                        {
+                            pOwner = target;
+                            npcFollowingPlayer = true;
+                            offset = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetOffset();
+                            angle = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetAngle();
+                        }
 
-                if (pOwner && !IsInCombat() && !IsVehicle() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && (npcFollowingPlayer || IsPet() || IsGuardian() || GetGUID() == pOwner->GetCritterGUID() || GetCharmerGUID() == pOwner->GetGUID()))
+                if (pOwner && isFollowing && !IsInCombat() && !IsVehicle() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && (npcFollowingPlayer || IsPet() || IsGuardian() || GetGUID() == pOwner->GetCritterGUID() || GetCharmerGUID() == pOwner->GetGUID()))
                 {
                     if (pOwner->GetTypeId() != TYPEID_PLAYER)
                     {
                         if (speed < pOwner->GetSpeedRate(mtype)+0.1f)
                             speed = pOwner->GetSpeedRate(mtype)+0.1f; // pets derive speed from owner when not in combat
                     }
-                    // special treatment for player pets in order to avoid stuttering;
-                    // skip calculation if neither the owner nor the pet is moving
-                    else if (isMoving() || pOwner->isMoving())
+                    // special treatment for player pets in order to avoid stuttering
+                    else
                     {
                         float ownerSpeed = pOwner->GetSpeedRate(mtype);
+                        if (ToCreature()->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
+                            if (mtype == MOVE_RUN)
+                            {
+                                if (pOwner->IsFlying() && IsFlying())
+                                    ownerSpeed = pOwner->GetSpeedRate(MOVE_FLIGHT); // vanity pets use run speed for flight
+                                else if (pOwner->isSwimming() && !isSwimming())
+                                    ownerSpeed = pOwner->GetSpeedRate(MOVE_SWIM) * playerBaseMoveSpeed[MOVE_SWIM] / playerBaseMoveSpeed[MOVE_RUN];
+                            }
+
                         float distOwner;
 
                         if (npcFollowingPlayer)
                         {
                             float x, y, z;
                             pOwner->GetClosePoint(x, y, z, 0.0f, offset, angle, this, true);
-                            distOwner = GetExactDist(x, y, z);
+                            distOwner = GetDistance(x, y, z);
                         }
                         else
-                            distOwner = GetExactDist(pOwner);
+                            distOwner = GetDistance(pOwner);
+
+                        float minDist = ownerSpeed >= 1.0f ? ownerSpeed * 2.5f : 2.5f;
 
                         if (ToCreature()->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
-                            if (mtype == MOVE_FLIGHT)
-                                mtype = MOVE_RUN; // vanity pets use run speed for flight
+                            minDist *= 2.0f; // different minimum distance for vanity pets
 
+                        float maxDist = ownerSpeed >= 1.0f ? minDist * ownerSpeed * 1.5f : minDist * 1.5f;
                         float speedFactor;
 
-                        if (ownerSpeed < 2.0f)
-                            speedFactor = 0.62f * std::pow(1.09f, distOwner);
+                        if (distOwner < minDist)
+                            m_petCatchUp = false;
+                        else if (distOwner >= minDist && distOwner <= maxDist)
+                            speedFactor = 1.01f + (distOwner - minDist) * 0.01f;
                         else
-                            speedFactor = 0.86f * std::pow(1.02f, distOwner);
+                        {
+                            speedFactor = (1.01f + (maxDist - minDist) * 0.01f) + (distOwner - maxDist) * 0.1f;
+                            m_petCatchUp = true;
+                        }
+
+                        speedFactor = m_petCatchUp ? std::min(speedFactor, mtype == MOVE_RUN ? 1.2f : 2.0f) : 0.95f;
 
                         if (npcFollowingPlayer && (ownerSpeed * speedFactor > speed * ToCreature()->GetCreatureTemplate()->speed_run))
                             speed *= ToCreature()->GetCreatureTemplate()->speed_run;
                         else
                             speed = ownerSpeed * speedFactor;
                     }
-                    else
-                        speed = pOwner->GetSpeedRate(mtype);
                 }
                 else
                     speed *= ToCreature()->GetCreatureTemplate()->speed_run;    // at this point, MOVE_WALK is never reached
@@ -13339,113 +13357,57 @@ void Unit::SetSpeed(UnitMoveType mtype, float rate, bool forced)
 
     propagateSpeedChange();
 
-    WorldPacket data;
-    if (!forced)
+    static Opcodes const moveTypeToOpcode[MAX_MOVE_TYPE][2] =
     {
-        switch (mtype)
-        {
-            case MOVE_WALK:
-                data.Initialize(MSG_MOVE_SET_WALK_SPEED, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_RUN:
-                data.Initialize(MSG_MOVE_SET_RUN_SPEED, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_RUN_BACK:
-                data.Initialize(MSG_MOVE_SET_RUN_BACK_SPEED, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_SWIM:
-                data.Initialize(MSG_MOVE_SET_SWIM_SPEED, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_SWIM_BACK:
-                data.Initialize(MSG_MOVE_SET_SWIM_BACK_SPEED, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_TURN_RATE:
-                data.Initialize(MSG_MOVE_SET_TURN_RATE, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_FLIGHT:
-                data.Initialize(MSG_MOVE_SET_FLIGHT_SPEED, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_FLIGHT_BACK:
-                data.Initialize(MSG_MOVE_SET_FLIGHT_BACK_SPEED, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            case MOVE_PITCH_RATE:
-                data.Initialize(MSG_MOVE_SET_PITCH_RATE, 8+4+2+4+4+4+4+4+4+4);
-                break;
-            default:
-                sLog->outError("Unit::SetSpeed: Unsupported move type (%d), data not sent to client.", mtype);
-                return;
-        }
+        {SMSG_FORCE_WALK_SPEED_CHANGE,        SMSG_SPLINE_SET_WALK_SPEED},
+        {SMSG_FORCE_RUN_SPEED_CHANGE,         SMSG_SPLINE_SET_RUN_SPEED},
+        {SMSG_FORCE_RUN_BACK_SPEED_CHANGE,    SMSG_SPLINE_SET_RUN_BACK_SPEED},
+        {SMSG_FORCE_SWIM_SPEED_CHANGE,        SMSG_SPLINE_SET_SWIM_SPEED},
+        {SMSG_FORCE_SWIM_BACK_SPEED_CHANGE,   SMSG_SPLINE_SET_SWIM_BACK_SPEED},
+        {SMSG_FORCE_TURN_RATE_CHANGE,         SMSG_SPLINE_SET_TURN_RATE},
+        {SMSG_FORCE_FLIGHT_SPEED_CHANGE,      SMSG_SPLINE_SET_FLIGHT_SPEED},
+        {SMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE, SMSG_SPLINE_SET_FLIGHT_BACK_SPEED},
+        {SMSG_FORCE_PITCH_RATE_CHANGE,        SMSG_SPLINE_SET_PITCH_RATE},
+    };
 
-        BuildMovementPacket(&data);
-        data << float(GetSpeed(mtype));
-        SendMessageToSet(&data, true);
-    }
-    else
+    if (forced && GetTypeId() == TYPEID_PLAYER)
     {
-        if (GetTypeId() == TYPEID_PLAYER)
+        // register forced speed changes for WorldSession::HandleForceSpeedChangeAck
+        // and do it only for real sent packets and use run for run/mounted as client expected
+        ++ToPlayer()->m_forced_speed_changes[mtype];
+
+        // Xinef: update speed of pet also
+        if (!IsInCombat())
         {
-            // register forced speed changes for WorldSession::HandleForceSpeedChangeAck
-            // and do it only for real sent packets and use run for run/mounted as client expected
-            ++ToPlayer()->m_forced_speed_changes[mtype];
+            Unit* pet = ToPlayer()->GetPet();
+            if (!pet)
+                pet = GetCharm();
 
-            // Xinef: update speed of pet also
-            if (!IsInCombat())
-            {
-                Unit* pet = ToPlayer()->GetPet();
-                if (!pet)
-                    pet = GetCharm();
+            // xinef: do not affect vehicles and possesed pets
+            if (pet && (pet->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) || pet->IsVehicle()))
+                pet = NULL;
 
-                // xinef: do not affect vehicles and possesed pets
-                if (pet && (pet->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) || pet->IsVehicle()))
-                    pet = NULL;
-
-                if (pet && pet->GetTypeId() == TYPEID_UNIT && !pet->IsInCombat() && pet->GetMotionMaster()->GetCurrentMovementGeneratorType() == FOLLOW_MOTION_TYPE)
-                    pet->UpdateSpeed(mtype, forced);
-                if (Unit* critter = ObjectAccessor::GetUnit(*this, GetCritterGUID()))
-                    critter->UpdateSpeed(mtype, forced);
-            }
+            if (pet && pet->GetTypeId() == TYPEID_UNIT && !pet->IsInCombat() && pet->GetMotionMaster()->GetCurrentMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+                pet->UpdateSpeed(mtype, forced);
+            if (Unit* critter = ObjectAccessor::GetUnit(*this, GetCritterGUID()))
+                critter->UpdateSpeed(mtype, forced);
         }
 
-        switch (mtype)
-        {
-            case MOVE_WALK:
-                data.Initialize(SMSG_FORCE_WALK_SPEED_CHANGE, 16);
-                break;
-            case MOVE_RUN:
-                data.Initialize(SMSG_FORCE_RUN_SPEED_CHANGE, 17);
-                break;
-            case MOVE_RUN_BACK:
-                data.Initialize(SMSG_FORCE_RUN_BACK_SPEED_CHANGE, 16);
-                break;
-            case MOVE_SWIM:
-                data.Initialize(SMSG_FORCE_SWIM_SPEED_CHANGE, 16);
-                break;
-            case MOVE_SWIM_BACK:
-                data.Initialize(SMSG_FORCE_SWIM_BACK_SPEED_CHANGE, 16);
-                break;
-            case MOVE_TURN_RATE:
-                data.Initialize(SMSG_FORCE_TURN_RATE_CHANGE, 16);
-                break;
-            case MOVE_FLIGHT:
-                data.Initialize(SMSG_FORCE_FLIGHT_SPEED_CHANGE, 16);
-                break;
-            case MOVE_FLIGHT_BACK:
-                data.Initialize(SMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE, 16);
-                break;
-            case MOVE_PITCH_RATE:
-                data.Initialize(SMSG_FORCE_PITCH_RATE_CHANGE, 16);
-                break;
-            default:
-                sLog->outError("Unit::SetSpeed: Unsupported move type (%d), data not sent to client.", mtype);
-                return;
-        }
+        WorldPacket data;
+        data.Initialize(moveTypeToOpcode[mtype][0], mtype != MOVE_RUN ? 8 + 4 + 4 : 8 + 4 + 1 + 4);
         data.append(GetPackGUID());
-        data << (uint32)0;                                  // moveEvent, NUM_PMOVE_EVTS = 0x39
+        data << (uint32)0;                              // moveEvent, NUM_PMOVE_EVTS = 0x39
         if (mtype == MOVE_RUN)
-            data << uint8(0);                               // new 2.1.0
+            data << uint8(0);                           // new 2.1.0
         data << float(GetSpeed(mtype));
-        SendMessageToSet(&data, true);
+        ToPlayer()->GetSession()->SendPacket(&data);
     }
+
+    WorldPacket data;
+    data.Initialize(moveTypeToOpcode[mtype][1], 8 + 4);
+    data.append(GetPackGUID());
+    data << float(GetSpeed(mtype));
+    SendMessageToSet(&data, false);
 }
 
 void Unit::setDeathState(DeathState s, bool despawn)

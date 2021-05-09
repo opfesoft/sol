@@ -100,7 +100,7 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
 
         float angle = i_angle;
 
-        if (i_target->GetTypeId() == TYPEID_PLAYER)
+        if (i_target->GetTypeId() == TYPEID_PLAYER && this->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
         {
             Creature* creature = owner->ToCreature();
 
@@ -111,6 +111,10 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
                 angle = PET_FOLLOW_ANGLE + M_PI * 0.2f;
                 size = i_target->GetCombatReach() - i_target->GetObjectSize();
             }
+
+            owner->UpdateSpeed(MOVE_FLIGHT, true);
+            owner->UpdateSpeed(MOVE_SWIM, true);
+            owner->UpdateSpeed(MOVE_RUN, true);
         }
 
         // Xinef: Fix follow angle for hostile units
@@ -311,23 +315,6 @@ bool TargetedMovementGeneratorMedium<T,D>::DoUpdate(T* owner, uint32 time_diff)
     {
         if (i_recalculateTravel)
             _setTargetLocation(owner, false);
-    }
-
-    Unit* pOwner = owner->GetCharmerOrOwner();
-    if (!pOwner) // charmer or owner not found; check if the creature has follow motion type
-        if (static_cast<D*>(this)->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
-            pOwner = i_target.getTarget();
-
-    if (pOwner && pOwner->GetTypeId() == TYPEID_PLAYER)
-    {
-        // Update pet speed for players in order to avoid stuttering
-        if (pOwner->IsFlying())
-            owner->UpdateSpeed(MOVE_FLIGHT, true);
-        else
-        {
-            owner->UpdateSpeed(MOVE_RUN, true);
-            owner->UpdateSpeed(MOVE_SWIM, true);
-        }
     }
 
     return true;
