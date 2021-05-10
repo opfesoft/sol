@@ -3992,6 +3992,22 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->procCharges = 2;
             spellInfo->StackAmount = 0;
             break;
+        // Arcane Missiles
+        case 5143:
+        case 5144:
+        case 5145:
+        case 8416:
+        case 8417:
+        case 10211:
+        case 10212:
+        case 25345:
+        case 27075:
+        case 38699:
+        case 38704:
+        case 42843:
+        case 42846:
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
+            break;
 
 
         /////////////////////////////////
