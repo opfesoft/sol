@@ -725,7 +725,7 @@ public:
                 checkTimer2 = 0;
                 if (Unit* owner = me->GetOwner())
                 {
-                    if (owner->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) || owner->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED))
+                    if (owner->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) || owner->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED) || owner->isSwimming())
                     {
                         isFlying = true;
                         me->SetCanFly(true);
