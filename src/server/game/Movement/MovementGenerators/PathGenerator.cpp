@@ -103,8 +103,8 @@ dtPolyRef PathGenerator::GetPathPolyByPosition(dtPolyRef const* polyPath, uint32
     {
         if (DT_SUCCESS != _navMeshQuery->getPolyHeight(polyPath[i], point, &polyHeight))
             continue;
-        height = point[1]-polyHeight;
-        if (height > 0.0f && height < ALLOWED_DIST_FROM_POLY+ADDED_Z_FOR_POLY_LOOKUP)
+        height = point[1] - polyHeight - ADDED_Z_FOR_POLY_LOOKUP;
+        if (height > 0.0f && height < ALLOWED_DIST_FROM_POLY)
         {
             if (distance)
                 *distance = height;

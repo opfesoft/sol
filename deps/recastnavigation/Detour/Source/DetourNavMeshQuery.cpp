@@ -649,22 +649,10 @@ public:
 			dtPolyRef ref = refs[i];
 			float closestPtPoly[3];
 			float diff[3];
-			bool posOverPoly = false;
 			float d;
-			m_query->closestPointOnPoly(ref, m_center, closestPtPoly, &posOverPoly);
-
-			// If a point is directly over a polygon and closer than
-			// climb height, favor that instead of straight line nearest point.
+			m_query->closestPointOnPoly(ref, m_center, closestPtPoly, nullptr);
 			dtVsub(diff, m_center, closestPtPoly);
-			if (posOverPoly)
-			{
-				d = dtAbs(diff[1]) - tile->header->walkableClimb;
-				d = d > 0 ? d*d : 0;			
-			}
-			else
-			{
-				d = dtVlenSqr(diff);
-			}
+			d = dtVlenSqr(diff);
 			
 			if (d < m_nearestDistanceSqr)
 			{
