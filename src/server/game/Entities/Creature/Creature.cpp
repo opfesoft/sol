@@ -1361,7 +1361,7 @@ bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const
     return true;
 }
 
-bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap, bool gridLoad)
+bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap)
 { 
     CreatureData const* data = sObjectMgr->GetCreatureData(guid);
 
@@ -1369,16 +1369,6 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap, bool gri
     {
         sLog->outErrorDb("Creature (GUID: %u) not found in table `creature`, can't load. ", guid);
         return false;
-    }
-
-    // xinef: fix shitness from db
-    if ((addToMap || gridLoad) && !data->overwrittenZ)
-    {
-        float tz = map->GetHeight(data->posX, data->posY, data->posZ+1.0f, true);
-        if (tz >= data->posZ && tz - data->posZ <= 1.0f)
-            const_cast<CreatureData*>(data)->posZ = tz+0.1f;
-
-        const_cast<CreatureData*>(data)->overwrittenZ = true;
     }
 
     // xinef: this has to be assigned before Create function, properly loads equipment id from DB
