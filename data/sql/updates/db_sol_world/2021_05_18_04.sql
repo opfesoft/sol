@@ -1,0 +1,28 @@
+-- DB update 2021_05_18_03 -> 2021_05_18_04
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2021_05_18_03';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2021_05_18_03 2021_05_18_04 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1621371161276773337'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1621371161276773337');
+
+UPDATE `gameobject` SET `position_x`= -2020.59, `position_y` = -11879.4, `position_z` = 45.4187, `orientation` = 2.47328, `rotation2` = 0.944687, `rotation3` = 0.327972 WHERE `guid` = 22375;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
