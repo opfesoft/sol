@@ -71,7 +71,7 @@ uint32 GameEventMgr::NextCheck(uint16 entry) const
     if (mGameEvent[entry].state == GAMEEVENT_WORLD_CONDITIONS)
     {
         if (mGameEvent[entry].length)
-            return mGameEvent[entry].length * 60;
+            return mGameEvent[entry].length * MINUTE;
         else
             return max_ge_check_delay;
     }
@@ -86,7 +86,7 @@ uint32 GameEventMgr::NextCheck(uint16 entry) const
 
     uint32 delay;
     // in event, we return the end of it
-    if ((((currenttime - mGameEvent[entry].start) % (mGameEvent[entry].occurence * 60)) < (mGameEvent[entry].length * 60)))
+    if ((((currenttime - mGameEvent[entry].start) % (mGameEvent[entry].occurence * MINUTE)) < (mGameEvent[entry].length * MINUTE)))
         // we return the delay before it ends
         delay = (mGameEvent[entry].length * MINUTE) - ((currenttime - mGameEvent[entry].start) % (mGameEvent[entry].occurence * MINUTE));
     else                                                    // not in window, we return the delay before next start
@@ -123,7 +123,7 @@ bool GameEventMgr::StartEvent(uint16 event_id, bool overwrite)
         {
             mGameEvent[event_id].start = time(NULL);
             if (data.end <= data.start)
-                data.end = data.start + data.length;
+                data.end = data.start + data.length * MINUTE;
         }
 
         if (IsActiveEvent(event_id))
@@ -171,7 +171,7 @@ void GameEventMgr::StopEvent(uint16 event_id, bool overwrite)
     {
         data.start = time(NULL) - data.length * MINUTE;
         if (data.end <= data.start)
-            data.end = data.start + data.length;
+            data.end = data.start + data.length * MINUTE;
     }
     else if (serverwide_evt)
     {
@@ -1674,7 +1674,7 @@ bool GameEventMgr::CheckOneGameEventConditions(uint16 event_id)
     if (!mGameEvent[event_id].nextstart)
     {
         time_t currenttime = time(NULL);
-        mGameEvent[event_id].nextstart = currenttime + mGameEvent[event_id].length * 60;
+        mGameEvent[event_id].nextstart = currenttime + mGameEvent[event_id].length * MINUTE;
     }
     return true;
 }
