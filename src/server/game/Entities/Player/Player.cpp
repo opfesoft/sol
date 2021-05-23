@@ -4015,7 +4015,7 @@ bool Player::_addSpell(uint32 spellId, uint8 addSpecMask, bool temporary, bool l
             if (!pSkill || HasSkill(pSkill->id))
                 continue;
 
-            if (_spell_idx->second->learnOnGetSkill == ABILITY_LEARNED_ON_GET_RACE_OR_CLASS_SKILL || // pussywizard: learning autolearned spell from skill ensures having the skill
+            if (_spell_idx->second->learnOnGetSkill == ABILITY_LEARNED_ON_GET_RACE_OR_CLASS_SKILL || pSkill->categoryId == SKILL_CATEGORY_CLASS || // pussywizard: learning autolearned spell from skill ensures having the skill
                 ((pSkill->id == SKILL_LOCKPICKING || pSkill->id == SKILL_RUNEFORGING) && _spell_idx->second->max_value == 0)) // pussywizard: learning any spell from lockpicking or runeforging ensures having the skill
             {
                 switch (GetSkillRangeType(pSkill, _spell_idx->second->racemask != 0))
