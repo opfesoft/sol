@@ -2290,6 +2290,7 @@ enum PvPTrinketTriggeredSpells
 {
     SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER         = 72752,
     SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER_WOTF    = 72757,
+    SPELL_PVP_TRINKET                                   = 42292
 };
 
 class spell_pvp_trinket_wotf_shared_cd : public SpellScriptLoader
@@ -2308,7 +2309,9 @@ class spell_pvp_trinket_wotf_shared_cd : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellEntry*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER) || !sSpellMgr->GetSpellInfo(SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER_WOTF))
+                if (!sSpellMgr->GetSpellInfo(SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER)
+                    || !sSpellMgr->GetSpellInfo(SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER_WOTF)
+                    || !sSpellMgr->GetSpellInfo(SPELL_PVP_TRINKET))
                     return false;
                 return true;
             }
@@ -2341,7 +2344,7 @@ class spell_pvp_trinket_wotf_shared_cd : public SpellScriptLoader
                         player->GetSession()->SendPacket(&data);
 
                         WorldPacket data2;
-                        player->BuildCooldownPacket(data, SPELL_COOLDOWN_FLAG_INCLUDE_GCD, 42292, GetSpellInfo()->CategoryRecoveryTime); // PvP Trinket spell
+                        player->BuildCooldownPacket(data2, SPELL_COOLDOWN_FLAG_INCLUDE_GCD, SPELL_PVP_TRINKET, GetSpellInfo()->CategoryRecoveryTime); // PvP Trinket spell
                         player->GetSession()->SendPacket(&data2);
 
                     }
