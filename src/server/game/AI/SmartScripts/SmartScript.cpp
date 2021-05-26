@@ -2718,7 +2718,9 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         uint32 eventId = e.action.gameEventStop.id;
         if (!sGameEventMgr->IsActiveEvent(eventId))
         {
-            sLog->outError("SmartScript::ProcessAction: At case SMART_ACTION_GAME_EVENT_STOP, inactive event (id: %u)", eventId);
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
+            sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction: At case SMART_ACTION_GAME_EVENT_STOP, inactive event (id: %u)", eventId);
+#endif
             break;
         }
         sGameEventMgr->StopEvent(eventId, true);
@@ -2729,7 +2731,9 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         uint32 eventId = e.action.gameEventStart.id;
         if (sGameEventMgr->IsActiveEvent(eventId))
         {
-            sLog->outError("SmartScript::ProcessAction: At case SMART_ACTION_GAME_EVENT_START, already activated event (id: %u)", eventId);
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
+            sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction: At case SMART_ACTION_GAME_EVENT_START, already activated event (id: %u)", eventId);
+#endif
             break;
         }
         sGameEventMgr->StartEvent(eventId, true);
