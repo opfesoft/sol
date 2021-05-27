@@ -9570,8 +9570,12 @@ bool Unit::Attack(Unit* victim, bool meleeAttack)
             victim->SetInCombatWith(this);
         AddThreat(victim, 0.0f);
 
-        ToCreature()->SendAIReaction(AI_REACTION_HOSTILE);
-        ToCreature()->CallAssistance();
+        if (Creature* creature = ToCreature())
+        {
+            creature->SendAIReaction(AI_REACTION_HOSTILE);
+            creature->CallAssistance();
+            creature->SetAssistanceTimer(sWorld->getIntConfig(CONFIG_CREATURE_FAMILY_ASSISTANCE_PERIOD));
+        }
     }
 
     // delay offhand weapon attack to next attack time
@@ -12707,6 +12711,8 @@ void Unit::ClearInCombat()
         ClearUnitState(UNIT_STATE_ATTACK_PLAYER);
         if (HasFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_TAPPED))
             SetUInt32Value(UNIT_DYNAMIC_FLAGS, creature->GetCreatureTemplate()->dynamicflags);
+
+        creature->SetAssistanceTimer(0);
 
         // Xinef: will be recalculated at follow movement generator initialization
         if (!IsPet() && !IsCharmed())

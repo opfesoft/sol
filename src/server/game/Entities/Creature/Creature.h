@@ -717,6 +717,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         void SetLastDamagedTimePointer(LastDamagedTime const& lastDamagedTime);
 
         uint64 GetDespawnTime() const { return m_despawnTime; }
+        void SetAssistanceTimer(uint32 value) { m_assistanceTimer = value; }
 
     protected:
         bool CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data = NULL);
@@ -775,6 +776,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
     private:
         void ForcedDespawn(uint32 timeMSToDespawn = 0);
+        bool CanPeriodicallyCallForAssistance() const;
 
         //WaypointMovementGenerator vars
         uint32 m_waypointID;
@@ -792,6 +794,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         Spell const* _focusSpell;   ///> Locks the target during spell cast for proper facing
 
         int32 m_idleLosCheckTimer;
+        uint32 m_assistanceTimer;
 };
 
 class AssistDelayEvent : public BasicEvent
