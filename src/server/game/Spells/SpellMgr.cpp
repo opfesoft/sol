@@ -3910,6 +3910,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 57946:
             spellInfo->EffectRealPointsPerLevel[0] = 0;
             break;
+        case 4511: // Imp Phase Shift
+            spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST;
+            break;
 
 
         /////////////////////////////////
