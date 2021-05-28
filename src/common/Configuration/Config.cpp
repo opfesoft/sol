@@ -196,7 +196,7 @@ bool ConfigMgr::LoadAppConfigs(std::string const& applicationName /*= "worldserv
     if (!sConfigMgr->LoadInitial(_initConfigFile + ".dist"))
     {
         printf("Load config error. Invalid or missing dist configuration file: %s", std::string(_initConfigFile + ".dist").c_str());
-        printf("Verify that the file exists and has \'[%s]' written in the top of the file!", applicationName.c_str());
+        printf("\nVerify that the file exists and has \'[%s]' written in the top of the file!", applicationName.c_str());
         return false;
     }
 
