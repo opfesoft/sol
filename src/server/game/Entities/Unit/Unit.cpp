@@ -9575,6 +9575,9 @@ bool Unit::Attack(Unit* victim, bool meleeAttack)
             creature->SendAIReaction(AI_REACTION_HOSTILE);
             creature->CallAssistance();
             creature->SetAssistanceTimer(sWorld->getIntConfig(CONFIG_CREATURE_FAMILY_ASSISTANCE_PERIOD));
+
+            // Remove emote state - will be restored on creature reset
+            SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
         }
     }
 
