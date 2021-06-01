@@ -159,49 +159,58 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket & recv_data)
         _player->PlayerTalkClass->SendCloseGossip();
         return;
     }
+
+    uint32 sender = _player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+    uint32 action = _player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+
     if (!code.empty())
     {
         if (unit)
         {
             unit->AI()->sGossipSelectCode(_player, menuId, gossipListId, code.c_str());
-            if (!sScriptMgr->OnGossipSelectCode(_player, unit, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId), code.c_str()))
+            if (!sScriptMgr->OnGossipSelectCode(_player, unit, sender, action, code.c_str()))
                 _player->OnGossipSelect(unit, gossipListId, menuId);
         }
         else if (go)
         {
             go->AI()->GossipSelectCode(_player, menuId, gossipListId, code.c_str());
-            sScriptMgr->OnGossipSelectCode(_player, go, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId), code.c_str());
+            sScriptMgr->OnGossipSelectCode(_player, go, sender, action, code.c_str());
         }
         else if (item)
         {
-            sScriptMgr->OnGossipSelectCode(_player, item, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId), code.c_str());
+            sScriptMgr->OnGossipSelectCode(_player, item, sender, action, code.c_str());
         }
         else
         {
-            sScriptMgr->OnGossipSelectCode(_player, menuId, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId), code.c_str());
+            sScriptMgr->OnGossipSelectCode(_player, menuId, sender, action, code.c_str());
         }
     }
     else
     {
         if (unit)
         {
-            unit->AI()->sGossipSelect(_player, menuId, gossipListId);
-            if (!sScriptMgr->OnGossipSelect(_player, unit, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId)))
-                _player->OnGossipSelect(unit, gossipListId, menuId);
+            if (action == GOSSIP_ACTION_TOGGLE_INSTANT_FLIGHT && unit->IsTaxi())
+                _player->OnGossipSelect(unit, gossipListId, menuId); // Instant flight toggle, don't call script hooks
+            else
+            {
+                unit->AI()->sGossipSelect(_player, menuId, gossipListId);
+                if (!sScriptMgr->OnGossipSelect(_player, unit, sender, action))
+                    _player->OnGossipSelect(unit, gossipListId, menuId);
+            }
         }
         else if (go)
         {
             go->AI()->GossipSelect(_player, menuId, gossipListId);
-            if (!sScriptMgr->OnGossipSelect(_player, go, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId)))
+            if (!sScriptMgr->OnGossipSelect(_player, go, sender, action))
                 _player->OnGossipSelect(go, gossipListId, menuId);
         }
         else if (item)
         {
-            sScriptMgr->OnGossipSelect(_player, item, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId));
+            sScriptMgr->OnGossipSelect(_player, item, sender, action);
         }
         else
         {
-            sScriptMgr->OnGossipSelect(_player, menuId, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId));
+            sScriptMgr->OnGossipSelect(_player, menuId, sender, action);
         }
     }
 }
