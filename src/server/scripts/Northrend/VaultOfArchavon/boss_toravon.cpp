@@ -104,6 +104,7 @@ class boss_toravon : public CreatureScript
                     pInstance->SetData(EVENT_TORAVON, DONE);
                     pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_WHITEOUT);
                 }
+                summons.DespawnAll();
             }
 
             void JustSummoned(Creature* cr)
