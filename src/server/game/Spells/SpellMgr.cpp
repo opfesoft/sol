@@ -3351,6 +3351,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 36500: // Glaive (fix throw back spell)
             spellInfo->EffectBasePoints[EFFECT_1] = 36507; // Glaive throw back effect
             break;
+        case 45368: // Orb of Translocation
+        case 45371:
+            spellInfo->EffectImplicitTargetB[EFFECT_0] = TARGET_DEST_DB;
+            break;
 
 
         /////////////////////////////////////////////
