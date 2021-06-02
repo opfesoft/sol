@@ -3348,6 +3348,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 4074:  // Explosive Sheep 3 minute duration
             spellInfo->DurationIndex = 25;
             break;
+        case 36500: // Glaive (fix throw back spell)
+            spellInfo->EffectBasePoints[EFFECT_1] = 36507; // Glaive throw back effect
+            break;
 
 
         /////////////////////////////////////////////

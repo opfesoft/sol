@@ -1393,7 +1393,7 @@ class spell_gen_throw_back : public SpellScriptLoader
             {
                 PreventHitDefaultEffect(effIndex);
                 if (Unit* target = GetHitUnit())
-                    target->CastSpell(GetCaster(), uint32(GetEffectValue()), true);
+                    target->CastSpell(GetCaster(), uint32(GetSpellInfo()->Effects[effIndex].BasePoints), true);
             }
 
             void Register()

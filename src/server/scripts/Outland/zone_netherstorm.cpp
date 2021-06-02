@@ -1066,6 +1066,7 @@ enum saeed
     EVENT_START_WALK                = 1,
     EVENT_START_FIGHT1              = 2,
     EVENT_START_FIGHT2              = 3,
+    EVENT_SUMMONS_ACTION            = 4,
 
     DATA_START_ENCOUNTER            = 1,
     DATA_START_FIGHT                = 2,
@@ -1168,7 +1169,6 @@ class npc_captain_saeed : public CreatureScript
                 if (fight)
                     SetEscortPaused(false);
 
-                SummonsAction(NULL);
                 npc_escortAI::EnterEvadeMode();
             }
 
@@ -1180,10 +1180,13 @@ class npc_captain_saeed : public CreatureScript
                     {
                         if (who == NULL)
                         {
-                            cr->GetMotionMaster()->Clear(false);
-                            cr->GetMotionMaster()->MoveFollow(me, 2.0f, M_PI/2.0f + (i / summons.size() * M_PI));
+                            if (cr->GetMotionMaster()->GetCurrentMovementGeneratorType() != FOLLOW_MOTION_TYPE)
+                            {
+                                cr->GetMotionMaster()->Clear(false);
+                                cr->GetMotionMaster()->MoveFollow(me, 2.0f, M_PI/2.0f + (i / summons.size() * M_PI));
+                            }
                         }
-                        else
+                        else if (!cr->IsInCombat())
                         {
                             cr->SetHomePosition(cr->GetPositionX(), cr->GetPositionY(), cr->GetPositionZ(), cr->GetOrientation());
                             cr->AI()->AttackStart(who);
@@ -1212,11 +1215,6 @@ class npc_captain_saeed : public CreatureScript
                         summons.DespawnAll();
                         break;
                 }
-            }
-
-            void EnterCombat(Unit* who) override
-            {
-                SummonsAction(who);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -1249,7 +1247,7 @@ class npc_captain_saeed : public CreatureScript
                 switch (events.ExecuteEvent())
                 {
                     case EVENT_START_WALK:
-                        SummonsAction(NULL);
+                        events.ScheduleEvent(EVENT_SUMMONS_ACTION, 1000);
                         SetEscortPaused(false);
                         break;
                     case EVENT_START_FIGHT1:
@@ -1264,6 +1262,10 @@ class npc_captain_saeed : public CreatureScript
                             AttackStart(dimensius);
                             fight = true;
                         }
+                        break;
+                    case EVENT_SUMMONS_ACTION:
+                        SummonsAction(UpdateVictim() ? me->GetVictim() : NULL);
+                        events.ScheduleEvent(EVENT_SUMMONS_ACTION, 3000);
                         break;
                 }
 
