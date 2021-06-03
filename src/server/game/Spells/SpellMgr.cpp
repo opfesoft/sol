@@ -3476,6 +3476,7 @@ void SpellMgr::LoadDbcDataCorrections()
         ///// HUNTER
         /////////////////////////////////
         // Furious Howl
+        case 24604:
         case 64491:
         case 64492:
         case 64493:
