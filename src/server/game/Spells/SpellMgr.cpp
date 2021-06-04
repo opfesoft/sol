@@ -3578,6 +3578,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->AttributesEx &= ~SPELL_ATTR1_DISMISS_PET;
             spellInfo->RecoveryTime = 8*60*IN_MILLISECONDS; // prev 600000
             break;
+        case 1543: // Flare
+            spellInfo->speed = 0.0f;
+            break;
 
 
 
