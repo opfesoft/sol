@@ -28,7 +28,7 @@
 Pet::Pet(Player* owner, PetType type) : Guardian(NULL, owner ? owner->GetGUID() : 0, true),
 m_usedTalentCount(0), m_removed(false), m_owner(owner),
 m_happinessTimer(PET_LOSE_HAPPINES_INTERVAL), m_petType(type), m_duration(0),
-m_auraRaidUpdateMask(0), m_loading(false), m_petRegenTimer(PET_FOCUS_REGEN_INTERVAL), m_declinedname(NULL), m_tempspellTarget(NULL), m_tempoldTarget(NULL), m_tempspellIsPositive(false), m_tempspell(0), asynchLoadType(PET_LOAD_DEFAULT)
+m_auraRaidUpdateMask(0), m_loading(false), m_petRegenTimer(PET_FOCUS_REGEN_INTERVAL), m_petSummonStunTimer(PET_SUMMON_STUN_INTERVAL), m_declinedname(NULL), m_tempspellTarget(NULL), m_tempoldTarget(NULL), m_tempspellIsPositive(false), m_tempspell(0), asynchLoadType(PET_LOAD_DEFAULT)
 {
     m_unitTypeMask |= UNIT_MASK_PET;
     if (type == HUNTER_PET)
@@ -543,6 +543,20 @@ void Pet::Update(uint32 diff)
                     LoseHappiness();
                     m_happinessTimer += PET_LOSE_HAPPINES_INTERVAL;
                 }
+            }
+            else if (getPetType() == SUMMON_PET && owner->GetTypeId() == TYPEID_PLAYER && owner->getClass() == CLASS_WARLOCK)
+            {
+                if (Spell* spell = owner->GetCurrentSpell(CURRENT_GENERIC_SPELL))
+                    if (spell->GetSpellInfo()->HasEffect(SPELL_EFFECT_SUMMON_PET))
+                        if (Aura* aura = GetAura(32752)) // Summoning Disorientation
+                        {
+                            m_petSummonStunTimer -= diff;
+                            if (m_petSummonStunTimer <= int32(0))
+                            {
+                                aura->RefreshDuration();
+                                m_petSummonStunTimer += PET_SUMMON_STUN_INTERVAL;
+                            }
+                        }
             }
 
             break;

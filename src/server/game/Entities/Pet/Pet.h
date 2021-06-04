@@ -13,6 +13,7 @@
 #define PET_FOCUS_REGEN_INTERVAL    4 * IN_MILLISECONDS
 #define PET_LOSE_HAPPINES_INTERVAL  7500
 #define HAPPINESS_LEVEL_SIZE        333000
+#define PET_SUMMON_STUN_INTERVAL    1 * IN_MILLISECONDS
 
 struct PetSpell
 {
@@ -167,6 +168,7 @@ class Pet : public Guardian
         uint64  m_auraRaidUpdateMask;
         bool    m_loading;
         int32   m_petRegenTimer;                            // xinef: used for focus regeneration
+        int32   m_petSummonStunTimer;                       // used to refresh Summoning Disorientation for Warlock pets
 
         DeclinedName *m_declinedname;
 
