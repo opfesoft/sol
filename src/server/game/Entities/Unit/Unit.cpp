@@ -706,9 +706,18 @@ uint32 Unit::DealDamage(Unit* attacker, Unit* victim, uint32 damage, CleanDamage
         if (victim->ToPlayer()->GetCommandStatus(CHEAT_GOD))
             return 0;
 
-    // Signal the pet it was attacked so the AI can respond if needed
-    if (victim->GetTypeId() == TYPEID_UNIT && attacker != victim && victim->IsPet() && victim->IsAlive())
-        victim->ToPet()->AI()->AttackedBy(attacker);
+    if (victim->GetTypeId() == TYPEID_UNIT && attacker != victim)
+    {
+        // Signal the pet it was attacked so the AI can respond if needed
+        if (victim->IsPet() && victim->IsAlive())
+            victim->ToPet()->AI()->AttackedBy(attacker);
+
+        // Signal all controlled creatures (except react state passive) to engage the attacker
+        for (Unit* u : victim->m_Controlled)
+            if (Creature* c = u->ToCreature(); c && !c->HasReactState(REACT_PASSIVE) && !c->IsInCombat())
+                if (CreatureAI* cAI = c->AI())
+                    cAI->AttackStart(attacker);
+    }
 
     if (damagetype != NODAMAGE)
     {
