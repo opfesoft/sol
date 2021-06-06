@@ -3355,6 +3355,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 45371:
             spellInfo->EffectImplicitTargetB[EFFECT_0] = TARGET_DEST_DB;
             break;
+        case 58984: // Shadowmeld
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_ONLY_TARGET_PLAYERS;
+            break;
 
 
         /////////////////////////////////////////////
