@@ -132,27 +132,33 @@ public:
 
 enum PyrewoodAmbush
 {
-    QUEST_PYREWOOD_AMBUSH = 452,
-    NPCSAY_INIT = 0,
-    NPCSAY_END = 1
+    QUEST_PYREWOOD_AMBUSH    =  452,
+    NPCSAY_INIT              =    0,
+    NPCSAY_END               =    1,
+    WAIT_MS                  = 6000,
+
+    NPC_COUNCILMAN_SMITHERS  = 2060,
+    NPC_COUNCILMAN_THATCHER  = 2061,
+    NPC_COUNCILMAN_HENDRICKS = 2062,
+    NPC_COUNCILMAN_WILHELM   = 2063,
+    NPC_COUNCILMAN_HARTIN    = 2064,
+    NPC_COUNCILMAN_COOPER    = 2065,
+    NPC_COUNCILMAN_HIGARTH   = 2066,
+    NPC_COUNCILMAN_BRUNSWICK = 2067,
+    NPC_LORD_MAYOR_MORRISON  = 2068
 };
 
-static float PyrewoodSpawnPoints[3][4] =
+static float PyrewoodPoints[6][3] =
 {
-    //pos_x   pos_y     pos_z    orien
-    //outside
-    /*
-    {-400.85f, 1513.64f, 18.67f, 0},
-    {-397.32f, 1514.12f, 18.67f, 0},
-    {-397.44f, 1511.09f, 18.67f, 0},
-    */
-    //door
-    {-396.17f, 1505.86f, 19.77f, 0},
-    {-396.91f, 1505.77f, 19.77f, 0},
-    {-397.94f, 1504.74f, 19.77f, 0},
+    // spawn position
+    {-400.850f, 1513.64f, 18.8690f},
+    {-397.320f, 1514.12f, 18.8687f},
+    {-397.440f, 1511.09f, 18.8688f},
+    // move position
+    {-397.063f, 1502.06f, 19.7708f},
+    {-397.237f, 1499.73f, 19.7708f},
+    {-397.239f, 1497.00f, 19.7708f}
 };
-
-#define WAIT_SECS 6000
 
 class pyrewood_ambush : public CreatureScript
 {
@@ -194,7 +200,8 @@ public:
 
         void Reset()
         {
-            WaitTimer = WAIT_SECS;
+            me->SetReactState(REACT_DEFENSIVE);
+            WaitTimer = WAIT_MS;
 
             if (!QuestInProgress) //fix reset values (see UpdateVictim)
             {
@@ -202,10 +209,9 @@ public:
                 KillCount = 0;
                 PlayerGUID = 0;
                 Summons.DespawnAll();
+                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
             }
         }
-
-        void EnterCombat(Unit* /*who*/) { }
 
         void JustSummoned(Creature* summoned)
         {
@@ -219,27 +225,18 @@ public:
             --KillCount;
         }
 
-        void SummonCreatureWithRandomTarget(uint32 creatureId, int position)
+        void SummonCouncilMember(uint32 creatureId, int position)
         {
-            if (Creature* summoned = me->SummonCreature(creatureId, PyrewoodSpawnPoints[position][0], PyrewoodSpawnPoints[position][1], PyrewoodSpawnPoints[position][2], PyrewoodSpawnPoints[position][3], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000))
+            if (Creature* summoned = me->SummonCreature(creatureId, PyrewoodPoints[position][0], PyrewoodPoints[position][1], PyrewoodPoints[position][2], 0.f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000))
             {
-                Unit* target = NULL;
-                if (PlayerGUID)
-                    if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
-                        if (player->IsAlive() && RAND(0, 1))
-                            target = player;
-
-                if (!target)
-                    target = me;
-
-                summoned->setFaction(168);
-                summoned->AddThreat(target, 32.0f);
-                summoned->AI()->AttackStart(target);
+                summoned->SetReactState(REACT_DEFENSIVE);
+                summoned->GetMotionMaster()->MovePoint(1, PyrewoodPoints[position + 3][0], PyrewoodPoints[position + 3][1], PyrewoodPoints[position + 3][2]);
             }
         }
 
         void JustDied(Unit* /*killer*/)
         {
+            QuestInProgress = false;
             if (PlayerGUID)
                 if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
                     if (player->GetQuestStatus(QUEST_PYREWOOD_AMBUSH) == QUEST_STATUS_INCOMPLETE)
@@ -248,8 +245,6 @@ public:
 
         void UpdateAI(uint32 diff)
         {
-            //TC_LOG_INFO("scripts", "DEBUG: p(%i) k(%i) d(%u) W(%i)", Phase, KillCount, diff, WaitTimer);
-
             if (!QuestInProgress)
                 return;
 
@@ -265,37 +260,36 @@ public:
             switch (Phase)
             {
                 case 0:
-                    if (WaitTimer == WAIT_SECS) {
+                    if (WaitTimer == WAIT_MS)
+                    {
+                        me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
                         if (PlayerGUID)
-                        {
                             if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
-                            {
                                 me->AI()->Talk(NPCSAY_INIT, player);
-                            }
-                        }
                     }
-                    if (WaitTimer <= diff)
+
+                    if (WaitTimer >= diff)
                     {
                         WaitTimer -= diff;
                         return;
                     }
                     break;
                 case 1:
-                    SummonCreatureWithRandomTarget(2060, 1);
+                    SummonCouncilMember(NPC_COUNCILMAN_SMITHERS, 1);
                     break;
                 case 2:
-                    SummonCreatureWithRandomTarget(2061, 2);
-                    SummonCreatureWithRandomTarget(2062, 0);
+                    SummonCouncilMember(NPC_COUNCILMAN_THATCHER, 2);
+                    SummonCouncilMember(NPC_COUNCILMAN_HENDRICKS, 0);
                     break;
                 case 3:
-                    SummonCreatureWithRandomTarget(2063, 1);
-                    SummonCreatureWithRandomTarget(2064, 2);
-                    SummonCreatureWithRandomTarget(2065, 0);
+                    SummonCouncilMember(NPC_COUNCILMAN_WILHELM, 1);
+                    SummonCouncilMember(NPC_COUNCILMAN_HARTIN, 2);
+                    SummonCouncilMember(NPC_COUNCILMAN_COOPER, 0);
                     break;
                 case 4:
-                    SummonCreatureWithRandomTarget(2066, 1);
-                    SummonCreatureWithRandomTarget(2067, 0);
-                    SummonCreatureWithRandomTarget(2068, 2);
+                    SummonCouncilMember(NPC_COUNCILMAN_HIGARTH, 1);
+                    SummonCouncilMember(NPC_COUNCILMAN_BRUNSWICK, 0);
+                    SummonCouncilMember(NPC_LORD_MAYOR_MORRISON, 2);
                     break;
                 case 5: //end
                     if (PlayerGUID)
