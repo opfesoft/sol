@@ -1,3 +1,19 @@
+-- DB update 2021_06_07_01 -> 2021_06_07_02
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_world' AND COLUMN_NAME = '2021_06_07_01';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_world CHANGE COLUMN 2021_06_07_01 2021_06_07_02 bit;
+SELECT sql_rev INTO OK FROM version_db_world WHERE sql_rev = '1622547209752619743'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
 INSERT INTO `version_db_world` (`sql_rev`) VALUES ('1622547209752619743');
 
 UPDATE `item_template` SET `minMoneyLoot` = 0, `maxMoneyLoot` = 1500 WHERE `Entry` = 20766; -- Slimy Bag
@@ -52,3 +68,12 @@ INSERT INTO `item_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `Quest
 (20768, 14484, 0, 0.07, 0, 1, 4, 1, 1, NULL),
 (20768, 14494, 0, 0.07, 0, 1, 4, 1, 1, NULL),
 (20768, 14508, 0, 0.07, 0, 1, 4, 1, 1, NULL);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
