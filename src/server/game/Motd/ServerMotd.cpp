@@ -9,6 +9,7 @@
 #include "Opcodes.h"
 #include "Util.h"
 #include "WorldPacket.h"
+#include "GitRevision.h"
 #include <iterator>
 #include <sstream>
 
@@ -20,15 +21,11 @@ namespace
 
 void Motd::SetMotd(std::string motd)
 {
-    motd = /* fctlsup << //0x338// "63"+"cx""d2"+"1e""dd"+"cx""ds"+"ce""dd"+"ce""7D"+ << */ motd
-    /*"d3"+"ce"*/+"@|"+"cf"+/*"as"+"k4"*/"fF"+"F4"+/*"d5"+"f3"*/"A2"+"DT"/*"F4"+"Az"*/+"hi"+"s "
-    /*"fd"+"hy"*/+"se"+"rv"+/*"nh"+"k3"*/"er"+" r"+/*"x1"+"A2"*/"un"+"s "/*"F2"+"Ay"*/+"Pr"+"oj"
-    /*"xs"+"5n"*/+"ec"+"t "+/*"xs"+"A2"*/"\"S"+"ol"+/*"a4"+"f3"*/"\"|"+"r@"/*"f2"+"A2"*/+"|c"+"ff"
-    /*"Ak"+"55"*/+"FF"+"4A"+/*"JB"+"2R"*/"2D"+"ba"+/*"0v"+"wz"*/"se"+"d "/*"1r"+"vC"*/+"on"+" Az"
-    /*"7U"+"pw"*/+"er"+"ot"+/*"J4"+"23"*/"hC"+"or"+/*"TK"+"Cm"*/"e "+"20"/*"Rr"+"cg"*/+"20"+"-0"
-    /*"b2"+"63"*/+"2-"+"28"+/*"G8"+"c9"*/"|r "+"|c"+/*"lE"+"0V"*/"ff"+"3C"/*"5g"+"A2"*/+"E7"+"FF"
-    /*"k5"+"AX"*/+"ww"+"w."+/*"sx"+"Gj"*/"az"+"er"+/*"a1"+"vf"*/"ot"+"hc"/*"ds"+"sx"*/+"or"+"e."
-    /*"F4"+"k5"*/+"or"+"g|r"/*+"po"+"xs"+"F4"+"p2"+"o4"+"A2"+"i2"*/;
+    if (!motd.empty())
+        motd += "@";
+    std::stringstream ss;
+    ss << GitRevision::GetDate();
+    motd += "|cffFF4A2DThis server runs Project \"Sol\" " + ss.str() + "|r@|cffFF4A2Dbased on AzerothCore 2020-02-28|r |cff3CE7FFwww.azerothcore.org|r";
 
     // scripts may change motd
     sScriptMgr->OnMotdChange(motd);
