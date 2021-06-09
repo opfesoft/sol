@@ -103,7 +103,9 @@ class spell_pal_seal_of_command : public SpellScriptLoader
                     if (procSpell->IsAffectingArea())
                         targets = 1;
 
-                eventInfo.GetActor()->CastCustomSpell(aurEff->GetSpellInfo()->Effects[EFFECT_0].TriggerSpell, SPELLVALUE_MAX_TARGETS, targets, eventInfo.GetActionTarget(), false, NULL, aurEff);
+                if (Unit* target = eventInfo.GetActionTarget())
+                    if (target->IsAlive())
+                        eventInfo.GetActor()->CastCustomSpell(aurEff->GetSpellInfo()->Effects[EFFECT_0].TriggerSpell, SPELLVALUE_MAX_TARGETS, targets, target, false, nullptr, aurEff);
             }
 
             void Register()
