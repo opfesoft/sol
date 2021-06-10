@@ -8375,9 +8375,18 @@ void Player::ApplyItemEquipSpell(Item* item, bool apply, bool form_change)
         if (!spellData.SpellId)
             continue;
 
-        // wrong triggering type
-        if ((apply || form_change) && spellData.SpellTrigger != ITEM_SPELLTRIGGER_ON_EQUIP)
-            continue;
+        if (apply)
+        {
+            // wrong triggering type
+            if (spellData.SpellTrigger != ITEM_SPELLTRIGGER_ON_EQUIP)
+                continue;
+        }
+        else
+        {
+            // Auras activated by use should not be removed on unequip
+            if (spellData.SpellTrigger == ITEM_SPELLTRIGGER_ON_USE)
+                continue;
+        }
 
         // check if it is valid spell
         SpellInfo const* spellproto = sSpellMgr->GetSpellInfo(spellData.SpellId);
