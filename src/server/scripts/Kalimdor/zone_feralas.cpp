@@ -23,7 +23,15 @@ EndScriptData */
 ## npc_gregan_brewspewer
 ######*/
 
-#define GOSSIP_HELLO "Buy somethin', will ya?"
+enum GreganBrewspewer
+{
+    GOSSIP_MENU_GREGAN_BREWSPEWER_INTRO        = 1802,
+    GOSSIP_MENU_GREGAN_BREWSPEWER_EVOROOT_INFO = 1801,
+    NPC_TEXT_GREGAN_BREWSPEWER_INTRO           = 2433,
+    NPC_TEXT_GREGAN_BREWSPEWER_EVOROOT_INFO_1  = 2434,
+    NPC_TEXT_GREGAN_BREWSPEWER_EVOROOT_INFO_2  = 2570,
+    QUEST_THE_VIDERE_ELIXIR                    = 3909
+};
 
 class npc_gregan_brewspewer : public CreatureScript
 {
@@ -33,28 +41,37 @@ public:
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         ClearGossipMenuFor(player);
-        if (action == GOSSIP_ACTION_INFO_DEF+1)
+
+        switch (action)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
-            SendGossipMenuFor(player, 2434, creature->GetGUID());
+            case GOSSIP_ACTION_INFO_DEF + 1:
+                AddGossipItemFor(player, GOSSIP_MENU_GREGAN_BREWSPEWER_EVOROOT_INFO, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                SendGossipMenuFor(player, NPC_TEXT_GREGAN_BREWSPEWER_EVOROOT_INFO_1, creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_INFO_DEF + 2:
+                SendGossipMenuFor(player, NPC_TEXT_GREGAN_BREWSPEWER_EVOROOT_INFO_2, creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_TRADE:
+                player->GetSession()->SendListInventory(creature->GetGUID());
+                break;
         }
-        if (action == GOSSIP_ACTION_TRADE)
-            player->GetSession()->SendListInventory(creature->GetGUID());
+
         return true;
     }
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
-        if (creature->IsQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
+        player->PrepareQuestMenu(creature->GetGUID());
 
-        if (creature->IsVendor() && player->GetQuestStatus(3909) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HELLO, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        if (player->GetQuestStatus(QUEST_THE_VIDERE_ELIXIR) == QUEST_STATUS_INCOMPLETE)
+        {
+            AddGossipItemFor(player, GOSSIP_MENU_GREGAN_BREWSPEWER_INTRO, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, GOSSIP_MENU_GREGAN_BREWSPEWER_INTRO, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
+        }
 
-        SendGossipMenuFor(player, 2433, creature->GetGUID());
+        SendGossipMenuFor(player, NPC_TEXT_GREGAN_BREWSPEWER_INTRO, creature->GetGUID());
         return true;
     }
-
 };
 
 /*######
