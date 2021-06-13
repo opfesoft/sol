@@ -57,7 +57,7 @@ void LootItemStorage::RemoveEntryFromDB(uint32 containerId, uint32 itemid, uint3
     CharacterDatabase.CommitTransaction(trans);
 }
 
-void LootItemStorage::AddNewStoredLoot(Loot* loot, Player* /*player*/)
+void LootItemStorage::AddNewStoredLoot(Loot* loot, Player* player)
 {
     if (lootItemStore.find(loot->containerId) != lootItemStore.end())
     {
@@ -88,11 +88,13 @@ void LootItemStorage::AddNewStoredLoot(Loot* loot, Player* /*player*/)
     if (!loot->isLooted())
         for (LootItemList::const_iterator li = loot->items.begin(); li != loot->items.end(); li++)
         {
-            // Even if an item is not available for a specific player, it doesn't mean that
-            // we are not able to trade this container to another player that is able to loot that item
-            // if we don't save it then the item will be lost at player re-login.
-            //if (!li->AllowedForPlayer(player))
-            //    continue;
+            // Conditions are not checked when loot is generated, it is checked when loot is sent to a player.
+            // For items that are lootable, loot is saved to the DB immediately, that means that loot can be
+            // saved to the DB that the player never should have gotten. This check prevents that, so that only
+            // items that the player should get in loot are in the DB.
+            // IE: Horde items are not saved to the DB for Ally players.
+            if (!li->AllowedForPlayer(player))
+                continue;
 
             const ItemTemplate* itemTemplate = sObjectMgr->GetItemTemplate(li->itemid);
             if (!itemTemplate || itemTemplate->IsCurrencyToken())
