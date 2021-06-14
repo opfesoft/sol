@@ -32,7 +32,6 @@
 #ifdef __linux__
 #include <sched.h>
 #include <sys/resource.h>
-#define PROCESS_HIGH_PRIORITY -15 // [-20, 19], default is 0
 #endif
 
 #ifndef _ACORE_REALM_CONFIG
@@ -190,7 +189,7 @@ extern int main(int argc, char** argv)
 
     ///- Handle affinity for multiple processors and process priority
     uint32 affinity = sConfigMgr->GetIntDefault("UseProcessors", 0);
-    bool highPriority = sConfigMgr->GetBoolDefault("ProcessPriority", false);
+    int32 highPriority = sConfigMgr->GetIntDefault("ProcessPriority", 0);
 
     if (affinity > 0)
     {
@@ -211,13 +210,15 @@ extern int main(int argc, char** argv)
         }
     }
 
-    if (highPriority)
+    if (highPriority >= -20 && highPriority <= 19)
     {
-        if (setpriority(PRIO_PROCESS, 0, PROCESS_HIGH_PRIORITY))
-            sLog->outError("Can't set authserver process priority class, error: %s", strerror(errno));
+        if (setpriority(PRIO_PROCESS, 0, highPriority))
+            sLog->outError("Can't set authserver process priority, error: %s", strerror(errno));
         else
-            sLog->outString("authserver process priority class set to %i", getpriority(PRIO_PROCESS, 0));
+            sLog->outString("Authserver process priority class set to %i", getpriority(PRIO_PROCESS, 0));
     }
+    else
+        sLog->outError("Can't set authserver process priority, wrong value: %i", highPriority);
 
 #endif
 

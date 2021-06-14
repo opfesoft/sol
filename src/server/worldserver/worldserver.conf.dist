@@ -80,11 +80,7 @@ LogsDir = ""
 #    CharacterDatabaseInfo
 #        Description: Database connection settings for the world server.
 #        Example:     "hostname;port;username;password;database"
-#                     ".;somenumber;username;password;database" - (Use named pipes on Windows
-#                                                                 "enable-named-pipe" to [mysqld]
-#                                                                 section my.ini)
-#                     ".;/path/to/unix_socket;username;password;database" - (use Unix sockets on
-#                                                                           Unix/Linux)
+#                     ".;/path/to/unix_socket;username;password;database"
 #        Default:     "127.0.0.1;3306;acore;acore;auth"       - (LoginDatabaseInfo)
 #                     "127.0.0.1;3306;acore;acore;world"      - (WorldDatabaseInfo)
 #                     "127.0.0.1;3306;acore;acore;characters" - (CharacterDatabaseInfo)
@@ -149,7 +145,7 @@ BindIP = "0.0.0.0"
 # PERFORMANCE SETTINGS
 #
 #    UseProcessors
-#        Description: Processors mask for Windows and Linux based multi-processor systems.
+#        Description: Processors mask for Linux based multi-processor systems.
 #        Example:  For a computer with 3 CPUs:
 #                     1 - 1st CPU only
 #                     2 - 2nd CPU only
@@ -162,11 +158,12 @@ UseProcessors = 0
 
 #
 #    ProcessPriority
-#        Description: Process priority setting for Windows based systems.
-#        Default:     1 - (High)
-#                     0 - (Normal)
+#        Description: Process priority setting for Linux based systems (see "nice" command).
+#        Details:     Allowed values are between -20 and 19. A value lower than 0 requires either
+#                     superuser or an appropriate entry for the user in /etc/security/limits.conf.
+#        Default:     -15
 
-ProcessPriority = 1
+ProcessPriority = -15
 
 #
 #    Compression

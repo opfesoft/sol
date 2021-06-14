@@ -180,7 +180,7 @@ DBLogLevel = 1
 
 #
 #    UseProcessors
-#        Description: Processors mask for Windows and Linux based multi-processor systems.
+#        Description: Processors mask for Linux based multi-processor systems.
 #        Example:  For a computer with 3 CPUs:
 #                     1 - 1st CPU only
 #                     2 - 2nd CPU only
@@ -193,10 +193,10 @@ UseProcessors = 0
 
 #
 #    ProcessPriority
-#        Description: Process priority setting for Windows and Linux based systems.
-#        Details:     On Linux, a nice value of -15 is used. (requires superuser). On Windows, process is set to HIGH class.
+#        Description: Process priority setting for Linux based systems (see "nice" command).
+#        Details:     Allowed values are between -20 and 19. A value lower than 0 requires either
+#                     superuser or an appropriate entry for the user in /etc/security/limits.conf.
 #        Default:     0 - (Normal)
-#                     1 - (High)
 
 ProcessPriority = 0
 
@@ -251,11 +251,7 @@ WrongPass.Logging = 0
 #    LoginDatabaseInfo
 #        Description: Database connection settings for the realm server.
 #        Example:     "hostname;port;username;password;database"
-#                     ".;somenumber;username;password;database" - (Use named pipes on Windows
-#                                                                 "enable-named-pipe" to [mysqld]
-#                                                                 section my.ini)
-#                     ".;/path/to/unix_socket;username;password;database" - (use Unix sockets on
-#                                                                           Unix/Linux)
+#                     ".;/path/to/unix_socket;username;password;database"
 #        Default:     "127.0.0.1;3306;acore;acore;auth"
 
 LoginDatabaseInfo = "127.0.0.1;3306;acore;acore;acore_auth"
