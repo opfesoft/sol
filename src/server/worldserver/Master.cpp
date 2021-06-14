@@ -174,7 +174,7 @@ int Master::Run()
 
     ///- Handle affinity for multiple processors and process priority
     uint32 affinity = sConfigMgr->GetIntDefault("UseProcessors", 0);
-    int32 highPriority = sConfigMgr->GetIntDefault("ProcessPriority", 0);
+    int32 highPriority = sConfigMgr->GetIntDefault("ProcessPriority", -15);
 
     if (affinity > 0)
     {
