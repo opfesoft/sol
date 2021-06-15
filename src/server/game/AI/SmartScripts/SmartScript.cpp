@@ -239,10 +239,13 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             {
                 if (IsUnit(*itr))
                 {
-                    (*itr)->SendPlaySound(e.action.sound.sound, e.action.sound.onlySelf > 0);
+                    if (e.action.sound.distance == 0)
+                        (*itr)->PlayDirectSound(e.action.sound.sound, e.action.sound.onlySelf > 0 ? (*itr)->ToPlayer() : nullptr);
+                    else
+                        (*itr)->PlayDistanceSound(e.action.sound.sound, e.action.sound.onlySelf > 0 ? (*itr)->ToPlayer() : nullptr);
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-                    sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_SOUND: target: %s (GuidLow: %u), sound: %u, onlyself: %u",
-                        (*itr)->GetName().c_str(), (*itr)->GetGUIDLow(), e.action.sound.sound, e.action.sound.onlySelf);
+                    sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_SOUND: target: %s (GuidLow: %u), sound: %u, onlyself: %u, distance: %u",
+                        (*itr)->GetName().c_str(), (*itr)->GetGUIDLow(), e.action.sound.sound, e.action.sound.onlySelf, e.action.sound.distance);
 #endif
                 }
             }
@@ -284,10 +287,13 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (IsUnit(*itr))
             {
                 uint32 sound = temp[urand(0, count - 1)];
-                (*itr)->SendPlaySound(sound, e.action.randomSound.onlySelf > 0);
+                if (e.action.randomSound.distance == 0)
+                    (*itr)->PlayDirectSound(sound, e.action.randomSound.onlySelf > 0 ? (*itr)->ToPlayer() : nullptr);
+                else
+                    (*itr)->PlayDistanceSound(sound, e.action.randomSound.onlySelf > 0 ? (*itr)->ToPlayer() : nullptr);
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-                sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_RANDOM_SOUND: target: %s (GuidLow: %u), sound: %u, onlyself: %u",
-                    (*itr)->GetName().c_str(), (*itr)->GetGUIDLow(), sound, e.action.randomSound.onlySelf);
+                sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_RANDOM_SOUND: target: %s (GuidLow: %u), sound: %u, onlyself: %u, distance: %u",
+                    (*itr)->GetName().c_str(), (*itr)->GetGUIDLow(), sound, e.action.randomSound.onlySelf, e.action.randomSound.distance);
 #endif
             }
         }
