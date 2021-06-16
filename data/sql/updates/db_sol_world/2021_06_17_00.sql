@@ -1,0 +1,30 @@
+-- DB update 2021_06_16_03 -> 2021_06_17_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2021_06_16_03';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2021_06_16_03 2021_06_17_00 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1623880799596650642'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1623880799596650642');
+
+UPDATE `creature_text` SET `comment` = 'cluck EMOTE_CHICKEN' WHERE `CreatureID` = 620 AND `GroupID` = 0;
+UPDATE `creature_text` SET `comment` = 'cluck EMOTE_CHEER' WHERE `CreatureID` = 620 AND `GroupID` = 1;
+DELETE FROM `creature_text` WHERE `CreatureID` = 620 AND `GroupID` = 2;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
