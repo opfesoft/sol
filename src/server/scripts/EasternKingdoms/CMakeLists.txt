@@ -87,7 +87,6 @@ set(scripts_STAT_SRCS
   ${AC_SCRIPTS_DIR}/EasternKingdoms/ZulGurub/boss_jindo.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/ZulGurub/boss_wushoolay.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/ZulGurub/boss_thekal.cpp
-  ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_wetlands.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_arathi_highlands.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/Gnomeregan/instance_gnomeregan.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_redridge_mountains.cpp

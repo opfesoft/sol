@@ -222,7 +222,6 @@ void AddSC_tirisfal_glades();
 void AddSC_undercity();
 void AddSC_western_plaguelands();
 void AddSC_westfall();
-void AddSC_wetlands();
 
 //kalimdor
 void AddSC_instance_blackfathom_deeps();     //Blackfathom Depths
@@ -811,7 +810,6 @@ void AddEasternKingdomsScripts()
     AddSC_undercity();
     AddSC_western_plaguelands();
     AddSC_westfall();
-    AddSC_wetlands();
 #endif
 }
 
