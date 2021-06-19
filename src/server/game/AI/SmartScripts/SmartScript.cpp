@@ -2979,7 +2979,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         delete targets;
         break;
     }
-    case SMART_ACTION_SET_EVENT_FLAG_RESET:
+    case SMART_ACTION_SET_EVENT_PHASE_RESET:
     {
         SetPhaseReset(e.action.setActive.state);
         break;

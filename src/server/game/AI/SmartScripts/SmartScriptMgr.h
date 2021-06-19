@@ -585,7 +585,7 @@ enum SMART_ACTION
     SMART_ACTION_ADD_IMMUNITY                       = 208,    // type, id, value
     SMART_ACTION_REMOVE_IMMUNITY                    = 209,    // type, id, value
     SMART_ACTION_FALL                               = 210,    //
-    SMART_ACTION_SET_EVENT_FLAG_RESET               = 211,    // 0/1
+    SMART_ACTION_SET_EVENT_PHASE_RESET              = 211,    // 0/1
     SMART_ACTION_STOP_MOTION                        = 212,    // stopMoving, movementExpired
     SMART_ACTION_NO_ENVIRONMENT_UPDATE              = 213,
     SMART_ACTION_ZONE_UNDER_ATTACK                  = 214,
