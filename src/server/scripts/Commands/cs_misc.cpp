@@ -3304,14 +3304,34 @@ public:
         return true;
     }
 
-    static bool HandleFaceCommand(ChatHandler* handler, char const* /*args*/)
+    static bool HandleFaceCommand(ChatHandler* handler, char const* args)
     {
-        Unit* unit = handler->getSelectedUnit();
-        if (!unit)
-            return false;
-
         Player* player = handler->GetSession()->GetPlayer();
-        player->SetFacingTo(player->GetAngle(unit->GetPositionX(), unit->GetPositionY()));
+        Unit* unit = handler->getSelectedUnit();
+        Player* playerTarget = unit->ToPlayer();
+        float angle = 0.f;
+
+        if (!unit || (playerTarget && playerTarget == player))
+        {
+            if (!*args)
+            {
+                handler->SendSysMessage(LANG_BAD_VALUE);
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            angle = float((atof(args)));
+            if (angle < 0.0f)
+            {
+                handler->SendSysMessage(LANG_BAD_VALUE);
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+        }
+        else
+            angle = player->GetAngle(unit->GetPositionX(), unit->GetPositionY());
+
+        player->SetFacingTo(angle);
         return true;
     }
 };
