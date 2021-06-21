@@ -81,7 +81,6 @@ set(scripts_STAT_SRCS
   ${AC_SCRIPTS_DIR}/Kalimdor/RuinsOfAhnQiraj/boss_kurinnaxx.cpp
   ${AC_SCRIPTS_DIR}/Kalimdor/zone_mulgore.cpp
   ${AC_SCRIPTS_DIR}/Kalimdor/zone_bloodmyst_isle.cpp
-  ${AC_SCRIPTS_DIR}/Kalimdor/zone_thunder_bluff.cpp
   ${AC_SCRIPTS_DIR}/Kalimdor/zone_azshara.cpp
   ${AC_SCRIPTS_DIR}/Kalimdor/RazorfenKraul/instance_razorfen_kraul.cpp
   ${AC_SCRIPTS_DIR}/Kalimdor/zone_the_barrens.cpp
