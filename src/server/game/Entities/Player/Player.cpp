@@ -4015,6 +4015,12 @@ bool Player::_addSpell(uint32 spellId, uint8 addSpecMask, bool temporary, bool l
             if (!pSkill || HasSkill(pSkill->id))
                 continue;
 
+            if (pSkill->IsRacial())
+            {
+                SetSkill(pSkill->id, GetSkillStep(pSkill->id), maxskill, maxskill);
+                continue;
+            }
+
             if (_spell_idx->second->learnOnGetSkill == ABILITY_LEARNED_ON_GET_RACE_OR_CLASS_SKILL || pSkill->categoryId == SKILL_CATEGORY_CLASS || // pussywizard: learning autolearned spell from skill ensures having the skill
                 ((pSkill->id == SKILL_LOCKPICKING || pSkill->id == SKILL_RUNEFORGING) && _spell_idx->second->max_value == 0)) // pussywizard: learning any spell from lockpicking or runeforging ensures having the skill
             {
@@ -4024,7 +4030,7 @@ bool Player::_addSpell(uint32 spellId, uint8 addSpecMask, bool temporary, bool l
                         SetSkill(pSkill->id, GetSkillStep(pSkill->id), 300, 300);
                         break;
                     case SKILL_RANGE_LEVEL:
-                        SetSkill(pSkill->id, GetSkillStep(pSkill->id), 1, GetMaxSkillValueForLevel());
+                        SetSkill(pSkill->id, GetSkillStep(pSkill->id), 1, maxskill);
                         break;
                     case SKILL_RANGE_MONO:
                         SetSkill(pSkill->id, GetSkillStep(pSkill->id), 1, 1);
@@ -6461,7 +6467,8 @@ void Player::UpdateSkillsForLevel()
         if (!pSkill)
             continue;
 
-        if (GetSkillRangeType(pSkill, false) != SKILL_RANGE_LEVEL)
+        bool isRacial = pSkill->IsRacial();
+        if (GetSkillRangeType(pSkill, false) != SKILL_RANGE_LEVEL && !isRacial)
             continue;
 
         uint32 valueIndex = PLAYER_SKILL_VALUE_INDEX(itr->second.pos);
@@ -6470,10 +6477,10 @@ void Player::UpdateSkillsForLevel()
         uint32 val = SKILL_VALUE(data);
 
         /// update only level dependent max skill values
-        if (max != 1)
+        if (max != 1 || isRacial)
         {
             /// maximize skill always
-            if (alwaysMaxSkill)
+            if (alwaysMaxSkill || isRacial)
             {
                 SetUInt32Value(valueIndex, MAKE_SKILL_VALUE(maxSkill, maxSkill));
                 if (itr->second.uState != SKILL_NEW)

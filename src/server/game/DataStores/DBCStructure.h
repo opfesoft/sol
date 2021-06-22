@@ -1497,6 +1497,26 @@ struct SkillLineEntry
     //char*     alternateVerb[16];                          // 38-53    m_alternateVerb_lang
                                                             // 54 string flags
     uint32    canLink;                                      // 55       m_canLink (prof. with recipes
+
+    bool IsRacial() const
+    {
+        switch (id)
+        {
+            case SKILL_RACIAL_DWARVEN:
+            case SKILL_RACIAL_TAUREN:
+            case SKILL_RACIAL_ORC:
+            case SKILL_RACIAL_NIGHT_ELF:
+            case SKILL_RACIAL_UNDEAD:
+            case SKILL_RACIAL_TROLL:
+            case SKILL_RACIAL_GNOME:
+            case SKILL_RACIAL_HUMAN:
+            case SKILL_RACIAL_BLOODELF:
+            case SKILL_RACIAL_DRAENEI:
+                return true;
+            default:
+                return false;
+        }
+    }
 };
 
 struct SkillLineAbilityEntry
