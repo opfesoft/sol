@@ -3358,6 +3358,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 58984: // Shadowmeld
             spellInfo->AttributesEx3 |= SPELL_ATTR3_ONLY_TARGET_PLAYERS;
             break;
+        case 30298: // Tree Disguise
+            spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_MOVEMENT;
+            spellInfo->EffectApplyAuraName[EFFECT_1] = SPELL_AURA_MOD_STUN;
+            break;
 
 
         /////////////////////////////////////////////
