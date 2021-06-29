@@ -23,6 +23,7 @@ EndContentData */
 #include "ScriptedEscortAI.h"
 #include "Player.h"
 #include "SpellInfo.h"
+#include "GameObjectAI.h"
 
 // Ours
 enum Caravan
@@ -585,7 +586,10 @@ public:
 enum DemonPortal
 {
     NPC_DEMON_GUARDIAN          = 11937,
-    QUEST_PORTAL_OF_THE_LEGION  = 5581
+    QUEST_PORTAL_OF_THE_LEGION  =  5581,
+
+    EVENT_CHECK_GUARDIAN        =     1,
+    EVENT_CLOSE_PORTAL          =     2
 };
 
 class go_demon_portal : public GameObjectScript
@@ -595,13 +599,82 @@ class go_demon_portal : public GameObjectScript
 
         bool OnGossipHello(Player* player, GameObject* go) override
         {
-            if (player->GetQuestStatus(QUEST_PORTAL_OF_THE_LEGION) == QUEST_STATUS_INCOMPLETE && !go->FindNearestCreature(NPC_DEMON_GUARDIAN, 5.0f, true))
-            {
-                if (Creature* guardian = player->SummonCreature(NPC_DEMON_GUARDIAN, go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), 0.0f, TEMPSUMMON_DEAD_DESPAWN, 0))
-                    guardian->AI()->AttackStart(player);
-            }
+            if (go_demon_portalAI* demonPortalAI = CAST_AI(go_demon_portalAI, go->AI()))
+                if (player->GetQuestStatus(QUEST_PORTAL_OF_THE_LEGION) == QUEST_STATUS_INCOMPLETE && !demonPortalAI->GetDemonGUID())
+                    if (Creature* demon = player->SummonCreature(NPC_DEMON_GUARDIAN, go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), go->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+                    {
+                        go->SetGoState(GO_STATE_ACTIVE);
+                        demonPortalAI->SetDemonGUID(demon->GetGUID());
+                        demon->setActive(true);
+                        demon->AI()->AttackStart(player);
+                    }
 
             return true;
+        }
+
+        struct go_demon_portalAI : public GameObjectAI
+        {
+            EventMap events;
+            uint64 demonGUID;
+
+            go_demon_portalAI(GameObject* gameObject) : GameObjectAI(gameObject)
+            {
+                demonGUID = 0;
+            }
+
+            uint64 GetDemonGUID()
+            {
+                return demonGUID;
+            }
+
+            void SetDemonGUID(uint64 guid)
+            {
+                demonGUID = guid;
+                events.ScheduleEvent(EVENT_CHECK_GUARDIAN, 1000);
+                events.ScheduleEvent(EVENT_CLOSE_PORTAL, 3000);
+            }
+
+            void Reset() override
+            {
+                events.Reset();
+                demonGUID = 0;
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                events.Update(diff);
+                switch (events.ExecuteEvent())
+                {
+                    case EVENT_CHECK_GUARDIAN:
+                    {
+                        bool demonDied = false;
+                        if (Creature* demon = ObjectAccessor::GetCreature(*go, demonGUID))
+                        {
+                            if (demon->IsAlive())
+                                events.ScheduleEvent(EVENT_CHECK_GUARDIAN, 1000);
+                            else
+                                demonDied = true;
+                        }
+                        else
+                            demonDied = true;
+
+                        if (demonDied)
+                        {
+                            go->SetRespawnTime(300);
+                            go->DestroyForNearbyPlayers();
+                        }
+                        break;
+                    }
+                    case EVENT_CLOSE_PORTAL:
+                        go->SetGoState(GO_STATE_READY);
+                        break;
+                }
+            }
+        };
+
+        GameObjectAI* GetAI(GameObject* go) const override
+        {
+            return new go_demon_portalAI(go);
         }
 };
 
