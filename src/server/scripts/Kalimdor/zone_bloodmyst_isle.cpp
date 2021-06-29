@@ -40,11 +40,17 @@ public:
     {
         npc_webbed_creatureAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void Reset() { }
+        void Reset() override
+        {
+            me->SetControlled(true, UNIT_STATE_ROOT);
+            me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
+        }
 
-        void EnterCombat(Unit* /*who*/) { }
+        void EnterCombat(Unit* /*who*/) override { }
 
-        void JustDied(Unit* killer)
+        void UpdateAI(uint32 /*diff*/) override { }
+
+        void JustDied(Unit* killer) override
         {
             uint32 spawnCreatureID = 0;
 
@@ -62,11 +68,11 @@ public:
             }
 
             if (spawnCreatureID)
-                me->SummonCreature(spawnCreatureID, 0.0f, 0.0f, 0.0f, me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
+                me->SummonCreature(spawnCreatureID, 0.0f, 0.0f, 0.0f, me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_webbed_creatureAI(creature);
     }
