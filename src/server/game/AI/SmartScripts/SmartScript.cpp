@@ -3131,6 +3131,37 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         delete targets;
         break;
     }
+    case SMART_ACTION_RESPAWN_GO:
+    {
+        ObjectList* targets = GetTargets(e, unit);
+        if (!targets)
+            break;
+
+        for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            if (GameObject* gameobject = (*itr)->ToGameObject())
+            {
+                if (gameobject->GetGoType() == GAMEOBJECT_TYPE_FISHINGNODE ||
+                    gameobject->GetGoType() == GAMEOBJECT_TYPE_DOOR        ||
+                    gameobject->GetGoType() == GAMEOBJECT_TYPE_BUTTON      ||
+                    gameobject->GetGoType() == GAMEOBJECT_TYPE_TRAP)
+                    {
+                        sLog->outErrorDb("SmartScript: SMART_ACTION_RESPAWN_GO cannot be used with gameobject of type %u (entry: %u), skipping", uint32(gameobject->GetGoType()), gameobject->GetEntry());
+                        continue;
+                    }
+
+                // Check that GO is not spawned
+                if (!gameobject->isSpawned())
+                {
+                    int32 nTimeToDespawn = std::max(5, int32(e.action.respawnGO.despawnTime));
+                    gameobject->SetLootState(GO_READY);
+                    gameobject->SetRespawnTime(nTimeToDespawn);
+                    gameobject->GetMap()->AddToMap(gameobject);
+                }
+            }
+
+        delete targets;
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;
