@@ -1949,15 +1949,19 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
         {
-            if (IsCreature(*itr))
-                (*itr)->ToCreature()->Respawn(e.action.RespawnTarget.goRespawnTime);
-            else if (IsGameObject(*itr))
+            if (Creature* creature = (*itr)->ToCreature())
+                creature->Respawn(e.action.RespawnTarget.goRespawnTime);
+            else if (GameObject* gameobject = (*itr)->ToGameObject())
             {
                 // Xinef: do not modify respawndelay of already spawned gameobjects QQ
-                if ((*itr)->ToGameObject()->isSpawnedByDefault())
-                    (*itr)->ToGameObject()->Respawn();
+                if (gameobject->isSpawnedByDefault())
+                    gameobject->Respawn();
                 else
-                    (*itr)->ToGameObject()->SetRespawnTime(e.action.RespawnTarget.goRespawnTime);
+                {
+                    gameobject->SetLootState(GO_READY);
+                    gameobject->SetRespawnTime(e.action.RespawnTarget.goRespawnTime);
+                    gameobject->GetMap()->AddToMap(gameobject);
+                }
             }
         }
 
@@ -3126,37 +3130,6 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     unit->SetHealth(usePercentage ? (unit->GetMaxHealth() * e.action.setHealth.health / 100.0f) : e.action.setHealth.health);
                 else
                     unit->SetHealth(usePercentage ? (unit->GetMaxHealth() * me->GetHealthPct() / 100.0f) : me->GetHealth());
-            }
-
-        delete targets;
-        break;
-    }
-    case SMART_ACTION_RESPAWN_GO:
-    {
-        ObjectList* targets = GetTargets(e, unit);
-        if (!targets)
-            break;
-
-        for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
-            if (GameObject* gameobject = (*itr)->ToGameObject())
-            {
-                if (gameobject->GetGoType() == GAMEOBJECT_TYPE_FISHINGNODE ||
-                    gameobject->GetGoType() == GAMEOBJECT_TYPE_DOOR        ||
-                    gameobject->GetGoType() == GAMEOBJECT_TYPE_BUTTON      ||
-                    gameobject->GetGoType() == GAMEOBJECT_TYPE_TRAP)
-                    {
-                        sLog->outErrorDb("SmartScript: SMART_ACTION_RESPAWN_GO cannot be used with gameobject of type %u (entry: %u), skipping", uint32(gameobject->GetGoType()), gameobject->GetEntry());
-                        continue;
-                    }
-
-                // Check that GO is not spawned
-                if (!gameobject->isSpawned())
-                {
-                    int32 nTimeToDespawn = std::max(5, int32(e.action.respawnGO.despawnTime));
-                    gameobject->SetLootState(GO_READY);
-                    gameobject->SetRespawnTime(nTimeToDespawn);
-                    gameobject->GetMap()->AddToMap(gameobject);
-                }
             }
 
         delete targets;
