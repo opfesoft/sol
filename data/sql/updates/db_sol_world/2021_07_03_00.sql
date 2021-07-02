@@ -1,0 +1,31 @@
+-- DB update 2021_07_02_00 -> 2021_07_03_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2021_07_02_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2021_07_02_00 2021_07_03_00 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1625265982294897749'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1625265982294897749');
+
+UPDATE `creature` SET `orientation` = 0.585378, `MovementType` = 0 WHERE `guid` = 31046;
+UPDATE `creature_addon` SET `path_id` = 0 WHERE `guid` = 31046;
+DELETE FROM `waypoint_data` WHERE `id` = 310460;
+DELETE FROM `waypoint_scripts` WHERE `id` IN (24,25,26);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
