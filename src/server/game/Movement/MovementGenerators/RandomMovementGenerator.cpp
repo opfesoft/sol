@@ -71,6 +71,8 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
 
         float ground = INVALID_HEIGHT;
         float levelZ = map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x, y, z+4.0f, &ground);
+        float currentGround = INVALID_HEIGHT;
+        float currentLevelZ = map->GetWaterOrGroundLevel(creature->GetPhaseMask(), creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()+4.0f, &currentGround);
         float newZ = INVALID_HEIGHT;
 
         // flying creature
@@ -99,6 +101,13 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
         // point on ground
         else
         {
+            // prevent direct transition from deep water to land
+            if (currentGround < currentLevelZ - 1.5f)
+            {
+                _validPointsVector[_currentPoint].erase(randomIter);
+                _preComputedPaths.erase(pathIdx);
+                return;
+            }
             if (levelZ <= INVALID_HEIGHT || !creature->CanWalk())
             {
                 _validPointsVector[_currentPoint].erase(randomIter);
