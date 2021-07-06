@@ -105,9 +105,12 @@ public:
         void VictoryRushHit()
         {
             if (Unit* player = GetCaster())
+            {
+                player->ModifyAuraState(AURA_STATE_WARRIOR_VICTORY_RUSH, false);
                 if (Unit* victim = GetHitUnit())
                     if (victim->isDead())
                         player->ModifyAuraState(AURA_STATE_WARRIOR_VICTORY_RUSH, true);
+            }
         }
 
         void Register() override
