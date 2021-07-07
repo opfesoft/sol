@@ -3064,7 +3064,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 me->GetMotionMaster()->MoveCirclePath(
                     e.target.x, e.target.y, e.target.z,
                     (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                    (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun());
+                    (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun(), (float)e.action.circleMove.speed);
         }
         else
         {
@@ -3084,12 +3084,12 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                             (*itr)->ToCreature()->GetMotionMaster()->MoveCirclePath(
                                 me->GetPositionX() + e.target.x, me->GetPositionY() + e.target.y, me->GetPositionZ() + e.target.z,
                                 (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                                (uint8)e.action.circleMove.stepCount, walk);
+                                (uint8)e.action.circleMove.stepCount, walk, (float)e.action.circleMove.speed);
                         else if (go)
                             (*itr)->ToCreature()->GetMotionMaster()->MoveCirclePath(
                                 go->GetPositionX() + e.target.x, go->GetPositionY() + e.target.y, go->GetPositionZ() + e.target.z,
                                 (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                                (uint8)e.action.circleMove.stepCount, walk);
+                                (uint8)e.action.circleMove.stepCount, walk, (float)e.action.circleMove.speed);
                     }
                 }
                 else if (me)
@@ -3097,7 +3097,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     me->GetMotionMaster()->MoveCirclePath(
                         (*itr)->GetPositionX() + e.target.x, (*itr)->GetPositionY() + e.target.y, (*itr)->GetPositionZ() + e.target.z,
                         (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                        (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun());
+                        (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun(), (float)e.action.circleMove.speed);
                     break;
                 }
             }

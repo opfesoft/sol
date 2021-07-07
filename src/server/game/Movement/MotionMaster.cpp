@@ -510,7 +510,7 @@ void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float spee
     Mutate(new EffectMovementGenerator(id), MOTION_SLOT_CONTROLLED);
 }
 
-void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount, bool walk)
+void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount, bool walk, float speed)
 {
     float step = 2 * float(M_PI) / stepCount * (clockwise ? -1.0f : 1.0f);
     Position const& pos = { x, y, z, 0.0f };
@@ -546,6 +546,9 @@ void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool 
         init.SetWalk(walk);
         init.SetCyclic();
     }
+
+    if (speed)
+        init.SetVelocity(speed);
 
     init.Launch();
     Mutate(new EffectMovementGenerator(0), MOTION_SLOT_ACTIVE);
