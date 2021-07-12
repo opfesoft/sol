@@ -20,18 +20,19 @@ endfunction()
 
 # Define the fmt library, its includes and the needed defines.
 add_headers(FMT_HEADERS 
+  args.h
   chrono.h
   color.h
   compile.h
   core.h
-  format.h
   format-inl.h
+  format.h
   locale.h
   os.h
   ostream.h
-  posix.h
   printf.h
-  ranges.h)
+  ranges.h
+  xchar.h)
 
 set(FMT_SOURCES 
   fmt/format.cc
