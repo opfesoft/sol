@@ -26,12 +26,17 @@ EndContentData */
 
 enum RuulSnowhoof
 {
-    NPC_THISTLEFUR_URSA         = 3921,
-    NPC_THISTLEFUR_TOTEMIC      = 3922,
-    NPC_THISTLEFUR_PATHFINDER   = 3926,
-    QUEST_FREEDOM_TO_RUUL       = 6482,
-    FACTION_QUEST               = 113,
-    GO_CAGE                     = 178147
+    NPC_THISTLEFUR_URSA             =   3921,
+    NPC_THISTLEFUR_TOTEMIC          =   3922,
+    NPC_THISTLEFUR_PATHFINDER       =   3926,
+    QUEST_FREEDOM_TO_RUUL           =   6482,
+    FACTION_QUEST_RUUL              =    250,
+    FACTION_RUUL                    =    714,
+    GO_CAGE                         = 178147,
+    SAY_RUUL_SNOWHOOF_GO            =      0,
+    SAY_RUUL_SNOWHOOF_FREE          =      1,
+    MODEL_RUUL_SNOWHOOF_BEAR_FORM   =  29421,
+    SPELL_RUUL_SNOWHOOF_SHAPECHANGE =  20514
 };
 
 Position const RuulSnowhoofSummonsCoord[6] =
@@ -59,7 +64,23 @@ public:
                 Cage->SetGoState(GO_STATE_READY);
         }
 
+        void JustRespawned()
+        {
+            npc_escortAI::JustRespawned();
+            me->SetDisplayId(MODEL_RUUL_SNOWHOOF_BEAR_FORM);
+        }
+
+        void InitializeAI()
+        {
+            me->SetDisplayId(MODEL_RUUL_SNOWHOOF_BEAR_FORM);
+        }
+
         void EnterCombat(Unit* /*who*/) { }
+
+        void JustDied(Unit* /*killer*/)
+        {
+            me->SetDisplayId(me->GetNativeDisplayId());
+        }
 
         void JustSummoned(Creature* summoned)
         {
@@ -69,10 +90,7 @@ public:
         void sQuestAccept(Player* player, Quest const* quest)
         {
             if (quest->GetQuestId() == QUEST_FREEDOM_TO_RUUL)
-            {
-                me->setFaction(FACTION_QUEST);
                 npc_escortAI::Start(true, false, player->GetGUID());
-            }
         }
 
         void WaypointReached(uint32 waypointId)
@@ -88,25 +106,36 @@ public:
                     if (GameObject* Cage = me->FindNearestGameObject(GO_CAGE, 20))
                         Cage->SetGoState(GO_STATE_ACTIVE);
                     break;
+                case 1:
+                    me->setFaction(FACTION_QUEST_RUUL);
+                    Talk(SAY_RUUL_SNOWHOOF_GO, player);
+                    break;
                 case 13:
-                    me->SummonCreature(NPC_THISTLEFUR_TOTEMIC, RuulSnowhoofSummonsCoord[0], TEMPSUMMON_DEAD_DESPAWN, 60000);
-                    me->SummonCreature(NPC_THISTLEFUR_URSA, RuulSnowhoofSummonsCoord[1], TEMPSUMMON_DEAD_DESPAWN, 60000);
-                    me->SummonCreature(NPC_THISTLEFUR_PATHFINDER, RuulSnowhoofSummonsCoord[2], TEMPSUMMON_DEAD_DESPAWN, 60000);
+                    me->SummonCreature(NPC_THISTLEFUR_TOTEMIC, RuulSnowhoofSummonsCoord[0], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                    me->SummonCreature(NPC_THISTLEFUR_URSA, RuulSnowhoofSummonsCoord[1], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                    me->SummonCreature(NPC_THISTLEFUR_PATHFINDER, RuulSnowhoofSummonsCoord[2], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
                     break;
                 case 19:
-                    me->SummonCreature(NPC_THISTLEFUR_TOTEMIC, RuulSnowhoofSummonsCoord[3], TEMPSUMMON_DEAD_DESPAWN, 60000);
-                    me->SummonCreature(NPC_THISTLEFUR_URSA, RuulSnowhoofSummonsCoord[4], TEMPSUMMON_DEAD_DESPAWN, 60000);
-                    me->SummonCreature(NPC_THISTLEFUR_PATHFINDER, RuulSnowhoofSummonsCoord[5], TEMPSUMMON_DEAD_DESPAWN, 60000);
+                    me->SummonCreature(NPC_THISTLEFUR_TOTEMIC, RuulSnowhoofSummonsCoord[3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                    me->SummonCreature(NPC_THISTLEFUR_URSA, RuulSnowhoofSummonsCoord[4], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                    me->SummonCreature(NPC_THISTLEFUR_PATHFINDER, RuulSnowhoofSummonsCoord[5], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
                     break;
-                case 21:
+                case 41:
                     player->GroupEventHappens(QUEST_FREEDOM_TO_RUUL, me);
+                    me->setFaction(FACTION_RUUL);
+                    me->SetDisplayId(me->GetNativeDisplayId());
+                    break;
+                case 42:
+                    me->SetInFront(player);
+                    break;
+                case 43:
+                    Talk(SAY_RUUL_SNOWHOOF_FREE, player);
+                    break;
+                case 44:
+                    me->SetWalk(false);
+                    DoCast(SPELL_RUUL_SNOWHOOF_SHAPECHANGE);
                     break;
             }
-        }
-
-        void UpdateAI(uint32 diff)
-        {
-            npc_escortAI::UpdateAI(diff);
         }
     };
 
@@ -130,6 +159,7 @@ enum Muglash
     SAY_MUG_RETURN          = 9,
 
     QUEST_VORSHA            = 6641,
+    FACTION_QUEST_MUG       = 113,
 
     GO_NAGA_BRAZIER         = 178247,
 
@@ -205,7 +235,7 @@ public:
             if (quest->GetQuestId() == QUEST_VORSHA)
             {
                 Talk(SAY_MUG_START1);
-                me->setFaction(FACTION_QUEST);
+                me->setFaction(FACTION_QUEST_MUG);
                 npc_escortAI::Start(true, false, player->GetGUID());
             }
         }
