@@ -128,6 +128,18 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
             y = i_target->GetPositionY();
             z = i_target->GetPositionZ();
         }
+        else if (forceDest && owner->HasUnitState(UNIT_STATE_CHASE))
+        {
+            // chasing units with forced destination should still check if there exists a valid path to reach the destination, otherwise ignore the offset
+            PathGenerator pathFinder(owner);
+            bool result = pathFinder.CalculatePath(x, y, z, false);
+            if (!result || (pathFinder.GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE)))
+            {
+                x = i_target->GetPositionX();
+                y = i_target->GetPositionY();
+                z = i_target->GetPositionZ();
+            }
+        }
     }
 
     D::_addUnitStateMove(owner);
