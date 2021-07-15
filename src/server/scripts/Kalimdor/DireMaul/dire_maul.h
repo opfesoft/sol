@@ -27,7 +27,9 @@ enum GoIds
 enum NpcIds
 {
     NPC_IMMOL_THAR                  = 11496,
-    NPC_HIGHBORNE_SUMMONER          = 11466
+    NPC_HIGHBORNE_SUMMONER          = 11466,
+    NPC_TSU_ZEE                     = 11467,
+    NPC_ELDRETH_APPARITION          = 11471
 };
 
 #endif

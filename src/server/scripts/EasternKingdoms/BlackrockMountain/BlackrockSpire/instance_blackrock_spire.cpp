@@ -135,6 +135,10 @@ public:
                     if (GetBossState(DATA_GYTH) == DONE)
                         creature->DisappearAndDie();
                     break;
+                case NPC_GHOK_BASHGUUD:
+                    if (urand(0, 99) < 70)
+                        creature->UpdateEntry(NPC_BLOODAXE_RAIDER);
+                    break;
              }
          }
 

@@ -59,7 +59,9 @@ enum CreaturesIds
     NPC_BLACKHAND_SUMMONER          = 9818,
     NPC_BLACKHAND_VETERAN           = 9819,
     NPC_BLACKHAND_INCARCERATOR      = 10316,
-    NPC_LORD_VICTOR_NEFARIUS        = 10162
+    NPC_LORD_VICTOR_NEFARIUS        = 10162,
+    NPC_GHOK_BASHGUUD               = 9718,
+    NPC_BLOODAXE_RAIDER             = 9692
 };
 
 enum AdditionalData
