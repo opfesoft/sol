@@ -646,10 +646,10 @@ enum LunaclawSpirit
     QUEST_BODY_HEART_H      = 6002,
 
     TEXT_ID_DEFAULT         = 4714,
-    TEXT_ID_PROGRESS        = 4715
-};
+    TEXT_ID_PROGRESS        = 4715,
 
-#define GOSSIP_ITEM_GRANT   "You have thought well, spirit. I ask you to grant me the strength of your body and the strength of your heart."
+    GOSSIP_MENU_LUNACLAW    = 3862
+};
 
 class npc_lunaclaw_spirit : public CreatureScript
 {
@@ -659,7 +659,7 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (player->GetQuestStatus(QUEST_BODY_HEART_A) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_BODY_HEART_H) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_GRANT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, GOSSIP_MENU_LUNACLAW, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
         SendGossipMenuFor(player, TEXT_ID_DEFAULT, creature->GetGUID());
         return true;
@@ -674,6 +674,21 @@ public:
             player->AreaExploredOrEventHappens(player->GetTeamId() == TEAM_ALLIANCE ? QUEST_BODY_HEART_A : QUEST_BODY_HEART_H);
         }
         return true;
+    }
+
+    struct npc_lunaclaw_spiritAI : public ScriptedAI
+    {
+        npc_lunaclaw_spiritAI(Creature* c) : ScriptedAI(c) { }
+
+        void IsSummonedBy(Unit* /*summoner*/) override
+        {
+            me->setActive(true);
+        }
+    };
+
+    CreatureAI* GetAI(Creature* c) const override
+    {
+        return new npc_lunaclaw_spiritAI(c);
     }
 };
 
