@@ -170,7 +170,7 @@ void LootItemStorage::RemoveStoredLootItem(uint32 containerId, uint32 itemid, ui
 
     // loot with empty itemList but unlootedCount > 0 
     // must be deleted manually by the player or traded
-    if (!loot->unlootedCount)
+    if (!loot->unlootedCount && !loot->gold) // also don't remove if the loot still contains gold
         lootItemStore.erase(itr);
 }
 
