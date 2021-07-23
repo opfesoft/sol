@@ -6126,11 +6126,6 @@ void SpellMgr::LoadDbcDataCorrections()
         case 17619:
             spellInfo->AttributesEx3 |= SPELL_ATTR3_DEATH_PERSISTENT;
             break;
-        // Gnomish Death Ray
-        case 13278:
-        case 13280:
-            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ENEMY;
-            break;
         // Stormchops
         case 43730:
             spellInfo->EffectImplicitTargetA[1] = 1;

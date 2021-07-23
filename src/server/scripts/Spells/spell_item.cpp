@@ -2114,8 +2114,7 @@ class spell_item_flask_of_the_north : public SpellScriptLoader
 // 13280 Gnomish Death Ray
 enum GnomishDeathRay
 {
-    SPELL_GNOMISH_DEATH_RAY_SELF = 13493,
-    SPELL_GNOMISH_DEATH_RAY_TARGET = 13279,
+    SPELL_GNOMISH_DEATH_RAY_TARGET = 13279
 };
 
 class spell_item_gnomish_death_ray : public SpellScriptLoader
@@ -2129,21 +2128,16 @@ class spell_item_gnomish_death_ray : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_GNOMISH_DEATH_RAY_SELF) || !sSpellMgr->GetSpellInfo(SPELL_GNOMISH_DEATH_RAY_TARGET))
+                if (!sSpellMgr->GetSpellInfo(SPELL_GNOMISH_DEATH_RAY_TARGET))
                     return false;
                 return true;
             }
 
             void HandleDummy(SpellEffIndex /*effIndex*/)
             {
-                Unit* caster = GetCaster();
-                if (Unit* target = GetHitUnit())
-                {
-                    if (urand(0, 99) < 15)
-                        caster->CastSpell(caster, SPELL_GNOMISH_DEATH_RAY_SELF, true, NULL);    // failure
-                    else
-                        caster->CastSpell(target, SPELL_GNOMISH_DEATH_RAY_TARGET, true, NULL);
-                }
+                if (Unit* caster = GetCaster())
+                    if (Unit* target = ObjectAccessor::GetUnit(*caster, caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT)))
+                        caster->CastSpell(target, SPELL_GNOMISH_DEATH_RAY_TARGET, true);
             }
 
             void Register()
