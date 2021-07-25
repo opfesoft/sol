@@ -14,7 +14,6 @@ CREATE TABLE `gm_survey`
   `mainSurvey` int(10) unsigned NOT NULL DEFAULT '0',
   `comment` longtext NOT NULL,
   `createTime` int(10) unsigned NOT NULL DEFAULT '0',
-  `maxMMR` smallint(5) NOT NULL,
   PRIMARY KEY (`surveyId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Player System';
 /*!40101 SET character_set_client = @saved_cs_client */;
