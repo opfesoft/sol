@@ -819,10 +819,12 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         {
             if (IsUnit(*itr))
             {
-                (*itr)->ToUnit()->AddAura(e.action.cast.spell, (*itr)->ToUnit());
+                Aura* aura = (*itr)->ToUnit()->AddAura(e.action.addAura.spell, (*itr)->ToUnit());
+                if (aura && e.action.addAura.stacks > 0)
+                    aura->SetStackAmount(e.action.addAura.stacks);
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
                 sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_ADD_AURA: Adding aura %u to unit %u",
-                    e.action.cast.spell, (*itr)->GetGUIDLow());
+                    e.action.addAura.spell, (*itr)->GetGUIDLow());
 #endif
             }
         }

@@ -508,7 +508,7 @@ enum SMART_ACTION
     SMART_ACTION_CLOSE_GOSSIP                       = 72,     // none
     SMART_ACTION_TRIGGER_TIMED_EVENT                = 73,     // id(>1)
     SMART_ACTION_REMOVE_TIMED_EVENT                 = 74,     // id(>1)
-    SMART_ACTION_ADD_AURA                           = 75,     // spellid,  targets
+    SMART_ACTION_ADD_AURA                           = 75,     // spellid, stacks
     SMART_ACTION_OVERRIDE_SCRIPT_BASE_OBJECT        = 76,     // WARNING: CAN CRASH CORE, do not use if you dont know what you are doing
     SMART_ACTION_RESET_SCRIPT_BASE_OBJECT           = 77,     // none
     SMART_ACTION_CALL_SCRIPT_RESET                  = 78,     // none
@@ -773,6 +773,12 @@ struct SmartAction
             uint32 inc;
             uint32 dec;
         } incEventPhase;
+
+        struct
+        {
+            uint32 spell;
+            uint32 stacks;
+        } addAura;
 
         struct
         {
