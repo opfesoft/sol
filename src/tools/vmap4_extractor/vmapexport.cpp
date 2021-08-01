@@ -57,7 +57,7 @@ std::unordered_map<std::string, WMODoodadData> WmoDoodads;
 
 //static const char * szWorkDirMaps = ".\\Maps";
 const char* szWorkDirWmo = "./Buildings";
-const char* szRawVMAPMagic = "VMAP071";
+const char* szRawVMAPMagic = "VMAP072";
 
 std::map<std::pair<uint32, uint16>, uint32> uniqueObjectIds;
 
