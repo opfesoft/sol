@@ -53,7 +53,6 @@ target_link_libraries(worldserver
     game
     shared
     scripts
-    gsoap
     readline
     ${GPERFTOOLS_LIBRARIES})
 

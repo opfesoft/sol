@@ -18,8 +18,6 @@
 #include "CliRunnable.h"
 #include "Log.h"
 #include "Master.h"
-#include "RARunnable.h"
-#include "ACSoap.h"
 #include "Timer.h"
 #include "Util.h"
 #include "RealmList.h"
@@ -164,8 +162,6 @@ int Master::Run()
         cliThread = new acore::Thread(new CliRunnable);
     }
 
-    acore::Thread rarThread(new RARunnable);
-
     // pussywizard:
     acore::Thread auctionLising_thread(new AuctionListingRunnable);
 
@@ -207,15 +203,6 @@ int Master::Run()
 
 #endif
 
-    // Start soap serving thread
-    acore::Thread* soapThread = NULL;
-    if (sConfigMgr->GetBoolDefault("SOAP.Enabled", false))
-    {
-        ACSoapRunnable* runnable = new ACSoapRunnable();
-        runnable->SetListenArguments(sConfigMgr->GetStringDefault("SOAP.IP", "127.0.0.1"), uint16(sConfigMgr->GetIntDefault("SOAP.Port", 7878)));
-        soapThread = new acore::Thread(runnable);
-    }
-
     // Start up freeze catcher thread
     acore::Thread* freezeThread = NULL;
     if (uint32 freezeDelay = sConfigMgr->GetIntDefault("MaxCoreStuckTime", 0))
@@ -242,15 +229,7 @@ int Master::Run()
     // when the main thread closes the singletons get unloaded
     // since worldrunnable uses them, it will crash if unloaded after master
     worldThread.wait();
-    rarThread.wait();
     auctionLising_thread.wait();
-
-    if (soapThread)
-    {
-        soapThread->wait();
-        soapThread->destroy();
-        delete soapThread;
-    }
 
     if (freezeThread)
     {
