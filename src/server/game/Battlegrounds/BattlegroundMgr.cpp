@@ -646,7 +646,7 @@ void BattlegroundMgr::InitAutomaticArenaPointDistribution()
     }
     else
         m_NextAutoDistributionTime = wstime;
- 	sLog->outString("AzerothCore Battleground: Automatic Arena Point Distribution initialized.");
+    sLog->outString("AzerothCore Battleground: Automatic Arena Point Distribution initialized.");
 }
 
 void BattlegroundMgr::BuildBattlegroundListPacket(WorldPacket* data, uint64 guid, Player* player, BattlegroundTypeId bgTypeId, uint8 fromWhere)
