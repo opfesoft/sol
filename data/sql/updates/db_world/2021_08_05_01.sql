@@ -1,3 +1,19 @@
+-- DB update 2021_08_05_00 -> 2021_08_05_01
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_world' AND COLUMN_NAME = '2021_08_05_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_world CHANGE COLUMN 2021_08_05_00 2021_08_05_01 bit;
+SELECT sql_rev INTO OK FROM version_db_world WHERE sql_rev = '1627393900919186826'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
 INSERT INTO `version_db_world` (`sql_rev`) VALUES ('1627393900919186826');
 
 -- Add movement to various Starving Ghostclaws
@@ -12,3 +28,12 @@ UPDATE `creature` SET `position_x` = 7974.42, `position_y` = -6852.5, `position_
 UPDATE `creature` SET `position_x` = 7949.07, `position_y` = -6791.82, `position_z` = 56.874 WHERE `guid` = 82121;
 UPDATE `creature` SET `position_x` = 8018.62, `position_y` = -7106.65, `position_z` = 134.118 WHERE `guid` = 81782;
 UPDATE `creature` SET `position_x` = 7545.4, `position_y` = -6126.8, `position_z` = 17.1636 WHERE `guid` = 82474;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
