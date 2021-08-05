@@ -6719,7 +6719,13 @@ SpellCastResult Spell::CheckPower()
 SpellCastResult Spell::CheckItems()
 {
     if (m_caster->GetTypeId() != TYPEID_PLAYER)
+    {
+        // Non-player case: Check if creature is disarmed
+        if (!m_caster->CanUseAttackType(m_attackType) && (m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MELEE || m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_RANGED))
+            return SPELL_FAILED_EQUIPPED_ITEM_CLASS;
+
         return SPELL_CAST_OK;
+    }
 
     Player* p_caster = m_caster->ToPlayer();
 
@@ -7247,11 +7253,11 @@ SpellCastResult Spell::CheckItems()
 
             // skip spell if no weapon in slot or broken
             if (!item || item->IsBroken())
-                return SPELL_FAILED_EQUIPPED_ITEM_CLASS;
+                return SPELL_FAILED_EQUIPPED_ITEM_CLASS_MAINHAND;
 
             // skip spell if weapon not fit to triggered spell
             if (!item->IsFitToSpellRequirements(m_spellInfo))
-                return SPELL_FAILED_EQUIPPED_ITEM_CLASS;
+                return SPELL_FAILED_EQUIPPED_ITEM_CLASS_MAINHAND;
         }
 
         // offhand hand weapon required
@@ -7261,11 +7267,11 @@ SpellCastResult Spell::CheckItems()
 
             // skip spell if no weapon in slot or broken
             if (!item || item->IsBroken())
-                return SPELL_FAILED_EQUIPPED_ITEM_CLASS;
+                return SPELL_FAILED_EQUIPPED_ITEM_CLASS_OFFHAND;
 
             // skip spell if weapon not fit to triggered spell
             if (!item->IsFitToSpellRequirements(m_spellInfo))
-                return SPELL_FAILED_EQUIPPED_ITEM_CLASS;
+                return SPELL_FAILED_EQUIPPED_ITEM_CLASS_OFFHAND;
         }
     }
 
