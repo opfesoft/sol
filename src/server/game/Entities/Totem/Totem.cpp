@@ -90,7 +90,8 @@ void Totem::InitSummon()
         GetOwner()->CastSpell(this, 6277, true);
     }
 
-    this->GetMotionMaster()->MoveFall();
+    if (!GetOwner()->isSwimming())
+        GetMotionMaster()->MoveFall();
 }
 
 void Totem::UnSummon(uint32 msTime)
