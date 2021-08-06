@@ -77,6 +77,14 @@ void TotemAI::UpdateAI(uint32 /*diff*/)
         me->VisitNearbyObject(max_range, checker);
     }
 
+    Unit* u = me->GetCharmerOrOwnerOrSelf();
+
+    if (victim && !victim->IsHostileTo(u))
+        victim = NULL;
+
+    if (!victim && u->IsInCombat())
+        victim = u->getAttackerForHelper();
+
     // If have target
     if (victim)
     {
