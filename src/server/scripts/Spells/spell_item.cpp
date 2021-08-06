@@ -4275,6 +4275,46 @@ public:
     }
 };
 
+enum GoblinBomb
+{
+    SPELL_SUMMON_GOBLIN_BOMB = 13258
+};
+
+// 23134 - Goblin Bomb
+class spell_item_goblin_bomb : public SpellScriptLoader
+{
+public:
+    spell_item_goblin_bomb() : SpellScriptLoader("spell_item_goblin_bomb") {}
+
+    class spell_item_goblin_bomb_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_item_goblin_bomb_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_SUMMON_GOBLIN_BOMB))
+                return false;
+            return true;
+        }
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            if (Unit* caster = GetCaster())
+                caster->CastSpell(caster, SPELL_SUMMON_GOBLIN_BOMB, true, GetCastItem());
+        }
+
+        void Register() override
+        {
+            OnEffectHit += SpellEffectFn(spell_item_goblin_bomb_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_item_goblin_bomb_SpellScript();
+    }
+};
+
 void AddSC_item_spell_scripts()
 {
     // Ours
@@ -4383,4 +4423,5 @@ void AddSC_item_spell_scripts()
     new spell_item_muisek_vessel();
     new spell_item_greatmothers_soulcatcher();
     new spell_item_eggnog();
+    new spell_item_goblin_bomb();
 }
