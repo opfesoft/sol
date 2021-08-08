@@ -7088,12 +7088,6 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                     victim->CastSpell(victim, 57894, true, NULL, NULL, GetGUID());
                     return true;
                 }
-                // Glyph of Freezing Trap
-                case 56845:
-                {
-                    victim->CastSpell(this, 61394, true, NULL, NULL, victim->GetGUID());
-                    return true;
-                }
             }
             break;
         }
