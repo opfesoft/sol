@@ -6154,6 +6154,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 74960:
             spellInfo->EffectRadiusIndex[EFFECT_0] = 9; // 20yd
             break;
+        case 4050:  // Explosive Sheep
+        case 13259: // Explosion (Goblin Bomb)
+        case 44279: // High Explosive Sheep
+            spellInfo->Effect[1] = 0; // Don't trigger suicide spell, this is handled via CreatureScript "npc_pet_gen_target_following_bomb"
+            break;
 
 
         // ///////////////////////////////////////////

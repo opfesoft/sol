@@ -437,6 +437,7 @@ public:
         {
             checkTimer = 0;
             bombSpellId = 0;
+            kill = false;
 
             switch (me->GetEntry())
             {
@@ -448,6 +449,7 @@ public:
 
         uint32 bombSpellId;
         uint32 checkTimer;
+        bool kill;
 
         void UpdateAI(uint32 diff)
         {
@@ -455,13 +457,15 @@ public:
             if (checkTimer >= 1000)
             {
                 checkTimer = 0;
-                if (Unit* target = me->SelectNearestTarget(30.0f))
+                if (kill)
+                    me->DespawnOrUnsummon(1);
+                else if (Unit* target = me->SelectNearestTarget(30.0f))
                 {
                     me->GetMotionMaster()->MoveChase(target);
                     if (me->GetDistance(target) < 3.0f)
                     {
                         me->CastSpell(me, bombSpellId, false);
-                        me->DespawnOrUnsummon(500);
+                        kill = true;
                     }
                 }
                 else if (!me->HasUnitState(UNIT_STATE_FOLLOW))
