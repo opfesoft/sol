@@ -2863,10 +2863,11 @@ void SpellMgr::LoadSpellCustomAttr()
             case 62775: // Ulduar: XT-002 Tympanic Tamparum
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
                 break;
-            case 64422: // Sonic Screech (Auriaya)
-            case 13877: // Blade Flurry (Rogue Spell) should ignore armor and share damage to 2nd mob
+            case 64422: // Sonic Screech (Auriaya), share damage and ignore armor
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SHARE_DAMAGE;
-                spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
+                [[fallthrough]];
+            case 22482: // Blade Flurry (triggered by the Rogue spell "Blade Flurry", 13877, see SpellScript "spell_rog_blade_flurry")
+                spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR; // Blade Flurry damage is taken from the first blow, so ignore armor for the second attack
                 break;
             case 72293: // Mark of the Fallen Champion (Deathbringer Saurfang)
             case 72347: // Lock Players and Tap Chest (Gunship Battle)
