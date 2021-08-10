@@ -1009,7 +1009,25 @@ class spell_mage_master_of_elements : public SpellScriptLoader
             {
                 PreventDefaultAction();
 
-                int32 mana = int32(eventInfo.GetDamageInfo()->GetSpellInfo()->CalcPowerCost(GetTarget(), eventInfo.GetDamageInfo()->GetSchoolMask()));
+                SpellInfo const* procSpell = eventInfo.GetDamageInfo()->GetSpellInfo();
+                SpellInfo const* triggerAuraSpell = eventInfo.GetTriggerAuraSpell();
+                int32 ticks = 1;
+
+                if (triggerAuraSpell)
+                {
+                    procSpell = triggerAuraSpell;
+                    if (procSpell->GetDuration() > 0)
+                        for (uint8 x = 0; x < MAX_SPELL_EFFECTS; x++)
+                            if (procSpell->Effects[x].Effect == SPELL_EFFECT_APPLY_AURA
+                                && procSpell->Effects[x].ApplyAuraName == SPELL_AURA_PERIODIC_TRIGGER_SPELL
+                                && procSpell->Effects[x].Amplitude > 0)
+                            {
+                                ticks = procSpell->GetDuration() / procSpell->Effects[x].Amplitude;
+                                break;
+                            }
+                }
+
+                int32 mana = int32(procSpell->CalcPowerCost(GetTarget(), eventInfo.GetDamageInfo()->GetSchoolMask()) / ticks);
                 mana = CalculatePct(mana, aurEff->GetAmount());
 
                 if (mana > 0)
