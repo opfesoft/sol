@@ -345,6 +345,18 @@ class spell_rog_killing_spree : public SpellScriptLoader
 
             void FilterTargets(std::list<WorldObject*>& targets)
             {
+                for (std::list<WorldObject*>::iterator itr = targets.begin(); itr != targets.end();)
+                {
+                    Unit* target = (*itr)->ToUnit();
+                    if (!target || target->HasStealthAura() || target->HasInvisibilityAura())
+                    {
+                        targets.erase(itr++);
+                        continue;
+                    }
+                    else
+                        ++itr;
+                }
+
                 if (targets.empty() || GetCaster()->GetVehicleBase() || GetCaster()->HasUnitState(UNIT_STATE_ROOT))
                     FinishCast(SPELL_FAILED_OUT_OF_RANGE);
                 else
