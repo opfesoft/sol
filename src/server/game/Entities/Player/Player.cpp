@@ -3338,7 +3338,7 @@ void Player::InitTalentForLevel()
     uint32 talentPointsForLevel = CalculateTalentsPoints();
 
     // xinef: more talent points that we have are used, reset
-    if (m_usedTalentCount > talentPointsForLevel)
+    if (!AccountMgr::IsGMAccount(GetSession()->GetSecurity()) && m_usedTalentCount > talentPointsForLevel)
         resetTalents(true);
     // xinef: else, recalculate free talent points count
     else
@@ -4082,7 +4082,9 @@ void Player::learnSpell(uint32 spellId)
     // Xinef: don't allow to learn active spell once more
     if (HasActiveSpell(spellId))
     {
-        sLog->outError("Player (%u) tries to learn already active spell: %u", GetGUIDLow(), spellId);
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
+        sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "Player (%u) tries to learn already active spell: %u", GetGUIDLow(), spellId);
+#endif
         return;
     }
 

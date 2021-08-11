@@ -100,6 +100,13 @@ public:
 
     static bool HandleLearnAllMyClassCommand(ChatHandler* handler, char const* /*args*/)
     {
+        if (!handler->getSelectedPlayer())
+        {
+            handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
         HandleLearnAllMySpellsCommand(handler, "");
         HandleLearnAllMyTalentsCommand(handler, "");
         return true;
@@ -107,44 +114,48 @@ public:
 
     static bool HandleLearnAllMySpellsCommand(ChatHandler* handler, char const* /*args*/)
     {
-        ChrClassesEntry const* classEntry = sChrClassesStore.LookupEntry(handler->GetSession()->GetPlayer()->getClass());
-        if (!classEntry)
-            return true;
-        uint32 family = classEntry->spellfamily;
+        Player* player = handler->getSelectedPlayer();
 
-        for (uint32 i = 0; i < sSkillLineAbilityStore.GetNumRows(); ++i)
+        if (!player)
         {
-            SkillLineAbilityEntry const* entry = sSkillLineAbilityStore.LookupEntry(i);
-            if (!entry)
-                continue;
-
-            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(entry->spellId);
-            if (!spellInfo)
-                continue;
-
-            // skip server-side/triggered spells
-            if (spellInfo->SpellLevel == 0)
-                continue;
-
-            // skip wrong class/race skills
-            if (!handler->GetSession()->GetPlayer()->IsSpellFitByClassAndRace(spellInfo->Id))
-                continue;
-
-            // skip other spell families
-            if (spellInfo->SpellFamilyName != family)
-                continue;
-
-            // skip spells with first rank learned as talent (and all talents then also)
-            uint32 firstRank = sSpellMgr->GetFirstSpellInChain(spellInfo->Id);
-            if (GetTalentSpellCost(firstRank) > 0)
-                continue;
-
-            // skip broken spells
-            if (!SpellMgr::IsSpellValid(spellInfo))
-                continue;
-
-            handler->GetSession()->GetPlayer()->learnSpell(spellInfo->Id);
+            handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
         }
+
+        // Learn all spells rewarded by quests
+        ObjectMgr::QuestMap const& qTemplates = sObjectMgr->GetQuestTemplates();
+        for (ObjectMgr::QuestMap::const_iterator iter = qTemplates.begin(); iter != qTemplates.end(); ++iter)
+        {
+            Quest const* quest = iter->second;
+            if (quest->GetRequiredClasses() && player->SatisfyQuestClass(quest, false))
+                player->learnQuestRewardedSpells(quest);
+        }
+
+        std::set<uint32> castSpell, learnSpell;
+
+        // Learn all spells provided by trainers
+        CacheTrainerSpellContainer const& cacheTrainerSpellStore = sObjectMgr->GetCacheTrainerSpellContainer();
+        for (CacheTrainerSpellContainer::const_iterator i = cacheTrainerSpellStore.begin(); i != cacheTrainerSpellStore.end(); ++i)
+        {
+            TrainerSpellData const* tsd = &i->second;
+            CreatureTemplate const* ci = sObjectMgr->GetCreatureTemplate(i->first);
+            if (ci && ci->trainer_type == TRAINER_TYPE_CLASS && ci->trainer_class == player->getClass())
+                for (TrainerSpellMap::const_iterator j = tsd->spellList.begin(); j != tsd->spellList.end(); ++j)
+                {
+                    TrainerSpell const* ts = &j->second;
+                    if (ts->IsCastable())
+                        castSpell.insert(ts->spell);
+                    else
+                        learnSpell.insert(ts->spell);
+                }
+        }
+
+        for (std::set<uint32>::iterator i = castSpell.begin(); i != castSpell.end(); ++i)
+            player->CastSpell(player, *i, true);
+
+        for (std::set<uint32>::iterator i = learnSpell.begin(); i != learnSpell.end(); ++i)
+            player->learnSpell(*i);
 
         handler->SendSysMessage(LANG_COMMAND_LEARN_CLASS_SPELLS);
         return true;
@@ -152,7 +163,15 @@ public:
 
     static bool HandleLearnAllMyTalentsCommand(ChatHandler* handler, char const* /*args*/)
     {
-        Player* player = handler->GetSession()->GetPlayer();
+        Player* player = handler->getSelectedPlayer();
+
+        if (!player)
+        {
+            handler->SendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
         uint32 classMask = player->getClassMask();
 
         for (uint32 i = 0; i < sTalentStore.GetNumRows(); ++i)
@@ -182,15 +201,35 @@ public:
             }
 
             // xinef: some errors?
-            if (!spellId || rankId == MAX_TALENT_RANK)
+            if (!spellId || rankId >= MAX_TALENT_RANK || player->HasTalent(spellId, player->GetActiveSpecMask()))
                 continue;
 
             SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
             if (!spellInfo || !SpellMgr::IsSpellValid(spellInfo))
                 continue;
 
-            player->LearnTalent(talentInfo->TalentID, rankId);
+            bool learned = false;
+
+            if (talentInfo->addToSpellBook)
+                if (!spellInfo->HasAttribute(SPELL_ATTR0_PASSIVE) && !spellInfo->HasEffect(SPELL_EFFECT_LEARN_SPELL))
+                {
+                    player->learnSpell(spellId);
+                    learned = true;
+                }
+
+            if (!learned)
+                player->SendLearnPacket(spellId, true);
+
+            for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+                if (spellInfo->Effects[i].Effect == SPELL_EFFECT_LEARN_SPELL)
+                    if (sSpellMgr->IsAdditionalTalentSpell(spellInfo->Effects[i].TriggerSpell))
+                        player->learnSpell(spellInfo->Effects[i].TriggerSpell);
+
+            player->addTalent(spellId, player->GetActiveSpecMask(), rankId);
         }
+
+        player->SetFreeTalentPoints(0);
+        player->SendTalentsInfoData(false);
 
         handler->SendSysMessage(LANG_COMMAND_LEARN_CLASS_TALENTS);
         return true;
