@@ -1454,6 +1454,7 @@ class Unit : public WorldObject
         uint32 GetUnitTypeMask() const { return m_unitTypeMask; }
         bool IsSummon() const   { return m_unitTypeMask & UNIT_MASK_SUMMON; }
         bool IsGuardian() const { return m_unitTypeMask & UNIT_MASK_GUARDIAN; }
+        bool IsControllableGuardian() const { return m_unitTypeMask & UNIT_MASK_CONTROLABLE_GUARDIAN; }
         bool IsPet() const      { return m_unitTypeMask & UNIT_MASK_PET; }
         bool IsHunterPet() const{ return m_unitTypeMask & UNIT_MASK_HUNTER_PET; }
         bool IsTotem() const    { return m_unitTypeMask & UNIT_MASK_TOTEM; }
