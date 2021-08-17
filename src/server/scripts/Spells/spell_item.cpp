@@ -1877,7 +1877,8 @@ class spell_item_defibrillate : public SpellScriptLoader
 
 enum DesperateDefense
 {
-    SPELL_DESPERATE_RAGE    = 33898
+    SPELL_SERVERSIDE_DESPERATE_DEFENSE = 33897,
+    SPELL_DESPERATE_RAGE               = 33898
 };
 
 // 33896 - Desperate Defense
@@ -1892,7 +1893,7 @@ class spell_item_desperate_defense : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DESPERATE_RAGE))
+                if (!sSpellMgr->GetSpellInfo(SPELL_DESPERATE_RAGE) || !sSpellMgr->GetSpellInfo(SPELL_SERVERSIDE_DESPERATE_DEFENSE))
                     return false;
                 return true;
             }
@@ -1903,9 +1904,15 @@ class spell_item_desperate_defense : public SpellScriptLoader
                 GetTarget()->CastSpell(GetTarget(), SPELL_DESPERATE_RAGE, true, NULL, aurEff);
             }
 
+            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                GetTarget()->RemoveAurasDueToSpell(SPELL_SERVERSIDE_DESPERATE_DEFENSE);
+            }
+
             void Register()
             {
                 OnEffectProc += AuraEffectProcFn(spell_item_desperate_defense_AuraScript::HandleProc, EFFECT_2, SPELL_AURA_PROC_TRIGGER_SPELL);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_item_desperate_defense_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB, AURA_EFFECT_HANDLE_REAL);
             }
         };
 
