@@ -3363,6 +3363,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_MOVEMENT;
             spellInfo->EffectApplyAuraName[EFFECT_1] = SPELL_AURA_MOD_STUN;
             break;
+        case 19721: // Resurrect Trooper (used by Demetria)
+            spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_TARGET_ANY;
+            break;
 
 
         /////////////////////////////////////////////
