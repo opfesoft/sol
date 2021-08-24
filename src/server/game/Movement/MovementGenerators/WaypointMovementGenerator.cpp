@@ -52,8 +52,10 @@ void WaypointMovementGenerator<Creature>::DoFinalize(Creature* creature)
 
 void WaypointMovementGenerator<Creature>::DoReset(Creature* creature)
 {
-    creature->AddUnitState(UNIT_STATE_ROAMING|UNIT_STATE_ROAMING_MOVE);
-    StartMoveNow(creature);
+    creature->AddUnitState(UNIT_STATE_ROAMING);
+    if (!Stopped())
+        creature->AddUnitState(UNIT_STATE_ROAMING_MOVE);
+    StartMove(creature);
 }
 
 void WaypointMovementGenerator<Creature>::OnArrived(Creature* creature)
