@@ -4175,17 +4175,14 @@ void Spell::EffectSanctuary(SpellEffIndex /*effIndex*/)
         // Xinef: replaced with CombatStop(false)
         unitTarget->AttackStop();
         unitTarget->RemoveAllAttackers();
-
-        // Night Elf: Shadowmeld only resets threat temporarily
-        if (m_spellInfo->Id != 59646)
-            unitTarget->getHostileRefManager().addThreatPercent(-100);
+        unitTarget->getHostileRefManager().addThreatPercent(-100);
 
         if (unitTarget->GetTypeId() == TYPEID_PLAYER)
             unitTarget->ToPlayer()->SendAttackSwingCancelAttack();     // melee and ranged forced attack cancel
     }
     else
     {
-        unitTarget->getHostileRefManager().UpdateVisibility(m_spellInfo->Id == 59646); // Night Elf: Shadowmeld
+        unitTarget->getHostileRefManager().UpdateVisibility(false);
         unitTarget->CombatStop(true);
     }
 
