@@ -12,6 +12,7 @@ namespace GitRevision
 {
     char const* GetHash();
     char const* GetDate();
+    char const* GetDateUnix();
     char const* GetBranch();
     char const* GetFullVersion();
     char const* GetCompanyNameStr();

@@ -1093,11 +1093,21 @@ void World::LoadConfigSettings(bool reload)
         if (clientCacheId > 0)
         {
             m_int_configs[CONFIG_CLIENTCACHE_VERSION] = clientCacheId;
-            sLog->outString("Client cache version set to: %u", clientCacheId);
+            sLog->outString("Client cache version set to configured value: %u", clientCacheId);
         }
         else
-            sLog->outError("ClientCacheVersion can't be negative %d, ignored.", clientCacheId);
+        {
+            if (uint32 gitDateUnix = atoi(GitRevision::GetDateUnix()))
+            {
+                m_int_configs[CONFIG_CLIENTCACHE_VERSION] = gitDateUnix;
+                sLog->outString("Client cache version set to git unix date: %u", gitDateUnix);
+            }
+            else
+                sLog->outError("ClientCacheVersion is negative but git unix date is 0, ignored.");
+        }
     }
+    else
+        sLog->outString("Client cache version set to DB value: %u", m_int_configs[CONFIG_CLIENTCACHE_VERSION]);
 
     m_int_configs[CONFIG_INSTANT_LOGOUT] = sConfigMgr->GetIntDefault("InstantLogout", SEC_MODERATOR);
 

@@ -16,6 +16,11 @@ char const* GitRevision::GetDate()
     return _DATE;
 }
 
+char const* GitRevision::GetDateUnix()
+{
+    return _DATE_UNIX;
+}
+
 char const* GitRevision::GetBranch()
 {
     return _BRANCH;

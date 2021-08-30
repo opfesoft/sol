@@ -3,6 +3,7 @@
  #define _REVISION                  "@rev_id_str@"
  #define _HASH                      "@rev_hash@"
  #define _DATE                      "@rev_date@"
+ #define _DATE_UNIX                 "@rev_date_unix@"
  #define _BRANCH                    "@rev_branch@"
  #define VER_COMPANYNAME_STR        "Project \"Sol\""
  #define VER_LEGALCOPYRIGHT_STR     "Project \"Sol\""

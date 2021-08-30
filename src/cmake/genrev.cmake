@@ -17,6 +17,7 @@ endif()
 
 if(WITHOUT_GIT)
   set(rev_date "1970-01-01 00:00:00 +0000")
+  set(rev_date_unix "0")
   set(rev_hash "unknown")
   set(rev_branch "Archived")
 else()
@@ -44,6 +45,14 @@ else()
       ERROR_QUIET
     )
 
+    execute_process(
+      COMMAND "${GIT_EXECUTABLE}" show -s --format=%ct
+      WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+      OUTPUT_VARIABLE rev_date_unix
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_QUIET
+    )
+
     # Also retrieve branch name
     execute_process(
       COMMAND "${GIT_EXECUTABLE}" rev-parse --abbrev-ref HEAD
@@ -62,6 +71,7 @@ else()
     Could not find a proper repository signature (hash) - you may need to pull tags with git fetch -t
     Continuing anyway - note that the versionstring will be set to \"unknown 1970-01-01 00:00:00 (Archived)\"")
     set(rev_date "1970-01-01 00:00:00 +0000")
+    set(rev_date_unix "0")
     set(rev_hash "unknown")
     set(rev_branch "Archived")
   else()
