@@ -6669,6 +6669,19 @@ SpellCastResult Spell::CheckRange(bool strict)
             return SPELL_FAILED_TOO_CLOSE;
     }
 
+    if (GameObject* goTarget = m_targets.GetGOTarget())
+        if (Player* player = m_caster->ToPlayer())
+        {
+            float maxRange = m_spellInfo->GetMaxRange(m_spellInfo->IsPositive());
+            if (goTarget->GetGoType() == GAMEOBJECT_TYPE_SPELL_FOCUS)
+            {
+                if (maxRange * maxRange < goTarget->GetExactDistSq(player))
+                    return SPELL_FAILED_OUT_OF_RANGE;
+            }
+            else if (!goTarget->IsInRange(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), maxRange))
+                return SPELL_FAILED_OUT_OF_RANGE;
+        }
+
     if (m_targets.HasDst() && !m_targets.HasTraj())
     {
         if (!m_caster->IsWithinDist3d(m_targets.GetDstPos(), max_range))
