@@ -1494,6 +1494,38 @@ class spell_gen_haunted :  public SpellScriptLoader
         }
 };
 
+enum BarleybrewScalderSpell
+{
+    QUEST_THE_RETHBAN_GAUNTLET = 1699
+};
+
+class spell_gen_barleybrew_scalder : public SpellScriptLoader
+{
+    public:
+        spell_gen_barleybrew_scalder() : SpellScriptLoader("spell_gen_barleybrew_scalder") { }
+
+        class spell_gen_barleybrew_scalder_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_barleybrew_scalder_AuraScript)
+
+            void HandleAfterEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetTarget()->ToPlayer())
+                    player->FailQuest(QUEST_THE_RETHBAN_GAUNTLET);
+            }
+
+            void Register()
+            {
+                AfterEffectRemove += AuraEffectRemoveFn(spell_gen_barleybrew_scalder_AuraScript::HandleAfterEffectRemove, EFFECT_ALL, SPELL_AURA_ANY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_barleybrew_scalder_AuraScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5216,6 +5248,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_flurry_of_claws();
     new spell_gen_throw_back();
     new spell_gen_haunted();
+    new spell_gen_barleybrew_scalder();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();
