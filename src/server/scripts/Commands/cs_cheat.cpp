@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016+     AzerothCore <www.azerothcore.org>
+ * Copyright (C) 2020+     Project "Sol" <https://gitlab.com/opfesoft/sol>, released under GNU AGPL3 v3 license: https://gitlab.com/opfesoft/sol/-/blob/master/LICENSE
+ * Copyright (C) 2016-2020 AzerothCore <www.azerothcore.org>
  */
 
 #include "Chat.h"
