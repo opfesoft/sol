@@ -50,4 +50,4 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - Sol aims exclusively at fixing bugs and improving the player experience; this also means to include changes which were not part of retail at the time
 
 #### License:
-The new source components for project "Sol" are released under the [GNU AGPL v3](LICENSE)
+This code and content is released under the [GNU AGPL v3](LICENSE)
