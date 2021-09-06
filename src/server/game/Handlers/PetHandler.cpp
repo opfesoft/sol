@@ -805,6 +805,20 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
                     // This is true if pet has no target or has target but targets differs.
                     if (pet->GetVictim() != TargetUnit || (pet->GetVictim() == TargetUnit && !pet->GetCharmInfo()->IsCommandAttack()))
                     {
+                        // Not let attack through obstructions
+                        bool checkLos = !MMAP::MMapFactory::IsPathfindingEnabled(pet->GetMap()) ||
+                                        (TargetUnit->GetTypeId() == TYPEID_UNIT && (TargetUnit->ToCreature()->isWorldBoss() || TargetUnit->ToCreature()->IsDungeonBoss()));
+
+                        if (checkLos && !pet->IsWithinLOSInMap(TargetUnit))
+                        {
+                            WorldPacket data(SMSG_CAST_FAILED, 1+4+1);
+                            data << uint8(0);
+                            data << uint32(7389);
+                            data << uint8(SPELL_FAILED_LINE_OF_SIGHT);
+                            SendPacket(&data);
+                            return;
+                        }
+
                         if (pet->GetVictim())
                             pet->AttackStop();
 
