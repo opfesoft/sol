@@ -23,7 +23,9 @@ enum Galen
     SAY_ATTACKED            = 2,
     SAY_QUEST_COMPLETE      = 3,
     EMOTE_WHISPER           = 4,
-    EMOTE_DISAPPEAR         = 5
+    EMOTE_DISAPPEAR         = 5,
+    FACTION_FRIENDLY        = 35,
+    FACTION_ESCORTEE        = 250
 };
 
 class npc_galen_goodward : public CreatureScript
@@ -42,6 +44,7 @@ public:
         void Reset()
         {
             periodicSay = 6000;
+            me->setFaction(FACTION_FRIENDLY);
         }
 
         void EnterCombat(Unit* who)
@@ -54,6 +57,7 @@ public:
         {
             if (quest->GetQuestId() == QUEST_GALENS_ESCAPE)
             {
+                me->setActive(true);
                 Talk(SAY_QUEST_ACCEPTED, player);
                 npc_escortAI::Start(false, false, player->GetGUID(), quest);
             }
@@ -77,7 +81,7 @@ public:
                     }
                     break;
                 }
-            case 21:
+            case 48:
                 Talk(EMOTE_DISAPPEAR);
                 break;
             }
@@ -90,8 +94,9 @@ public:
                 case 0:
                     if (GameObject* cage = me->GetMap()->GetGameObject(galensCageGUID))
                         cage->ResetDoorOrButton();
+                    me->setFaction(FACTION_ESCORTEE);
                     break;
-                case 20:
+                case 47:
                     if (Player* player = GetPlayerForEscort())
                     {
                         me->SetFacingToObject(player);
