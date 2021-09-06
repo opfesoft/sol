@@ -50,4 +50,5 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - Sol aims exclusively at fixing bugs and improving the player experience; this also means to include changes which were not part of retail at the time
 
 #### License:
-This code and content is released under the [GNU AGPL v3](LICENSE)
+- The new source components of Project "Sol" and the old sources based on AzerothCore are released under the [GNU AGPLv3](LICENSE.md) license
+- The old sources based on MaNGOS/TrinityCore are released under the [GNU GPLv2](deps/gpl-2.0.md) license

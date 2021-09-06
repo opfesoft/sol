@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020+     Project "Sol" <https://gitlab.com/opfesoft/sol>, released under GNU AGPL3 v3 license: https://gitlab.com/opfesoft/sol/-/blob/master/LICENSE
+ * Copyright (C) 2020+     Project "Sol" <https://gitlab.com/opfesoft/sol>, released under the GNU AGPLv3 license: https://gitlab.com/opfesoft/sol/-/blob/master/LICENSE.md
  * Copyright (C) 2016-2020 AzerothCore <www.azerothcore.org>
  *
  * This program is free software; you can redistribute it and/or modify it
