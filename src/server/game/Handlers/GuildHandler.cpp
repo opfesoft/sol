@@ -89,6 +89,9 @@ void WorldSession::HandleGuildDeclineOpcode(WorldPacket& /*recvPacket*/)
     sLog->outDebug(LOG_FILTER_GUILD, "CMSG_GUILD_DECLINE [%s]", GetPlayerInfo().c_str());
 #endif
 
+    if (GetPlayer()->GetGuild())
+        return;
+
     GetPlayer()->SetGuildIdInvited(0);
     GetPlayer()->SetInGuild(0);
 }
