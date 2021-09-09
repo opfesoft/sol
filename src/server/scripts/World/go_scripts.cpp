@@ -38,8 +38,6 @@ EndContentData */
 #include "Spell.h"
 #include "Player.h"
 #include "WorldSession.h"
-#include "GridNotifiersImpl.h"
-#include "CellImpl.h"
 
 // Ours
 /*######
@@ -312,100 +310,6 @@ public:
     GameObjectAI* GetAI(GameObject* go) const
     {
         return new go_tadpole_cageAI(go);
-    }
-};
-
-enum Flames
-{
-    SPELL_FLAMES = 7897
-};
-
-class go_flames : public GameObjectScript
-{
-public:
-    go_flames() : GameObjectScript("go_flames") { }
-
-    struct go_flamesAI : public GameObjectAI
-    {
-        go_flamesAI(GameObject* gameObject) : GameObjectAI(gameObject),
-            timer { 0 }
-        { }
-
-        void UpdateAI(uint32  diff)
-        {
-            timer += diff;
-            if (timer > 3000)
-            {
-                timer = 0;
-                std::list<Player*> players;
-                acore::AnyPlayerExactPositionInGameObjectRangeCheck checker(go, 0.3f);
-                acore::PlayerListSearcher<acore::AnyPlayerExactPositionInGameObjectRangeCheck> searcher(go, players, checker);
-                go->VisitNearbyWorldObject(0.3f, searcher);
-
-                if (players.size() > 0)
-                {
-                    std::list<Player*>::iterator itr = players.begin();
-                    std::advance(itr, urand(0, players.size() - 1));
-                    if (Creature* trigger = go->SummonTrigger((*itr)->GetPositionX(), (*itr)->GetPositionY(), (*itr)->GetPositionZ(), 0, 2000, true))
-                        trigger->CastSpell(trigger, SPELL_FLAMES);
-                }
-            }
-        }
-
-    private:
-        uint32 timer;
-    };
-
-    GameObjectAI* GetAI(GameObject* go) const
-    {
-        return new go_flamesAI(go);
-    }
-};
-
-enum Heat
-{
-    SPELL_HEAT = 7902
-};
-
-class go_heat : public GameObjectScript
-{
-public:
-    go_heat() : GameObjectScript("go_heat") { }
-
-    struct go_heatAI : public GameObjectAI
-    {
-        go_heatAI(GameObject* gameObject) : GameObjectAI(gameObject),
-            timer { 0 }
-        { }
-
-        void UpdateAI(uint32  diff)
-        {
-            timer += diff;
-            if (timer > 3000)
-            {
-                timer = 0;
-                std::list<Player*> players;
-                acore::AnyPlayerExactPositionInGameObjectRangeCheck checker(go, 0.3f);
-                acore::PlayerListSearcher<acore::AnyPlayerExactPositionInGameObjectRangeCheck> searcher(go, players, checker);
-                go->VisitNearbyWorldObject(0.3f, searcher);
-
-                if (players.size() > 0)
-                {
-                    std::list<Player*>::iterator itr = players.begin();
-                    std::advance(itr, urand(0, players.size() - 1));
-                    if (Creature* trigger = go->SummonTrigger((*itr)->GetPositionX(), (*itr)->GetPositionY(), (*itr)->GetPositionZ(), 0, 2000, true))
-                        trigger->CastSpell(trigger, SPELL_HEAT);
-                }
-            }
-        }
-
-    private:
-        uint32 timer;
-    };
-
-    GameObjectAI* GetAI(GameObject* go) const
-    {
-        return new go_heatAI(go);
     }
 };
 
@@ -1274,8 +1178,6 @@ void AddSC_go_scripts()
     new go_ethereum_stasis();
     new go_resonite_cask();
     new go_tadpole_cage();
-    new go_flames();
-    new go_heat();
 
     // Theirs
     new go_cat_figurine();
