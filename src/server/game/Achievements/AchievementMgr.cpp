@@ -227,6 +227,7 @@ bool AchievementCriteriaData::IsValid(AchievementCriteriaEntry const* criteria)
             }
             return true;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_BG_LOSS_TEAM_SCORE:
+        case ACHIEVEMENT_CRITERIA_DATA_TYPE_BG_TEAMS_SCORES:
             return true;                                    // not check correctness node indexes
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_S_EQUIPED_ITEM:
             if (equipped_item.item_quality >= MAX_ITEM_QUALITY)
@@ -422,6 +423,20 @@ bool AchievementCriteriaData::Meets(uint32 criteria_id, Player const* source, Un
                 return source && source->HasTitle(titleInfo->bit_index);
 
             return false;
+        }
+        case ACHIEVEMENT_CRITERIA_DATA_TYPE_BG_TEAMS_SCORES:
+        {
+            Battleground* bg = source->GetBattleground();
+            if (!bg)
+                return false;
+
+            TeamId winnerTeam = bg->GetWinner();
+            if (winnerTeam == TEAM_NEUTRAL)
+                return false;
+
+            uint32 winnnerScore = bg->GetTeamScore(winnerTeam);
+            uint32 loserScore = bg->GetTeamScore(TeamId(!uint32(winnerTeam)));
+            return source->GetTeamId() == winnerTeam && winnnerScore == teams_scores.winner_score && loserScore == teams_scores.loser_score;
         }
         default:
             break;
