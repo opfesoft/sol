@@ -405,6 +405,26 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo)
                     condMeets = vehicle->GetNextEmptySeat(0, true) < 0 ? false : true;
             break;
         }
+        case CONDITION_HAS_MINION:
+        {
+            if (Unit* unit = object->ToUnit())
+            {
+                std::list<Creature*> minions;
+                unit->GetAllMinionsByEntry(minions, ConditionValue1);
+                if (minions.empty())
+                    condMeets = false;
+                else if (!ConditionValue2)
+                    condMeets = true;
+                else
+                    for (std::list<Creature*>::iterator itr = minions.begin(); itr != minions.end(); ++itr)
+                    {
+                        condMeets = ConditionValue2 == 1 ? (*itr)->IsAlive() : !(*itr)->IsAlive();
+                        if (condMeets)
+                            break;
+                    }
+            }
+            break;
+        }
         default:
             condMeets = false;
             break;
@@ -588,6 +608,9 @@ uint32 Condition::GetSearcherTypeMaskForCondition()
             break;
         case CONDITION_HAS_EMPTY_SEAT:
             mask |= GRID_MAP_TYPE_MASK_CREATURE;
+            break;
+        case CONDITION_HAS_MINION:
+            mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
             break;
         default:
             ASSERT(false && "Condition::GetSearcherTypeMaskForCondition - missing condition handling!");

@@ -81,7 +81,8 @@ enum ConditionTypes
 
     CONDITION_SOL_START                = 150,                // placeholder
     CONDITION_HAS_EMPTY_SEAT           = 151,                // 0                0              0                  true if the unit is a vehicle and has an empty seat
-    CONDITION_SOL_END                  = 152                 // placeholder
+    CONDITION_HAS_MINION               = 152,                // creature entry   alive state    0                  true if the unit has a minion with the specified creature entry and the alive state 1 (alive), 2 (dead) or 0 (both)
+    CONDITION_SOL_END                  = 153                 // placeholder
 };
 
 /*! Documentation on implementing a new ConditionSourceType:
