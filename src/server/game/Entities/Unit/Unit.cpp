@@ -9557,7 +9557,7 @@ bool Unit::Attack(Unit* victim, bool meleeAttack)
     //if (GetTypeId() == TYPEID_UNIT)
     //    ToCreature()->SetCombatStartPosition(GetPositionX(), GetPositionY(), GetPositionZ());
 
-    if (GetTypeId() == TYPEID_UNIT && !IsControllableGuardian())
+    if (GetTypeId() == TYPEID_UNIT && !(IsControllableGuardian() && IS_PLAYER_GUID(GetOwnerGUID())))
     {
         // should not let player enter combat by right clicking target - doesn't helps
         SetInCombatWith(victim);
