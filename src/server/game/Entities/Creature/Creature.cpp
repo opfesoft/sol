@@ -649,6 +649,7 @@ void Creature::Update(uint32 diff)
                 {
                     acore::CreatureRelocationNotifier relocate(*this);
                     this->VisitNearbyObject(this->GetVisibilityRange()+VISIBILITY_COMPENSATION, relocate);
+                    this->AddToNotify(NOTIFY_AI_RELOCATION);
                     m_idleLosCheckTimer += CREATURE_IDLE_LOS_CHECK_INTERVAL;
                 }
             }
