@@ -535,6 +535,10 @@ class LFGMgr
         static bool HasIgnore(uint64 guid1, uint64 guid2);
         /// Sends queue status to player
         static void SendLfgQueueStatus(uint64 guid, LfgQueueStatusData const& data);
+        /// debug lfg command
+        void ToggleTesting();
+        /// For 1 player queue testing
+        bool IsTesting() const { return m_Testing; }
 
     private:
         TeamId GetTeam(uint64 guid);
@@ -587,6 +591,7 @@ class LFGMgr
         LfgPlayerBootContainer BootsStore;                 ///< Current player kicks
         LfgPlayerDataContainer PlayersStore;               ///< Player data
         LfgGroupDataContainer GroupsStore;                 ///< Group data
+        bool m_Testing;
 };
 
 } // namespace lfg

@@ -1326,6 +1326,9 @@ enum AcoreStrings
     LANG_REMOVEITEM_ERROR                         = 30082,
 
     LANG_BG_SHARE_QUEST_ERROR                     = 30083,
-    LANG_BG_READY_CHECK_ERROR                     = 30084
+    LANG_BG_READY_CHECK_ERROR                     = 30084,
+
+    LANG_DEBUG_LFG_ON                             = 30096,
+    LANG_DEBUG_LFG_OFF                            = 30097
 };
 #endif
