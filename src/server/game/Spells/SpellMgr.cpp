@@ -2975,6 +2975,12 @@ void SpellMgr::LoadSpellCustomAttr()
                 break;
         }
 
+        if (spellInfo->Speed > 0.0f)
+            if (SpellVisualEntry const* spellVisual = sSpellVisualStore.LookupEntry(spellInfo->SpellVisual[0]))
+                if (spellVisual->HasMissile)
+                    if (spellVisual->MissileModel == -4 || spellVisual->MissileModel == -5)
+                        spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEEDS_AMMO_DATA;
+
         switch (spellInfo->SpellFamilyName)
         {
             case SPELLFAMILY_WARRIOR:
@@ -4290,10 +4296,6 @@ void SpellMgr::LoadDbcDataCorrections()
         case 25139:
             spellInfo->AttributesEx3 |= SPELL_ATTR3_DEATH_PERSISTENT;
             break;
-        // Poisoned Spear
-        case 60988:
-            spellInfo->Attributes |= SPELL_ATTR0_REQ_AMMO;
-            break;
 
 
         // ///////////////////////////////////////////
@@ -4481,10 +4483,6 @@ void SpellMgr::LoadDbcDataCorrections()
         case 29125:
             spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_SRC_AREA_ENTRY;
             break;
-        // Jagged Knife
-        case 55550:
-            spellInfo->Attributes |= SPELL_ATTR0_REQ_AMMO;
-            break;
 
         //////////////////////////////////////////
         ////////// Gundrak
@@ -4492,12 +4490,6 @@ void SpellMgr::LoadDbcDataCorrections()
         // Moorabi - Transformation
         case 55098:
             spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_INTERRUPT;
-            break;
-        case 55521: // Poisoned Spear (Normal)
-        case 58967: // Poisoned Spear (Heroic)
-        case 55348: // Throw (Normal)
-        case 58966: // Throw (Heroic)
-            spellInfo->Attributes |= SPELL_ATTR0_REQ_AMMO;
             break;
 
         //////////////////////////////////////////
@@ -4559,10 +4551,6 @@ void SpellMgr::LoadDbcDataCorrections()
         // Ingvar the Plunderer, Ingvar transform
         case 42796:
             spellInfo->AttributesEx3 |= SPELL_ATTR3_DEATH_PERSISTENT;
-            break;
-        case 42772: // Hurl Dagger (Normal)
-        case 59685: // Hurl Dagger (Heroic)
-            spellInfo->Attributes |= SPELL_ATTR0_REQ_AMMO;
             break;
 
         //////////////////////////////////////////
