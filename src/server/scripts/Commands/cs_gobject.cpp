@@ -533,6 +533,9 @@ public:
                 Map* map = player->GetMap();
                 if (go->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_GAMEOBJECT), object->GetEntry(), map, player->GetPhaseMask(), x, y, z, object->GetOrientation(), object->GetWorldRotation(), 100, GO_STATE_READY))
                 {
+                    GameObjectAddon const* addon = sObjectMgr->GetGameObjectAddon(guidLow);
+                    if (addon && addon->useRotation)
+                        go->SetWorldRotation(object->GetWorldRotation());
                     go->SetSpellId(1);
                     go->SetRespawnTime(DAY);
                     player->AddGameObject(go);
