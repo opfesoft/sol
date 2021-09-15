@@ -5173,7 +5173,9 @@ void Spell::EffectDispelMechanic(SpellEffIndex effIndex)
 
     uint32 mechanic = m_spellInfo->Effects[effIndex].MiscValue;
 
-    std::queue < std::pair < uint32, uint64 > > dispel_list;
+    std::list <std::pair <uint32, uint64>> dispel_list;
+    int32 calcValue = m_spellInfo->Effects[effIndex].CalcValue();
+    uint32 dispelCount = calcValue < 0 ? 0 : calcValue;
 
     Unit::AuraMap const& auras = unitTarget->GetOwnedAuras();
     for (Unit::AuraMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
@@ -5183,13 +5185,14 @@ void Spell::EffectDispelMechanic(SpellEffIndex effIndex)
             continue;
         if (roll_chance_i(aura->CalcDispelChance(unitTarget, !unitTarget->IsFriendlyTo(m_caster))))
             if ((aura->GetSpellInfo()->GetAllEffectsMechanicMask() & (1 << mechanic)))
-                dispel_list.push(std::make_pair(aura->GetId(), aura->GetCasterGUID()));
+                dispel_list.emplace_back(aura->GetId(), aura->GetCasterGUID());
     }
 
-    for (; dispel_list.size(); dispel_list.pop())
-    {
-        unitTarget->RemoveAura(dispel_list.front().first, dispel_list.front().second, 0, AURA_REMOVE_BY_ENEMY_SPELL);
-    }
+    if (dispelCount > 0)
+        acore::Containers::RandomResizeList(dispel_list, dispelCount);
+
+    for (std::list<std::pair <uint32, uint64>>::const_iterator itr = dispel_list.begin(); itr != dispel_list.end(); ++itr)
+        unitTarget->RemoveAura(itr->first, itr->second, 0, AURA_REMOVE_BY_ENEMY_SPELL);
 
     // put in combat
     if (unitTarget->IsFriendlyTo(m_caster))
