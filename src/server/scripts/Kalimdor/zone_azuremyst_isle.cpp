@@ -356,8 +356,15 @@ enum Magwin
     SAY_END1                    = 3,
     SAY_END2                    = 4,
     EMOTE_HUG                   = 5,
-    QUEST_A_CRY_FOR_SAY_HELP    = 9528,
-    FACTION_QUEST               = 113
+    NPC_COWLEN                  = 17311,
+    SAY_COWLEN                  = 0,
+    EVENT_ACCEPT_QUEST          = 1,
+    EVENT_START_ESCORT          = 2,
+    EVENT_STAND                 = 3,
+    EVENT_TALK_END              = 4,
+    EVENT_COWLEN_TALK           = 5,
+    QUEST_A_CRY_FOR_HELP        = 9528,
+    FACTION_ESCORTEE            = 113
 };
 
 class npc_magwin : public CreatureScript
@@ -369,7 +376,10 @@ public:
     {
         npc_magwinAI(Creature* creature) : npc_escortAI(creature) { }
 
-        void Reset() { }
+        void Reset()
+        {
+            _events.Reset();
+        }
 
         void EnterCombat(Unit* who)
         {
@@ -378,10 +388,10 @@ public:
 
         void sQuestAccept(Player* player, Quest const* quest)
         {
-            if (quest->GetQuestId() == QUEST_A_CRY_FOR_SAY_HELP)
+            if (quest->GetQuestId() == QUEST_A_CRY_FOR_HELP)
             {
-                me->setFaction(FACTION_QUEST);
-                npc_escortAI::Start(true, false, player->GetGUID());
+                _player = player->GetGUID();
+                _events.ScheduleEvent(EVENT_ACCEPT_QUEST, 2000);
             }
         }
 
@@ -391,23 +401,75 @@ public:
             {
                 switch (waypointId)
                 {
-                    case 0:
-                        Talk(SAY_START, player);
-                        break;
-                    case 17:
+                    case 45:
                         Talk(SAY_PROGRESS, player);
                         break;
-                    case 28:
-                        Talk(SAY_END1, player);
+                    case 71:
+                        player->GroupEventHappens(QUEST_A_CRY_FOR_HELP, me);
+                        _events.ScheduleEvent(EVENT_TALK_END, 2000);
+                        SetRun(true);
                         break;
-                    case 29:
-                        Talk(EMOTE_HUG, player);
-                        Talk(SAY_END2, player);
-                        player->GroupEventHappens(QUEST_A_CRY_FOR_SAY_HELP, me);
+                    case 73:
+                        if (Creature* cowlen = me->FindNearestCreature(NPC_COWLEN, 50.0f, true))
+                        {
+                            Talk(EMOTE_HUG, cowlen);
+                            Talk(SAY_END2, player);
+                        }
+                        break;
+                    case 74:
+                        if (Creature* cowlen = me->FindNearestCreature(NPC_COWLEN, 50.0f, true))
+                        {
+                            cowlen->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                            cowlen->AI()->EnterEvadeMode();
+                        }
                         break;
                 }
             }
         }
+
+        void UpdateEscortAI(uint32 diff)
+        {
+            _events.Update(diff);
+            if (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_ACCEPT_QUEST:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _player))
+                            Talk(SAY_START, player);
+                        me->setActive(true);
+                        me->setFaction(FACTION_ESCORTEE);
+                        _events.ScheduleEvent(EVENT_START_ESCORT, 1000);
+                        break;
+                    case EVENT_START_ESCORT:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _player))
+                            npc_escortAI::Start(true, false, player->GetGUID(), sObjectMgr->GetQuestTemplate(QUEST_A_CRY_FOR_HELP));
+                        _events.ScheduleEvent(EVENT_STAND, 2000);
+                        break;
+                    case EVENT_STAND: // Remove kneel standstate. Using a separate delayed event because it causes unwanted delay before starting waypoint movement.
+                        me->SetStandState(UNIT_STAND_STATE_STAND);
+                        break;
+                    case EVENT_TALK_END:
+                        if (Player* player = ObjectAccessor::GetPlayer(*me, _player))
+                            Talk(SAY_END1, player);
+                        _events.ScheduleEvent(EVENT_COWLEN_TALK, 2000);
+                        break;
+                    case EVENT_COWLEN_TALK:
+                        if (Creature* cowlen = me->FindNearestCreature(NPC_COWLEN, 50.0f, true))
+                        {
+                            cowlen->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                            cowlen->SetStandState(UNIT_STAND_STATE_STAND);
+                            cowlen->AI()->Talk(SAY_COWLEN);
+                            cowlen->GetMotionMaster()->MovePoint(0, -5355.42, -11173.2, 6.86411);
+                        }
+                        break;
+                }
+            }
+            npc_escortAI::UpdateEscortAI(diff);
+        }
+    private:
+        EventMap _events;
+        uint64 _player;
     };
 
     CreatureAI* GetAI(Creature* creature) const
