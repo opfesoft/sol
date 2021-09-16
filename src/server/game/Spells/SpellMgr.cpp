@@ -3373,6 +3373,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 19721: // Resurrect Trooper (used by Demetria)
             spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_TARGET_ANY;
             break;
+        case 38722: // Spellbind Azaloth (used by Sunfury Warlock)
+        case 37834: // Unbanish Azaloth (used by the player)
+            spellInfo->AttributesEx |= SPELL_ATTR1_UNAFFECTED_BY_SCHOOL_IMMUNE;
+            break;
 
 
         /////////////////////////////////////////////
