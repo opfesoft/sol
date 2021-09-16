@@ -82,7 +82,7 @@ enum ScriptCommands
     SCRIPT_COMMAND_QUEST_EXPLORED        = 7,                // target/source = Player, target/source = GO/Creature, datalong = quest id, datalong2 = distance or 0
     SCRIPT_COMMAND_KILL_CREDIT           = 8,                // target/source = Player, datalong = creature entry, datalong2 = 0: personal credit, 1: group credit
     SCRIPT_COMMAND_RESPAWN_GAMEOBJECT    = 9,                // source = WorldObject (summoner), datalong = GO guid, datalong2 = despawn delay
-    SCRIPT_COMMAND_TEMP_SUMMON_CREATURE  = 10,               // source = WorldObject (summoner), datalong = creature entry, datalong2 = despawn delay, x/y/z = summon position, o = orientation
+    SCRIPT_COMMAND_TEMP_SUMMON_CREATURE  = 10,               // source = WorldObject (summoner), datalong = creature entry, datalong2 = despawn delay, dataint = summon type (if > 0: check if the creature already exists within 60y before summoning and use the value as summon type, if < 0: just summon using the absolute value as summon type, if = 0: use summon type TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, don't check for existence), x/y/z = summon position, o = orientation
     SCRIPT_COMMAND_OPEN_DOOR             = 11,               // source = Unit, datalong = GO guid, datalong2 = reset delay (min 15)
     SCRIPT_COMMAND_CLOSE_DOOR            = 12,               // source = Unit, datalong = GO guid, datalong2 = reset delay (min 15)
     SCRIPT_COMMAND_ACTIVATE_OBJECT       = 13,               // source = Unit, target = GO
@@ -257,7 +257,7 @@ struct ScriptInfo
         {
             uint32 CreatureEntry;   // datalong
             uint32 DespawnDelay;    // datalong2
-            uint32 CheckIfExists;   // dataint
+            int32 SummonType;       // dataint
 
             float PosX;
             float PosY;

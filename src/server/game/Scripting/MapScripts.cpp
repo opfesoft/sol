@@ -648,12 +648,16 @@ void Map::ScriptsProcess()
                         float z = step.script->TempSummonCreature.PosZ;
                         float o = step.script->TempSummonCreature.Orientation;
 
-                        if (step.script->TempSummonCreature.CheckIfExists)
+                        if (step.script->TempSummonCreature.SummonType > 0)
                             if (Unit* trigger = pSummoner->SummonTrigger(x, y, z, o, 1))
                                 if (trigger->FindNearestCreature(entry, 60.0f))
                                     break;
 
-                        if (!pSummoner->SummonCreature(entry, x, y, z, o, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, step.script->TempSummonCreature.DespawnDelay))
+                        int32 summonType = std::abs(step.script->TempSummonCreature.SummonType);
+                        if (summonType == 0)
+                            summonType = 1; // use default summon type: TEMPSUMMON_TIMED_OR_DEAD_DESPAWN
+
+                        if (!pSummoner->SummonCreature(entry, x, y, z, o, static_cast<TempSummonType>(summonType), step.script->TempSummonCreature.DespawnDelay))
                             sLog->outError("%s creature was not spawned (entry: %u).", step.script->GetDebugInfo().c_str(), step.script->TempSummonCreature.CreatureEntry);
                     }
                 }

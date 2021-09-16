@@ -4837,6 +4837,13 @@ void ObjectMgr::LoadScripts(ScriptsType type)
                         tableName.c_str(), tmp.TempSummonCreature.CreatureEntry, tmp.id);
                     continue;
                 }
+
+                if (tmp.TempSummonCreature.SummonType < -(TEMPSUMMON_MANUAL_DESPAWN) || tmp.TempSummonCreature.SummonType > TEMPSUMMON_MANUAL_DESPAWN)
+                {
+                    sLog->outErrorDb("Table `%s` has invalid summon type %i (dataint %i) in SCRIPT_COMMAND_TEMP_SUMMON_CREATURE for script id %u",
+                        tableName.c_str(), std::abs(tmp.TempSummonCreature.SummonType), tmp.TempSummonCreature.SummonType, tmp.id);
+                    continue;
+                }
                 break;
             }
 
