@@ -852,46 +852,11 @@ class spell_item_gnomish_universal_remote : public SpellScriptLoader
         }
 };
 
-class spell_item_strong_anti_venom : public SpellScriptLoader
+enum AntiVenomSpells
 {
-    public:
-        spell_item_strong_anti_venom() : SpellScriptLoader("spell_item_strong_anti_venom") {}
-
-        class spell_item_strong_anti_venom_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_item_strong_anti_venom_SpellScript);
-
-            void HandleDummy(SpellEffIndex effIndex)
-            {
-                PreventHitDefaultEffect(effIndex);
-                if (Unit* target = GetHitUnit())
-                {
-                    std::list<uint32> removeList;
-                    Unit::AuraMap const& auras = target->GetOwnedAuras();
-                    for (Unit::AuraMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
-                    {
-                        Aura* aura = itr->second;
-                        if (aura->GetSpellInfo()->SpellLevel > 35 || aura->GetSpellInfo()->Dispel != DISPEL_POISON)
-                            continue;
-
-                        removeList.push_back(aura->GetId());
-                    }
-
-                    for (std::list<uint32>::const_iterator itr = removeList.begin(); itr != removeList.end(); ++itr)
-                        target->RemoveAurasDueToSpell(*itr);
-                }
-            }
-
-            void Register()
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_item_strong_anti_venom_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_item_strong_anti_venom_SpellScript();
-        }
+    SPELL_ANTI_VENOM          =  7932,
+    SPELL_STRONG_ANTI_VENOM   =  7933,
+    SPELL_POWERFUL_ANTI_VENOM = 23786
 };
 
 class spell_item_anti_venom : public SpellScriptLoader
@@ -906,14 +871,29 @@ public:
         void HandleDummy(SpellEffIndex effIndex)
         {
             PreventHitDefaultEffect(effIndex);
-            if (Unit* target = GetHitUnit())
+
+            uint32 poisonSpellLevel = 0;
+            switch(GetSpellInfo()->Id)
+            {
+                case SPELL_ANTI_VENOM:
+                    poisonSpellLevel = 25;
+                    break;
+                case SPELL_STRONG_ANTI_VENOM:
+                    poisonSpellLevel = 35;
+                    break;
+                case SPELL_POWERFUL_ANTI_VENOM:
+                    poisonSpellLevel = 60;
+                    break;
+            }
+
+            if (Unit* target = GetHitUnit(); target && poisonSpellLevel > 0)
             {
                 std::list<uint32> removeList;
                 Unit::AuraMap const& auras = target->GetOwnedAuras();
                 for (Unit::AuraMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
                 {
                     Aura* aura = itr->second;
-                    if (aura->GetSpellInfo()->SpellLevel > 25 || aura->GetSpellInfo()->Dispel != DISPEL_POISON)
+                    if (aura->GetSpellInfo()->SpellLevel > poisonSpellLevel || aura->GetSpellInfo()->Dispel != DISPEL_POISON)
                         continue;
 
                     removeList.push_back(aura->GetId());
@@ -4346,7 +4326,6 @@ void AddSC_item_spell_scripts()
     new spell_item_skull_of_impeding_doom();
     new spell_item_feast();
     new spell_item_gnomish_universal_remote();
-    new spell_item_strong_anti_venom();
     new spell_item_anti_venom();
     new spell_item_gnomish_shrink_ray();
     new spell_item_goblin_weather_machine();
