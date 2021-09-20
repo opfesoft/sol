@@ -4392,6 +4392,11 @@ void SmartScript::InstallEvents()
     }
 }
 
+void SmartScript::ClearTimedActionList()
+{
+    mTimedActionList.clear();
+}
+
 void SmartScript::OnUpdate(uint32 const diff)
 {
     if ((mScriptType == SMART_SCRIPT_TYPE_CREATURE || mScriptType == SMART_SCRIPT_TYPE_GAMEOBJECT) && !GetBaseObject())

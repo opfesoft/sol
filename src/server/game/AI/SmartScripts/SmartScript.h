@@ -73,6 +73,8 @@ class SmartScript
             return obj && obj->IsInWorld() && obj->GetTypeId() == TYPEID_GAMEOBJECT;
         }
 
+        void ClearTimedActionList();
+
         void OnUpdate(const uint32 diff);
         void OnMoveInLineOfSight(Unit* who);
 

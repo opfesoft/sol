@@ -750,6 +750,7 @@ bool SmartAI::AssistPlayerInCombat(Unit* who)
 
 void SmartAI::JustRespawned()
 {
+    GetScript()->ClearTimedActionList();
     mDespawnTime = 0;
     mDespawnState = 0;
     mEscortState = SMART_ESCORT_NONE;
