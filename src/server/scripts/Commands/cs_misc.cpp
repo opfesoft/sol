@@ -70,6 +70,7 @@ public:
             { "groupsummon",        SEC_GAMEMASTER,         false, &HandleGroupSummonCommand,           "" },
             { "commands",           SEC_PLAYER,             true,  &HandleCommandsCommand,              "" },
             { "die",                SEC_GAMEMASTER,         false, &HandleDieCommand,                   "" },
+            { "despawn",            SEC_GAMEMASTER,         false, &HandleDespawnCommand,               "" },
             { "revive",             SEC_GAMEMASTER,         true,  &HandleReviveCommand,                "" },
             { "dismount",           SEC_PLAYER,             false, &HandleDismountCommand,              "" },
             { "guid",               SEC_GAMEMASTER,         false, &HandleGUIDCommand,                  "" },
@@ -888,6 +889,21 @@ public:
                 Unit::DealDamage(handler->GetSession()->GetPlayer(), target, target->GetHealth(), nullptr, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, nullptr, false, true);
         }
 
+        return true;
+    }
+
+    static bool HandleDespawnCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        Creature* target = handler->getSelectedCreature();
+
+        if (!target)
+        {
+            handler->PSendSysMessage(LANG_SELECT_CREATURE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        target->DespawnOrUnsummon(1);
         return true;
     }
 
