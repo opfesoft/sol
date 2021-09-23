@@ -1537,27 +1537,27 @@ enum Sayge
     SPELL_STM      = 23737, // stm
     SPELL_STR      = 23735, // str
     SPELL_AGI      = 23736, // agi
-    SPELL_FORTUNE  = 23765  // faire fortune
-};
+    SPELL_FORTUNE  = 23765, // faire fortune
 
-#define GOSSIP_HELLO_SAYGE          "Yes"
-#define GOSSIP_SENDACTION_SAYGE1    "Slay the Man"
-#define GOSSIP_SENDACTION_SAYGE2    "Turn him over to liege"
-#define GOSSIP_SENDACTION_SAYGE3    "Confiscate the corn"
-#define GOSSIP_SENDACTION_SAYGE4    "Let him go and have the corn"
-#define GOSSIP_SENDACTION_SAYGE5    "Execute your friend painfully"
-#define GOSSIP_SENDACTION_SAYGE6    "Execute your friend painlessly"
-#define GOSSIP_SENDACTION_SAYGE7    "Let your friend go"
-#define GOSSIP_SENDACTION_SAYGE8    "Confront the diplomat"
-#define GOSSIP_SENDACTION_SAYGE9    "Show not so quiet defiance"
-#define GOSSIP_SENDACTION_SAYGE10   "Remain quiet"
-#define GOSSIP_SENDACTION_SAYGE11   "Speak against your brother openly"
-#define GOSSIP_SENDACTION_SAYGE12   "Help your brother in"
-#define GOSSIP_SENDACTION_SAYGE13   "Keep your brother out without letting him know"
-#define GOSSIP_SENDACTION_SAYGE14   "Take credit, keep gold"
-#define GOSSIP_SENDACTION_SAYGE15   "Take credit, share the gold"
-#define GOSSIP_SENDACTION_SAYGE16   "Let the knight take credit"
-#define GOSSIP_SENDACTION_SAYGE17   "Thanks"
+    GOSSIP_SAYGE_NPC_TEXT_HELLO      = 7339,
+    GOSSIP_SAYGE_NPC_TEXT_SORRY      = 7393,
+    GOSSIP_SAYGE_MENU_HELLO          = 6186,
+    GOSSIP_SAYGE_NPC_TEXT_QUESTION_1 = 7340,
+    GOSSIP_SAYGE_MENU_QUESTION_1     = 6185,
+    GOSSIP_SAYGE_NPC_TEXT_QUESTION_2 = 7341,
+    GOSSIP_SAYGE_MENU_QUESTION_2     = 6187,
+    GOSSIP_SAYGE_NPC_TEXT_QUESTION_3 = 7361,
+    GOSSIP_SAYGE_MENU_QUESTION_3     = 6208,
+    GOSSIP_SAYGE_NPC_TEXT_QUESTION_4 = 7362,
+    GOSSIP_SAYGE_MENU_QUESTION_4     = 6209,
+    GOSSIP_SAYGE_NPC_TEXT_QUESTION_5 = 7363,
+    GOSSIP_SAYGE_MENU_QUESTION_5     = 6210,
+    GOSSIP_SAYGE_NPC_TEXT_FORTUNE    = 7364,
+    GOSSIP_SAYGE_MENU_FORTUNE        = 6211,
+    GOSSIP_SAYGE_NPC_TEXT_BYE        = 7365,
+
+    EVENT_SAYGE_TALK                 =    1
+};
 
 class npc_sayge : public CreatureScript
 {
@@ -1577,11 +1577,11 @@ public:
             player->HasSpellCooldown(SPELL_AGI) ||
             player->HasSpellCooldown(SPELL_STM) ||
             player->HasSpellCooldown(SPELL_SPI))
-            SendGossipMenuFor(player, 7393, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_SORRY, creature->GetGUID());
         else
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HELLO_SAYGE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            SendGossipMenuFor(player, 7339, creature->GetGUID());
+            AddGossipItemFor(player, GOSSIP_SAYGE_MENU_HELLO, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_HELLO, creature->GetGUID());
         }
 
         return true;
@@ -1592,43 +1592,43 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE1,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE2,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE3,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE4,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
-                SendGossipMenuFor(player, 7340, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_1, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_1, 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_1, 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_QUESTION_1, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE5,            GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE6,            GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE7,            GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF);
-                SendGossipMenuFor(player, 7341, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_2, 0, GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_2, 1, GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_2, 2, GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF);
+                SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_QUESTION_2, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE8,            GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE9,            GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE10,           GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF);
-                SendGossipMenuFor(player, 7361, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_3, 0, GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_3, 1, GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_3, 2, GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF);
+                SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_QUESTION_3, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 4:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE11,           GOSSIP_SENDER_MAIN + 6, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE12,           GOSSIP_SENDER_MAIN + 7, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE13,           GOSSIP_SENDER_MAIN + 8, GOSSIP_ACTION_INFO_DEF);
-                SendGossipMenuFor(player, 7362, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_4, 0, GOSSIP_SENDER_MAIN + 6, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_4, 1, GOSSIP_SENDER_MAIN + 7, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_4, 2, GOSSIP_SENDER_MAIN + 8, GOSSIP_ACTION_INFO_DEF);
+                SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_QUESTION_4, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 5:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE14,           GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE15,           GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE16,           GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF);
-                SendGossipMenuFor(player, 7363, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_5, 0, GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_5, 1, GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_QUESTION_5, 2, GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF);
+                SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_QUESTION_5, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE17,           GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
-                SendGossipMenuFor(player, 7364, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_SAYGE_MENU_FORTUNE, 0, GOSSIP_SENDER_MAIN + 9, GOSSIP_ACTION_INFO_DEF + 6);
+                SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_FORTUNE, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 6:
                 creature->CastSpell(player, SPELL_FORTUNE, false);
-                SendGossipMenuFor(player, 7365, creature->GetGUID());
+                SendGossipMenuFor(player, GOSSIP_SAYGE_NPC_TEXT_BYE, creature->GetGUID());
                 break;
         }
     }
@@ -1639,50 +1639,84 @@ public:
         switch (sender)
         {
             case GOSSIP_SENDER_MAIN:
+            case GOSSIP_SENDER_MAIN + 9:
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 1:
                 creature->CastSpell(player, SPELL_DMG, false);
-                player->AddSpellCooldown(SPELL_DMG, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_DMG, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 2:
                 creature->CastSpell(player, SPELL_RES, false);
-                player->AddSpellCooldown(SPELL_RES, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_RES, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 3:
                 creature->CastSpell(player, SPELL_ARM, false);
-                player->AddSpellCooldown(SPELL_ARM, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_ARM, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 4:
                 creature->CastSpell(player, SPELL_SPI, false);
-                player->AddSpellCooldown(SPELL_SPI, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_SPI, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 5:
                 creature->CastSpell(player, SPELL_INT, false);
-                player->AddSpellCooldown(SPELL_INT, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_INT, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 6:
                 creature->CastSpell(player, SPELL_STM, false);
-                player->AddSpellCooldown(SPELL_STM, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_STM, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 7:
                 creature->CastSpell(player, SPELL_STR, false);
-                player->AddSpellCooldown(SPELL_STR, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_STR, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 8:
                 creature->CastSpell(player, SPELL_AGI, false);
-                player->AddSpellCooldown(SPELL_AGI, 0, 2*HOUR*IN_MILLISECONDS);
+                player->AddSpellCooldown(SPELL_AGI, 0, 4*HOUR*IN_MILLISECONDS);
                 SendAction(player, creature, action);
                 break;
         }
         return true;
+    }
+
+    struct npc_saygeAI : public ScriptedAI
+    {
+        npc_saygeAI(Creature* creature) : ScriptedAI(creature) { }
+
+        EventMap events;
+
+        void Reset() override
+        {
+            events.Reset();
+            events.ScheduleEvent(EVENT_SAYGE_TALK, urand(0, 240000));
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+
+            switch (events.ExecuteEvent())
+            {
+                case EVENT_SAYGE_TALK:
+                    Talk(0);
+                    events.ScheduleEvent(EVENT_SAYGE_TALK, urand(180000, 240000));
+                    break;
+            }
+
+            ScriptedAI::UpdateAI(diff);
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_saygeAI(creature);
     }
 };
 
