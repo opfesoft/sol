@@ -14658,6 +14658,7 @@ void CharmInfo::InitPossessCreateSpells()
             case 27664: // Crashin' Thrashin' Racer
             case 40281: // Crashin' Thrashin' Racer
             case 23109: // Vengeful Spirit
+            case 19405: // Steam Tonk
                 break;
             default:
                 InitEmptyActionBar();

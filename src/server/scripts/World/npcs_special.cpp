@@ -50,6 +50,7 @@ EndContentData */
 #include "WaypointManager.h"
 #include "SmartAI.h"
 #include "DBCStructure.h"
+#include "SpellScript.h"
 
 enum elderClearwater
 {
@@ -1727,7 +1728,10 @@ public:
 
     struct npc_steam_tonkAI : public ScriptedAI
     {
-        npc_steam_tonkAI(Creature* creature) : ScriptedAI(creature) { }
+        npc_steam_tonkAI(Creature* creature) : ScriptedAI(creature)
+        {
+            creature->SetLevel(60);
+        }
 
         void Reset() { }
         void EnterCombat(Unit* /*who*/) { }
