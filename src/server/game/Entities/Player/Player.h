@@ -2124,7 +2124,7 @@ class Player : public Unit, public GridObject<Player>
         void RewardReputation(Unit* victim, float rate);
         void RewardReputation(Quest const* quest);
 
-        int32 CalculateReputationGain(ReputationSource source, uint32 creatureOrQuestLevel, int32 rep, int32 faction, bool noQuestBonus = false);
+        int32 CalculateReputationGain(ReputationSource source, uint32 creatureOrQuestLevel, int32 rep, int32 faction);
 
         void UpdateSkillsForLevel();
         void UpdateSkillsToMaxSkillsForLevel();             // for .levelup
