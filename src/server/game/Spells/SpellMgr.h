@@ -219,49 +219,6 @@ enum ProcFlagsExLegacy
     PROC_EX_EVADE | PROC_EX_IMMUNE | PROC_EX_DEFLECT | \
     PROC_EX_ABSORB | PROC_EX_REFLECT | PROC_EX_INTERRUPT)
 
-enum ProcFlagsSpellType
-{
-    PROC_SPELL_TYPE_NONE              = 0x0000000,
-    PROC_SPELL_TYPE_DAMAGE            = 0x0000001, // damage type of spell
-    PROC_SPELL_TYPE_HEAL              = 0x0000002, // heal type of spell
-    PROC_SPELL_TYPE_NO_DMG_HEAL       = 0x0000004, // other spells
-    PROC_SPELL_TYPE_MASK_ALL          = PROC_SPELL_TYPE_DAMAGE | PROC_SPELL_TYPE_HEAL | PROC_SPELL_TYPE_NO_DMG_HEAL
-};
-
-enum ProcFlagsSpellPhase
-{
-    PROC_SPELL_PHASE_NONE             = 0x0000000,
-    PROC_SPELL_PHASE_CAST             = 0x0000001,
-    PROC_SPELL_PHASE_HIT              = 0x0000002,
-    PROC_SPELL_PHASE_FINISH           = 0x0000004,
-    PROC_SPELL_PHASE_MASK_ALL         = PROC_SPELL_PHASE_CAST | PROC_SPELL_PHASE_HIT | PROC_SPELL_PHASE_FINISH
-};
-
-enum ProcFlagsHit
-{
-    PROC_HIT_NONE                = 0x0000000, // no value - PROC_HIT_NORMAL | PROC_HIT_CRITICAL for TAKEN proc type, PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_ABSORB for DONE
-    PROC_HIT_NORMAL              = 0x0000001, // non-critical hits
-    PROC_HIT_CRITICAL            = 0x0000002,
-    PROC_HIT_MISS                = 0x0000004,
-    PROC_HIT_FULL_RESIST         = 0x0000008,
-    PROC_HIT_DODGE               = 0x0000010,
-    PROC_HIT_PARRY               = 0x0000020,
-    PROC_HIT_BLOCK               = 0x0000040, // partial or full block
-    PROC_HIT_EVADE               = 0x0000080,
-    PROC_HIT_IMMUNE              = 0x0000100,
-    PROC_HIT_DEFLECT             = 0x0000200,
-    PROC_HIT_ABSORB              = 0x0000400, // partial or full absorb
-    PROC_HIT_REFLECT             = 0x0000800,
-    PROC_HIT_INTERRUPT           = 0x0001000, // (not used atm)
-    PROC_HIT_FULL_BLOCK          = 0x0002000,
-    PROC_HIT_MASK_ALL = 0x2FFF,
-};
-
-enum ProcAttributes
-{
-    PROC_ATTR_REQ_EXP_OR_HONOR   = 0x0000010,
-};
-
 struct SpellProcEventEntry
 {
     uint32      schoolMask;                                 // if nonzero - bit mask for matching proc condition based on spell candidate's school: Fire=2, Mask=1<<(2-1)=2
