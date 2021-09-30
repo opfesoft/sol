@@ -1,0 +1,28 @@
+-- DB update 2021_09_30_01 -> 2021_09_30_02
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2021_09_30_01';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2021_09_30_01 2021_09_30_02 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1632985570358675765'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1632985570358675765');
+
+UPDATE `smart_scripts` SET `event_param5` = 20, `target_type` = 7 WHERE `entryorguid` = 12352 AND `source_type` = 0 AND `id` = 5;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
