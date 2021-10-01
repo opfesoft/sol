@@ -125,6 +125,17 @@ public:
             WorldDatabase.DirectExecute(stmt);
             handler->PSendSysMessage("%s%s%u%s|r", "|cff00ff00", "Waypoints greater than |r|cff00ffff", point, "|r|cff00ff00 shifted up.");
         }
+        else
+        {
+            pathid = atoi(path_number);
+
+            PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_MAX_POINT);
+            stmt->setUInt32(0, pathid);
+            PreparedQueryResult result = WorldDatabase.Query(stmt);
+
+            if (result)
+                point = (*result)[0].GetUInt32();
+        }
 
         Player* player = handler->GetSession()->GetPlayer();
 
