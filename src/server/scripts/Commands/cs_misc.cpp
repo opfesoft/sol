@@ -1297,7 +1297,7 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
         uint32 zone_id = player->GetZoneId();
 
-        GraveyardStruct const* graveyard = sGraveyard->GetClosestGraveyard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), teamId);
+        GraveyardStruct const* graveyard = sGraveyard->GetClosestGraveyard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), teamId, player->getClass());
 
         if (graveyard)
         {

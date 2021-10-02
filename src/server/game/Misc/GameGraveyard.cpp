@@ -70,7 +70,7 @@ GraveyardStruct const* Graveyard::GetDefaultGraveyard(TeamId teamId)
     return sGraveyard->GetGraveyard(teamId == TEAM_HORDE ? HORDE_GRAVEYARD : ALLIANCE_GRAVEYARD);
 }
 
-GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z, uint32 MapId, TeamId teamId)
+GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z, uint32 MapId, TeamId teamId, uint8 playerClass)
 {
     // search for zone associated closest graveyard
     uint32 zoneId = sMapMgr->GetZoneId(MapId, x, y, z);
@@ -119,6 +119,9 @@ GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z,
     for (; range.first != range.second; ++range.first)
     {
         GraveyardData const& data = range.first->second;
+        if (data.classMask != 0 && !(data.classMask & (1<<(playerClass - 1))))
+            continue;
+
         GraveyardStruct const* entry = sGraveyard->GetGraveyard(data.safeLocId);
         if (!entry)
         {
@@ -206,7 +209,7 @@ GraveyardData const* Graveyard::FindGraveyardData(uint32 id, uint32 zoneId)
     return NULL;
 }
 
-bool Graveyard::AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool persist /*= true*/)
+bool Graveyard::AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool persist /*= true*/, uint32 classMask /*= 0*/)
 {
     if (FindGraveyardData(id, zoneId))
         return false;
@@ -215,6 +218,7 @@ bool Graveyard::AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool p
     GraveyardData data;
     data.safeLocId = id;
     data.teamId = teamId;
+    data.classMask = classMask;
 
     GraveyardStore.insert(WGGraveyardContainer::value_type(zoneId, data));
 
@@ -289,8 +293,8 @@ void Graveyard::LoadGraveyardZones()
 
     GraveyardStore.clear(); // need for reload case
 
-    //                                                0       1         2
-    QueryResult result = WorldDatabase.Query("SELECT ID, GhostZone, Faction FROM graveyard_zone");
+    //                                                0       1         2        3
+    QueryResult result = WorldDatabase.Query("SELECT ID, GhostZone, Faction, ClassMask FROM graveyard_zone");
 
     if (!result)
     {
@@ -310,6 +314,7 @@ void Graveyard::LoadGraveyardZones()
         uint32 safeLocId = fields[0].GetUInt32();
         uint32 zoneId = fields[1].GetUInt32();
         uint32 team = fields[2].GetUInt16();
+        uint32 classMask = fields[3].GetUInt16();
         TeamId teamId = team == 0 ? TEAM_NEUTRAL : (team == ALLIANCE ? TEAM_ALLIANCE : TEAM_HORDE);
 
         GraveyardStruct const* entry = sGraveyard->GetGraveyard(safeLocId);
@@ -338,7 +343,13 @@ void Graveyard::LoadGraveyardZones()
             continue;
         }
 
-        if (!AddGraveyardLink(safeLocId, zoneId, teamId, false))
+        if (classMask != 0 && !(classMask & CLASSMASK_ALL_PLAYABLE))
+        {
+            sLog->outErrorDb("Table `graveyard_zone` has a record for not playable class (%u), skipped.", classMask);
+            continue;
+        }
+
+        if (!AddGraveyardLink(safeLocId, zoneId, teamId, false, classMask))
             sLog->outErrorDb("Table `graveyard_zone` has a duplicate record for Graveyard (ID: %u) and Zone (ID: %u), skipped.", safeLocId, zoneId);
 
     } while (result->NextRow());
