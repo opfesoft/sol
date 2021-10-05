@@ -689,9 +689,9 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
         {
-            // Special handling for vehicles
             if (IsUnit(*itr))
             {
+                // Special handling for vehicles
                 if (Vehicle* vehicle = (*itr)->ToUnit()->GetVehicleKit())
                     for (SeatMap::iterator it = vehicle->Seats.begin(); it != vehicle->Seats.end(); ++it)
                         if (Player* player = ObjectAccessor::GetPlayer(*(*itr), it->second.Passenger.Guid))
@@ -699,7 +699,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
                 if (Player* player = (*itr)->ToUnit()->GetCharmerOrOwnerPlayerOrPlayerItself())
                 {
-                    player->GroupEventHappens(e.action.quest.quest, me);
+                    player->AreaExploredOrEventHappens(e.action.quest.quest);
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
                     sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_CALL_AREAEXPLOREDOREVENTHAPPENS: Player guidLow %u credited quest %u",
                         (*itr)->GetGUIDLow(), e.action.quest.quest);
@@ -1061,6 +1061,12 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         {
             if (IsUnit((*itr)))
             {
+                // Special handling for vehicles
+                if (Vehicle* vehicle = (*itr)->ToUnit()->GetVehicleKit())
+                    for (SeatMap::iterator it = vehicle->Seats.begin(); it != vehicle->Seats.end(); ++it)
+                        if (Player* player = ObjectAccessor::GetPlayer(*(*itr), it->second.Passenger.Guid))
+                            player->GroupEventHappens(e.action.quest.quest, GetBaseObject());
+
                 if (Player* player = (*itr)->ToUnit()->GetCharmerOrOwnerPlayerOrPlayerItself())
                     player->GroupEventHappens(e.action.quest.quest, GetBaseObject());
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
