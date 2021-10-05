@@ -6059,6 +6059,12 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->AttributesEx &= ~SPELL_ATTR0_CANT_CANCEL;
             spellInfo->AttributesEx3 |= SPELL_ATTR3_ONLY_TARGET_PLAYERS;
             break;
+        // No Fly Zone
+        case 54469: // Plague Strike
+            spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_8_YARDS;
+            spellInfo->EffectRadiusIndex[1] = EFFECT_RADIUS_8_YARDS;
+            spellInfo->EffectRadiusIndex[2] = EFFECT_RADIUS_8_YARDS;
+            break;
 
         // ///////////////////////////////////////////
         // ////////////////ITEMS//////////////////////
