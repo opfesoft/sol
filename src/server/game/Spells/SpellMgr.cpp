@@ -3946,6 +3946,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 4511: // Imp Phase Shift
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CAST;
             break;
+        case 2585: // Eye of Kilrogg Passive (DND)
+            spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_HITBYSPELL | AURA_INTERRUPT_FLAG_TAKE_DAMAGE;
+            break;
 
 
         /////////////////////////////////
