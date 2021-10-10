@@ -540,6 +540,7 @@ class Spell
             int32  damage;
         };
         std::list<TargetInfo>* GetUniqueTargetInfo() { return &m_UniqueTargetInfo; }
+        uint32 GetTriggeredByAuraTickNumber() const { return m_triggeredByAuraTickNumber; }
     protected:
         bool HasGlobalCooldown() const;
         void TriggerGlobalCooldown();
@@ -715,6 +716,7 @@ class Spell
         // we can't store original aura link to prevent access to deleted auras
         // and in same time need aura data and after aura deleting.
         SpellInfo const* m_triggeredByAuraSpell;
+        uint32 m_triggeredByAuraTickNumber;
 
         bool m_skipCheck;
         uint8 m_auraScaleMask;
