@@ -3104,13 +3104,6 @@ void SpellMgr::LoadDbcDataCorrections()
             case 52612: // Summon Skeletons
                 spellInfo->EffectMiscValueB[0] = 64;
                 break;
-            case 45257: // Using Steam Tonk Controller
-            case 45440: // Steam Tonk Controller
-            case 60256: // Collect Sample
-            case 45634: // Neural Needle
-                // Crashes client on pressing ESC
-                spellInfo->AttributesEx4 &= ~SPELL_ATTR4_CAN_CAST_WHILE_CASTING;
-                break;
             case 40244: // Simon Game Visual
             case 40245: // Simon Game Visual
             case 40246: // Simon Game Visual
@@ -5852,7 +5845,6 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->Effect[1] = SPELL_EFFECT_DUMMY;
             spellInfo->EffectRadiusIndex[1] = spellInfo->EffectRadiusIndex[0];
             spellInfo->EffectImplicitTargetA[1] = TARGET_UNIT_DEST_AREA_ENTRY;
-			spellInfo->AttributesEx4 &= ~SPELL_ATTR4_CAN_CAST_WHILE_CASTING;
             break;
         // Still At It (12644)
         case 51931:
@@ -6015,10 +6007,6 @@ void SpellMgr::LoadDbcDataCorrections()
         // Blightbeasts be Damned! (12072)
         case 47424:
             spellInfo->AuraInterruptFlags &= ~AURA_INTERRUPT_FLAG_NOT_ABOVEWATER;
-            break;
-        // Leading the Charge (13380), All Infra-Green bomber quests
-        case 59059:
-            spellInfo->AttributesEx4 &= ~SPELL_ATTR4_CAN_CAST_WHILE_CASTING;
             break;
         // Dark Horizon (12664), Reunited (12663)
         case 52190:
