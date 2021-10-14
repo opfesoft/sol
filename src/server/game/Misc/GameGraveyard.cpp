@@ -22,10 +22,10 @@ void Graveyard::LoadGraveyardFromDB()
     do
     {
         Field* fields = result->Fetch();
-        uint32 ID = fields[0].GetUInt32();
 
         GraveyardStruct Graveyard;
 
+        Graveyard.ID = fields[0].GetUInt32();
         Graveyard.Map = fields[1].GetUInt32();
         Graveyard.x = fields[2].GetFloat();
         Graveyard.y = fields[3].GetFloat();
@@ -34,13 +34,13 @@ void Graveyard::LoadGraveyardFromDB()
         
         if (!Utf8toWStr(Graveyard.name, Graveyard.wnameLow))
         {
-            sLog->outErrorDb("Wrong UTF8 name for id %u in `game_graveyard` table, ignoring.", ID);
+            sLog->outErrorDb("Wrong UTF8 name for id %u in `game_graveyard` table, ignoring.", Graveyard.ID);
             continue;
         }
 
         wstrToLower(Graveyard.wnameLow);
 
-        _graveyardStore[ID] = Graveyard;
+        _graveyardStore[Graveyard.ID] = Graveyard;
 
         ++Count;
 
@@ -74,6 +74,7 @@ GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z,
 {
     // search for zone associated closest graveyard
     uint32 zoneId = sMapMgr->GetZoneId(MapId, x, y, z);
+    uint32 areaId = sMapMgr->GetAreaId(MapId, x, y, z);
 
     if (!zoneId)
     {
@@ -103,6 +104,7 @@ GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z,
 
     // at corpse map
     bool foundNear = false;
+    bool foundNearArea = false;
     float distNear = 10000;
     GraveyardStruct const* entryNear = NULL;
 
@@ -174,6 +176,8 @@ GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z,
             {
                 if (dist2 < distNear)
                 {
+                    if (foundNearArea && data.areaId != areaId)
+                        continue; // area restriction, skip if area IDs do not match
                     distNear = dist2;
                     entryNear = entry;
                 }
@@ -181,6 +185,14 @@ GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z,
             else
             {
                 foundNear = true;
+                distNear = dist2;
+                entryNear = entry;
+            }
+
+            if (!foundNearArea && data.areaId && data.areaId == areaId)
+            {
+                // area restriction, override found graveyard
+                foundNearArea = true;
                 distNear = dist2;
                 entryNear = entry;
             }
@@ -196,22 +208,22 @@ GraveyardStruct const* Graveyard::GetClosestGraveyard(float x, float y, float z,
     return entryFar;
 }
 
-GraveyardData const* Graveyard::FindGraveyardData(uint32 id, uint32 zoneId)
+GraveyardData const* Graveyard::FindGraveyardData(uint32 id, uint32 zoneId, uint32 areaId)
 {
     GraveyardMapBounds range = GraveyardStore.equal_range(zoneId);
     for (; range.first != range.second; ++range.first)
     {
         GraveyardData const& data = range.first->second;
-        if (data.safeLocId == id)
+        if (data.safeLocId == id && data.areaId == areaId)
             return &data;
     }
 
     return NULL;
 }
 
-bool Graveyard::AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool persist /*= true*/, uint32 classMask /*= 0*/)
+bool Graveyard::AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool persist /*= true*/, uint32 classMask /*= 0*/, uint32 areaId /*= 0*/)
 {
-    if (FindGraveyardData(id, zoneId))
+    if (FindGraveyardData(id, zoneId, areaId))
         return false;
 
     // add link to loaded data
@@ -219,6 +231,7 @@ bool Graveyard::AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool p
     data.safeLocId = id;
     data.teamId = teamId;
     data.classMask = classMask;
+    data.areaId = areaId;
 
     GraveyardStore.insert(WGGraveyardContainer::value_type(zoneId, data));
 
@@ -293,8 +306,8 @@ void Graveyard::LoadGraveyardZones()
 
     GraveyardStore.clear(); // need for reload case
 
-    //                                                0       1         2        3
-    QueryResult result = WorldDatabase.Query("SELECT ID, GhostZone, Faction, ClassMask FROM graveyard_zone");
+    //                                                0       1         2        3          4
+    QueryResult result = WorldDatabase.Query("SELECT ID, GhostZone, GhostArea, Faction, ClassMask FROM graveyard_zone");
 
     if (!result)
     {
@@ -313,8 +326,9 @@ void Graveyard::LoadGraveyardZones()
 
         uint32 safeLocId = fields[0].GetUInt32();
         uint32 zoneId = fields[1].GetUInt32();
-        uint32 team = fields[2].GetUInt16();
-        uint32 classMask = fields[3].GetUInt16();
+        uint32 areaId = fields[2].GetUInt32();
+        uint32 team = fields[3].GetUInt16();
+        uint32 classMask = fields[4].GetUInt16();
         TeamId teamId = team == 0 ? TEAM_NEUTRAL : (team == ALLIANCE ? TEAM_ALLIANCE : TEAM_HORDE);
 
         GraveyardStruct const* entry = sGraveyard->GetGraveyard(safeLocId);
@@ -337,6 +351,17 @@ void Graveyard::LoadGraveyardZones()
             continue;
         }
 
+        if (areaId)
+        {
+            areaEntry = sAreaTableStore.LookupEntry(areaId);
+
+            if (areaEntry->zone != zoneId)
+            {
+                sLog->outErrorDb("Table `graveyard_zone` has a record for subzone id (%u) which is not part of the zone id (%u), skipped.", areaId, zoneId);
+                continue;
+            }
+        }
+
         if (team != 0 && team != HORDE && team != ALLIANCE)
         {
             sLog->outErrorDb("Table `graveyard_zone` has a record for non player faction (%u), skipped.", team);
@@ -349,7 +374,7 @@ void Graveyard::LoadGraveyardZones()
             continue;
         }
 
-        if (!AddGraveyardLink(safeLocId, zoneId, teamId, false, classMask))
+        if (!AddGraveyardLink(safeLocId, zoneId, teamId, false, classMask, areaId))
             sLog->outErrorDb("Table `graveyard_zone` has a duplicate record for Graveyard (ID: %u) and Zone (ID: %u), skipped.", safeLocId, zoneId);
 
     } while (result->NextRow());

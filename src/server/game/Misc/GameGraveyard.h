@@ -21,6 +21,7 @@ struct GraveyardData
     uint32 safeLocId;
     TeamId teamId;
     uint32 classMask;
+    uint32 areaId;
 };
 
 typedef std::multimap<uint32, GraveyardData> WGGraveyardContainer;
@@ -38,9 +39,9 @@ public:
     GraveyardStruct const* GetGraveyard(const std::string& name) const;
     GraveyardStruct const* GetDefaultGraveyard(TeamId teamId);
     GraveyardStruct const* GetClosestGraveyard(float x, float y, float z, uint32 MapId, TeamId teamId, uint8 playerClass);
-    GraveyardData const* FindGraveyardData(uint32 id, uint32 zone);
+    GraveyardData const* FindGraveyardData(uint32 id, uint32 zone, uint32 area);
     GraveyardContainer const& GetGraveyardData() const { return _graveyardStore; }
-    bool AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool persist = true, uint32 classMask = 0);
+    bool AddGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool persist = true, uint32 classMask = 0, uint32 areaId = 0);
     void RemoveGraveyardLink(uint32 id, uint32 zoneId, TeamId teamId, bool persist = false);
     void LoadGraveyardZones();
     void LoadGraveyardFromDB();

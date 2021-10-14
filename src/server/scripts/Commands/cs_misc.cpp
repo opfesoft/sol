@@ -1296,6 +1296,7 @@ public:
 
         Player* player = handler->GetSession()->GetPlayer();
         uint32 zone_id = player->GetZoneId();
+        uint32 area_id = player->GetAreaId();
 
         GraveyardStruct const* graveyard = sGraveyard->GetClosestGraveyard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), teamId, player->getClass());
 
@@ -1303,12 +1304,18 @@ public:
         {
             uint32 graveyardId = graveyard->ID;
 
-            GraveyardData const* data = sGraveyard->FindGraveyardData(graveyardId, zone_id);
+            GraveyardData const* data = sGraveyard->FindGraveyardData(graveyardId, zone_id, area_id);
             if (!data)
             {
-                handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDERROR, graveyardId);
-                handler->SetSentErrorMessage(true);
-                return false;
+                // data not found, lookup zone only
+                data = sGraveyard->FindGraveyardData(graveyardId, zone_id, 0);
+
+                if (!data)
+                {
+                    handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDERROR, graveyardId);
+                    handler->SetSentErrorMessage(true);
+                    return false;
+                }
             }
 
             std::string team_name = handler->GetAcoreString(LANG_COMMAND_GRAVEYARD_NOTEAM);
@@ -1320,7 +1327,7 @@ public:
             else if (data->teamId == TEAM_ALLIANCE)
                 team_name = handler->GetAcoreString(LANG_COMMAND_GRAVEYARD_ALLIANCE);
 
-            handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDNEAREST, graveyardId, team_name.c_str(), zone_id);
+            handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDNEAREST, graveyardId, team_name.c_str(), data->areaId, zone_id, area_id);
         }
         else
         {
