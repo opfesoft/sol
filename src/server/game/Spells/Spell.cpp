@@ -7791,6 +7791,8 @@ void Spell::HandleLaunchPhase()
         HandleEffects(NULL, NULL, NULL, i, SPELL_EFFECT_HANDLE_LAUNCH);
     }
 
+    PrepareTargetProcessing();
+
     float multiplier[MAX_SPELL_EFFECTS];
     for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
         if (m_applyMultiplierMask & (1 << i))
@@ -7841,6 +7843,8 @@ void Spell::HandleLaunchPhase()
         DoAllEffectOnLaunchTarget(target, multiplier, firstTarget);
         firstTarget = false;
     }
+
+    FinishTargetProcessing();
 }
 
 void Spell::DoAllEffectOnLaunchTarget(TargetInfo& targetInfo, float* multiplier, bool firstTarget)
