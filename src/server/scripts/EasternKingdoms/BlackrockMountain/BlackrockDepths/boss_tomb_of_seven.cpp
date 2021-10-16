@@ -27,6 +27,20 @@ enum Misc
     DATA_SKILLPOINT_MIN                           = 230
 };
 
+enum Gossip
+{
+    GOSSIP_TEXT_CONTINUE                          = 1828,
+    GOSSIP_GROOMREL                               = 1945,
+    GOSSIP_DOOMREL_START_COMBAT                   = 1947,
+    SAY_DOOMREL_HELLO                             = 2601,
+    SAY_QUEST_ACCEPTED                            = 2604,
+    SAY_QUEST_COMPLETED                           = 2605,
+    SAY_QUEST_COMPLETED_END                       = 2606,
+    NPC_TEXT_GROOMREL                             = 2598,
+    NPC_TEXT_GROOMREL_SMELT_DARK_IRON_LEARNED     = 3297
+};
+
+
 class boss_gloomrel : public CreatureScript
 {
 public:
@@ -38,16 +52,16 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
-                AddGossipItemFor(player, 1828, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
-                SendGossipMenuFor(player, 2606, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_TEXT_CONTINUE, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
+                SendGossipMenuFor(player, SAY_QUEST_COMPLETED_END, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+11:
                 CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_LEARN_SMELT, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF+2:
-                AddGossipItemFor(player, 1828, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 22);
-                SendGossipMenuFor(player, 2604, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_TEXT_CONTINUE, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 22);
+                SendGossipMenuFor(player, SAY_QUEST_ACCEPTED, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+22:
                 CloseGossipMenuFor(player);
@@ -55,6 +69,8 @@ public:
                 {
                     //are 5 minutes expected? go template may have data to despawn when used at quest
                     instance->DoRespawnGameObject(instance->GetData64(DATA_GO_CHALICE), MINUTE*5);
+                    if (GameObject* chalice = ObjectAccessor::GetGameObject(*creature, instance->GetData64(DATA_GO_CHALICE)))
+                        chalice->UpdateObjectVisibility(true);
                 }
                 break;
         }
@@ -64,12 +80,13 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (player->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) == 1 && player->GetSkillValue(SKILL_MINING) >= DATA_SKILLPOINT_MIN && !player->HasSpell(SPELL_SMELT_DARK_IRON))
-            AddGossipItemFor(player, 1945, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, GOSSIP_GROOMREL, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-        if (player->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) == 0 && player->GetSkillValue(SKILL_MINING) >= DATA_SKILLPOINT_MIN)
-            AddGossipItemFor(player, 1945, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+        GameObject* chalice = ObjectAccessor::GetGameObject(*creature, creature->GetInstanceScript()->GetData64(DATA_GO_CHALICE));
+        if (player->GetQuestRewardStatus(QUEST_SPECTRAL_CHALICE) == 0 && player->GetSkillValue(SKILL_MINING) >= DATA_SKILLPOINT_MIN && !chalice->isSpawned())
+            AddGossipItemFor(player, GOSSIP_GROOMREL, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->HasSpell(SPELL_SMELT_DARK_IRON) ? NPC_TEXT_GROOMREL_SMELT_DARK_IRON_LEARNED : NPC_TEXT_GROOMREL, creature->GetGUID());
         return true;
     }
 };
@@ -102,8 +119,8 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
-                AddGossipItemFor(player, 1828, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                SendGossipMenuFor(player, 2605, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_TEXT_CONTINUE, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                SendGossipMenuFor(player, SAY_QUEST_COMPLETED, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+2:
                 CloseGossipMenuFor(player);
@@ -119,8 +136,8 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
-        AddGossipItemFor(player, 1947, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        SendGossipMenuFor(player, 2601, creature->GetGUID());
+        AddGossipItemFor(player, GOSSIP_DOOMREL_START_COMBAT, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        SendGossipMenuFor(player, SAY_DOOMREL_HELLO, creature->GetGUID());
 
         return true;
     }
