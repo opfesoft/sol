@@ -1,0 +1,27 @@
+-- DB update 2021_10_19_05 -> 2021_10_19_06
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_world' AND COLUMN_NAME = '2021_10_19_05';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_world CHANGE COLUMN 2021_10_19_05 2021_10_19_06 bit;
+SELECT sql_rev INTO OK FROM version_db_world WHERE sql_rev = '1634485959723104200'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_world` (`sql_rev`) VALUES ('1634485959723104200');
+UPDATE `gossip_menu_option_locale` SET `OptionText`='Danke, Eisenborke. Wir öffnen Euch die Tür.' WHERE  `MenuID`=5602 AND `OptionID`=0 AND `Locale`='deDE';
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
