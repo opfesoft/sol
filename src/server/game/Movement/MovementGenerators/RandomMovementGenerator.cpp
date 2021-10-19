@@ -132,6 +132,13 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
         }
         else // ground
         {
+            if (!map->isInLineOfSight(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()+0.3f, x, y, levelZ+0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+            {
+                _validPointsVector[_currentPoint].erase(randomIter);
+                _preComputedPaths.erase(pathIdx);
+                return;
+            }
+
             bool result = _pathGenerator->CalculatePath(x, y, levelZ, false);
             if (result && !(_pathGenerator->GetPathType() & PATHFIND_NOPATH))
             {
@@ -147,15 +154,31 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                 finalPath = _pathGenerator->GetPath();
                 Movement::PointsArray::iterator itr = finalPath.begin();
                 Movement::PointsArray::iterator itrNext = finalPath.begin()+1;
-                float zDiff, distDiff;
+                float zDiff, zDiffPre, distDiff, distX, distY, zCurrent, zNext, zNextPre, zNextPost, xNextPost, yNextPost;
 
                 for (; itrNext != finalPath.end(); ++itr, ++itrNext)
                 {
-                    distDiff = sqrt(((*itr).x-(*itrNext).x)*((*itr).x-(*itrNext).x) + ((*itr).y-(*itrNext).y)*((*itr).y-(*itrNext).y));
-                    zDiff = fabs((*itr).z - (*itrNext).z);
+                    zCurrent = zNext = zNextPre = zNextPost = INVALID_HEIGHT;
+                    distX = (*itrNext).x - (*itr).x;
+                    distY = (*itrNext).y - (*itr).y;
+                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itr).x, (*itr).y, (*itr).z + 4.0f, &zCurrent);
+                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x, (*itrNext).y, (*itrNext).z + 4.0f, &zNext);
+                    distDiff = sqrt(distX * distX + distY * distY);
+                    xNextPost = (*itrNext).x - distX / -distDiff;
+                    yNextPost = (*itrNext).y - distY / -distDiff;
+                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), xNextPost, yNextPost, (*itrNext).z + 4.0f, &zNextPost);
+                    if (distDiff > 1.0f)
+                    {
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x - distX / distDiff, (*itrNext).y - distY / distDiff, (*itrNext).z + 4.0f, &zNextPre);
+                        zDiffPre = fabs(zNext - zNextPre);
+                    }
+                    else
+                        zDiffPre = 0.f;
+
+                    zDiff = fabs(zCurrent - zNext);
 
                     // Xinef: tree climbing, cut as much as we can
-                    if (zDiff > 2.0f ||
+                    if (zDiff > 2.0f || zDiffPre > 0.5f ||
                         (G3D::fuzzyNe(zDiff, 0.0f) && distDiff / zDiff < 2.15f)) // ~25˚
                     {
                         _validPointsVector[_currentPoint].erase(randomIter);
@@ -163,7 +186,7 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                         return;
                     }
 
-                    if (!map->isInLineOfSight((*itr).x, (*itr).y, (*itr).z+2.f, (*itrNext).x, (*itrNext).y, (*itrNext).z+2.f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                    if (!map->isInLineOfSight((*itr).x, (*itr).y, zCurrent + 0.3f, xNextPost, yNextPost, zNextPost + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
                     {
                         _validPointsVector[_currentPoint].erase(randomIter);
                         _preComputedPaths.erase(pathIdx);
