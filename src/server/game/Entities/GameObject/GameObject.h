@@ -746,6 +746,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
         void SetSpawnedByDefault(bool b) { m_spawnedByDefault = b; }
         uint32 GetRespawnDelay() const { return m_respawnDelayTime; }
         void Refresh();
+        void Despawn(uint32 respawnTime, bool playDespawnAnim);
         void Delete();
         void getFishLoot(Loot* loot, Player* loot_owner);
         void getFishLootJunk(Loot* loot, Player* loot_owner);

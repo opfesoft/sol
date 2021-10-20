@@ -764,6 +764,34 @@ void GameObject::AddUniqueUse(Player* player)
     m_unique_users.insert(player->GetGUID());
 }
 
+void GameObject::Despawn(uint32 respawnTime, bool playDespawnAnim)
+{
+    SetLootState(GO_READY);
+    SetGoState(GO_STATE_READY);
+
+    if (playDespawnAnim)
+        SendObjectDeSpawnAnim(GetGUID());
+
+    if (!m_spawnedByDefault)
+    {
+        m_respawnTime = 0;
+        DestroyForNearbyPlayers();
+        return;
+    }
+
+    uint32 delay = 0;
+    if (respawnTime)
+        delay = respawnTime;
+    else if (GameObjectData const* data = sObjectMgr->GetGOData(m_DBTableGuid))
+        delay = data->spawntimesecs;
+
+    SetRespawnTime(delay);
+    if (GetMap()->IsDungeon())
+        SaveRespawnTime();
+
+    DestroyForNearbyPlayers();
+}
+
 void GameObject::Delete()
 { 
     SetLootState(GO_NOT_READY);

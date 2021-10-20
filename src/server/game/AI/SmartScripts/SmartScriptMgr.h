@@ -602,8 +602,9 @@ enum SMART_ACTION
 
     SMART_ACTION_CIRCLE_MOVE                        = 231,    // radius, clockwise (0/1), stepCount, centerSelf, speed
     SMART_ACTION_SET_HEALTH                         = 232,    // use percentage (0/1), copy from target (0/1), health
+    SMART_ACTION_DESPAWN_GO                         = 233,    // respawnTime in s, playDespawnAnim
 
-    SMART_ACTION_SOL_END                            = 233     // placeholder
+    SMART_ACTION_SOL_END                            = 234     // placeholder
 };
 
 struct SmartAction
@@ -1220,6 +1221,12 @@ struct SmartAction
             uint32 copyFromTarget;
             uint32 health;
         } setHealth;
+
+        struct
+        {
+            uint32 respawnTime;
+            uint32 playDespawnAnim;
+        } despawnGO;
 
         //! Note for any new future actions
         //! All parameters must have type uint32
