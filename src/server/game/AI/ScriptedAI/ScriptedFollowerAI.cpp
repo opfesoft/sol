@@ -16,7 +16,7 @@ EndScriptData */
 #include "Group.h"
 #include "Player.h"
 
-const float MAX_PLAYER_DISTANCE = 100.0f;
+const float MAX_PLAYER_DISTANCE = 50.0f;
 
 enum ePoints
 {
