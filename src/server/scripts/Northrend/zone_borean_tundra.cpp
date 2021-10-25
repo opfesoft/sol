@@ -549,8 +549,13 @@ enum BerylSorcerer
     NPC_LIBRARIAN_DONATHAN              = 25262,
 
     SPELL_ARCANE_CHAINS                 = 45611,
-    SPELL_COSMETIC_CHAINS               = 54324,
-    SPELL_COSMETIC_ENSLAVE_CHAINS_SELF  = 45631
+    SPELL_COSMETIC_ENSLAVE_CHAINS_SELF  = 45631,
+    SPELL_FROSTBOLT                     =  9672,
+    SPELL_BLINK                         = 50648,
+
+    EVENT_CAST_FROSTBOLT                =     1,
+    EVENT_CAST_BLINK                    =     2,
+    EVENT_CHECK_HEALTH                  =     3,
 };
 
 class npc_beryl_sorcerer : public CreatureScript
@@ -563,9 +568,11 @@ public:
         npc_beryl_sorcererAI(Creature* creature) : FollowerAI(creature) { }
 
         bool bEnslaved;
+        EventMap events;
 
         void Reset()
         {
+            events.Reset();
             me->UpdateEntry(NPC_BERYL_SORCERER);
             me->SetReactState(REACT_AGGRESSIVE);
             bEnslaved = false;
@@ -574,45 +581,65 @@ public:
         void EnterCombat(Unit* who)
         {
             if (me->IsValidAttackTarget(who))
+            {
                 AttackStart(who);
+                events.ScheduleEvent(EVENT_CAST_FROSTBOLT, 0);
+                events.ScheduleEvent(EVENT_CHECK_HEALTH, 1000);
+            }
         }
 
         void SpellHit(Unit* pCaster, const SpellInfo* pSpell)
         {
-            if (pSpell->Id == SPELL_ARCANE_CHAINS && pCaster->GetTypeId() == TYPEID_PLAYER && !HealthAbovePct(50) && !bEnslaved)
+            if (pSpell->Id == SPELL_ARCANE_CHAINS && pCaster->GetTypeId() == TYPEID_PLAYER && !HealthAbovePct(25) && !bEnslaved)
             {
                 EnterEvadeMode(); //We make sure that the npc is not attacking the player!
                 me->SetReactState(REACT_PASSIVE);
                 StartFollow(pCaster->ToPlayer(), 0, NULL);
                 me->UpdateEntry(NPC_CAPTURED_BERLY_SORCERER, NULL, false);
                 DoCast(me, SPELL_COSMETIC_ENSLAVE_CHAINS_SELF, true);
-                me->DespawnOrUnsummon(45000);
-
-                if (Player* player = pCaster->ToPlayer())
-                    player->KilledMonsterCredit(NPC_CAPTURED_BERLY_SORCERER, 0);
-
+                me->DespawnOrUnsummon(360000);
                 bEnslaved = true;
             }
         }
 
         void MoveInLineOfSight(Unit* who)
-
         {
             FollowerAI::MoveInLineOfSight(who);
 
             if (who->GetEntry() == NPC_LIBRARIAN_DONATHAN && me->IsWithinDistInMap(who, INTERACTION_DISTANCE))
             {
+                if (Player* player = GetLeaderForFollower())
+                    player->KilledMonsterCredit(NPC_CAPTURED_BERLY_SORCERER, 0);
                 SetFollowComplete();
-                me->DisappearAndDie();
             }
         }
 
-        void UpdateAI(uint32 /*diff*/)
+        void UpdateAI(uint32 diff)
         {
-            if (!UpdateVictim())
+            events.Update(diff);
+
+            if (me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
-            DoMeleeAttackIfReady();
+            if (UpdateVictim())
+                switch(events.ExecuteEvent())
+                {
+                    case EVENT_CAST_FROSTBOLT:
+                        DoCast(me->GetVictim(), SPELL_FROSTBOLT);
+                        events.ScheduleEvent(EVENT_CAST_FROSTBOLT, urand(3400, 4700));
+                        break;
+                    case EVENT_CAST_BLINK:
+                        DoCast(me, SPELL_BLINK);
+                        break;
+                    case EVENT_CHECK_HEALTH:
+                        if (HealthBelowPct(50))
+                            events.ScheduleEvent(EVENT_CAST_BLINK, urand(1000, 2000));
+                        else
+                            events.ScheduleEvent(EVENT_CHECK_HEALTH, 1000);
+                        break;
+                }
+
+            FollowerAI::UpdateAI(diff);
         }
     };
 
