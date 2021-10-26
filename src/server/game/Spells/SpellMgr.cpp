@@ -3374,6 +3374,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 37834: // Unbanish Azaloth (used by the player)
             spellInfo->AttributesEx |= SPELL_ATTR1_UNAFFECTED_BY_SCHOOL_IMMUNE;
             break;
+        case 12699: // Summon Screecher Spirit
+            spellInfo->Effect[0] = SPELL_EFFECT_DUMMY; // Prevent summon, handled via SAI
+            break;
 
 
         /////////////////////////////////////////////
