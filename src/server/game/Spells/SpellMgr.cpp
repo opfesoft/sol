@@ -4072,10 +4072,6 @@ void SpellMgr::LoadDbcDataCorrections()
         case 50720:
             spellInfo->SpellFamilyName = SPELLFAMILY_WARRIOR;
             break;
-        // Sunder Armor - trigger, remove spellfamilyflags because of glyph of sunder armor
-        case 58567:
-            spellInfo->SpellFamilyFlags = flag96(0x0, 0x0, 0x0);
-            break;
         // Sunder Armor - Old Ranks
         case 7405:
         case 8380:
