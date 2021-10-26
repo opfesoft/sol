@@ -110,6 +110,9 @@ bool ConfusedMovementGenerator<T>::DoUpdate(T* unit, uint32 diff)
     if (unit->HasUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED | UNIT_STATE_DISTRACTED))
         return true;
 
+    if (unit->GetTarget())
+        unit->SetTarget(0);
+
     if (i_nextMoveTime.Passed())
     {
         // currently moving, update location
@@ -136,6 +139,7 @@ bool ConfusedMovementGenerator<T>::DoUpdate(T* unit, uint32 diff)
             float z = i_waypoints[i_nextMove][2];
             Movement::MoveSplineInit init(unit);
             init.MoveTo(x, y, z);
+            init.SetWalk(true);
             init.Launch();
         }
     }

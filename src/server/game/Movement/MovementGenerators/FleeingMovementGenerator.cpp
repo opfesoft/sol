@@ -219,6 +219,9 @@ bool FleeingMovementGenerator<T>::DoUpdate(T* owner, uint32 time_diff)
         return true;
     }
 
+    if (owner->GetTarget())
+        owner->SetTarget(0);
+
     i_nextCheckTime.Update(time_diff);
 
     if (owner->movespline->Finalized())
@@ -284,15 +287,6 @@ void TimedFleeingMovementGenerator::Finalize(Unit* owner)
 
 bool TimedFleeingMovementGenerator::Update(Unit* owner, uint32 time_diff)
 {
-    if (!owner->IsAlive())
-        return false;
-
-    if (owner->HasUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED))
-    {
-        owner->ClearUnitState(UNIT_STATE_FLEEING_MOVE);
-        return true;
-    }
-
     i_totalFleeTime.Update(time_diff);
     if (i_totalFleeTime.Passed())
         return false;
