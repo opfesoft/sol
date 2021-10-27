@@ -23124,7 +23124,7 @@ void Player::UpdateObjectVisibility(bool forced, bool fromUpdate)
 { 
     if (!forced)
         AddToNotify(NOTIFY_VISIBILITY_CHANGED);
-    else if (!isBeingLoaded())
+    else if (!isBeingLoaded() && !GetTransport())
     {
         if (!fromUpdate) // pussywizard:
         {
