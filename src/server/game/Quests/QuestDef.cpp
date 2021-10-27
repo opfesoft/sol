@@ -204,12 +204,15 @@ uint32 Quest::XPValue(Player* player) const
     return 0;
 }
 
-int32 Quest::GetRewOrReqMoney() const
+int32 Quest::GetRewOrReqMoney(Player* player /*= nullptr*/) const
 {
     if (RewardMoney <= 0)
         return RewardMoney;
 
-    return int32(RewardMoney  * sWorld->getRate(RATE_DROP_MONEY));
+    if (player && Level == -1)
+        return int32(6 * XPValue(player) * sWorld->getRate(RATE_DROP_MONEY) / 10);
+    else
+        return int32(RewardMoney * sWorld->getRate(RATE_DROP_MONEY));
 }
 
 uint32 Quest::GetRewMoneyMaxLevel() const
