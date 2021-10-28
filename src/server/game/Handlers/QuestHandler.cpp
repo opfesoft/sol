@@ -90,11 +90,7 @@ void WorldSession::HandleQuestgiverHelloOpcode(WorldPacket & recvData)
         GetPlayer()->RemoveAurasByType(SPELL_AURA_FEIGN_DEATH);
     // Stop the npc if moving
     //if (!creature->GetTransport()) // pussywizard: reverted with new spline (old: without this check, npc would stay in place and the transport would continue moving, so the npc falls off. NPCs on transports don't have waypoints, so stopmoving is not needed)
-    if (CreatureGroup* formation = creature->GetFormation())
-        if (Creature* leader = formation->getLeader())
-            if (leader != creature && leader->IsAlive())
-                leader->StopMoving(); // stop the leader of the formation, otherwise the member is forced to follow
-    creature->StopMoving();
+    creature->StopMoving(true);
 
     if (sScriptMgr->OnGossipHello(_player, creature))
         return;

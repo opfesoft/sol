@@ -263,6 +263,7 @@ i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this), 
     _lastLiquid = NULL;
 
     _oldFactionId = 0;
+    m_lastPlayerInteraction = 0;
 }
 
 ////////////////////////////////////////////////////////////
@@ -15555,8 +15556,22 @@ void Unit::SendPetAIReaction(uint64 guid)
 
 ///----------End of Pet responses methods----------
 
-void Unit::StopMoving()
+void Unit::StopMoving(bool playerInteraction /*= false*/)
 {
+    if (playerInteraction)
+    {
+        if (Creature* creature = ToCreature())
+            if (CreatureGroup* formation = creature->GetFormation())
+                if (Creature* leader = formation->getLeader())
+                    if (leader != creature && leader->IsAlive())
+                    {
+                        leader->StopMoving(); // stop the leader of the formation, otherwise the member is forced to follow
+                        leader->SetLastPlayerInteraction(World::GetGameTimeMS());
+                    }
+
+        SetLastPlayerInteraction(World::GetGameTimeMS());
+    }
+
     ClearUnitState(UNIT_STATE_MOVING);
 
     // not need send any packets if not in world or not moving

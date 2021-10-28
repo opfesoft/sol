@@ -228,6 +228,15 @@ bool WaypointMovementGenerator<Creature>::DoUpdate(Creature* creature, uint32 di
         }
     }
 
+    if (creature->GetLastPlayerInteraction() && getMSTimeDiff(creature->GetLastPlayerInteraction(), World::GetGameTimeMS()) < sWorld->getIntConfig(CONFIG_WAYPOINT_MOVEMENT_STOP_TIME_FOR_PLAYER) * IN_MILLISECONDS)
+    {
+        if (!Stopped())
+            Stop(1);
+        return true;
+    }
+    else
+        creature->SetLastPlayerInteraction(0);
+
     if (Stopped())
     {
         if (CanMove(diff))
@@ -236,7 +245,7 @@ bool WaypointMovementGenerator<Creature>::DoUpdate(Creature* creature, uint32 di
     else
     {
         if (creature->IsStopped())
-            Stop(sWorld->getIntConfig(CONFIG_WAYPOINT_MOVEMENT_STOP_TIME_FOR_PLAYER) * IN_MILLISECONDS);
+            Stop(1);
         else
         {
             // xinef: code to detect pre-empetively if we should start movement to next waypoint

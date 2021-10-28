@@ -1893,9 +1893,11 @@ ListenRange.TextEmote = 40
 
 ListenRange.Yell = 300
 
+#
 #    WaypointMovementStopTimeForPlayer
 #        Description: Specifies the time (in seconds) that a creature with waypoint
-#                     movement will wait after a player interacts with it.
+#                     movement will wait after a player interacts with it. Also applies
+#                     to creatures with random movement but does not apply to SAI waypoints.
 #        default:     120
 
 WaypointMovementStopTimeForPlayer = 120

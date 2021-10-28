@@ -2264,7 +2264,7 @@ class Unit : public WorldObject
         const MotionMaster* GetMotionMaster() const { return i_motionMaster; }
 
         bool IsStopped() const { return !(HasUnitState(UNIT_STATE_MOVING)); }
-        void StopMoving();
+        void StopMoving(bool playerInteraction = false);
         void StopMovingOnCurrentPos();
 
         void AddUnitMovementFlag(uint32 f) { m_movementInfo.flags |= f; }
@@ -2446,6 +2446,9 @@ class Unit : public WorldObject
         // Movement info
         Movement::MoveSpline * movespline;
 
+        void SetLastPlayerInteraction(uint32 lastPlayerInteraction) { m_lastPlayerInteraction = lastPlayerInteraction; }
+        uint32 GetLastPlayerInteraction() { return m_lastPlayerInteraction; }
+
     protected:
         explicit Unit (bool isWorldObject);
 
@@ -2571,6 +2574,7 @@ class Unit : public WorldObject
 
         uint32 _oldFactionId;           ///< faction before charm
         bool m_petCatchUp;
+        uint32 m_lastPlayerInteraction;
 
         void processDummyAuras(float &TakenTotalMod);
 };

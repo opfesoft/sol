@@ -343,12 +343,7 @@ void WorldSession::HandleGossipHelloOpcode(WorldPacket & recvData)
     //if (unit->IsArmorer() || unit->IsCivilian() || unit->IsQuestGiver() || unit->IsServiceProvider() || unit->IsGuard())
     {
         //if (!unit->GetTransport()) // pussywizard: reverted with new spline (old: without this check, npc would stay in place and the transport would continue moving, so the npc falls off. NPCs on transports don't have waypoints, so stopmoving is not needed)
-            if (Creature* creature = unit->ToCreature())
-                if (CreatureGroup* formation = creature->GetFormation())
-                    if (Creature* leader = formation->getLeader())
-                        if (leader != creature && leader->IsAlive())
-                            leader->StopMoving(); // stop the leader of the formation, otherwise the member is forced to follow
-            unit->StopMoving();
+            unit->StopMoving(true);
     }
 
     // If spiritguide, no need for gossip menu, just put player into resurrect queue
