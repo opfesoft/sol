@@ -92,12 +92,14 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                 }
                 levelZ = ground;
             }
-            else
+            else if (creature->isSwimming())
             {
                 if (levelZ > INVALID_HEIGHT)
                     newZ = std::min<float>(levelZ-2.0f, z + rand_norm()*_wanderDistance/2.0f);
                 newZ = std::max<float>(ground, newZ);
             }
+            else
+                levelZ = ground;
         }
         // point on ground
         else
