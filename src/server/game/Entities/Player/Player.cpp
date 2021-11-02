@@ -13753,6 +13753,11 @@ void Player::SwapItem(uint16 src, uint16 dst)
     // impossible merge/fill, do real swap
     InventoryResult msg = EQUIP_ERR_OK;
 
+    // temporarily remove the item enchantments (must not be used for the equip checks)
+    ApplyEnchantment(pSrcItem, false);
+    if (pDstItem)
+        ApplyEnchantment(pDstItem, false);
+
     // check src->dest move possibility
     ItemPosCountVec sDest;
     uint16 eDest = 0;
@@ -13769,6 +13774,11 @@ void Player::SwapItem(uint16 src, uint16 dst)
 
     if (msg != EQUIP_ERR_OK)
     {
+        // reapply the item enchantments
+        ApplyEnchantment(pSrcItem, true);
+        if (pDstItem)
+            ApplyEnchantment(pDstItem, true);
+
         SendEquipError(msg, pSrcItem, pDstItem);
         return;
     }
@@ -13786,6 +13796,11 @@ void Player::SwapItem(uint16 src, uint16 dst)
         if (msg == EQUIP_ERR_OK)
             msg = CanUnequipItem(eDest2, true);
     }
+
+    // reapply the item enchantments
+    ApplyEnchantment(pSrcItem, true);
+    if (pDstItem)
+        ApplyEnchantment(pDstItem, true);
 
     if (msg != EQUIP_ERR_OK)
     {

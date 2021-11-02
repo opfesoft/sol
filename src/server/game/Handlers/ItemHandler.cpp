@@ -165,19 +165,43 @@ void WorldSession::HandleAutoEquipItemOpcode(WorldPacket & recvData)
     if (!pSrcItem)
         return;                                             // only at cheat
 
-    uint16 dest;
-    InventoryResult msg = _player->CanEquipItem(NULL_SLOT, dest, pSrcItem, !pSrcItem->IsBag());
-    if (msg != EQUIP_ERR_OK)
+    ItemTemplate const* pSrcProto = pSrcItem->GetTemplate();
+    if (!pSrcProto)
     {
-        _player->SendEquipError(msg, pSrcItem, NULL);
+        _player->SendEquipError(pSrcItem->IsBag() ? EQUIP_ERR_ITEM_NOT_FOUND : EQUIP_ERR_ITEMS_CANT_BE_SWAPPED, pSrcItem, NULL);
+        return;
+    }
+
+    uint8 destSlot = _player->FindEquipSlot(pSrcProto, NULL_SLOT, !pSrcItem->IsBag());
+    if (destSlot == NULL_SLOT)
+    {
+        _player->SendEquipError(EQUIP_ERR_ITEM_CANT_BE_EQUIPPED, pSrcItem, NULL);
         return;
     }
 
     uint16 src = pSrcItem->GetPos();
+    uint16 dest = ((INVENTORY_SLOT_BAG_0 << 8) | destSlot);
+
     if (dest == src)                                           // prevent equip in same slot, only at cheat
         return;
 
     Item* pDstItem = _player->GetItemByPos(dest);
+
+    // temporarily remove the item enchantment (must not be used for the equip check)
+    if (pDstItem)
+        _player->ApplyEnchantment(pDstItem, false);
+
+    InventoryResult msg = _player->CanEquipItem(NULL_SLOT, dest, pSrcItem, !pSrcItem->IsBag());
+    if (msg != EQUIP_ERR_OK)
+    {
+        // reapply the item enchantment
+        if (pDstItem)
+            _player->ApplyEnchantment(pDstItem, true);
+
+        _player->SendEquipError(msg, pSrcItem, NULL);
+        return;
+    }
+
     if (!pDstItem)                                         // empty slot, simple case
     {
         _player->RemoveItem(srcbag, srcslot, true);
@@ -186,6 +210,9 @@ void WorldSession::HandleAutoEquipItemOpcode(WorldPacket & recvData)
     }
     else                                                    // have currently equipped item, not simple case
     {
+        // reapply the item enchantment
+        _player->ApplyEnchantment(pDstItem, true);
+
         uint8 dstbag = pDstItem->GetBagSlot();
         uint8 dstslot = pDstItem->GetSlot();
 
