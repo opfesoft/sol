@@ -4298,6 +4298,28 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
 
         ProcessTimedAction(e, e.event.counter.cooldownMin, e.event.counter.cooldownMax);
         break;
+    case SMART_EVENT_FOLLOW_TARGET_LOST:
+    {
+        uint32 heartbeat = (e.event.followTargetLost.heartbeat ? e.event.followTargetLost.heartbeat : 5000);
+        RecalcTimer(e, heartbeat, heartbeat);
+
+        if (!me)
+            return;
+
+        uint64 followGuid = CAST_AI(SmartAI, me->AI())->GetFollowGuid();
+        if (!followGuid)
+            return;
+
+        if (Unit* followTarget = ObjectAccessor::GetUnit(*me, followGuid))
+        {
+            if (e.event.followTargetLost.range && !me->IsWithinDistInMap(followTarget, e.event.followTargetLost.range))
+                ProcessAction(e);
+        }
+        else
+            ProcessAction(e);
+
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessEvent: Unhandled Event type %u", e.GetEventType());
         break;
@@ -4322,6 +4344,12 @@ void SmartScript::InitTimer(SmartScriptHolder& e)
     case SMART_EVENT_DISTANCE_GAMEOBJECT:
         RecalcTimer(e, e.event.distance.repeat, e.event.distance.repeat);
         break;
+    case SMART_EVENT_FOLLOW_TARGET_LOST:
+    {
+        uint32 heartbeat = (e.event.followTargetLost.heartbeat ? e.event.followTargetLost.heartbeat : 5000);
+        RecalcTimer(e, heartbeat, heartbeat);
+        break;
+    }
     default:
         e.active = true;
         break;
@@ -4346,6 +4374,9 @@ void SmartScript::UpdateTimer(SmartScriptHolder& e, uint32 const diff)
         return;
 
     if (e.GetEventType() == SMART_EVENT_UPDATE_OOC && (me && me->IsInCombat()))//can be used with me=NULL (go script)
+        return;
+
+    if (e.GetEventType() == SMART_EVENT_FOLLOW_TARGET_LOST && (me && !CAST_AI(SmartAI, me->AI())->GetFollowGuid()))
         return;
 
     if (e.timer < diff)
@@ -4384,6 +4415,7 @@ void SmartScript::UpdateTimer(SmartScriptHolder& e, uint32 const diff)
         case SMART_EVENT_FRIENDLY_HEALTH_PCT:
         case SMART_EVENT_DISTANCE_CREATURE:
         case SMART_EVENT_DISTANCE_GAMEOBJECT:
+        case SMART_EVENT_FOLLOW_TARGET_LOST:
         {
             ProcessEvent(e);
             if (e.GetScriptType() == SMART_SCRIPT_TYPE_TIMED_ACTIONLIST)

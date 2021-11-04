@@ -389,13 +389,14 @@ bool SmartAIMgr::IsTargetValid(SmartScriptHolder const& e)
 
 bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
 {
-    if (e.event.type >= SMART_EVENT_END)
+    if ((e.event.type >= SMART_EVENT_TC_END && e.event.type <= SMART_EVENT_SOL_START)
+        || e.event.type >= SMART_EVENT_SOL_END)
     {
         sLog->outErrorDb("SmartAIMgr: EntryOrGuid %d using event(%u) has invalid event type (%u), skipped.", e.entryOrGuid, e.event_id, e.GetEventType());
         return false;
     }
     // in SMART_SCRIPT_TYPE_TIMED_ACTIONLIST all event types are overriden by core
-    if (e.GetScriptType() != SMART_SCRIPT_TYPE_TIMED_ACTIONLIST && !(SmartAIEventMask[e.event.type][1] & SmartAITypeMask[e.GetScriptType()][1]))
+    if (e.GetScriptType() != SMART_SCRIPT_TYPE_TIMED_ACTIONLIST && !(SmartAIEventMask.at(e.event.type) & SmartAITypeMask[e.GetScriptType()][1]))
     {
         sLog->outErrorDb("SmartAIMgr: EntryOrGuid %d, event type %u can not be used for Script type %u", e.entryOrGuid, e.GetEventType(), e.GetScriptType());
         return false;
@@ -432,7 +433,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         default:
             break;
     }
-    if (e.target.type < 0 || e.target.type >= SMART_TARGET_END)
+    if (e.target.type < 0 || e.target.type >= SMART_TARGET_TC_END)
     {
         sLog->outErrorDb("SmartAIMgr: EntryOrGuid %d using event(%u) has an invalid target type (%u), skipped.",
                 e.entryOrGuid, e.event_id, e.GetTargetType());
@@ -792,6 +793,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             case SMART_EVENT_JUST_CREATED:
             case SMART_EVENT_FOLLOW_COMPLETED:
             case SMART_EVENT_ON_SPELLCLICK:
+            case SMART_EVENT_FOLLOW_TARGET_LOST:
                 break;
             default:
                 sLog->outErrorDb("SmartAIMgr: Not handled event_type(%u), Entry %d SourceType %u Event %u Action %u, skipped.", e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());

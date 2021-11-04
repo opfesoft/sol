@@ -168,7 +168,15 @@ enum SMART_EVENT
     SMART_EVENT_DISTANCE_GAMEOBJECT      = 76,      // guid, entry, distance, repeat, GO state
     SMART_EVENT_COUNTER_SET              = 77,      // id, value, cooldownMin, cooldownMax
 
-    SMART_EVENT_END                      = 78
+    SMART_EVENT_TC_END                   = 78,      // placeholder
+
+    // Sol-only SmartEvents:
+
+    SMART_EVENT_SOL_START                = 230,     // placeholder
+
+    SMART_EVENT_FOLLOW_TARGET_LOST       = 231,     // range (0: unlimited, just check if target exists on the map), heartbeat in ms (if 0 use 5000)
+
+    SMART_EVENT_SOL_END                  = 232      // placeholder
 };
 
 struct SmartEvent
@@ -412,6 +420,12 @@ struct SmartEvent
             uint32 cooldownMin;
             uint32 cooldownMax;
         } counter;
+
+        struct
+        {
+            uint32 range;
+            uint32 heartbeat;
+        } followTargetLost;
 
         struct
         {
@@ -1287,7 +1301,7 @@ enum SMARTAI_TARGETS
     SMART_TARGET_FARTHEST                       = 28,   // maxDist, playerOnly, isInLos
     SMART_TARGET_VEHICLE_PASSENGER              = 29,   // seatMask (0 - all seats)
 
-    SMART_TARGET_END                            = 30
+    SMART_TARGET_TC_END                         = 30    // placeholder
 };
 
 struct SmartTarget
@@ -1479,7 +1493,7 @@ const uint32 SmartAITypeMask[SMART_SCRIPT_TYPE_MAX][2] =
     {SMART_SCRIPT_TYPE_TIMED_ACTIONLIST,    SMART_SCRIPT_TYPE_MASK_TIMED_ACTIONLIST }
 };
 
-const uint32 SmartAIEventMask[SMART_EVENT_END][2] =
+const std::unordered_map<uint32, uint32> SmartAIEventMask =
 {
     {SMART_EVENT_UPDATE_IC,                 SMART_SCRIPT_TYPE_MASK_CREATURE + SMART_SCRIPT_TYPE_MASK_TIMED_ACTIONLIST},
     {SMART_EVENT_UPDATE_OOC,                SMART_SCRIPT_TYPE_MASK_CREATURE + SMART_SCRIPT_TYPE_MASK_GAMEOBJECT + SMART_SCRIPT_TYPE_MASK_INSTANCE },
@@ -1558,7 +1572,8 @@ const uint32 SmartAIEventMask[SMART_EVENT_END][2] =
     {SMART_EVENT_FRIENDLY_HEALTH_PCT,       SMART_SCRIPT_TYPE_MASK_CREATURE },
     {SMART_EVENT_DISTANCE_CREATURE,         SMART_SCRIPT_TYPE_MASK_CREATURE },
     {SMART_EVENT_DISTANCE_GAMEOBJECT,       SMART_SCRIPT_TYPE_MASK_CREATURE },
-    {SMART_EVENT_COUNTER_SET,               SMART_SCRIPT_TYPE_MASK_CREATURE + SMART_SCRIPT_TYPE_MASK_GAMEOBJECT }
+    {SMART_EVENT_COUNTER_SET,               SMART_SCRIPT_TYPE_MASK_CREATURE + SMART_SCRIPT_TYPE_MASK_GAMEOBJECT },
+    {SMART_EVENT_FOLLOW_TARGET_LOST,        SMART_SCRIPT_TYPE_MASK_CREATURE }
 };
 
 enum SmartEventFlags
@@ -1744,16 +1759,6 @@ class SmartAIMgr
 
         bool IsEventValid(SmartScriptHolder& e);
         bool IsTargetValid(SmartScriptHolder const& e);
-
-        /*inline bool IsTargetValid(SmartScriptHolder e, int32 target)
-        {
-            if (target < SMART_TARGET_NONE || target >= SMART_TARGET_END)
-            {
-                sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses invalid Target type %d, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), target);
-                return false;
-            }
-            return true;
-        }*/
 
         bool IsMinMaxValid(SmartScriptHolder const& e, uint32 min, uint32 max)
         {
