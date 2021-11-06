@@ -1420,6 +1420,11 @@ void ScriptMgr::OnBeforeLoadPetFromDB(Player* player, uint32& petentry, uint32& 
     FOREACH_SCRIPT(PlayerScript)->OnBeforeLoadPetFromDB(player, petentry, petnumber, current, forceLoadFromDB);
 }
 
+void ScriptMgr::OnAfterActivateSpec(Player* player, uint8 spec)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnAfterActivateSpec(player, spec);
+}
+
 // Account
 void ScriptMgr::OnAccountLogin(uint32 accountId)
 {

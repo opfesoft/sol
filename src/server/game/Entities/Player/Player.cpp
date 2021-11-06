@@ -27025,6 +27025,8 @@ void Player::ActivateSpec(uint8 spec)
         else
             ++iter;
     }
+
+    sScriptMgr->OnAfterActivateSpec(this, spec);
 }
 
 void Player::GetTalentTreePoints(uint8 (&specPoints)[3]) const

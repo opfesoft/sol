@@ -968,6 +968,9 @@ class PlayerScript : public ScriptObject
 
         // Called before loading a player's pet from the DB
         virtual void OnBeforeLoadPetFromDB(Player* /*player*/, uint32& /*petentry*/, uint32& /*petnumber*/, bool& /*current*/, bool& /*forceLoadFromDB*/) { }
+
+        // Called after the player activates a spec
+        virtual void OnAfterActivateSpec(Player* /*player*/, uint8 /*spec*/) {}
 };
 
 class AccountScript : public ScriptObject
@@ -1422,6 +1425,7 @@ class ScriptMgr
         void OnBeforeGuardianInitStatsForLevel(Player* player, Guardian* guardian, CreatureTemplate const* cinfo, PetType& petType);
         void OnAfterGuardianInitStatsForLevel(Player* player, Guardian* guardian);
         void OnBeforeLoadPetFromDB(Player* player, uint32& petentry, uint32& petnumber, bool& current, bool& forceLoadFromDB);
+        void OnAfterActivateSpec(Player* player, uint8 spec);
 
     public: /* AccountScript */
 
