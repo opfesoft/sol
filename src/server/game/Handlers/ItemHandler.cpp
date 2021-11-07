@@ -320,6 +320,8 @@ void WorldSession::HandleDestroyItemOpcode(WorldPacket & recvData)
     }
     else
         _player->DestroyItem(bag, slot, true);
+
+    _player->SendQuestGiverStatusMultiple();
 }
 
 void ItemTemplate::InitializeQueryData()
