@@ -3377,6 +3377,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 12699: // Summon Screecher Spirit
             spellInfo->Effect[0] = SPELL_EFFECT_DUMMY; // Prevent summon, handled via SAI
             break;
+        case 20540: // Ashenvale Outrunner Sneak
+        case 32199: // Stealth
+            spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_MELEE_ATTACK | AURA_INTERRUPT_FLAG_CAST;
+            break;
 
 
         /////////////////////////////////////////////
