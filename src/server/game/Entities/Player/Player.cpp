@@ -2925,6 +2925,9 @@ Creature* Player::GetNPCIfCanInteractWith(uint64 guid, uint32 npcflagmask)
     if (npcflagmask & (UNIT_NPC_FLAG_TRAINER | UNIT_NPC_FLAG_TRAINER_CLASS) && creature->GetCreatureTemplate()->trainer_type == TRAINER_TYPE_CLASS && getClass() != creature->GetCreatureTemplate()->trainer_class)
         return NULL;
 
+    if (creature->GetCreatorGUID() != GetGUID() && creature->GetCreatureTemplate()->type_flags & CREATURE_TYPE_FLAG_INTERACT_ONLY_WITH_CREATOR)
+        return NULL;
+
     return creature;
 }
 
@@ -16780,9 +16783,12 @@ QuestGiverStatus Player::GetQuestDialogStatus(Object* questgiver)
         }
         case TYPEID_UNIT:
         {
-            QuestGiverStatus questStatus = QuestGiverStatus(sScriptMgr->GetDialogStatus(this, questgiver->ToCreature()));
+            Creature* creature = questgiver->ToCreature();
+            QuestGiverStatus questStatus = QuestGiverStatus(sScriptMgr->GetDialogStatus(this, creature));
             if (questStatus != DIALOG_STATUS_SCRIPTED_NO_STATUS)
                 return questStatus;
+            if (creature && creature->GetCreatorGUID() != GetGUID() && creature->GetCreatureTemplate()->type_flags & CREATURE_TYPE_FLAG_INTERACT_ONLY_WITH_CREATOR)
+                return DIALOG_STATUS_NONE;
             qr = sObjectMgr->GetCreatureQuestRelationBounds(questgiver->GetEntry());
             qir = sObjectMgr->GetCreatureQuestInvolvedRelationBounds(questgiver->GetEntry());
             break;
