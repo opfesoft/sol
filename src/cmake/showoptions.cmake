@@ -1,7 +1,7 @@
 # output generic information about the core and buildtype chosen
 message("")
-message("* AzerothCore revision            : ${rev_hash} ${rev_date} (${rev_branch} branch)")
-message("* AzerothCore buildtype           : ${CMAKE_BUILD_TYPE}")
+message("* Project \"Sol\" revision          : ${rev_hash} ${rev_date} (${rev_branch} branch)")
+message("* Project \"Sol\" buildtype         : ${CMAKE_BUILD_TYPE}")
 message("")
 
 # output information about installation-directories and locations
