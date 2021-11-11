@@ -1345,7 +1345,7 @@ public:
         Player* chr = handler->GetSession()->GetPlayer();
 
         uint32 id = atoi(charID);
-        if (!id)
+        if (!sObjectMgr->GetCreatureTemplate(id))
             return false;
 
         chr->SummonCreature(id, *chr, TEMPSUMMON_CORPSE_DESPAWN, 120);
