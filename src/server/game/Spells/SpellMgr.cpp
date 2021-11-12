@@ -3381,6 +3381,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 32199: // Stealth
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_MELEE_ATTACK | AURA_INTERRUPT_FLAG_CAST;
             break;
+        case 29458: // Blizzard
+            spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_MOVEMENT;
+            break;
 
 
         /////////////////////////////////////////////
