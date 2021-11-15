@@ -331,6 +331,8 @@ class SmartScript
             SmartScriptHolder s;
             return s;
         }
+
+        void CustomTalk(WorldObject* talker, WorldObject* talkTarget, SmartScriptHolder const& e);
 };
 
 #endif

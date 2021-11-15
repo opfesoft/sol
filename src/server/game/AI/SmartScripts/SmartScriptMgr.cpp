@@ -1161,6 +1161,30 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
+        case SMART_ACTION_CUSTOM_TALK:
+        {
+            if (e.action.customTalk.talkType > 5)
+            {
+                sLog->outError("SmartScript: SMART_ACTION_CUSTOM_TALK uses invalid talkType %u, skipped.", e.action.customTalk.talkType);
+                return false;
+            }
+            if (!sObjectMgr->GetBroadcastText(e.action.customTalk.broadcastTextId))
+            {
+                sLog->outError("SmartScript: SMART_ACTION_CUSTOM_TALK uses non-existing broadcastTextId %u, skipped.", e.action.customTalk.broadcastTextId);
+                return false;
+            }
+            if (e.action.customTalk.talker > 2)
+            {
+                sLog->outError("SmartScript: SMART_ACTION_CUSTOM_TALK uses invalid talker %u, skipped.", e.action.customTalk.talkTarget);
+                return false;
+            }
+            if (e.action.customTalk.talkTarget > 2)
+            {
+                sLog->outError("SmartScript: SMART_ACTION_CUSTOM_TALK uses invalid talkTarget %u, skipped.", e.action.customTalk.talkTarget);
+                return false;
+            }
+            break;
+        }
         case SMART_ACTION_START_CLOSEST_WAYPOINT:
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:

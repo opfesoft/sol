@@ -3151,6 +3151,42 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         delete targets;
         break;
     }
+    case SMART_ACTION_CUSTOM_TALK:
+    {
+        WorldObject* talker = nullptr;
+        WorldObject* talkTarget = nullptr;
+
+        if (e.action.customTalk.talker == 1)
+            talker = GetBaseObject();
+        else if (e.action.customTalk.talker == 2)
+            talker = GetLastInvoker();
+
+        if (e.action.customTalk.talkTarget == 1)
+            talkTarget = GetBaseObject();
+        else if (e.action.customTalk.talkTarget == 2)
+            talkTarget = GetLastInvoker();
+
+        if (e.action.customTalk.talker == 0 || e.action.customTalk.talkTarget == 0)
+        {
+            ObjectList* targets = GetTargets(e, unit);
+            if (targets)
+            {
+                for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+                {
+                    if (e.action.customTalk.talker == 0)
+                        talker = *itr;
+                    if (e.action.customTalk.talkTarget == 0)
+                        talkTarget = *itr;
+
+                    CustomTalk(talker, talkTarget, e);
+                }
+                delete targets;
+            }
+        }
+        else
+            CustomTalk(talker, talkTarget, e);
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;
@@ -4815,4 +4851,38 @@ Unit* SmartScript::GetLastInvoker(Unit* invoker)
     else if (invoker)
         return ObjectAccessor::GetUnit(*invoker, mLastInvoker);
     return NULL;
+}
+
+void SmartScript::CustomTalk(WorldObject* talker, WorldObject* talkTarget, SmartScriptHolder const& e)
+{
+    if (!talker)
+        return;
+
+    switch (e.action.customTalk.talkType)
+    {
+        case 0:
+            talker->MonsterSay(e.action.customTalk.broadcastTextId, LANG_UNIVERSAL, talkTarget);
+            break;
+        case 1:
+            talker->MonsterYell(e.action.customTalk.broadcastTextId, LANG_UNIVERSAL, talkTarget);
+            break;
+        case 2:
+            talker->MonsterTextEmote(e.action.customTalk.broadcastTextId, talkTarget);
+            break;
+        case 3:
+            talker->MonsterTextEmote(e.action.customTalk.broadcastTextId, talkTarget, true);
+            break;
+        case 4:
+            if (talkTarget && IsPlayer(talkTarget))
+                talker->MonsterWhisper(e.action.customTalk.broadcastTextId, talkTarget->ToPlayer());
+            else
+                sLog->outErrorDb("SmartScript::ProcessAction: SMART_ACTION_CUSTOM_TALK: EntryOrGuid %d SourceType %u EventType %u TargetType %u attempt whisper to non-player unit, ignored.", e.entryOrGuid, e.GetScriptType(), e.GetEventType(), e.GetTargetType());
+            break;
+        case 5:
+            if (talkTarget && IsPlayer(talkTarget))
+                talker->MonsterWhisper(e.action.customTalk.broadcastTextId, talkTarget->ToPlayer(), true);
+            else
+                sLog->outErrorDb("SmartScript::ProcessAction: SMART_ACTION_CUSTOM_TALK: EntryOrGuid %d SourceType %u EventType %u TargetType %u attempt boss whisper to non-player unit, ignored.", e.entryOrGuid, e.GetScriptType(), e.GetEventType(), e.GetTargetType());
+            break;
+    }
 }
