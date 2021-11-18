@@ -1522,7 +1522,7 @@ float WorldObject::GetVisibilityRange() const
         if (IsInWintergrasp())
             return VISIBILITY_DIST_WINTERGRASP+VISIBILITY_INC_FOR_GOBJECTS;
         else if (IsVisibilityOverridden())
-            return MAX_VISIBILITY_DISTANCE;
+            return MAX_VISIBILITY_DISTANCE+VISIBILITY_INC_FOR_GOBJECTS;
         else
             return GetMap()->GetVisibilityRange()+VISIBILITY_INC_FOR_GOBJECTS;
     }
@@ -1545,7 +1545,7 @@ float WorldObject::GetSightRange(const WorldObject* target) const
                     if (IsInWintergrasp() && target->IsInWintergrasp())
                         return VISIBILITY_DIST_WINTERGRASP+VISIBILITY_INC_FOR_GOBJECTS;
                     else if (target->IsVisibilityOverridden())
-                        return MAX_VISIBILITY_DISTANCE;
+                        return MAX_VISIBILITY_DISTANCE+VISIBILITY_INC_FOR_GOBJECTS;
                     else
                         return GetMap()->GetVisibilityRange()+VISIBILITY_INC_FOR_GOBJECTS;
                 }
