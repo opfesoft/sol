@@ -6575,6 +6575,9 @@ SpellCastResult Spell::CheckCasterAuras(bool preventionOnly) const
                         }
                     }
                 }
+
+                if (m_caster->HasUnitState(UNIT_STATE_FLEEING) && !m_spellInfo->HasAttribute(SPELL_ATTR5_USABLE_WHILE_FEARED))
+                    return SPELL_FAILED_FLEEING; // Also fail spells if the caster is fleeing without fear aura (e.g. flee for assist)
             }
         }
         // You are prevented from casting and the spell casted does not grant immunity. Return a failed error.
