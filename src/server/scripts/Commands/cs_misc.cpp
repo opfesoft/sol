@@ -517,6 +517,16 @@ public:
             return true;
         }
 
+        if (argstr == "debuffs")
+        {
+            target->RemoveOwnedAuras([](Aura const* aura)
+            {
+                SpellInfo const* spellInfo = aura->GetSpellInfo();
+                return !spellInfo->IsPositive() && !spellInfo->IsPassive();
+            });
+            return true;
+        }
+
         // number or [name] Shift-click form |color|Hspell:spell_id|h[name]|h|r or Htalent form
         uint32 spellId = handler->extractSpellIdFromLink((char*)args);
         if (!spellId)
