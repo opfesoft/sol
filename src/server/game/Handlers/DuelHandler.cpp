@@ -27,7 +27,7 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
     player       = GetPlayer();
     plTarget = player->duel->opponent;
 
-    if (player == player->duel->initiator || !plTarget || player == plTarget || player->duel->startTime != 0 || plTarget->duel->startTime != 0)
+    if (player == player->duel->initiator || !plTarget || player == plTarget || !plTarget->duel || player->duel->startTime != 0 || plTarget->duel->startTime != 0)
         return;
 
     //sLog->outDebug(LOG_FILTER_PACKETIO, "WORLD: Received CMSG_DUEL_ACCEPTED");
@@ -36,9 +36,14 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
     sLog->outStaticDebug("Player 2 is: %u (%s)", plTarget->GetGUIDLow(), plTarget->GetName().c_str());
 #endif
 
+    if(player->duel->underDuel || plTarget->duel->underDuel)
+        return;
+
     time_t now = time(NULL);
     player->duel->startTimer = now;
     plTarget->duel->startTimer = now;
+    player->duel->underDuel = true;
+    plTarget->duel->underDuel = true;
 
     player->SendDuelCountdown(3000);
     plTarget->SendDuelCountdown(3000);
