@@ -229,6 +229,7 @@ void MotionMaster::MoveRandom(float wanderDistance)
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
         sLog->outStaticDebug("Creature (GUID: %u) start moving random", _owner->GetGUIDLow());
 #endif
+        _owner->SetLastPlayerInteraction(0);
         Mutate(new RandomMovementGenerator<Creature>(wanderDistance), MOTION_SLOT_IDLE);
     }
 }
@@ -806,6 +807,7 @@ void MotionMaster::MovePath(uint32 path_id, bool repeatable)
 
     //_owner->GetTypeId() == TYPEID_PLAYER ?
         //Mutate(new WaypointMovementGenerator<Player>(path_id, repeatable)):
+    _owner->SetLastPlayerInteraction(0);
     Mutate(new WaypointMovementGenerator<Creature>(path_id, repeatable), MOTION_SLOT_IDLE);
 
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
