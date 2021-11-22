@@ -4334,11 +4334,6 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectRealPointsPerLevel[EFFECT_0] = 5.0f;
             break;
 
-        // Magmadar
-        case 19408: // Panic
-            spellInfo->EffectRadiusIndex[EFFECT_0] = EFFECT_RADIUS_30_YARDS;
-            break;
-
 
         //////////////////////////////////////////
         ////////// TBC Instances
