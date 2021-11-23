@@ -240,6 +240,8 @@ class SmartScript
 
         bool AllowPhaseReset() const { return _allowPhaseReset; }
         void SetPhaseReset(bool allow) { _allowPhaseReset = allow; }
+        bool AllowCounterReset() const { return _allowCounterReset; }
+        void SetCounterReset(bool allow) { _allowCounterReset = allow; }
 
     private:
         void IncPhase(uint32 p)
@@ -296,6 +298,7 @@ class SmartScript
 
         // Xinef: misc
         bool _allowPhaseReset;
+        bool _allowCounterReset;
 
         SMARTAI_TEMPLATE mTemplate;
         void InstallEvents();

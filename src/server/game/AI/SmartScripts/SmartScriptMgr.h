@@ -618,8 +618,9 @@ enum SMART_ACTION
     SMART_ACTION_SET_HEALTH                         = 232,    // use percentage (0/1), copy from target (0/1), health
     SMART_ACTION_DESPAWN_GO                         = 233,    // respawnTime in s, playDespawnAnim
     SMART_ACTION_CUSTOM_TALK                        = 234,    // broadcastTextId, talkType (0: say, 1: yell, 2: text emote, 3: boss emote, 4: whisper, 5: boss whisper), talker (0: action target, 1: self, 2: invoker), talkTarget (0: action target, 1: self, 2: invoker)
+    SMART_ACTION_SET_COUNTER_RESET                  = 235,    // 0/1
 
-    SMART_ACTION_SOL_END                            = 235     // placeholder
+    SMART_ACTION_SOL_END                            = 236     // placeholder
 };
 
 struct SmartAction
@@ -1250,6 +1251,11 @@ struct SmartAction
             uint32 talker;
             uint32 talkTarget;
         } customTalk;
+
+        struct
+        {
+            uint32 allow;
+        } setCounterReset;
 
         //! Note for any new future actions
         //! All parameters must have type uint32

@@ -56,6 +56,7 @@ SmartScript::SmartScript()
     smartCasterPowerType = POWER_MANA;
 
     _allowPhaseReset = true;
+    _allowCounterReset = true;
 }
 
 SmartScript::~SmartScript()
@@ -84,7 +85,9 @@ void SmartScript::OnReset()
     }
     ProcessEventsFor(SMART_EVENT_RESET);
     mLastInvoker = 0;
-    mCounterList.clear();
+
+    if (AllowCounterReset())
+        mCounterList.clear();
 
     // Xinef: Fix Combat Movement
     RestoreMaxCombatDist();
@@ -3199,6 +3202,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         }
         else
             CustomTalk(talker, talkTarget, e);
+        break;
+    }
+    case SMART_ACTION_SET_COUNTER_RESET:
+    {
+        SetCounterReset(e.action.setCounterReset.allow);
         break;
     }
     default:
