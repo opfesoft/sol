@@ -51,7 +51,6 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
     if (owner->GetTypeId() == TYPEID_UNIT && !i_target->isInAccessiblePlaceFor(owner->ToCreature()) && !sameTransport && !forceDest && !forcePoint)
         return;
 
-    lastOwnerXYZ.Relocate(owner->GetPositionX(), owner->GetPositionY(), owner->GetPositionZ());
     lastTargetXYZ.Relocate(i_target->GetPositionX(), i_target->GetPositionY(), i_target->GetPositionZ());
 
     if (!i_offset)
@@ -193,7 +192,7 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
 
         if (!forceDest && getMSTimeDiff(lastPathingFailMSTime, World::GetGameTimeMS()) < 1000)
         {
-            lastOwnerXYZ.Relocate(-5000.0f, -5000.0f, -5000.0f);
+            i_forceRecheckDistance = true;
             return;
         }
 
@@ -281,7 +280,7 @@ bool TargetedMovementGeneratorMedium<T,D>::DoUpdate(T* owner, uint32 time_diff)
     if (i_recheckDistanceForced.Passed())
     {
         i_recheckDistanceForced.Reset(2500);
-        lastOwnerXYZ.Relocate(-5000.0f, -5000.0f, -5000.0f);
+        i_forceRecheckDistance = true;
     }
 
     i_recheckDistance.Update(time_diff);
@@ -308,8 +307,11 @@ bool TargetedMovementGeneratorMedium<T,D>::DoUpdate(T* owner, uint32 time_diff)
         float dist = (dest - G3D::Vector3(i_target->GetPositionX(),i_target->GetPositionY(),i_target->GetPositionZ())).squaredLength();
         float targetMoveDistSq = i_target->GetExactDistSq(&lastTargetXYZ);
         if (dist >= allowed_dist_sq || (!i_offset && targetMoveDistSq >= 1.5f*1.5f))
-            if (targetMoveDistSq >= 0.1f*0.1f || owner->GetExactDistSq(&lastOwnerXYZ) >= 0.1f*0.1f)
+            if (i_forceRecheckDistance || targetMoveDistSq >= 0.1f*0.1f)
+            {
+                i_forceRecheckDistance = false;
                 _setTargetLocation(owner, false);
+            }
     }
 
     if (owner->movespline->Finalized())

@@ -21,7 +21,6 @@ class TargetedMovementGeneratorBase
         void stopFollowing() { }
     protected:
         FollowerReference i_target;
-        Position lastOwnerXYZ;
         Position lastTargetXYZ;
 };
 
@@ -32,7 +31,7 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
         TargetedMovementGeneratorMedium(Unit* target, float offset, float angle) :
             TargetedMovementGeneratorBase(target), i_path(NULL), lastPathingFailMSTime(0),
             i_recheckDistance(0), i_recheckDistanceForced(2500), i_offset(offset), i_angle(angle),
-            i_recalculateTravel(false), i_targetReached(false)
+            i_recalculateTravel(false), i_targetReached(false), i_forceRecheckDistance(false)
         {
         }
         ~TargetedMovementGeneratorMedium() { delete i_path; }
@@ -55,8 +54,9 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
         TimeTrackerSmall i_recheckDistanceForced;
         float i_offset;
         float i_angle;
-        bool i_recalculateTravel : 1;
-        bool i_targetReached : 1;
+        bool i_recalculateTravel;
+        bool i_targetReached;
+        bool i_forceRecheckDistance;
 };
 
 template<class T>
