@@ -3385,6 +3385,12 @@ void SpellMgr::LoadDbcDataCorrections()
         case 29458: // Blizzard
             spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_MOVEMENT;
             break;
+        case 5166: // Harvest Silithid Egg
+            spellInfo->EffectRadiusIndex[EFFECT_1] = EFFECT_RADIUS_3_YARDS;
+            spellInfo->EffectImplicitTargetA[EFFECT_1] = TARGET_DEST_CASTER_RANDOM;
+            spellInfo->EffectRadiusIndex[EFFECT_2] = EFFECT_RADIUS_3_YARDS;
+            spellInfo->EffectImplicitTargetA[EFFECT_2] = TARGET_DEST_CASTER_RANDOM;
+            break;
 
 
         /////////////////////////////////////////////
