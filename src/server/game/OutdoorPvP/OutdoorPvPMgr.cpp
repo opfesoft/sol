@@ -72,6 +72,12 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     OutdoorPvP* pvp;
     for (uint8 i = 1; i < MAX_OUTDOORPVP_TYPES; ++i)
     {
+        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_OUTDOORPVP, i, NULL))
+        {
+            sLog->outString(">> OutdoorPvP object for type ID %u is disabled, skip.", i);
+            continue;
+        }
+
         OutdoorPvPDataMap::iterator iter = m_OutdoorPvPDatas.find(OutdoorPvPTypes(i));
         if (iter == m_OutdoorPvPDatas.end())
         {
