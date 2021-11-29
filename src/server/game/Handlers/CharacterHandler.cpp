@@ -1068,9 +1068,11 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
         SendNotification(LANG_RESET_TALENTS);
     }
 
-    if (pCurrChar->HasAtLoginFlag(AT_LOGIN_FIRST)) {
+    bool firstLogin = false;
+    if (pCurrChar->HasAtLoginFlag(AT_LOGIN_FIRST))
+    {
+        firstLogin = true;
         pCurrChar->RemoveAtLoginFlag(AT_LOGIN_FIRST);
-
         sScriptMgr->OnFirstLogin(pCurrChar);
     }
 
@@ -1080,8 +1082,7 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
         pCurrChar->CheckAllAchievementCriteria();
     }
 
-        // Reputations if "StartAllReputation" is enabled, -- TODO: Fix this in a better way
-    if (sWorld->getBoolConfig(CONFIG_START_ALL_REP))
+    if (firstLogin && sWorld->getBoolConfig(CONFIG_START_ALL_REP))
     {
         ReputationMgr& repMgr = pCurrChar->GetReputationMgr();
         repMgr.SetOneFactionReputation(sFactionStore.LookupEntry(942), 42999, false);
