@@ -259,6 +259,46 @@ public:
     }
 };
 
+enum EventLoot
+{
+    EVENT_SUMMERTIME           =    78,
+    ITEM_WINTER_SQUID          = 13755,
+    ITEM_RAW_SUMMER_BASS       = 13756,
+
+    EVENT_DAYTIME              =    79,
+    ITEM_RAW_NIGHTFIN_SNAPPER  = 13759,
+    ITEM_RAW_SUNSCALE_SALMON   = 13760,
+};
+
+class EventLoot_GlobalScript : public GlobalScript
+{
+public:
+    EventLoot_GlobalScript() : GlobalScript("EventLoot_GlobalScript") { }
+
+    void OnItemRoll(Player const* /*player*/, LootStoreItem const* item, float &chance, Loot& /*loot*/, LootStore const& /*store*/)
+    {
+        switch (item->itemid)
+        {
+            case ITEM_WINTER_SQUID:
+                if (sGameEventMgr->IsActiveEvent(EVENT_SUMMERTIME))
+                    chance = 0.f;
+                break;
+            case ITEM_RAW_SUMMER_BASS:
+                if (!sGameEventMgr->IsActiveEvent(EVENT_SUMMERTIME))
+                    chance = 0.f;
+                break;
+            case ITEM_RAW_NIGHTFIN_SNAPPER:
+                if (sGameEventMgr->IsActiveEvent(EVENT_DAYTIME))
+                    chance = 0.f;
+                break;
+            case ITEM_RAW_SUNSCALE_SALMON:
+                if (!sGameEventMgr->IsActiveEvent(EVENT_DAYTIME))
+                    chance = 0.f;
+                break;
+        }
+    }
+};
+
 void AddSC_item_scripts()
 {
     new item_only_for_flight();
@@ -270,4 +310,5 @@ void AddSC_item_scripts()
     new item_petrov_cluster_bombs();
     new item_captured_frog();
     new item_generic_limit_chance_above_60();
+    new EventLoot_GlobalScript();
 }
