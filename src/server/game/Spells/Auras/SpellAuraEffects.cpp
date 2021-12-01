@@ -2802,7 +2802,11 @@ void AuraEffect::HandleAuraMounted(AuraApplication const* aurApp, uint8 mode, bo
             return;
         }
 
-        uint32 displayID = ObjectMgr::ChooseDisplayId(ci);
+        uint32 displayID = 0;
+        if (GetMiscValueB() > 0)
+            displayID = GetMiscValueB() == 2 && ci->Modelid2 > 0 ? ci->Modelid2 : ci->Modelid1;
+        else
+            displayID = ObjectMgr::ChooseDisplayId(ci);
         sObjectMgr->GetCreatureModelRandomGender(&displayID);
 
         //some spell has one aura of mount and one of vehicle
