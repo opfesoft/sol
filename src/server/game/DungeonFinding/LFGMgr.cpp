@@ -1952,8 +1952,8 @@ void LFGMgr::TeleportPlayer(Player* player, bool out, bool fromOpcode /*= false*
         error = LFG_TELEPORTERROR_FATIGUE;
     else if (player->GetVehicle())
         error = LFG_TELEPORTERROR_IN_VEHICLE;
-    else if (player->GetCharmGUID())
-        error = LFG_TELEPORTERROR_CHARMING;
+    else if (player->GetCharmGUID() || player->IsInCombat())
+        error = LFG_TELEPORTERROR_COMBAT;
     else if (player->GetMapId() != uint32(dungeon->map))  // Do not teleport players in dungeon to the entrance
     {
         uint32 mapid = dungeon->map;
