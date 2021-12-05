@@ -3209,6 +3209,26 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         SetCounterReset(e.action.setCounterReset.allow);
         break;
     }
+    case SMART_ACTION_CALL_EVENT_SCRIPT:
+    {
+        ObjectList* targets = GetTargets(e, unit);
+        if (targets)
+        {
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            {
+                if (me)
+                    me->GetMap()->ScriptsStart(sEventScripts, e.action.callEventScript.eventScriptId, me, *itr);
+                else if (go)
+                    go->GetMap()->ScriptsStart(sEventScripts, e.action.callEventScript.eventScriptId, go, *itr);
+            }
+            delete targets;
+        }
+        else if (me)
+            me->GetMap()->ScriptsStart(sEventScripts, e.action.callEventScript.eventScriptId, me, nullptr);
+        else if (go)
+            go->GetMap()->ScriptsStart(sEventScripts, e.action.callEventScript.eventScriptId, go, nullptr);
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;

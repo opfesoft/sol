@@ -1185,6 +1185,15 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
+        case SMART_ACTION_CALL_EVENT_SCRIPT:
+        {
+            if (sEventScripts.find(e.action.callEventScript.eventScriptId) == sEventScripts.end())
+            {
+                sLog->outError("SmartScript: SMART_ACTION_CALL_EVENT_SCRIPT uses non-existing eventScriptId %u, skipped.", e.action.callEventScript.eventScriptId);
+                return false;
+            }
+            break;
+        }
         case SMART_ACTION_START_CLOSEST_WAYPOINT:
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:
