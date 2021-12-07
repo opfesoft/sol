@@ -614,6 +614,17 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                             ItemTemplate const* weaponTemplate = item->GetTemplate();
                             float dmg_min = weaponTemplate->Damage[0].DamageMin;
                             float dmg_max = weaponTemplate->Damage[0].DamageMax;
+                            ScalingStatValuesEntry const* ssv = weaponTemplate->ScalingStatValue ? sScalingStatValuesStore.LookupEntry(caster->getLevel()) : nullptr;
+                            if (ssv)
+                            {
+                                int32 extraDPS = ssv->getDPSMod(weaponTemplate->ScalingStatValue);
+                                if (extraDPS)
+                                {
+                                    float average = extraDPS * weaponTemplate->Delay / 1000.0f;
+                                    dmg_min = 0.7f * average;
+                                    dmg_max = 1.3f * average;
+                                }
+                            }
                             if (dmg_max == 0.0f && dmg_min > dmg_max)
                                 damage += int32(dmg_min);
                             else
