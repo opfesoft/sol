@@ -3677,7 +3677,7 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
     {
         if (WorldObject* obj = GetBaseObject())
         {
-            Player* target = obj->SelectNearestPlayer((float)e.target.playerDistance.dist);
+            Player* target = obj->SelectNearestPlayer((float)(e.target.playerDistance.dist ? e.target.playerDistance.dist : 100));
             if (target)
                 l->push_back(target);
         }
