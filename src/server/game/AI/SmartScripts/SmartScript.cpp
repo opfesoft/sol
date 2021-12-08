@@ -1369,8 +1369,19 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
         {
-            if (IsCreature(*itr))
-                (*itr)->ToCreature()->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
+            if (IsUnit(*itr))
+            {
+                Unit* unit = (*itr)->ToUnit();
+                if (e.action.forceDespawn.despawnMinionId > 0)
+                {
+                    std::list<Creature*> minions;
+                    unit->GetAllMinionsByEntry(minions, e.action.forceDespawn.despawnMinionId);
+                    for (std::list<Creature*>::iterator itrMinion = minions.begin(); itrMinion != minions.end(); ++itrMinion)
+                        (*itrMinion)->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
+                }
+                else if (IsCreature(*itr))
+                    (*itr)->ToCreature()->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
+            }
             else if (IsGameObject(*itr))
                 (*itr)->ToGameObject()->Delete();
         }

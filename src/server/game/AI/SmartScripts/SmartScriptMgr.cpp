@@ -1186,6 +1186,15 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
+        case SMART_ACTION_FORCE_DESPAWN:
+        {
+            if (e.action.forceDespawn.despawnMinionId > 0 && !sObjectMgr->GetCreatureTemplate(e.action.forceDespawn.despawnMinionId))
+            {
+                sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses non-existent Creature entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.forceDespawn.despawnMinionId);
+                return false;
+            }
+            break;
+        }
         case SMART_ACTION_START_CLOSEST_WAYPOINT:
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:
@@ -1215,7 +1224,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_SET_FLY:
         case SMART_ACTION_SET_RUN:
         case SMART_ACTION_SET_SWIM:
-        case SMART_ACTION_FORCE_DESPAWN:
         case SMART_ACTION_SET_INGAME_PHASE_MASK:
         case SMART_ACTION_SET_UNIT_FLAG:
         case SMART_ACTION_REMOVE_UNIT_FLAG:
