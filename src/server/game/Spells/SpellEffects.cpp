@@ -3562,7 +3562,7 @@ void Spell::EffectWeaponDmg(SpellEffIndex effIndex)
             case RANGED_ATTACK: unitMod = UNIT_MOD_DAMAGE_RANGED;   break;
         }
 
-        if (m_spellInfo->SchoolMask & SPELL_SCHOOL_MASK_NORMAL)
+        if (m_spellSchoolMask & SPELL_SCHOOL_MASK_NORMAL)
         {
             float weapon_total_pct = m_caster->GetModifierValue(unitMod, TOTAL_PCT);
             fixed_bonus = int32(fixed_bonus * weapon_total_pct);
@@ -3577,6 +3577,8 @@ void Spell::EffectWeaponDmg(SpellEffIndex effIndex)
         if (Unit* owner = m_caster->GetOwner())
             weaponDamage = owner->CalculateDamage(m_attackType, normalized, true);
     }           
+    else if (m_spellInfo->Id == 5019) // Wands
+        weaponDamage = m_caster->CalculateDamage(m_attackType, true, false);
     else
         weaponDamage = m_caster->CalculateDamage(m_attackType, normalized, true);
 
