@@ -1851,6 +1851,7 @@ class Player : public Unit, public GridObject<Player>
         void UpdatePvP(bool state, bool _override=false);
         void UpdateZone(uint32 newZone, uint32 newArea);
         void UpdateArea(uint32 newArea);
+        void SetNeedZoneUpdate(bool needUpdate) { m_needZoneUpdate = needUpdate; }
 
         uint32 GetZoneId(bool forceRecalc = false) const override;
         uint32 GetAreaId(bool forceRecalc = false) const override;
@@ -2908,6 +2909,7 @@ class Player : public Unit, public GridObject<Player>
         bool IsAlwaysDetectableFor(WorldObject const* seer) const override;
 
         uint8 m_grantableLevels;
+        bool m_needZoneUpdate;
 
         AchievementMgr* GetAchievementMgr() const { return m_achievementMgr; }
 
