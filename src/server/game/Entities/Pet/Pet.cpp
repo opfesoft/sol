@@ -462,7 +462,9 @@ void Pet::Update(uint32 diff)
                             GetCharmInfo()->SetIsReturning(false);
                             GetCharmInfo()->SaveStayPosition(true);
 
-                            CastSpell(tempspellTarget, tempspell, false);
+                            if (CastSpell(tempspellTarget, tempspell, false) == SPELL_CAST_OK)
+                                AddSpellCooldown(tempspell, 0, 0);
+
                             m_tempspell = 0;
                             m_tempspellTarget = NULL;
 
