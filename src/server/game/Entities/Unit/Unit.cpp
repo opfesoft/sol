@@ -13222,6 +13222,15 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
     if (main_speed_mod)
         AddPct(speed, main_speed_mod);
 
+    float creatureSpeedRun = 0.f;
+    Creature* creature = ToCreature();
+    if (creature)
+    {
+        creatureSpeedRun = creature->GetCreatureTemplate()->speed_run;
+        if (IsHunterPet())
+            creatureSpeedRun = 1.14286f; // use default run speed for hunter pets
+    }
+
     switch (mtype)
     {
         case MOVE_RUN:
@@ -13258,7 +13267,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                     else
                     {
                         float ownerSpeed = pOwner->GetSpeedRate(mtype);
-                        if (ToCreature()->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
+                        if (creature->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
                             if (mtype == MOVE_RUN)
                             {
                                 if (pOwner->IsFlying() && IsFlying())
@@ -13280,7 +13289,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
 
                         float minDist = ownerSpeed >= 1.0f ? ownerSpeed * 2.5f : 2.5f;
 
-                        if (ToCreature()->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
+                        if (creature->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
                             minDist *= 2.0f; // different minimum distance for vanity pets
 
                         float maxDist = ownerSpeed >= 1.0f ? minDist * ownerSpeed * 1.5f : minDist * 1.5f;
@@ -13298,14 +13307,14 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
 
                         speedFactor = m_petCatchUp ? std::min(speedFactor, mtype == MOVE_RUN ? 1.2f : 2.0f) : 0.95f;
 
-                        if (npcFollowingPlayer && (ownerSpeed * speedFactor > speed * ToCreature()->GetCreatureTemplate()->speed_run))
-                            speed *= ToCreature()->GetCreatureTemplate()->speed_run;
+                        if (npcFollowingPlayer && (ownerSpeed * speedFactor > speed * creatureSpeedRun))
+                            speed *= creatureSpeedRun;
                         else
                             speed = ownerSpeed * speedFactor;
                     }
                 }
                 else
-                    speed *= ToCreature()->GetCreatureTemplate()->speed_run;    // at this point, MOVE_WALK is never reached
+                    speed *= creatureSpeedRun;    // at this point, MOVE_WALK is never reached
             }
 
             // Normalize speed by 191 aura SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED if need
@@ -13317,7 +13326,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
 
                 // Xinef: normal movement speed - multiply by creature db modifer
                 if (GetTypeId() == TYPEID_UNIT)
-                    max_speed *= ToCreature()->GetCreatureTemplate()->speed_run;
+                    max_speed *= creatureSpeedRun;
 
                 if (speed > max_speed)
                     speed = max_speed;
@@ -13331,7 +13340,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
     // for creature case, we check explicit if mob searched for assistance
     if (GetTypeId() == TYPEID_UNIT)
     {
-        if (ToCreature()->HasSearchedAssistance())
+        if (creature->HasSearchedAssistance())
             speed *= 0.66f;                                 // best guessed value, so this will be 33% reduction. Based off initial speed, mob can then "run", "walk fast" or "walk".
     }
 
@@ -13342,7 +13351,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
 
     if (float minSpeedMod = (float)GetMaxPositiveAuraModifier(SPELL_AURA_MOD_MINIMUM_SPEED))
     {
-        float base_speed = (GetTypeId() == TYPEID_UNIT ? ToCreature()->GetCreatureTemplate()->speed_run : 1.0f);
+        float base_speed = (GetTypeId() == TYPEID_UNIT ? creatureSpeedRun : 1.0f);
         float min_speed = base_speed * (minSpeedMod / 100.0f);
         if (speed < min_speed)
             speed = min_speed;
