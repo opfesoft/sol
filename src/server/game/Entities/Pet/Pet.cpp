@@ -2118,8 +2118,13 @@ void Pet::HandleAsynchLoadSucceed()
         {
             setDeathState(ALIVE);
             ClearUnitState(uint32(UNIT_STATE_ALL_STATE & ~(UNIT_STATE_POSSESSED))); // xinef: added just in case... some linked auras and so on
-            SetHealth(CountPctFromMaxHealth(15)); // Xinef: well, only two pet reviving spells exist and both revive with 15%
-            SavePetToDB(PET_SAVE_AS_CURRENT, false);
+            if (owner->HasAura(24443))
+                SetHealth(CountPctFromMaxHealth(30)); // Improved Revive Pet (Rank 1): revive with 30%
+            else if (owner->HasAura(19575))
+                SetHealth(CountPctFromMaxHealth(45)); // Improved Revive Pet (Rank 2): revive with 45%
+            else
+                SetHealth(CountPctFromMaxHealth(15)); // Xinef: well, only two pet reviving spells exist and both revive with 15%
+            SavePetToDB(PET_SAVE_AS_CURRENT, false);  // (the comment above is not quite true: "Revive Pet" (ID 982) uses 15, "Heart of the Phoenix" (ID 54114) also uses BasePoints 15 but restores full health
         }
     }
 
