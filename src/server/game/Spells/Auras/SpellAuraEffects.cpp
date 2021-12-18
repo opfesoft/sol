@@ -2816,6 +2816,15 @@ void AuraEffect::HandleAuraMounted(AuraApplication const* aurApp, uint8 mode, bo
                 displayID = 0;
 
         target->Mount(displayID, ci->VehicleId, GetMiscValue());
+
+        if (target->GetTypeId() == TYPEID_PLAYER && GetBase()->HasEffectType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED))
+        {
+            Player* player = target->ToPlayer();
+            if (Unit* critter = ObjectAccessor::GetUnit(*player, player->GetCritterGUID()))
+                if (Creature* creature = critter->ToCreature())
+                    if (creature->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET && !creature->CanFly())
+                        creature->DespawnOrUnsummon(1);
+        }
     }
     else
     {
