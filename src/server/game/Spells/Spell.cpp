@@ -5973,8 +5973,8 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                 // We must also ensure the gameobject we are opening is still closed by the time the spell finishes.
                 if (GameObject* go = m_targets.GetGOTarget())
-                    if (go->GetGoState() != GO_STATE_READY)
-                        return SPELL_FAILED_BAD_TARGETS;
+                    if (go->GetGoType() == GAMEOBJECT_TYPE_DOOR && go->GetGoState() != GO_STATE_READY)
+                        return SPELL_FAILED_ALREADY_OPEN;
 
                 if (m_spellInfo->Id != 1842 || (m_targets.GetGOTarget() &&
                     m_targets.GetGOTarget()->GetGOInfo()->type != GAMEOBJECT_TYPE_TRAP))
