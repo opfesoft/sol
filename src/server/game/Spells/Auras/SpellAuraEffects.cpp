@@ -2815,7 +2815,7 @@ void AuraEffect::HandleAuraMounted(AuraApplication const* aurApp, uint8 mode, bo
                 && GetSpellInfo()->Effects[i].MiscValue == GetMiscValue())
                 displayID = 0;
 
-        target->Mount(displayID, ci->VehicleId, GetMiscValue());
+        target->Mount(displayID, ci->VehicleId, GetMiscValue(), GetSpellInfo());
 
         if (target->GetTypeId() == TYPEID_PLAYER && GetBase()->HasEffectType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED))
         {

@@ -1797,7 +1797,7 @@ struct SpellVisualEntry
     //uint32 PrecastKit;
     //uint32 CastingKit;
     //uint32 ImpactKit;
-    //uint32 StateKit;
+    uint32 StateKit;
     //uint32 StateDoneKit;
     //uint32 ChannelKit;
     uint32 HasMissile;
@@ -1821,6 +1821,31 @@ struct SpellVisualEntry
     //uint32 PersistentAreaKit;
     //DBCPosition3D MissileCastOffset;
     //DBCPosition3D MissileImpactOffset;
+};
+
+struct SpellVisualKitEntry
+{
+    //uint32 ID;
+    //int32 StartAnimID;
+    int32 AnimID;
+    //int32 HeadEffect;
+    //int32 ChestEffect;
+    //int32 BaseEffect;
+    //int32 LeftHandEffect;
+    //int32 RightHandEffect;
+    //int32 BreathEffect;
+    //int32 LeftWeaponEffect;
+    //int32 RightWeaponEffect;
+    //int32 SpecialEffect[3];
+    //int32 WorldEffect;
+    //int32 SoundID;
+    //int32 ShakeID;
+    //int32 CharProc[4];
+    //int32 CharParamZero[4];
+    //int32 CharParamOne[4];
+    //int32 CharParamTwo[4];
+    //int32 CharParamThree[4];
+    //uint32 Flags;
 };
 
 struct StableSlotPricesEntry

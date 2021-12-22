@@ -12424,7 +12424,7 @@ float Unit::GetPPMProcChance(uint32 WeaponSpeed, float PPM, const SpellInfo* spe
     return floor((WeaponSpeed * PPM) / 600.0f);   // result is chance in percents (probability = Speed_in_sec * (PPM / 60))
 }
 
-void Unit::Mount(uint32 mount, uint32 VehicleId, uint32 creatureEntry)
+void Unit::Mount(uint32 mount, uint32 VehicleId, uint32 creatureEntry, SpellInfo const* spellInfo)
 {
     if (mount)
         SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, mount);
@@ -12471,10 +12471,16 @@ void Unit::Mount(uint32 mount, uint32 VehicleId, uint32 creatureEntry)
             if (charm->GetTypeId() == TYPEID_UNIT)
                 charm->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
+        float heightFactor = 0.5f;
+        if (spellInfo && spellInfo->SpellVisual[0] > 0)
+            if (SpellVisualEntry const* spellVisual = sSpellVisualStore.LookupEntry(spellInfo->SpellVisual[0]))
+                if (SpellVisualKitEntry const* spellVisualKit = sSpellVisualKitStore.LookupEntry(spellVisual->StateKit); spellVisualKit && spellVisualKit->AnimID == ANIM_STEALTH_STAND)
+                    heightFactor = 1.0f; // "StealthStand" animation is used by flying carpets, so the height factor needs to be set to 1
+
         WorldPacket data(SMSG_MOVE_SET_COLLISION_HGT, GetPackGUID().size() + 4 + 4);
         data.append(GetPackGUID());
         data << uint32(sWorld->GetGameTime());   // Packet counter
-        data << player->GetCollisionHeight(true);
+        data << player->GetCollisionHeight(true, heightFactor);
         player->GetSession()->SendPacket(&data);
     }
 

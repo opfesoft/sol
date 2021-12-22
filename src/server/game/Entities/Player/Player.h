@@ -2558,7 +2558,7 @@ class Player : public Unit, public GridObject<Player>
         bool CanFly() const override { return m_movementInfo.HasMovementFlag(MOVEMENTFLAG_CAN_FLY); }
 
         //! Return collision height sent to client
-        float GetCollisionHeight(bool mounted) const
+        float GetCollisionHeight(bool mounted, float heightFactor = 0.5f) const
         {
             CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());
             ASSERT(displayInfo);
@@ -2576,10 +2576,10 @@ class Player : public Unit, public GridObject<Player>
                     return GetCollisionHeight(false);
 
                 CreatureModelDataEntry const* mountModelData = sCreatureModelDataStore.LookupEntry(mountDisplayInfo->ModelId);
-                if (!mountModelData)
+                if (!mountModelData || !mountModelData->MountHeight)
                     return GetCollisionHeight(false);
 
-                collisionHeight = scaleMod * (mountModelData->MountHeight + modelData->CollisionHeight * modelData->Scale * displayInfo->scale * 0.5f);
+                collisionHeight = scaleMod * (mountModelData->MountHeight + modelData->CollisionHeight * modelData->Scale * displayInfo->scale * heightFactor);
             }
             else
             {
