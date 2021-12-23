@@ -163,6 +163,13 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                     zCurrent = zNext = zNextPre = zNextPost = INVALID_HEIGHT;
                     distX = (*itrNext).x - (*itr).x;
                     distY = (*itrNext).y - (*itr).y;
+                    if (distX == 0.f && distY == 0.f)
+                    {
+                        _validPointsVector[_currentPoint].erase(randomIter);
+                        _preComputedPaths.erase(pathIdx);
+                        return;
+                    }
+
                     map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itr).x, (*itr).y, (*itr).z + 4.0f, &zCurrent);
                     map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x, (*itrNext).y, (*itrNext).z + 4.0f, &zNext);
                     distDiff = sqrt(distX * distX + distY * distY);
@@ -252,6 +259,9 @@ void RandomMovementGenerator<Creature>::DoInitialize(Creature* creature)
 
     if (!_wanderDistance)
         _wanderDistance = creature->GetWanderDistance();
+
+    if (!_wanderDistance)
+        sLog->outError("Creature (Entry: %u GUID: %u) initialized random movement with wander distance 0", creature->GetEntry(), creature->GetGUIDLow());
 
     _nextMoveTime.Reset(creature->GetDBTableGUIDLow() && creature->GetWanderDistance() == _wanderDistance ? urand(1, 5000) : 0);
 

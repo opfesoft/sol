@@ -1440,8 +1440,9 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap)
 
     SetHealth(m_deathState == ALIVE ? curhealth : 0);
 
-    // checked at creature_template loading
     m_defaultMovementType = MovementGeneratorType(data->movementType);
+    if (!m_wanderDistance && m_defaultMovementType == RANDOM_MOTION_TYPE)
+        m_defaultMovementType = IDLE_MOTION_TYPE;
 
     if (addToMap && !GetMap()->AddToMap(this))
         return false;
