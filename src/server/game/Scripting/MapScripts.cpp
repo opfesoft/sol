@@ -745,7 +745,8 @@ void Map::ScriptsProcess()
 
                 if (!uTarget || !uTarget->isType(TYPEMASK_UNIT))
                 {
-                    sLog->outError("%s no target unit found for spell %u", step.script->GetDebugInfo().c_str(), step.script->CastSpell.SpellID);
+                    if (step.script->CastSpell.Flags != SF_CASTSPELL_SEARCH_CREATURE)
+                        sLog->outError("%s no target unit found for spell %u", step.script->GetDebugInfo().c_str(), step.script->CastSpell.SpellID);
                     break;
                 }
 
