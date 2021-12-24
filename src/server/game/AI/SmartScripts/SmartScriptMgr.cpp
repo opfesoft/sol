@@ -411,7 +411,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                              e.entryOrGuid, e.event_id, e.GetActionType());
             return false;
         case SMART_ACTION_SET_CORPSE_DELAY:
-        case SMART_ACTION_DISABLE_EVADE:
         case SMART_ACTION_GO_SET_GO_STATE:
         case SMART_ACTION_SET_CAN_FLY:
         case SMART_ACTION_REMOVE_AURAS_BY_TYPE:
@@ -1290,6 +1289,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_SET_HEALTH:
         case SMART_ACTION_DESPAWN_GO:
         case SMART_ACTION_SET_COUNTER_RESET:
+        case SMART_ACTION_DISABLE_EVADE:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type(%u), event_type(%u), Entry %d SourceType %u Event %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);
