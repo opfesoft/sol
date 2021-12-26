@@ -3391,6 +3391,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectRadiusIndex[EFFECT_2] = EFFECT_RADIUS_3_YARDS;
             spellInfo->EffectImplicitTargetA[EFFECT_2] = TARGET_DEST_CASTER_RANDOM;
             break;
+        case 11024: // Call of Thund
+            spellInfo->Effect[0] = SPELL_EFFECT_DUMMY; // Prevent summon, handled via SAI
+            break;
 
 
         /////////////////////////////////////////////
