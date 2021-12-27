@@ -260,8 +260,6 @@ public:
 ## npc_corastrasza
 ######*/
 
-#define GOSSIP_ITEM_C_1 "I... I think so..."
-
 enum Corastrasza
 {
     SPELL_SUMMON_WYRMREST_SKYTALON               = 61240,
@@ -281,8 +279,10 @@ public:
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->GetQuestStatus(QUEST_ACES_HIGH) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_ACES_HIGH_DAILY) == QUEST_STATUS_INCOMPLETE) //It's the same dragon for both quests.
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_C_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        if (player->GetQuestStatus(QUEST_ACES_HIGH) == QUEST_STATUS_INCOMPLETE)
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        else if (player->GetQuestStatus(QUEST_ACES_HIGH_DAILY) == QUEST_STATUS_INCOMPLETE)
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
         SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         return true;
