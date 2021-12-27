@@ -31,26 +31,31 @@ EndContentData */
 ## npcs_rutgar_and_frankal
 ###*/
 
-//gossip item text best guess
-#define GOSSIP_ITEM1 "I seek information about Natalia"
-
-#define GOSSIP_ITEM2 "That sounds dangerous!"
-#define GOSSIP_ITEM3 "What did you do?"
-#define GOSSIP_ITEM4 "Who?"
-#define GOSSIP_ITEM5 "Women do that. What did she demand?"
-#define GOSSIP_ITEM6 "What do you mean?"
-#define GOSSIP_ITEM7 "What happened next?"
-
-#define GOSSIP_ITEM11 "Yes, please continue"
-#define GOSSIP_ITEM12 "What language?"
-#define GOSSIP_ITEM13 "The Priestess attacked you?!"
-#define GOSSIP_ITEM14 "I should ask the monkey about this"
-#define GOSSIP_ITEM15 "Then what..."
-
-enum RutgarAndFrankal //trigger creatures to kill
+enum RutgarAndFrankal
 {
-    TRIGGER_FRANKAL     = 15221,
-    TRIGGER_RUTGAR      = 15222
+    QUEST_DEAREST_NATALIA    =  8304,
+    NPC_RUTGAR               = 15170,
+    NPC_FRANKAL              = 15171,
+    TRIGGER_FRANKAL          = 15221,
+    TRIGGER_RUTGAR           = 15222,
+
+    GOSSIP_MENU_RUTGAR_1     =  6534,
+    GOSSIP_MENU_RUTGAR_2     =  6551,
+    GOSSIP_MENU_RUTGAR_3     =  6550,
+    GOSSIP_MENU_RUTGAR_4     =  6549,
+    GOSSIP_MENU_RUTGAR_5     =  6548,
+    GOSSIP_MENU_RUTGAR_6     =  6547,
+    GOSSIP_MENU_RUTGAR_7     =  6546,
+    GOSSIP_MENU_RUTGAR_8     =  6545,
+
+    GOSSIP_MENU_FRANKAL_1    =  6533,
+    GOSSIP_MENU_FRANKAL_2    =  6558,
+    GOSSIP_MENU_FRANKAL_3    =  6557,
+    GOSSIP_MENU_FRANKAL_4    =  6556,
+    GOSSIP_MENU_FRANKAL_5    =  6555,
+    GOSSIP_MENU_FRANKAL_6    =  6554,
+    GOSSIP_MENU_FRANKAL_7    =  6553,
+    GOSSIP_MENU_FRANKAL_8    =  6552,
 };
 
 class npcs_rutgar_and_frankal : public CreatureScript
@@ -64,59 +69,69 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                SendGossipMenuFor(player, 7755, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_2, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_2, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 1:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                SendGossipMenuFor(player, 7756, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_3, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_3, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                SendGossipMenuFor(player, 7757, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_4, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_4, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-                SendGossipMenuFor(player, 7758, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_5, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_5, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 4:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
-                SendGossipMenuFor(player, 7759, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_6, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_6, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 5:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
-                SendGossipMenuFor(player, 7760, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_7, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_7, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 6:
-                SendGossipMenuFor(player, 7761, creature->GetGUID());
-                                                                //'kill' our trigger to update quest status
-                player->KilledMonsterCredit(TRIGGER_RUTGAR, 0);
+                AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_8, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_8, creature), creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_INFO_DEF + 7:
+                player->KilledMonsterCredit(TRIGGER_RUTGAR, 0); //'kill' our trigger to update quest status
+                CloseGossipMenuFor(player);
                 break;
 
             case GOSSIP_ACTION_INFO_DEF + 9:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM11, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
-                SendGossipMenuFor(player, 7762, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_2, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_2, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 10:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM12, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
-                SendGossipMenuFor(player, 7763, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_3, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_3, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 11:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM13, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
-                SendGossipMenuFor(player, 7764, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_4, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_4, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 12:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM14, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
-                SendGossipMenuFor(player, 7765, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_5, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_5, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 13:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM15, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
-                SendGossipMenuFor(player, 7766, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_6, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_6, creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 14:
-                SendGossipMenuFor(player, 7767, creature->GetGUID());
-                                                                //'kill' our trigger to update quest status
-                player->KilledMonsterCredit(TRIGGER_FRANKAL, 0);
+                AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_7, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_7, creature), creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_INFO_DEF + 15:
+                AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_8, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 16);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_8, creature), creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_INFO_DEF + 16:
+                player->KilledMonsterCredit(TRIGGER_FRANKAL, 0); //'kill' our trigger to update quest status
+                CloseGossipMenuFor(player);
                 break;
         }
         return true;
@@ -127,17 +142,20 @@ public:
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->GetQuestStatus(8304) == QUEST_STATUS_INCOMPLETE &&
-            creature->GetEntry() == 15170 &&
-            !player->GetReqKillOrCastCurrentCount(8304, TRIGGER_RUTGAR))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        if (player->GetQuestStatus(QUEST_DEAREST_NATALIA) == QUEST_STATUS_INCOMPLETE &&
+            creature->GetEntry() == NPC_RUTGAR &&
+            !player->GetReqKillOrCastCurrentCount(QUEST_DEAREST_NATALIA, TRIGGER_RUTGAR))
+            AddGossipItemFor(player, GOSSIP_MENU_RUTGAR_1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
 
-        if (player->GetQuestStatus(8304) == QUEST_STATUS_INCOMPLETE &&
-            creature->GetEntry() == 15171 &&
-            player->GetReqKillOrCastCurrentCount(8304, TRIGGER_RUTGAR))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+9);
+        if (player->GetQuestStatus(QUEST_DEAREST_NATALIA) == QUEST_STATUS_INCOMPLETE &&
+            creature->GetEntry() == NPC_FRANKAL &&
+            player->GetReqKillOrCastCurrentCount(QUEST_DEAREST_NATALIA, TRIGGER_RUTGAR))
+            AddGossipItemFor(player, GOSSIP_MENU_FRANKAL_1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+9);
 
-        SendGossipMenuFor(player, 7754, creature->GetGUID());
+        if (creature->GetEntry() == NPC_RUTGAR)
+            SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_RUTGAR_1, creature), creature->GetGUID());
+        else if (creature->GetEntry() == NPC_FRANKAL)
+            SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_FRANKAL_1, creature), creature->GetGUID());
 
         return true;
     }
