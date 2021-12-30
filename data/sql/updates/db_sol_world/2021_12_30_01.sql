@@ -1,0 +1,33 @@
+-- DB update 2021_12_30_00 -> 2021_12_30_01
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2021_12_30_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2021_12_30_00 2021_12_30_01 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1640903198553731760'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1640903198553731760');
+
+UPDATE `creature` SET `position_z` = 653.17 WHERE `guid` IN (117622,117166,100693,117101);
+UPDATE `creature` SET `position_z` = 653.36 WHERE `guid` IN (117221,118880);
+UPDATE `creature` SET `position_z` = 654.031 WHERE `guid` IN (120515,120411,118577,100774);
+UPDATE `creature` SET `position_z` = 653.759 WHERE `guid` = 118687;
+UPDATE `creature` SET `position_z` = 653.63 WHERE `guid` = 118867;
+UPDATE `creature` SET `position_z` = 654.95 WHERE `guid` = 120256;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
