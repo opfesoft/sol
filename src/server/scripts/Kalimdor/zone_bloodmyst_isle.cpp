@@ -60,6 +60,10 @@ public:
                 case 0:
                     if (Player* player = killer->ToPlayer())
                         player->KilledMonsterCredit(NPC_EXPEDITION_RESEARCHER, 0);
+                    else if (killer->IsPet())
+                        if (Unit* owner = killer->GetOwner())
+                            if (Player* player = owner->ToPlayer())
+                                player->KilledMonsterCredit(NPC_EXPEDITION_RESEARCHER, 0);
                     spawnCreatureID = NPC_EXPEDITION_RESEARCHER;
                     break;
                 case 1:
