@@ -1527,6 +1527,45 @@ class spell_gen_barleybrew_scalder : public SpellScriptLoader
         }
 };
 
+enum SoulDeflectionSpell
+{
+    SPELL_SOUL_DEFLECTION = 51011,
+};
+
+class spell_gen_soul_deflection : public SpellScriptLoader
+{
+    public:
+        spell_gen_soul_deflection() : SpellScriptLoader("spell_gen_soul_deflection") { }
+
+        class spell_gen_soul_deflection_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_soul_deflection_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_SOUL_DEFLECTION))
+                    return false;
+                return true;
+            }
+
+            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            {
+                PreventDefaultAction();
+                GetTarget()->CastCustomSpell(SPELL_SOUL_DEFLECTION, SPELLVALUE_BASE_POINT0, eventInfo.GetDamageInfo()->GetDamage(), GetTarget(), TRIGGERED_FULL_MASK, NULL, aurEff);
+            }
+
+            void Register()
+            {
+                OnEffectProc += AuraEffectProcFn(spell_gen_soul_deflection_AuraScript::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_soul_deflection_AuraScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5250,6 +5289,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_throw_back();
     new spell_gen_haunted();
     new spell_gen_barleybrew_scalder();
+    new spell_gen_soul_deflection();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();
@@ -5300,6 +5340,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_tournament_pennant();
     new spell_gen_ds_flush_knockback();
     new spell_gen_count_pct_from_max_hp("spell_gen_default_count_pct_from_max_hp");
+    new spell_gen_count_pct_from_max_hp("spell_gen_20pct_count_pct_from_max_hp", 20);
     new spell_gen_count_pct_from_max_hp("spell_gen_50pct_count_pct_from_max_hp", 50);
     new spell_gen_count_pct_from_max_hp("spell_gen_100pct_count_pct_from_max_hp", 100);
     new spell_gen_despawn_self();
