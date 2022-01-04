@@ -547,6 +547,7 @@ public:
                     Talk(SAY_STARTUP1);
                     break;
                 case 9:
+                    me->setFaction(FACTION_RATCHET);
                     SetRun(false);
                     break;
                 case 17:
@@ -616,7 +617,8 @@ public:
                                 if (Player* player = GetPlayerForEscort())
                                 {
                                     player->GroupEventHappens(QUEST_ESCAPE, me);
-                                    me->SummonCreature(NPC_PILOT_WIZZ, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 180000);
+                                    if (Creature* pilot = me->SummonCreature(NPC_PILOT_WIZZ, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 180000))
+                                        pilot->setActive(true);
                                 }
                                 break;
                         }
@@ -639,10 +641,12 @@ public:
     {
         if (quest->GetQuestId() == QUEST_ESCAPE)
         {
-            creature->setFaction(FACTION_RATCHET);
             creature->AI()->Talk(SAY_START);
             if (npc_escortAI* pEscortAI = CAST_AI(npc_wizzlecrank_shredder::npc_wizzlecrank_shredderAI, creature->AI()))
+            {
                 pEscortAI->Start(true, false, player->GetGUID());
+                creature->setActive(true);
+            }
         }
         return true;
     }
