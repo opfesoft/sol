@@ -1,0 +1,38 @@
+-- DB update 2022_01_06_00 -> 2022_01_07_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2022_01_06_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2022_01_06_00 2022_01_07_00 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1641547225700410253'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1641547225700410253');
+
+UPDATE `creature_template` SET `gossip_menu_id` = 2298, `ScriptName` = 'npc_mathredis_firestar' WHERE `entry` = 9836;
+UPDATE `gameobject_loot_template` SET `QuestRequired` = 0 WHERE `Entry` = 11103 AND `Item` IN (11751,11752,11753);
+
+DELETE FROM `gossip_menu` WHERE `MenuID` IN (2298,2299,2300,2301,2302,2303);
+INSERT INTO `gossip_menu` (`MenuID`, `TextID`) VALUES
+(2298,2993),
+(2299,2994),
+(2300,2995),
+(2301,2996),
+(2302,2997),
+(2303,2998);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
