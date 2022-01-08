@@ -1,0 +1,37 @@
+-- DB update 2022_01_08_01 -> 2022_01_09_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2022_01_08_01';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2022_01_08_01 2022_01_09_00 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1641684007004453069'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1641684007004453069');
+
+DELETE FROM `creature_equip_template` WHERE `CreatureID` IN (4663,4664,4665,4666);
+INSERT INTO `creature_equip_template` (`CreatureID`, `ID`, `ItemID1`, `ItemID2`, `ItemID3`, `VerifiedBuild`)
+VALUES
+(4663,1,5303,0,0,0),
+(4664,1,4991,0,0,0),
+(4665,1,2559,0,0,0),
+(4666,1,5285,5281,0,0);
+
+UPDATE `creature` SET `equipment_id` = 1 WHERE `id` IN (4663,4664,4665,4666);
+UPDATE `creature_addon` SET `bytes2` = 4097 WHERE `guid` IN (27676,27682,27688,27703,27716,27726,27743);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
