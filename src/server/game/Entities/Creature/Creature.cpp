@@ -1697,7 +1697,7 @@ void Creature::Respawn(bool force)
 
         setDeathState(JUST_RESPAWNED);
 
-        uint32 displayID = GetNativeDisplayId();
+        uint32 displayID = ObjectMgr::ChooseDisplayId(GetCreatureTemplate(), GetCreatureData());
         CreatureModelInfo const* minfo = sObjectMgr->GetCreatureModelRandomGender(&displayID);
         if (minfo)                                             // Cancel load if no model defined
         {
