@@ -1329,6 +1329,8 @@ enum AcoreStrings
     LANG_BG_READY_CHECK_ERROR                     = 30084,
 
     LANG_DEBUG_LFG_ON                             = 30096,
-    LANG_DEBUG_LFG_OFF                            = 30097
+    LANG_DEBUG_LFG_OFF                            = 30097,
+
+    LANG_COMMAND_GOOBJECTMULTIPLE                 = 31077,
 };
 #endif

@@ -286,11 +286,41 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
 
         // number or [name] Shift-click form |color|Hgameobject:go_guid|h[name]|h|r
-        char* id = handler->extractKeyFromLink((char*)args, "Hgameobject");
-        if (!id)
+        char* param1 = handler->extractKeyFromLink((char*)args, "Hgameobject");
+        if (!param1)
             return false;
 
-        int32 guid = atoi(id);
+        int32 guid = 0;
+
+        if (strcmp(param1, "id") == 0)
+        {
+            char* tail = strtok(nullptr, "");
+            if (!tail)
+                return false;
+            char* id = handler->extractKeyFromLink(tail, "Hgameobject_entry");
+            if (!id)
+                return false;
+
+            int32 entry = atoi(id);
+            if (!entry)
+                return false;
+
+            QueryResult result = WorldDatabase.PQuery("SELECT guid FROM gameobject WHERE id = %i", entry);
+            if (!result)
+            {
+                handler->SendSysMessage(LANG_COMMAND_GOOBJNOTFOUND);
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+            if (result->GetRowCount() > 1)
+                handler->SendSysMessage(LANG_COMMAND_GOOBJECTMULTIPLE);
+
+            Field* fields = result->Fetch();
+            guid = fields[0].GetUInt32();
+        }
+        else
+            guid = atoi(param1);
+
         if (!guid)
             return false;
 
