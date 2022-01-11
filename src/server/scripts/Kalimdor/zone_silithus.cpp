@@ -26,6 +26,7 @@ EndContentData */
 #include "SpellInfo.h"
 #include "Spell.h"
 #include "BanManager.h"
+#include "SmartAI.h"
 
 /*###
 ## npcs_rutgar_and_frankal
@@ -1091,7 +1092,6 @@ public:
 enum WSSpells
 {
     SPELL_PUNISHMENT = 24803,
-    SPELL_SPAWN_IN = 25035,
 
     AURA_TWILIGHT_SET = 24746,
     AURA_MEDALLION = 24748,
@@ -1120,7 +1120,15 @@ enum WSGossip
 {
     GOSSIPID_LESSER_WS = 6540,
     GOSSIPID_WS = 6542,
-    GOSSIPID_GREATER_WS = 6543
+    GOSSIPID_GREATER_WS = 6543,
+
+    NPC_TEXT_LESSER_WS = 7771,
+    NPC_TEXT_WS = 7773,
+    NPC_TEXT_GREATER_WS = 7774,
+    NPC_TEXT_WS_PUNISH1 = 7744,
+    NPC_TEXT_WS_PUNISH2 = 7772,
+    NPC_TEXT_WS_PUNISH3 = 7776,
+    NPC_TEXT_WS_PUNISH4 = 7775,
 };
 
 enum WSCreatures
@@ -1170,31 +1178,6 @@ enum WS
     EARTH = 0x4,
     AIR = 0x8
 };
-
-enum WSTexts
-{
-    SAY_TEMPLAR_AGGRO = 0,
-    SAY_DUKE_AGGRO = 0,
-    YELL_ROYAL_AGGRO = 0
-};
-
-#define GOSSIP_TEMPLAR_RANDOM "I am no cultist, you monster! Come to me and face your destruction!"
-#define GOSSIP_TEMPLAR_FIRE "Crimson Templar! I hold your signet! Heed my call!"
-#define GOSSIP_TEMPLAR_EARTH "Earthen Templar! I hold your signet! Heed my call!"
-#define GOSSIP_TEMPLAR_AIR "Hoary Templar! I hold your signet! Heed my call!"
-#define GOSSIP_TEMPLAR_WATER "Azure Templar! I hold your signet! Heed my call!"
-
-#define GOSSIP_DUKE_RANDOM "You will listen to this, vile duke! I am not your Twilight's Hammer lapdog! I am here to challenge you! Come! Come, and meet your death..."
-#define GOSSIP_DUKE_FIRE "Duke of Cynders! I hold your signet! Heed my call!"
-#define GOSSIP_DUKE_EARTH "The Duke of Shards! I hold your signet! Heed my call!"
-#define GOSSIP_DUKE_AIR "The Duke of Zephyrs! I hold your signet! Heed my call!"
-#define GOSSIP_DUKE_WATER "The Duke of Fathoms! I hold your signet! Heed my call!"
-
-#define GOSSIP_ROYAL_RANDOM "The day of the judgement has come, fiend! I challenge you to battle!"
-#define GOSSIP_ROYAL_FIRE "Prince Skaldrenox! I hold your signet! Heed my call!"
-#define GOSSIP_ROYAL_EARTH "Baron Kazum! I hold your signet! Heed my call!"
-#define GOSSIP_ROYAL_AIR "High Marshal Whirlaxis! I hold your signet! Heed my call!"
-#define GOSSIP_ROYAL_WATER "Lord Skwol! I hold your signet! Heed my call!"
 
 class go_wind_stone : public GameObjectScript
 {
@@ -1278,43 +1261,15 @@ class go_wind_stone : public GameObjectScript
             SpellCastResult result = spell->CheckCast(true);
             delete spell;
             if (result != SPELL_CAST_OK)
-            {
-                if (result == SPELL_FAILED_REAGENTS)
-                {
-                    std::string accountName;
-                    AccountMgr::GetName(player->GetSession()->GetAccountId(), accountName);
-                    sBan->BanAccount(accountName, "0s", "Wind Stone exploit", "Server");
-                }
                 return;
-            }
             player->CastSpell(player, spellInfoTrigger->Id, false);
-            TempSummon* summons = go->SummonCreature(npc, go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), player->GetOrientation() - M_PI, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10 * 60 * 1000);
-            summons->CastSpell(summons, SPELL_SPAWN_IN, false);
-            switch (summons->GetEntry())
-            {
-                case NPC_TEMPLAR_FIRE:
-                case NPC_TEMPLAR_WATER:
-                case NPC_TEMPLAR_AIR:
-                case NPC_TEMPLAR_EARTH:
-                    summons->AI()->Talk(SAY_TEMPLAR_AGGRO);
-                    break;
-
-                case NPC_DUKE_FIRE:
-                case NPC_DUKE_WATER:
-                case NPC_DUKE_EARTH:
-                case NPC_DUKE_AIR:
-                    summons->AI()->Talk(SAY_DUKE_AGGRO);
-                    break;
-                case NPC_ROYAL_FIRE:
-                case NPC_ROYAL_AIR:
-                case NPC_ROYAL_EARTH:
-                case NPC_ROYAL_WATER:
-                    summons->AI()->Talk(YELL_ROYAL_AGGRO);
-                    break;
-            }
-            summons->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            summons->SendMeleeAttackStart(player);
-            summons->CombatStart(player);
+            if (TempSummon* summons = go->SummonCreature(npc, go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), player->GetOrientation() - M_PI, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 15000))
+                if (SmartAI* ai = CAST_AI(SmartAI, summons->AI()))
+                {
+                    ObjectList* l = new ObjectList();
+                    l->push_back(player);
+                    ai->GetScript()->StoreTargetList(l, 1);
+                }
         }
 
     public:
@@ -1328,79 +1283,88 @@ class go_wind_stone : public GameObjectScript
                 case GOSSIPID_LESSER_WS:
                 {
                     if (rank >= 1) // 1 or 2 or 3
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEMPLAR_RANDOM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
                     else
                     {
-                        go->CastSpell(player, SPELL_PUNISHMENT);
-                        break;
+                        SendGossipMenuFor(player, NPC_TEXT_WS_PUNISH1, go->GetGUID());
+                        player->CastSpell(player, SPELL_PUNISHMENT);
+                        return true;
                     }
-
                     uint8 item = GetItems(player, TEMPLAR);
                     if (item & FIRE)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEMPLAR_FIRE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
                     if (item & WATER)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEMPLAR_WATER, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
                     if (item & EARTH)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEMPLAR_EARTH, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
                     if (item & AIR)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEMPLAR_AIR, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                    SendGossipMenuFor(player, NPC_TEXT_LESSER_WS, go->GetGUID());
                     break;
                 }
                 case GOSSIPID_WS:
                 {
                     if (rank >= 2) // 2 or 3
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_DUKE_RANDOM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
                     else
                     {
-                        go->CastSpell(player, SPELL_PUNISHMENT);
-                        break;
+                        if (rank < 1)
+                            SendGossipMenuFor(player, NPC_TEXT_WS_PUNISH1, go->GetGUID());
+                        else
+                            SendGossipMenuFor(player, NPC_TEXT_WS_PUNISH2, go->GetGUID());
+                        player->CastSpell(player, SPELL_PUNISHMENT);
+                        return true;
                     }
 
                     uint8 item = GetItems(player, DUKE);
                     if (item & FIRE)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_DUKE_FIRE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
                     if (item & WATER)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_DUKE_WATER, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
                     if (item & EARTH)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_DUKE_EARTH, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
                     if (item & AIR)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_DUKE_AIR, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
+                    SendGossipMenuFor(player, NPC_TEXT_WS, go->GetGUID());
                     break;
                 }
                 case GOSSIPID_GREATER_WS:
                 {
                     if (rank == 3) // 3
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ROYAL_RANDOM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
                     else
                     {
-                        go->CastSpell(player, SPELL_PUNISHMENT);
-                        break;
+                        if (rank < 1)
+                            SendGossipMenuFor(player, NPC_TEXT_WS_PUNISH1, go->GetGUID());
+                        else if (rank < 2)
+                            SendGossipMenuFor(player, NPC_TEXT_WS_PUNISH3, go->GetGUID());
+                        else
+                            SendGossipMenuFor(player, NPC_TEXT_WS_PUNISH4, go->GetGUID());
+                        player->CastSpell(player, SPELL_PUNISHMENT);
+                        return true;
                     }
 
                     uint8 item = GetItems(player, ROYAL);
                     if (item & FIRE)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ROYAL_FIRE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
                     if (item & WATER)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ROYAL_WATER, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
                     if (item & EARTH)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ROYAL_EARTH, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
                     if (item & AIR)
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ROYAL_AIR, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(go), 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);
+                    SendGossipMenuFor(player, NPC_TEXT_GREATER_WS, go->GetGUID());
                     break;
                 }
                 default:
                     break;
             }
 
-            SendGossipMenuFor(player, player->GetGossipTextId(gossipId, go), go->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
         {
-            ClearGossipMenuFor(player);
-            player->PlayerTalkClass->SendCloseGossip();
-
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF + 1:
@@ -1454,6 +1418,8 @@ class go_wind_stone : public GameObjectScript
                 default:
                     break;
             }
+
+            go->Despawn(0, 0);
             return true;
         }
 };
