@@ -37,12 +37,6 @@ class instance_dire_maul : public InstanceMapScript
                         if (_pylonsState == ALL_PYLONS_OFF)
                             creature->DespawnOrUnsummon(5000);
                         break;
-                    case NPC_TSU_ZEE:
-                        if (urand(0, 99) < 70)
-                            creature->UpdateEntry(NPC_ELDRETH_APPARITION);
-                        else
-                            creature->LoadEquipment(1, true);
-                        break;
                 }
             }
 
