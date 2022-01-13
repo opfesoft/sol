@@ -1327,7 +1327,7 @@ float Creature::GetSpellDamageMod(int32 Rank)
 bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data)
 { 
     SetZoneScript();
-    if (GetZoneScript() && data)
+    if (GetZoneScript() && data && !sObjectMgr->GetCreatureIdChanceVector(m_DBTableGuid))
     {
         Entry = GetZoneScript()->GetCreatureEntry(guidlow, data);
         if (!Entry)
@@ -1395,16 +1395,20 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap)
     // xinef: this has to be assigned before Create function, properly loads equipment id from DB
     m_creatureData = data;
     m_DBTableGuid = guid;
+    uint8 result;
+    uint32 creatureId = RollCreatureId(result);
+    if (result == CREATURE_ID_ROLL_FAIL)
+        creatureId = data->id;
 
     if (map->GetInstanceId() == 0)
     {
-        if (map->GetCreature(MAKE_NEW_GUID(guid, data->id, HIGHGUID_UNIT)))
+        if (map->GetCreature(MAKE_NEW_GUID(guid, creatureId, HIGHGUID_UNIT)))
             return false;
     }
     else
         guid = sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT);
 
-    if (!Create(guid, map, data->phaseMask, data->id, 0, data->posX, data->posY, data->posZ, data->orientation, data))
+    if (!Create(guid, map, data->phaseMask, creatureId, 0, data->posX, data->posY, data->posZ, data->orientation, data))
         return false;
 
     //We should set first home position, because then AI calls home movement
@@ -1690,8 +1694,25 @@ void Creature::Respawn(bool force)
         m_respawnTime = 0;
         ResetPickPocketLootTime();
 
-        if (m_originalEntry != GetEntry())
-            UpdateEntry(m_originalEntry);
+        uint8 result;
+        uint32 creatureId = RollCreatureId(result);
+        if (result == CREATURE_ID_ROLL_OK && !GetMap()->Instanceable())
+        {
+            m_originalEntry = creatureId;
+            if (m_originalEntry != GetEntry())
+            {
+                UpdateEntry(m_originalEntry, m_originalEntry == m_creatureData->id ? m_creatureData : nullptr);
+                m_defaultMovementType = MovementGeneratorType(m_creatureData->movementType);
+                if (!m_wanderDistance && m_defaultMovementType == RANDOM_MOTION_TYPE)
+                    m_defaultMovementType = IDLE_MOTION_TYPE;
+                AIM_Initialize();
+            }
+        }
+        else
+        {
+            if (m_originalEntry != GetEntry())
+                UpdateEntry(m_originalEntry);
+        }
 
         SelectLevel();
 
@@ -2974,4 +2995,39 @@ bool Creature::CanPeriodicallyCallForAssistance() const
         return false;
 
     return true;
+}
+
+uint32 Creature::RollCreatureId(uint8 &result) const
+{
+    if (!m_creatureData)
+    {
+        result = CREATURE_ID_ROLL_FAIL;
+        return 0;
+    }
+
+    CreatureIdChanceVector const* creatureIdChanceVector = sObjectMgr->GetCreatureIdChanceVector(m_DBTableGuid);
+
+    if (creatureIdChanceVector)
+    {
+        result = CREATURE_ID_ROLL_OK;
+        float roll = (float)rand_chance();
+
+        for (CreatureIdChanceVector::const_iterator itr = creatureIdChanceVector->begin(); itr != creatureIdChanceVector->end(); ++itr)
+        {
+            float chance = itr->chance;
+            if (chance >= 100.0f)
+                return itr->id;
+
+            roll -= chance;
+            if (roll < 0)
+                return itr->id;
+        }
+    }
+    else
+    {
+        result = CREATURE_ID_ROLL_FAIL;
+        return 0;
+    }
+
+    return m_creatureData->id;
 }

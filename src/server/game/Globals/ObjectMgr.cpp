@@ -1013,6 +1013,65 @@ void ObjectMgr::LoadCreatureAddons()
     sLog->outString();
 }
 
+void ObjectMgr::LoadCreatureIdChances()
+{
+    uint32 oldMSTime = getMSTime();
+
+    //                                                0     1   2
+    QueryResult result = WorldDatabase.Query("SELECT guid, id, chance FROM creature_id_chance");
+
+    if (!result)
+    {
+        sLog->outString(">> Loaded 0 creature id chances. DB table `creature_id_chance` is empty.");
+        sLog->outString();
+        return;
+    }
+
+    uint32 count = 0;
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 guid = fields[0].GetUInt32();
+
+        CreatureData const* creData = GetCreatureData(guid);
+        if (!creData)
+        {
+            sLog->outErrorDb("Creature (GUID: %u) does not exist but has a record in `creature_id_chance`", guid);
+            continue;
+        }
+
+        CreatureIdChanceVector& creatureIdChanceVector = _creatureIdChanceStore[guid];
+        CreatureIdChance creatureIdChance;
+
+        uint32 id = fields[1].GetUInt32();
+
+        if (!sObjectMgr->GetCreatureTemplate(id))
+        {
+            sLog->outErrorDb("Creature template (Entry: %u) does not exist but has a record in `creature_id_chance`", id);
+            continue;
+        }
+
+        float chance = fields[2].GetFloat();
+
+        if (chance <= 0 || chance > 100)
+        {
+            sLog->outErrorDb("`creature_id_chance` has an invalid chance (%f) for creature guid (%u), entry (%u), skipped.", chance, guid, id);
+            continue;
+        }
+
+        creatureIdChance.id = id;
+        creatureIdChance.chance = chance;
+        creatureIdChanceVector.emplace_back(creatureIdChance);
+
+        ++count;
+    }
+    while (result->NextRow());
+
+    sLog->outString(">> Loaded %u creature id chances in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString();
+}
+
 void ObjectMgr::LoadGameObjectAddons()
 {
     uint32 oldMSTime = getMSTime();
@@ -1080,6 +1139,15 @@ CreatureAddon const* ObjectMgr::GetCreatureAddon(uint32 lowguid)
 {
     CreatureAddonContainer::const_iterator itr = _creatureAddonStore.find(lowguid);
     if (itr != _creatureAddonStore.end())
+        return &(itr->second);
+
+    return NULL;
+}
+
+CreatureIdChanceVector const* ObjectMgr::GetCreatureIdChanceVector(uint32 lowguid)
+{
+    CreatureIdChanceMap::const_iterator itr = _creatureIdChanceStore.find(lowguid);
+    if (itr != _creatureIdChanceStore.end())
         return &(itr->second);
 
     return NULL;
@@ -1211,7 +1279,7 @@ CreatureModelInfo const* ObjectMgr::GetCreatureModelInfo(uint32 modelId)
 uint32 ObjectMgr::ChooseDisplayId(CreatureTemplate const* cinfo, CreatureData const* data /*= NULL*/)
 {
     // Load creature model (display id)
-    if (data && data->displayid)
+    if (data && data->displayid && data->id == cinfo->Entry)
         return data->displayid;
 
     return cinfo->GetRandomValidModelId();

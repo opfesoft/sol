@@ -1577,6 +1577,9 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Creature Addon Data...");
     sObjectMgr->LoadCreatureAddons();                            // must be after LoadCreatureTemplates() and LoadCreatures()
 
+    sLog->outString("Loading Creature ID Chances...");
+    sObjectMgr->LoadCreatureIdChances();
+
     sLog->outString("Loading Gameobject Data...");
     sObjectMgr->LoadGameobjects();
 

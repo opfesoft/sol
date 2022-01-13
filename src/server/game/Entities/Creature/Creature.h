@@ -325,6 +325,22 @@ struct CreatureAddon
 
 typedef std::unordered_map<uint32, CreatureAddon> CreatureAddonContainer;
 
+// `creature_id_chance` table
+struct CreatureIdChance
+{
+    uint32 id;
+    float chance;
+};
+
+typedef std::vector<CreatureIdChance> CreatureIdChanceVector;
+typedef std::unordered_map<uint32, CreatureIdChanceVector> CreatureIdChanceMap;
+
+enum CreatureIdRollResult
+{
+    CREATURE_ID_ROLL_OK   = 1,
+    CREATURE_ID_ROLL_FAIL = 2,
+};
+
 // Vendors
 struct VendorItem
 {
@@ -778,6 +794,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
     private:
         void ForcedDespawn(uint32 timeMSToDespawn = 0);
         bool CanPeriodicallyCallForAssistance() const;
+        uint32 RollCreatureId(uint8 &result) const;
 
         //WaypointMovementGenerator vars
         uint32 m_waypointID;
