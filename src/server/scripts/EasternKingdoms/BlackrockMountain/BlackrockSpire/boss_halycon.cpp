@@ -40,7 +40,6 @@ public:
         void Reset()
         {
             _Reset();
-            Summoned = false;
         }
 
         void EnterCombat(Unit* /*who*/)
@@ -52,10 +51,9 @@ public:
 
         void JustDied(Unit* /*killer*/)
         {
+            _JustDied();
             me->SummonCreature(NPC_GIZRUL_THE_SLAVENER, SummonLocation, TEMPSUMMON_TIMED_DESPAWN, 300000);
             Talk(EMOTE_DEATH);
-
-            Summoned = true;
         }
 
         void UpdateAI(uint32 diff)
@@ -85,8 +83,6 @@ public:
             }
             DoMeleeAttackIfReady();
         }
-        private:
-            bool Summoned;
     };
 
     CreatureAI* GetAI(Creature* creature) const
