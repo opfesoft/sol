@@ -1733,14 +1733,13 @@ float Unit::GetEffectiveResistChance(Unit const* owner, SpellSchoolMask schoolMa
             victimResistance += float(owner->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_TARGET_RESISTANCE, schoolMask));
     }
 
-    // Chaos Bolt exception, ignore all target resistances (unknown attribute?)
-    if (spellInfo && spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && spellInfo->SpellIconID == 3178)
-        victimResistance = 0;
-
     victimResistance = std::max(victimResistance, 0.0f);
     if (owner)
         victimResistance += std::max((float(victim->getLevel())-float(owner->getLevel()))*5.0f, 0.0f);
 
+    // Chaos Bolt exception, ignore all target resistances (unknown attribute?)
+    if (spellInfo && spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && spellInfo->SpellIconID == 3178)
+        victimResistance = 0;
 
     static uint32 const BOSS_LEVEL = 83;
     static float const BOSS_RESISTANCE_CONSTANT = 510.0f;
@@ -1845,6 +1844,10 @@ void Unit::CalcAbsorbResist(Unit* attacker, Unit* victim, SpellSchoolMask school
                 auraAbsorbMod = float((*itr)->GetAmount());
         }
         RoundToInterval(auraAbsorbMod, 0.0f, 100.0f);
+
+        // Chaos Bolt exception, ignore absorb
+        if (spellInfo && spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && spellInfo->SpellIconID == 3178)
+            auraAbsorbMod = 100.0f;
     }
 
     // We're going to call functions which can modify content of the list during iteration over it's elements
