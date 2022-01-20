@@ -158,6 +158,10 @@ class instance_stratholme : public InstanceMapScript
                             SaveToDB();
                         }
                         break;
+                    case NPC_BARON_RIVENDARE:
+                        events.CancelEvent(EVENT_BARON_TIME);
+                        DoRemoveAurasDueToSpellOnPlayers(SPELL_BARON_ULTIMATUM);
+                        break;
                 }
             }
 
