@@ -19053,7 +19053,7 @@ void Unit::PetSpellFail(const SpellInfo* spellInfo, Unit* target, uint32 result)
                 {
                     AttackStop();
                     charmInfo->SetIsAtStay(false);
-                    charmInfo->SetIsCommandAttack(!ToCreature()->HasReactState(REACT_PASSIVE));
+                    charmInfo->SetIsCommandAttack(false);
                     charmInfo->SetIsReturning(false);
                     charmInfo->SetIsFollowing(false);
 

@@ -543,7 +543,11 @@ void PetAI::HandleReturnMovement()
     }
     else // COMMAND_FOLLOW
     {
-        if (!me->GetCharmInfo()->IsFollowing() && !me->GetCharmInfo()->IsReturning())
+        bool hasPositiveTempSpell = false;
+        if (Pet* pet = me->ToPet(); pet && pet->GetTempSpell() && pet->IsTempSpellPositive())
+            hasPositiveTempSpell = true;
+
+        if (!me->GetCharmInfo()->IsFollowing() && !me->GetCharmInfo()->IsReturning() && !hasPositiveTempSpell)
         {
             if (me->GetMotionMaster()->GetMotionSlotType(MOTION_SLOT_CONTROLLED) == NULL_MOTION_TYPE)
             {

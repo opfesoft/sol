@@ -451,16 +451,11 @@ void Pet::Update(uint32 diff)
                     {
                         if (!GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(spellInfo) && !HasSpellCooldown(tempspell))
                         {
-                            StopMoving();
-                            GetMotionMaster()->Clear(false);
-                            GetMotionMaster()->MoveIdle();
-
-                            GetCharmInfo()->SetIsCommandAttack(false);
-                            GetCharmInfo()->SetIsAtStay(true);
+                            GetCharmInfo()->SetIsCommandAttack(true);
+                            GetCharmInfo()->SetIsAtStay(false);
                             GetCharmInfo()->SetIsCommandFollow(false);
                             GetCharmInfo()->SetIsFollowing(false);
                             GetCharmInfo()->SetIsReturning(false);
-                            GetCharmInfo()->SaveStayPosition(true);
 
                             if (CastSpell(tempspellTarget, tempspell, false) == SPELL_CAST_OK)
                                 AddSpellCooldown(tempspell, 0, 0);
@@ -472,12 +467,6 @@ void Pet::Update(uint32 diff)
                             {
                                 if (tempoldTarget && tempoldTarget->IsAlive())
                                 {
-                                    GetCharmInfo()->SetIsCommandAttack(true);
-                                    GetCharmInfo()->SetIsAtStay(false);
-                                    GetCharmInfo()->SetIsFollowing(false);
-                                    GetCharmInfo()->SetIsCommandFollow(false);
-                                    GetCharmInfo()->SetIsReturning(false);
-
                                     if (ToCreature() && ToCreature()->IsAIEnabled)
                                         ToCreature()->AI()->AttackStart(tempoldTarget);
                                 }

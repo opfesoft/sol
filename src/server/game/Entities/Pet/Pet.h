@@ -161,6 +161,8 @@ class Pet : public Guardian
         static void HandleAsynchLoadFailed(AsynchPetSummon* info, Player* player, uint8 asynchLoadType, uint8 loadResult);
         uint8 GetAsynchLoadType() const { return asynchLoadType; }
         void SetAsynchLoadType(uint8 type) { asynchLoadType = type; }
+        uint32 GetTempSpell() const { return m_tempspell; }
+        bool IsTempSpellPositive() const { return m_tempspellIsPositive; }
     protected:
         Player* m_owner;
         int32   m_happinessTimer;
