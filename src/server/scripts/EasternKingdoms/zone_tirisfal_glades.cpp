@@ -102,6 +102,10 @@ public:
 
                 if (pDoneBy->GetTypeId() == TYPEID_PLAYER)
                     m_uiPlayerGUID = pDoneBy->GetGUID();
+                else if (pDoneBy->IsPet())
+                    if (Unit* owner = pDoneBy->GetOwner())
+                        if (owner->GetTypeId() == TYPEID_PLAYER)
+                            m_uiPlayerGUID = owner->GetGUID();
             }
         }
 
