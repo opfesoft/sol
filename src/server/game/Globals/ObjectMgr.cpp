@@ -1034,15 +1034,11 @@ void ObjectMgr::LoadCreatureIdChances()
 
         uint32 guid = fields[0].GetUInt32();
 
-        CreatureData const* creData = GetCreatureData(guid);
-        if (!creData)
+        if (!GetCreatureData(guid))
         {
             sLog->outErrorDb("Creature (GUID: %u) does not exist but has a record in `creature_id_chance`", guid);
             continue;
         }
-
-        CreatureIdChanceVector& creatureIdChanceVector = _creatureIdChanceStore[guid];
-        CreatureIdChance creatureIdChance;
 
         uint32 id = fields[1].GetUInt32();
 
@@ -1060,6 +1056,9 @@ void ObjectMgr::LoadCreatureIdChances()
             continue;
         }
 
+        CreatureIdChanceVector& creatureIdChanceVector = _creatureIdChanceStore[guid];
+        CreatureIdChance creatureIdChance;
+
         creatureIdChance.id = id;
         creatureIdChance.chance = chance;
         creatureIdChanceVector.emplace_back(creatureIdChance);
@@ -1069,6 +1068,65 @@ void ObjectMgr::LoadCreatureIdChances()
     while (result->NextRow());
 
     sLog->outString(">> Loaded %u creature id chances in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString();
+}
+
+void ObjectMgr::LoadCreatureGuidChances()
+{
+    uint32 oldMSTime = getMSTime();
+
+    //                                                0   1     2
+    QueryResult result = WorldDatabase.Query("SELECT id, guid, chance FROM creature_guid_chance");
+
+    if (!result)
+    {
+        sLog->outString(">> Loaded 0 creature guid chances. DB table `creature_guid_chance` is empty.");
+        sLog->outString();
+        return;
+    }
+
+    uint32 count = 0;
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 id = fields[0].GetUInt32();
+
+        if (!sObjectMgr->GetCreatureTemplate(id))
+        {
+            sLog->outErrorDb("Creature template (Entry: %u) does not exist but has a record in `creature_guid_chance`", id);
+            continue;
+        }
+
+        uint32 guid = fields[1].GetUInt32();
+
+        if (!GetCreatureData(guid))
+        {
+            sLog->outErrorDb("Creature (GUID: %u) does not exist but has a record in `creature_guid_chance`", guid);
+            continue;
+        }
+
+        float chance = fields[2].GetFloat();
+
+        if (chance <= 0 || chance > 100)
+        {
+            sLog->outErrorDb("`creature_guid_chance` has an invalid chance (%f) for creature guid (%u), entry (%u), skipped.", chance, guid, id);
+            continue;
+        }
+
+        _creatureGuidChanceIdStore[guid] = id;
+        CreatureGuidChanceVector& creatureGuidChanceVector = _creatureGuidChanceStore[id];
+        CreatureGuidChance creatureGuidChance;
+
+        creatureGuidChance.guid = guid;
+        creatureGuidChance.chance = chance;
+        creatureGuidChanceVector.emplace_back(creatureGuidChance);
+
+        ++count;
+    }
+    while (result->NextRow());
+
+    sLog->outString(">> Loaded %u creature guid chances in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }
 
@@ -1151,6 +1209,24 @@ CreatureIdChanceVector const* ObjectMgr::GetCreatureIdChanceVector(uint32 lowgui
         return &(itr->second);
 
     return NULL;
+}
+
+CreatureGuidChanceVector const* ObjectMgr::GetCreatureGuidChanceVector(uint32 creatureId)
+{
+    CreatureGuidChanceMap::const_iterator itr = _creatureGuidChanceStore.find(creatureId);
+    if (itr != _creatureGuidChanceStore.end())
+        return &(itr->second);
+
+    return NULL;
+}
+
+uint32 ObjectMgr::GetCreatureGuidChanceId(uint32 lowguid)
+{
+    std::unordered_map<uint32, uint32>::const_iterator itr = _creatureGuidChanceIdStore.find(lowguid);
+    if (itr != _creatureGuidChanceIdStore.end())
+        return itr->second;
+
+    return 0;
 }
 
 CreatureAddon const* ObjectMgr::GetCreatureTemplateAddon(uint32 entry)

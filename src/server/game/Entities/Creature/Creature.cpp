@@ -1327,7 +1327,7 @@ float Creature::GetSpellDamageMod(int32 Rank)
 bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data)
 { 
     SetZoneScript();
-    if (GetZoneScript() && data && !sObjectMgr->GetCreatureIdChanceVector(m_DBTableGuid))
+    if (GetZoneScript() && data && !(sObjectMgr->GetCreatureIdChanceVector(m_DBTableGuid) || sObjectMgr->GetCreatureGuidChanceId(m_DBTableGuid)))
     {
         Entry = GetZoneScript()->GetCreatureEntry(guidlow, data);
         if (!Entry)
@@ -1400,13 +1400,25 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap)
     if (result == CREATURE_ID_ROLL_FAIL)
         creatureId = data->id;
 
+    uint32 rolledCreatureId = sObjectMgr->GetCreatureGuidChanceId(m_DBTableGuid);
+
     if (map->GetInstanceId() == 0)
     {
+        if (rolledCreatureId)
+            if (uint32 rolledGuid = SetRolledGuidForMap(rolledCreatureId, map); rolledGuid && rolledGuid == m_DBTableGuid)
+                creatureId = rolledCreatureId;
+
         if (map->GetCreature(MAKE_NEW_GUID(guid, creatureId, HIGHGUID_UNIT)))
             return false;
     }
     else
+    {
+        if (rolledCreatureId)
+            if (uint32 rolledGuid = SetRolledGuidForInstance(rolledCreatureId, map); rolledGuid && rolledGuid == m_DBTableGuid)
+                creatureId = rolledCreatureId;
+
         guid = sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT);
+    }
 
     if (!Create(guid, map, data->phaseMask, creatureId, 0, data->posX, data->posY, data->posZ, data->orientation, data))
         return false;
@@ -1605,6 +1617,14 @@ void Creature::setDeathState(DeathState s, bool despawn)
 
     if (s == JUST_DIED)
     {
+        if (sObjectMgr->GetCreatureGuidChanceId(m_DBTableGuid))
+        {
+            if (GetMap()->GetInstanceId())
+                RemoveRolledGuidFromInstance();
+            else
+                RemoveRolledGuidFromMap();
+        }
+
         m_corpseRemoveTime = time(NULL) + m_corpseDelay;
         m_respawnTime = time(NULL) + m_respawnDelay + m_corpseDelay;
 
@@ -1696,9 +1716,26 @@ void Creature::Respawn(bool force)
 
         uint8 result;
         uint32 creatureId = RollCreatureId(result);
-        if (result == CREATURE_ID_ROLL_OK && !GetMap()->Instanceable())
+        uint32 rolledCreatureId = sObjectMgr->GetCreatureGuidChanceId(m_DBTableGuid);
+        if (rolledCreatureId || result == CREATURE_ID_ROLL_OK)
         {
-            m_originalEntry = creatureId;
+            if (!GetMap()->Instanceable())
+            {
+                if (result == CREATURE_ID_ROLL_OK)
+                    m_originalEntry = creatureId;
+
+                if (rolledCreatureId)
+                {
+                    if (result != CREATURE_ID_ROLL_OK)
+                        m_originalEntry = m_creatureData->id;
+
+                    if (uint32 rolledGuid = SetRolledGuidForMap(rolledCreatureId, GetMap()); rolledGuid && rolledGuid == m_DBTableGuid)
+                        m_originalEntry = rolledCreatureId;
+                }
+            }
+            else if (rolledCreatureId)
+                m_originalEntry = m_creatureData->id;
+
             if (m_originalEntry != GetEntry())
             {
                 UpdateEntry(m_originalEntry, m_originalEntry == m_creatureData->id ? m_creatureData : nullptr);
@@ -3005,9 +3042,7 @@ uint32 Creature::RollCreatureId(uint8 &result) const
         return 0;
     }
 
-    CreatureIdChanceVector const* creatureIdChanceVector = sObjectMgr->GetCreatureIdChanceVector(m_DBTableGuid);
-
-    if (creatureIdChanceVector)
+    if (CreatureIdChanceVector const* creatureIdChanceVector = sObjectMgr->GetCreatureIdChanceVector(m_DBTableGuid))
     {
         result = CREATURE_ID_ROLL_OK;
         float roll = (float)rand_chance();
@@ -3030,4 +3065,111 @@ uint32 Creature::RollCreatureId(uint8 &result) const
     }
 
     return m_creatureData->id;
+}
+
+uint32 Creature::RollCreatureGuid(uint32 creatureId) const
+{
+    if (CreatureGuidChanceVector const* creatureGuidChanceVector = sObjectMgr->GetCreatureGuidChanceVector(creatureId))
+    {
+        float roll = (float)rand_chance();
+
+        for (CreatureGuidChanceVector::const_iterator itr = creatureGuidChanceVector->begin(); itr != creatureGuidChanceVector->end(); ++itr)
+        {
+            float chance = itr->chance;
+            if (chance >= 100.0f)
+                return itr->guid;
+
+            roll -= chance;
+            if (roll < 0)
+                return itr->guid;
+        }
+    }
+
+    return 0;
+}
+
+uint32 Creature::SetRolledGuidForInstance(uint32 rolledCreatureId, Map* map)
+{
+    if (!m_DBTableGuid)
+        return 0;
+
+    if (!rolledCreatureId)
+        return 0;
+
+    ACORE_GUARD(ACE_Thread_Mutex, _creatureGuidChanceInstanceIdMapMutex);
+    uint32 rolledGuid = 0;
+
+    auto itr = _creatureGuidChanceInstanceIdMap.find(rolledCreatureId);
+    if (itr != _creatureGuidChanceInstanceIdMap.end())
+        if (itr->second.instanceId == map->GetInstanceId())
+            rolledGuid = itr->second.guid;
+
+    if (rolledGuid)
+        return rolledGuid;
+
+    rolledGuid = RollCreatureGuid(rolledCreatureId);
+    if (rolledGuid)
+    {
+        CreatureGuidInstance creatureGuidInstance;
+        creatureGuidInstance.instanceId = map->GetInstanceId();
+        creatureGuidInstance.guid = rolledGuid;
+        _creatureGuidChanceInstanceIdMap[rolledCreatureId] = creatureGuidInstance;
+    }
+
+    return rolledGuid;
+}
+
+void Creature::RemoveRolledGuidFromInstance()
+{
+    ACORE_GUARD(ACE_Thread_Mutex, _creatureGuidChanceInstanceIdMapMutex);
+    auto itr = _creatureGuidChanceInstanceIdMap.find(m_originalEntry);
+    if (itr != _creatureGuidChanceInstanceIdMap.end())
+    {
+        CreatureGuidInstance creatureGuidInstance = itr->second;
+        if (creatureGuidInstance.instanceId == GetInstanceId() && creatureGuidInstance.guid == m_DBTableGuid)
+            _creatureGuidChanceInstanceIdMap.erase(itr);
+    }
+}
+
+uint32 Creature::SetRolledGuidForMap(uint32 rolledCreatureId, Map* map)
+{
+    if (!m_DBTableGuid)
+        return 0;
+
+    if (!rolledCreatureId)
+        return 0;
+
+    ACORE_GUARD(ACE_Thread_Mutex, _creatureGuidChanceMapIdMapMutex);
+    uint32 rolledGuid = 0;
+
+    auto itr = _creatureGuidChanceMapIdMap.find(rolledCreatureId);
+    if (itr != _creatureGuidChanceMapIdMap.end())
+        if (itr->second.mapId == map->GetId())
+            rolledGuid = itr->second.guid;
+
+    if (rolledGuid)
+        return rolledGuid;
+
+    rolledGuid = RollCreatureGuid(rolledCreatureId);
+    if (rolledGuid)
+    {
+        CreatureGuidMap creatureGuidMap;
+        creatureGuidMap.mapId = map->GetId();
+        creatureGuidMap.guid = rolledGuid;
+        _creatureGuidChanceMapIdMap[rolledCreatureId] = creatureGuidMap;
+    }
+
+    return rolledGuid;
+}
+
+void Creature::RemoveRolledGuidFromMap()
+{
+    ACORE_GUARD(ACE_Thread_Mutex, _creatureGuidChanceMapIdMapMutex);
+    auto itr = _creatureGuidChanceMapIdMap.find(m_originalEntry);
+    if (itr != _creatureGuidChanceMapIdMap.end())
+    {
+        CreatureGuidMap creatureGuidMap = itr->second;
+        if (creatureGuidMap.mapId == GetMap()->GetId() && creatureGuidMap.guid == m_DBTableGuid)
+            _creatureGuidChanceMapIdMap.erase(itr);
+    }
 }

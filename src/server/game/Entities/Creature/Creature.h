@@ -341,6 +341,32 @@ enum CreatureIdRollResult
     CREATURE_ID_ROLL_FAIL = 2,
 };
 
+// `creature_guid_chance` table
+struct CreatureGuidChance
+{
+    uint32 guid;
+    float chance;
+};
+
+typedef std::vector<CreatureGuidChance> CreatureGuidChanceVector;
+typedef std::unordered_map<uint32, CreatureGuidChanceVector> CreatureGuidChanceMap;
+typedef std::unordered_map<uint32, uint32> CreatureGuidChanceIdMap;
+
+struct CreatureGuidInstance
+{
+    uint32 instanceId;
+    uint32 guid;
+};
+
+struct CreatureGuidMap
+{
+    uint32 mapId;
+    uint32 guid;
+};
+
+typedef std::unordered_map<uint32, CreatureGuidInstance> CreatureGuidChanceInstanceIdMap;
+typedef std::unordered_map<uint32, CreatureGuidMap> CreatureGuidChanceMapIdMap;
+
 // Vendors
 struct VendorItem
 {
@@ -795,6 +821,11 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         void ForcedDespawn(uint32 timeMSToDespawn = 0);
         bool CanPeriodicallyCallForAssistance() const;
         uint32 RollCreatureId(uint8 &result) const;
+        uint32 RollCreatureGuid(uint32 creatureId) const;
+        uint32 SetRolledGuidForInstance(uint32 rolledCreatureId, Map* map);
+        void RemoveRolledGuidFromInstance();
+        uint32 SetRolledGuidForMap(uint32 rolledCreatureId, Map* map);
+        void RemoveRolledGuidFromMap();
 
         //WaypointMovementGenerator vars
         uint32 m_waypointID;
@@ -813,6 +844,11 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         int32 m_idleLosCheckTimer;
         uint32 m_assistanceTimer;
+
+        inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
+        inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;
+        inline static CreatureGuidChanceMapIdMap _creatureGuidChanceMapIdMap;
+        inline static ACE_Thread_Mutex _creatureGuidChanceMapIdMapMutex;
 };
 
 class AssistDelayEvent : public BasicEvent

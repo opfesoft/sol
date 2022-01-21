@@ -1580,6 +1580,9 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Creature ID Chances...");
     sObjectMgr->LoadCreatureIdChances();
 
+    sLog->outString("Loading Creature GUID Chances...");
+    sObjectMgr->LoadCreatureGuidChances();
+
     sLog->outString("Loading Gameobject Data...");
     sObjectMgr->LoadGameobjects();
 

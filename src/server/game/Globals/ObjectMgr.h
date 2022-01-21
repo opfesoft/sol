@@ -740,6 +740,8 @@ class ObjectMgr
         EquipmentInfo const* GetEquipmentInfo(uint32 entry, int8& id);
         CreatureAddon const* GetCreatureAddon(uint32 lowguid);
         CreatureIdChanceVector const* GetCreatureIdChanceVector(uint32 lowguid);
+        CreatureGuidChanceVector const* GetCreatureGuidChanceVector(uint32 creatureId);
+        uint32 GetCreatureGuidChanceId(uint32 lowguid);
         GameObjectAddon const* GetGameObjectAddon(uint32 lowguid);
         GameObjectTemplateAddon const* GetGameObjectTemplateAddon(uint32 entry) const;
         CreatureAddon const* GetCreatureTemplateAddon(uint32 entry);
@@ -986,6 +988,7 @@ class ObjectMgr
         bool SetCreatureLinkedRespawn(uint32 guid, uint32 linkedGuid);
         void LoadCreatureAddons();
         void LoadCreatureIdChances();
+        void LoadCreatureGuidChances();
         void LoadGameObjectAddons();
         void LoadCreatureModelInfo();
         void LoadEquipmentTemplates();
@@ -1459,6 +1462,8 @@ class ObjectMgr
         CreatureModelContainer _creatureModelStore;
         CreatureAddonContainer _creatureAddonStore;
         CreatureIdChanceMap _creatureIdChanceStore;
+        CreatureGuidChanceMap _creatureGuidChanceStore;
+        CreatureGuidChanceIdMap _creatureGuidChanceIdStore;
         CreatureAddonContainer _creatureTemplateAddonStore;
         GameObjectAddonContainer _gameObjectAddonStore;
         GameObjectQuestItemMap _gameObjectQuestItemStore;
