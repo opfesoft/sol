@@ -171,10 +171,29 @@ void SmartAIMgr::LoadSmartAIFromDB()
         }
         else
         {
-            if (!sObjectMgr->GetCreatureData(uint32(abs(temp.entryOrGuid))))
+            switch (source_type)
             {
-                sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature guid (%u) does not exist, skipped loading.", uint32(abs(temp.entryOrGuid)));
-                continue;
+                case SMART_SCRIPT_TYPE_CREATURE:
+                {
+                    if (!sObjectMgr->GetCreatureData(uint32(abs(temp.entryOrGuid))))
+                    {
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature guid (%u) does not exist, skipped loading.", uint32(abs(temp.entryOrGuid)));
+                        continue;
+                    }
+                    break;
+                }
+                case SMART_SCRIPT_TYPE_GAMEOBJECT:
+                {
+                    if (!sObjectMgr->GetGOData(uint32(abs(temp.entryOrGuid))))
+                    {
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: GameObject guid (%u) does not exist, skipped loading.", uint32(abs(temp.entryOrGuid)));
+                        continue;
+                    }
+                    break;
+                }
+                default:
+                    sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: guid (%u) uses unsupported source_type %u, skipped loading.", uint32(abs(temp.entryOrGuid)), (uint32)source_type);
+                    continue;
             }
         }
 

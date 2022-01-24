@@ -236,7 +236,38 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SOUND:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = nullptr;
+        WorldObject* obj = GetBaseObject();
+
+        if (obj && e.action.sound.type > 0)
+        {
+            if (obj->FindMap())
+            {
+                Map::PlayerList const &players = obj->GetMap()->GetPlayers();
+                targets = new ObjectList();
+
+                if (!players.isEmpty())
+                {
+                    for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
+                        if (Player* player = i->GetSource())
+                        {
+                            if (player->GetZoneId() == obj->GetZoneId())
+                            {
+                                if (e.action.sound.type > 1)
+                                {
+                                    if (player->GetAreaId() == obj->GetAreaId())
+                                        targets->push_back(player);
+                                }
+                                else
+                                    targets->push_back(player);
+                            }
+                        }
+                }
+            }
+        }
+        else
+            targets = GetTargets(e, unit);
+
         if (targets)
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -308,12 +339,13 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     case SMART_ACTION_MUSIC:
     {
         ObjectList* targets = NULL;
+        WorldObject* obj = GetBaseObject();
 
-        if (e.action.music.type > 0)
+        if (obj && e.action.music.type > 0)
         {
-            if (me && me->FindMap())
+            if (obj->FindMap())
             {
-                Map::PlayerList const &players = me->GetMap()->GetPlayers();
+                Map::PlayerList const &players = obj->GetMap()->GetPlayers();
                 targets = new ObjectList();
 
                 if (!players.isEmpty())
@@ -321,11 +353,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
                         if (Player* player = i->GetSource())
                         {
-                            if (player->GetZoneId() == me->GetZoneId())
+                            if (player->GetZoneId() == obj->GetZoneId())
                             {
                                 if (e.action.music.type > 1)
                                 {
-                                    if (player->GetAreaId() == me->GetAreaId())
+                                    if (player->GetAreaId() == obj->GetAreaId())
                                         targets->push_back(player);
                                 }
                                 else
@@ -356,12 +388,13 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     case SMART_ACTION_RANDOM_MUSIC:
     {
         ObjectList* targets = NULL;
+        WorldObject* obj = GetBaseObject();
 
-        if (e.action.randomMusic.type > 0)
+        if (obj && e.action.randomMusic.type > 0)
         {
-            if (me && me->FindMap())
+            if (obj->FindMap())
             {
-                Map::PlayerList const &players = me->GetMap()->GetPlayers();
+                Map::PlayerList const &players = obj->GetMap()->GetPlayers();
                 targets = new ObjectList();
 
                 if (!players.isEmpty())
@@ -369,11 +402,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     for (Map::PlayerList::const_iterator i = players.begin(); i != players.end(); ++i)
                         if (Player* player = i->GetSource())
                         {
-                            if (player->GetZoneId() == me->GetZoneId())
+                            if (player->GetZoneId() == obj->GetZoneId())
                             {
                                 if (e.action.randomMusic.type > 1)
                                 {
-                                    if (player->GetAreaId() == me->GetAreaId())
+                                    if (player->GetAreaId() == obj->GetAreaId())
                                         targets->push_back(player);
                                 }
                                 else
