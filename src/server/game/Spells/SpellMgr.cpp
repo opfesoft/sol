@@ -3620,7 +3620,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 1543: // Flare
             spellInfo->speed = 0.0f;
             break;
-
+        case 19574: // Bestial Wrath
+            spellInfo->AttributesEx4 |= SPELL_ATTR4_FADES_WHILE_LOGGED_OUT;
+            break;
 
 
         /////////////////////////////////
