@@ -168,7 +168,7 @@ m_corpseRemoveTime(0), m_respawnTime(0), m_respawnDelay(300), m_corpseDelay(60),
 m_transportCheckTimer(1000), lootPickPocketRestoreTime(0),  m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
-m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0)
+m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0), m_spawnedByDefault(true)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
     m_idleLosCheckTimer = CREATURE_IDLE_LOS_CHECK_INTERVAL;
@@ -523,6 +523,9 @@ void Creature::Update(uint32 diff)
             break;
         case DEAD:
         {
+            if (!m_spawnedByDefault)
+                break;
+
             time_t now = time(NULL);
             if (m_respawnTime <= now)
             {
@@ -1160,7 +1163,7 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask, uint32 phaseMask)
         data.orientation = GetTransOffsetO();
     }
 
-    data.spawntimesecs = m_respawnDelay;
+    data.spawntimesecs = m_spawnedByDefault ? m_respawnDelay : -(int32)m_respawnDelay;
     // prevent add data integrity problems
     data.wander_distance = GetDefaultMovementType() == IDLE_MOTION_TYPE ? 0.0f : m_wanderDistance;
     data.curhealth = GetHealth();
@@ -1428,11 +1431,21 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap)
 
     m_wanderDistance = data->wander_distance;
 
-    m_respawnDelay = data->spawntimesecs;
+    if (data->spawntimesecs >= 0)
+    {
+        m_spawnedByDefault = true;
+        m_respawnDelay = data->spawntimesecs;
+    }
+    else
+    {
+        m_spawnedByDefault = false;
+        m_respawnDelay = -data->spawntimesecs;
+    }
+
     m_deathState = ALIVE;
 
     m_respawnTime  = GetMap()->GetCreatureRespawnTime(m_DBTableGuid);
-    if (m_respawnTime > time(nullptr))          // not ready to respawn yet, set to DEAD
+    if (m_respawnTime > time(nullptr) || !m_spawnedByDefault) // not ready to respawn yet, set to DEAD
         m_deathState = DEAD;
 
     uint32 curhealth;
@@ -2219,7 +2232,7 @@ void Creature::UpdateMoveInLineOfSightState()
 
 void Creature::SaveRespawnTime()
 { 
-    if (IsSummon() || !GetDBTableGUIDLow() || (m_creatureData && !m_creatureData->dbData))
+    if (IsSummon() || !GetDBTableGUIDLow() || (m_creatureData && !m_creatureData->dbData) || !m_spawnedByDefault)
         return;
 
     GetMap()->SaveCreatureRespawnTime(GetDBTableGUIDLow(), m_respawnTime);

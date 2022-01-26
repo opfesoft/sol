@@ -265,7 +265,7 @@ struct CreatureData
     float posY;
     float posZ;
     float orientation;
-    uint32 spawntimesecs;
+    int32 spawntimesecs;
     float wander_distance;
     uint32 curhealth;
     uint32 curmana;
@@ -844,6 +844,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         int32 m_idleLosCheckTimer;
         uint32 m_assistanceTimer;
+        bool m_spawnedByDefault;
 
         inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
         inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;

@@ -1856,7 +1856,7 @@ void ObjectMgr::LoadCreatures()
         data.posY               = fields[6].GetFloat();
         data.posZ               = fields[7].GetFloat();
         data.orientation        = fields[8].GetFloat();
-        data.spawntimesecs      = fields[9].GetUInt32();
+        data.spawntimesecs      = fields[9].GetInt32();
         data.wander_distance    = fields[10].GetFloat();
         data.curhealth          = fields[11].GetUInt32();
         data.curmana            = fields[12].GetUInt32();
