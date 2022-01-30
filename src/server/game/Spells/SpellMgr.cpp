@@ -3394,6 +3394,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 11024: // Call of Thund
             spellInfo->Effect[0] = SPELL_EFFECT_DUMMY; // Prevent summon, handled via SAI
             break;
+        case 46392: // Focused Assault
+        case 46393: // Brutal Assault
+            spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CHANGE_MAP;
+            break;
 
 
         /////////////////////////////////////////////
