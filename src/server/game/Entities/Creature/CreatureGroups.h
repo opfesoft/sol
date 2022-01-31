@@ -33,7 +33,8 @@ class FormationMgr
         FormationMgr() { }
         ~FormationMgr();
         
-        void AddCreatureToGroup(uint32 group_id, Creature* creature);
+        void AddCreatureToGroup(uint32 groupId, Creature* creature, float dist = 0.f, float angle = 0.f, uint32 groupAI = 0);
+        void AddCreatureToGroup(Creature* leader, Creature* creature, float dist = 0.f, float angle = 0.f, uint32 groupAI = 0);
         void RemoveCreatureFromGroup(CreatureGroup* group, Creature* creature);
         void LoadCreatureFormations();
         CreatureGroupInfoType CreatureGroupMap;
@@ -55,7 +56,7 @@ class CreatureGroup
         bool isFormed() const { return m_Formed; }
         const CreatureGroupMemberType& GetMembers() const { return m_members; }
 
-        void AddMember(Creature* member);
+        void AddMember(Creature* member, float dist, float angle, uint32 groupAI);
         void RemoveMember(Creature* member);
         void FormationReset(bool dismiss);
 

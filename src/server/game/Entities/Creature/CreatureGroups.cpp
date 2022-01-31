@@ -18,7 +18,7 @@ FormationMgr::~FormationMgr()
         delete itr->second;
 }
 
-void FormationMgr::AddCreatureToGroup(uint32 groupId, Creature* member)
+void FormationMgr::AddCreatureToGroup(uint32 groupId, Creature* member, float dist /*= 0.f*/, float angle /*= 0.f*/, uint32 groupAI /*= 0*/)
 {
     Map* map = member->FindMap();
     if (!map)
@@ -30,9 +30,9 @@ void FormationMgr::AddCreatureToGroup(uint32 groupId, Creature* member)
     if (itr != map->CreatureGroupHolder.end())
     {
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-        sLog->outDebug(LOG_FILTER_UNITS, "Group found: %u, inserting creature GUID: %u, Group InstanceID %u", groupId, member->GetGUIDLow(), member->GetInstanceId());
+        sLog->outDebug(LOG_FILTER_UNITS, "Group found: %u, inserting creature GUID: %u (DB GUID %u), Group InstanceID %u", groupId, member->GetGUIDLow(), member->GetDBTableGUIDLow(), member->GetInstanceId());
 #endif
-        itr->second->AddMember(member);
+        itr->second->AddMember(member, dist, angle, groupAI);
     }
     //Create new group
     else
@@ -42,14 +42,20 @@ void FormationMgr::AddCreatureToGroup(uint32 groupId, Creature* member)
 #endif
         CreatureGroup* group = new CreatureGroup(groupId);
         map->CreatureGroupHolder[groupId] = group;
-        group->AddMember(member);
+        group->AddMember(member, dist, angle, groupAI);
     }
+}
+
+void FormationMgr::AddCreatureToGroup(Creature* leader, Creature* member, float dist /*= 0.f*/, float angle /*= 0.f*/, uint32 groupAI /*= 0*/)
+{
+    uint32 groupId = leader->GetDBTableGUIDLow() ? leader->GetDBTableGUIDLow() : leader->GetGUIDLow();
+    AddCreatureToGroup(groupId, member, dist, angle, groupAI);
 }
 
 void FormationMgr::RemoveCreatureFromGroup(CreatureGroup* group, Creature* member)
 {
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-    sLog->outDebug(LOG_FILTER_UNITS, "Deleting member pointer to GUID: %u from group %u", group->GetId(), member->GetDBTableGUIDLow());
+    sLog->outDebug(LOG_FILTER_UNITS, "Deleting member pointer to GUID: %u (DB GUID %u) from group %u", member->GetGUIDLow(), member->GetDBTableGUIDLow(), group->GetId());
 #endif
     group->RemoveMember(member);
 
@@ -60,7 +66,7 @@ void FormationMgr::RemoveCreatureFromGroup(CreatureGroup* group, Creature* membe
             return;
 
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-        sLog->outDebug(LOG_FILTER_UNITS, "Deleting group with InstanceID %u", member->GetInstanceId());
+        sLog->outDebug(LOG_FILTER_UNITS, "Deleting group %u with InstanceID %u", group->GetId(), member->GetInstanceId());
 #endif
         map->CreatureGroupHolder.erase(group->GetId());
         delete group;
@@ -136,22 +142,52 @@ void FormationMgr::LoadCreatureFormations()
     sLog->outString();
 }
 
-void CreatureGroup::AddMember(Creature* member)
+void CreatureGroup::AddMember(Creature* member, float dist, float angle, uint32 groupAI)
 {
+    if (m_members.find(member) != m_members.end())
+        return;
+
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-    sLog->outDebug(LOG_FILTER_UNITS, "CreatureGroup::AddMember: Adding unit GUID: %u.", member->GetGUIDLow());
+    sLog->outDebug(LOG_FILTER_UNITS, "CreatureGroup::AddMember: Adding unit GUID: %u (DB GUID %u).", member->GetGUIDLow(), member->GetDBTableGUIDLow());
 #endif
 
     //Check if it is a leader
-    if (member->GetDBTableGUIDLow() == m_groupID)
+    uint32 guid = member->GetDBTableGUIDLow() ? member->GetDBTableGUIDLow() : member->GetGUIDLow();
+    if (guid == m_groupID)
     {
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-        sLog->outDebug(LOG_FILTER_UNITS, "Unit GUID: %u is formation leader. Adding group.", member->GetGUIDLow());
+        sLog->outDebug(LOG_FILTER_UNITS, "Unit GUID: %u is formation leader. Adding group.", guid);
 #endif
         m_leader = member;
     }
 
-    m_members[member] = sFormationMgr->CreatureGroupMap.find(member->GetDBTableGUIDLow())->second;
+    CreatureGroupInfoType::iterator itr = sFormationMgr->CreatureGroupMap.find(guid);
+    if (itr != sFormationMgr->CreatureGroupMap.end())
+        m_members[member] = itr->second;
+    else
+    {
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
+        sLog->outDebug(LOG_FILTER_UNITS, "No formation info found for unit GUID %u, create a new one", guid);
+#endif
+        FormationInfo* formationInfo = new FormationInfo();
+        formationInfo->leaderGUID = m_groupID;
+        formationInfo->groupAI = groupAI;
+
+        if (member->GetGUIDLow() != m_groupID)
+        {
+            formationInfo->follow_dist = dist;
+            formationInfo->follow_angle = angle;
+        }
+        else
+        {
+            formationInfo->follow_dist = 0.f;
+            formationInfo->follow_angle = 0.f;
+        }
+
+        sFormationMgr->CreatureGroupMap[member->GetGUIDLow()] = formationInfo;
+        m_members[member] = formationInfo;
+    }
+
     member->SetFormation(this);
 }
 
@@ -160,13 +196,27 @@ void CreatureGroup::RemoveMember(Creature* member)
     if (m_leader == member)
         m_leader = NULL;
 
+    if (!member->GetDBTableGUIDLow())
+    {
+        CreatureGroupInfoType::iterator itr = sFormationMgr->CreatureGroupMap.find(member->GetGUIDLow());
+        if (itr != sFormationMgr->CreatureGroupMap.end())
+        {
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
+            sLog->outDebug(LOG_FILTER_UNITS, "Formation info for unit GUID %u not needed anymore, delete it", member->GetGUIDLow());
+#endif
+            delete itr->second;
+            sFormationMgr->CreatureGroupMap.erase(itr);
+        }
+    }
+
     m_members.erase(member);
     member->SetFormation(NULL);
 }
 
 void CreatureGroup::MemberAttackStart(Creature* member, Unit* target)
 {
-    uint8 groupAI = sFormationMgr->CreatureGroupMap[member->GetDBTableGUIDLow()]->groupAI;
+    uint32 guid = member->GetDBTableGUIDLow() ? member->GetDBTableGUIDLow() : member->GetGUIDLow();
+    uint8 groupAI = sFormationMgr->CreatureGroupMap[guid]->groupAI;
     if (!groupAI)
         return;
 
@@ -223,7 +273,8 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
     if (!m_leader)
         return;
 
-    uint8 groupAI = sFormationMgr->CreatureGroupMap[m_leader->GetDBTableGUIDLow()]->groupAI;
+    uint32 guid = m_leader->GetDBTableGUIDLow() ? m_leader->GetDBTableGUIDLow() : m_leader->GetGUIDLow();
+    uint8 groupAI = sFormationMgr->CreatureGroupMap[guid]->groupAI;
     if (groupAI == 5)
         return;
 

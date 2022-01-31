@@ -8,6 +8,7 @@
 #include "Chat.h"
 #include "Cell.h"
 #include "CellImpl.h"
+#include "CreatureGroups.h"
 #include "CreatureTextMgr.h"
 #include "DatabaseEnv.h"
 #include "GameEventMgr.h"
@@ -3279,6 +3280,72 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
 
         CAST_AI(SmartAI, me->AI())->SetEvadeDisabled(e.action.disableEvade.disable != 0);
+        break;
+    }
+    case SMART_ACTION_CREATURE_FORMATION:
+    {
+        if (!me)
+            break;
+
+        if (e.action.creatureFormation.leaveFormation)
+        {
+            if (me->GetFormation())
+                sFormationMgr->RemoveCreatureFromGroup(me->GetFormation(), me);
+            break;
+        }
+
+        ObjectList* targets = GetTargets(e, unit);
+        if (!targets)
+            break;
+
+        for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            if (Creature* creature = (*itr)->ToCreature())
+            {
+                sFormationMgr->AddCreatureToGroup(creature, creature, 0.f, 0.f, e.action.creatureFormation.groupAI);                         // leader
+                sFormationMgr->AddCreatureToGroup(creature, me, e.target.z, e.target.o * M_PI / 180.0f, e.action.creatureFormation.groupAI); // member
+                me->SetDefaultMovementType(IDLE_MOTION_TYPE);
+                me->GetMotionMaster()->Initialize();
+                break;
+            }
+
+        delete targets;
+        break;
+    }
+    case SMART_ACTION_LOAD_WP_PATH:
+    {
+        Creature* creature = me;
+        ObjectList* targets = GetTargets(e, unit);
+        if (targets)
+        {
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+                if (Creature* c = (*itr)->ToCreature())
+                {
+                    creature = c;
+                    break;
+                }
+
+            delete targets;
+        }
+
+        if (!creature)
+            break;
+
+        if (e.action.loadWPPath.unloadPath)
+        {
+            if (creature->GetWaypointPath())
+            {
+                creature->LoadPath(0);
+                creature->SetDefaultMovementType(IDLE_MOTION_TYPE);
+                creature->SetHomePosition(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), creature->GetOrientation());
+                creature->GetMotionMaster()->Initialize();
+            }
+        }
+        else
+        {
+            creature->LoadPath(e.action.loadWPPath.pathID);
+            creature->SetDefaultMovementType(WAYPOINT_MOTION_TYPE);
+            creature->GetMotionMaster()->Initialize();
+        }
         break;
     }
     default:

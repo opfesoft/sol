@@ -18,6 +18,7 @@
 #include "ScriptedCreature.h"
 #include "GameEventMgr.h"
 #include "CreatureTextMgr.h"
+#include "WaypointManager.h"
 
 #include "SmartScriptMgr.h"
 
@@ -1213,6 +1214,15 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
+        case SMART_ACTION_LOAD_WP_PATH:
+        {
+            if (e.action.loadWPPath.pathID > 0 && !sWaypointMgr->GetPath(e.action.loadWPPath.pathID))
+            {
+                sLog->outErrorDb("SmartScript: Entry %d SourceType %u Event %u Action %u uses non-existing path ID %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.loadWPPath.pathID);
+                return false;
+            }
+            break;
+        }
         case SMART_ACTION_START_CLOSEST_WAYPOINT:
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:
@@ -1309,6 +1319,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_DESPAWN_GO:
         case SMART_ACTION_SET_COUNTER_RESET:
         case SMART_ACTION_DISABLE_EVADE:
+        case SMART_ACTION_CREATURE_FORMATION:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type(%u), event_type(%u), Entry %d SourceType %u Event %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);

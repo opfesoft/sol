@@ -620,8 +620,10 @@ enum SMART_ACTION
     SMART_ACTION_CUSTOM_TALK                        = 234,    // broadcastTextId, talkType (0: say, 1: yell, 2: text emote, 3: boss emote, 4: whisper, 5: boss whisper), talker (0: action target, 1: self, 2: invoker), talkTarget (0: action target, 1: self, 2: invoker)
     SMART_ACTION_SET_COUNTER_RESET                  = 235,    // 0/1
     SMART_ACTION_CALL_EVENT_SCRIPT                  = 236,    // event script id (see event_scripts)
+    SMART_ACTION_CREATURE_FORMATION                 = 237,    // groupAI (see table "creature_formations"), leave formation (0/1), z (dist), o (angle)
+    SMART_ACTION_LOAD_WP_PATH                       = 238,    // path id (see table "waypoint_data"), unload path (0/1)
 
-    SMART_ACTION_SOL_END                            = 237     // placeholder
+    SMART_ACTION_SOL_END                            = 239     // placeholder
 };
 
 struct SmartAction
@@ -1269,6 +1271,18 @@ struct SmartAction
         {
             uint32 disable;
         } disableEvade;
+
+        struct
+        {
+            uint32 groupAI;
+            uint32 leaveFormation;
+        } creatureFormation;
+
+        struct
+        {
+            uint32 pathID;
+            uint32 unloadPath;
+        } loadWPPath;
 
         //! Note for any new future actions
         //! All parameters must have type uint32
