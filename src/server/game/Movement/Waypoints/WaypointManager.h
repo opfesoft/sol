@@ -22,6 +22,16 @@ enum WaypointMoveType
     WAYPOINT_MOVE_TYPE_MAX
 };
 
+enum WaypointPathFinding
+{
+    WAYPOINT_PATHFINDING_FORMATION = 0, // default
+    WAYPOINT_PATHFINDING_NODE      = 1,
+    WAYPOINT_PATHFINDING_NONE      = 2,
+    WAYPOINT_PATHFINDING_ALL       = 3,
+
+    WAYPOINT_PATHFINDING_MAX       = 4
+};
+
 struct WaypointData
 {
     uint32 id;
@@ -29,6 +39,7 @@ struct WaypointData
     uint32 delay;
     uint32 event_id;
     uint32 move_type;
+    uint8 pathfinding;
     uint8 event_chance;
 };
 

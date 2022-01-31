@@ -582,7 +582,7 @@ public:
         // Check
         // Remember: "show" must also be the name of a column!
         if ((show != "delay") && (show != "action") && (show != "action_chance")
-            && (show != "move_type") && (show != "del") && (show != "move") && (show != "orientation")
+            && (show != "move_type") && (show != "del") && (show != "move") && (show != "orientation") && (show != "pathfinding")
             )
         {
             return false;
@@ -858,13 +858,15 @@ public:
                 uint32 point            = fields[1].GetUInt32();
                 uint32 delay            = fields[2].GetUInt32();
                 uint32 flag             = fields[3].GetUInt32();
-                uint32 ev_id            = fields[4].GetUInt32();
-                uint32 ev_chance        = fields[5].GetInt16();
-                float orientation       = fields[6].GetFloat();
+                uint32 pathfinding      = fields[4].GetUInt32();
+                uint32 ev_id            = fields[5].GetUInt32();
+                uint32 ev_chance        = fields[6].GetInt16();
+                float orientation       = fields[7].GetFloat();
 
                 handler->PSendSysMessage("|cff00ff00Show info: for current point: |r|cff00ffff%u|r|cff00ff00, Path ID: |r|cff00ffff%u|r", point, pathid);
                 handler->PSendSysMessage("|cff00ff00Show info: Delay: |r|cff00ffff%u|r", delay);
                 handler->PSendSysMessage("|cff00ff00Show info: Move flag: |r|cff00ffff%u|r", flag);
+                handler->PSendSysMessage("|cff00ff00Show info: Pathfinding: |r|cff00ffff%u|r", pathfinding);
                 handler->PSendSysMessage("|cff00ff00Show info: Waypoint event: |r|cff00ffff%u|r", ev_id);
                 handler->PSendSysMessage("|cff00ff00Show info: Event chance: |r|cff00ffff%i|r", ev_chance);
                 handler->PSendSysMessage("|cff00ff00Show info: Orientation: |r|cff00ffff%f|r", orientation);

@@ -60,7 +60,7 @@ class CreatureGroup
         void RemoveMember(Creature* member);
         void FormationReset(bool dismiss);
 
-        void LeaderMoveTo(float x, float y, float z, bool run);
+        void LeaderMoveTo(float x, float y, float z, bool run, bool generatePath);
         void MemberAttackStart(Creature* member, Unit* target);
 
     private:

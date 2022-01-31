@@ -163,7 +163,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
     //! Do not use formationDest here, MoveTo requires transport offsets due to DisableTransportPathTransformations() call
     //! but formationDest contains global coordinates
-    init.MoveTo(node->x, node->y, node->z);
+    init.MoveTo(node->x, node->y, node->z, (node->pathfinding == WAYPOINT_PATHFINDING_NODE || node->pathfinding == WAYPOINT_PATHFINDING_ALL));
 
     //! Accepts angles such as 0.00001 and -0.00001, 0 must be ignored, default value in waypoint table
     if (node->orientation && node->delay)
@@ -189,7 +189,8 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
     //Call for creature group update
     if (creature->GetFormation() && creature->GetFormation()->getLeader() == creature)
-        creature->GetFormation()->LeaderMoveTo(formationDest.x, formationDest.y, formationDest.z, node->move_type == WAYPOINT_MOVE_TYPE_RUN);
+        creature->GetFormation()->LeaderMoveTo(formationDest.x, formationDest.y, formationDest.z, node->move_type == WAYPOINT_MOVE_TYPE_RUN,
+            (node->pathfinding == WAYPOINT_PATHFINDING_FORMATION || node->pathfinding == WAYPOINT_PATHFINDING_ALL));
 
     return true;
 }
@@ -252,7 +253,7 @@ bool WaypointMovementGenerator<Creature>::DoUpdate(Creature* creature, uint32 di
             // xinef: do not start pre-empetive movement if current node has delay or we are ending waypoint movement
             bool finished = creature->movespline->Finalized();
             if (!finished && !i_path->at(i_currentNode)->delay && ((i_currentNode != i_path->size() - 1) || repeating))
-                finished = (creature->movespline->_Spline().length(creature->movespline->_currentSplineIdx()+1) - creature->movespline->timePassed()) < 200;
+                finished = (creature->movespline->timeElapsed()) < 200;
 
             if (finished)
             {

@@ -32,8 +32,8 @@ void WaypointMgr::Load()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0    1         2           3          4            5           6        7      8           9
-    QueryResult result = WorldDatabase.Query("SELECT id, point, position_x, position_y, position_z, orientation, move_type, delay, action, action_chance FROM waypoint_data ORDER BY id, point");
+    //                                                0    1         2           3          4            5           6          7          8      9           10
+    QueryResult result = WorldDatabase.Query("SELECT id, point, position_x, position_y, position_z, orientation, move_type, pathfinding, delay, action, action_chance FROM waypoint_data ORDER BY id, point");
 
     if (!result)
     {
@@ -69,14 +69,23 @@ void WaypointMgr::Load()
 
         if (wp->move_type >= WAYPOINT_MOVE_TYPE_MAX)
         {
-            //TC_LOG_ERROR("sql.sql", "Waypoint %u in waypoint_data has invalid move_type, ignoring", wp->id);
+            sLog->outErrorDb("Waypoint %u in waypoint_data has invalid move_type %u, ignoring", wp->id, wp->move_type);
             delete wp;
             continue;
         }
 
-        wp->delay = fields[7].GetUInt32();
-        wp->event_id = fields[8].GetUInt32();
-        wp->event_chance = fields[9].GetInt16();
+        wp->pathfinding = fields[7].GetUInt8();
+
+        if (wp->pathfinding >= WAYPOINT_PATHFINDING_MAX)
+        {
+            sLog->outErrorDb("Waypoint %u in waypoint_data has invalid pathfinding %u, ignoring", wp->id, wp->pathfinding);
+            delete wp;
+            continue;
+        }
+
+        wp->delay = fields[8].GetUInt32();
+        wp->event_id = fields[9].GetUInt32();
+        wp->event_chance = fields[10].GetInt16();
 
         path.push_back(wp);
         ++count;

@@ -266,7 +266,7 @@ void CreatureGroup::FormationReset(bool dismiss)
     m_Formed = !dismiss;
 }
 
-void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
+void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool generatePath)
 {
     //! To do: This should probably get its own movement generator or use WaypointMovementGenerator.
     //! If the leader's path is known, member's path can be plotted as well using formation offsets.
@@ -302,7 +302,7 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
 
         float dx = x + cos(followAngle + pathAngle) * followDist;
         float dy = y + sin(followAngle + pathAngle) * followDist;
-        float dz = z + 2.0f;
+        float dz = z;
 
         acore::NormalizeMapCoord(dx);
         acore::NormalizeMapCoord(dy);
@@ -326,7 +326,7 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
         if (speedRate > 0.01f) // don't move if speed rate is too low
         {
             member->SetSpeedRate(mtype, speedRate);
-            member->GetMotionMaster()->MovePoint(0, p);
+            member->GetMotionMaster()->MovePoint(0, p, generatePath);
             member->SetHomePosition(p);
         }
     }
