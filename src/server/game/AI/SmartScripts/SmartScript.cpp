@@ -1597,6 +1597,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 y += e.target.y;
                 z += e.target.z;
                 o += e.target.o;
+
+                if (!e.target.z && (e.target.x || e.target.y))
+                    summoner->UpdateGroundPositionZ(x, y, z);
+
                 if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
                 {
                     if (e.action.summonCreature.attackInvoker == 2)
