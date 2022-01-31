@@ -6281,6 +6281,18 @@ void SpellMgr::LoadDbcDataCorrections()
         case 29831:
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
             break;
+
+        //////////////////////////////////////////
+        ////////// Feast of Winter Veil
+        //////////////////////////////////////////
+        // PX-238 Winter Wondervolt
+        case 26157:
+        case 26272:
+        case 26273:
+        case 26274:
+            spellInfo->Mechanic = 0;
+            break;
+
         //////////////////////////////////////////
         ////////// Misc Events
         //////////////////////////////////////////
