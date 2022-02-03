@@ -144,8 +144,8 @@ class SmartAI : public CreatureAI
         uint32 GetData(uint32 id = 0) const;
 
         // Used in scripts to share variables
-        void SetData(uint32 id, uint32 value) { SetData(id, value, nullptr); }
-        void SetData(uint32 id, uint32 value, Creature* invoker);
+        void SetData(uint32 id, uint32 value) { SetData(id, value, NULL, NULL); }
+        void SetData(uint32 id, uint32 value, Creature* invoker, GameObject* invokerGO);
 
         // Used in scripts to share variables
         void SetGUID(uint64 guid, int32 id = 0);
@@ -261,8 +261,8 @@ class SmartGameObjectAI : public GameObjectAI
         bool QuestAccept(Player* player, Quest const* quest);
         bool QuestReward(Player* player, Quest const* quest, uint32 opt);
         void Destroyed(Player* player, uint32 eventId);
-        void SetData(uint32 id, uint32 value) { SetData(id, value, nullptr); }
-        void SetData(uint32 id, uint32 value, Creature* invoker);
+        void SetData(uint32 id, uint32 value) { SetData(id, value, NULL, NULL); }
+        void SetData(uint32 id, uint32 value, Creature* invoker, GameObject* invokerGO);
         void SetScript9(SmartScriptHolder& e, uint32 entry, Unit* invoker);
         void OnGameEvent(bool start, uint16 eventId);
         void OnStateChanged(uint32 state, Unit* unit);

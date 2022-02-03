@@ -129,17 +129,21 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
     if (unit)
         mLastInvoker = unit->GetGUID();
+    else if (gob)
+        mLastInvoker = gob->GetGUID();
 
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     if (Unit* tempInvoker = GetLastInvoker())
         sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction: Invoker: %s (guidlow: %u)", tempInvoker->GetName().c_str(), tempInvoker->GetGUIDLow());
+    else if (GameObject* tempInvokerGO = GetLastInvokerGO())
+        sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction: InvokerGO: %s (guidlow: %u)", tempInvokerGO->GetName().c_str(), tempInvokerGO->GetGUIDLow());
 #endif
 
     switch (e.GetActionType())
     {
     case SMART_ACTION_TALK:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         Creature* talker = e.target.type == 0 ? me : NULL; // xinef: tc retardness fix
         Unit* talkTarget = NULL;
         if (targets)
@@ -192,7 +196,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SIMPLE_TALK:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -216,7 +220,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_PLAY_EMOTE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -267,7 +271,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             }
         }
         else
-            targets = GetTargets(e, unit);
+            targets = GetTargets(e, unit, gob);
 
         if (targets)
         {
@@ -292,7 +296,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_RANDOM_SOUND:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -369,7 +373,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             }
         }
         else
-            targets = GetTargets(e, unit);
+            targets = GetTargets(e, unit, gob);
 
         if (targets)
         {
@@ -418,7 +422,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             }
         }
         else
-            targets = GetTargets(e, unit);
+            targets = GetTargets(e, unit, gob);
 
         if (!targets)
             break;
@@ -460,7 +464,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_FACTION:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -498,7 +502,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_MORPH_TO_ENTRY_OR_MODEL:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -547,7 +551,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_FAIL_QUEST:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -568,7 +572,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_OFFER_QUEST:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -614,7 +618,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_REACT_STATE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -631,7 +635,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_RANDOM_EMOTE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -699,7 +703,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!me)
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -720,7 +724,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_CALL_AREAEXPLOREDOREVENTHAPPENS:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -750,7 +754,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_CAST:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -817,7 +821,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!tempLastInvoker)
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -843,7 +847,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_AURA:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -866,7 +870,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ACTIVATE_GOBJECT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -892,7 +896,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_RESET_GOBJECT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -913,7 +917,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_EMOTE_STATE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -934,7 +938,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_UNIT_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -962,7 +966,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_UNIT_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1050,7 +1054,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!GetBaseObject())
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1092,7 +1096,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!GetBaseObject())
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1120,7 +1124,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVEAURASFROMSPELL:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1156,7 +1160,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!IsSmart())
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
         {
             CAST_AI(SmartAI, me->AI())->StopFollow(false);
@@ -1251,7 +1255,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         }
         else // Specific target type
         {
-            ObjectList* targets = GetTargets(e, unit);
+            ObjectList* targets = GetTargets(e, unit, gob);
             if (!targets)
                 break;
 
@@ -1314,7 +1318,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
         }
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1328,7 +1332,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_UPDATE_TEMPLATE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1352,7 +1356,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_IN_COMBAT_WITH_ZONE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1365,7 +1369,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_CALL_FOR_HELP:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1397,7 +1401,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_FORCE_DESPAWN:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1425,7 +1429,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_INGAME_PHASE_MASK:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1442,7 +1446,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_MOUNT_TO_ENTRY_OR_MODEL:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1470,7 +1474,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_INVINCIBILITY_HP_LEVEL:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1494,7 +1498,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_DATA:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1504,7 +1508,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             {
                 SmartAI* ai = CAST_AI(SmartAI, (*itr)->ToCreature()->AI());
                 if (ai)
-                    ai->SetData(e.action.setData.field, e.action.setData.data, me);
+                    ai->SetData(e.action.setData.field, e.action.setData.data, me, go);
                 else
                     (*itr)->ToCreature()->AI()->SetData(e.action.setData.field, e.action.setData.data);
             }
@@ -1512,7 +1516,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             {
                 SmartGameObjectAI* ai = CAST_AI(SmartGameObjectAI, (*itr)->ToGameObject()->AI());
                 if (ai)
-                    ai->SetData(e.action.setData.field, e.action.setData.data, me);
+                    ai->SetData(e.action.setData.field, e.action.setData.data, me, go);
                 else
                     (*itr)->ToGameObject()->AI()->SetData(e.action.setData.field, e.action.setData.data);
             }
@@ -1541,7 +1545,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_VISIBILITY:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1554,7 +1558,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_ACTIVE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1569,7 +1573,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!me)
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1582,7 +1586,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SUMMON_CREATURE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         WorldObject* summoner = GetBaseObject() ? GetBaseObject() : unit;
         if (!summoner)
             break;
@@ -1637,7 +1641,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!GetBaseObject())
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             float x, y, z, o;
@@ -1669,7 +1673,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_KILL_UNIT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1691,7 +1695,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_ITEM:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1708,7 +1712,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_ITEM:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1725,7 +1729,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_STORE_TARGET_LIST:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1748,7 +1752,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_TELEPORT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1779,7 +1783,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_RUN:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1807,7 +1811,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_COUNTER:
     {
-        if (ObjectList* targets = GetTargets(e, unit))
+        if (ObjectList* targets = GetTargets(e, unit, gob))
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             {
@@ -1845,7 +1849,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
         // Xinef: ensure that SMART_ESCORT_TARGETS contains at least one player reference
         bool stored = false;
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -1915,7 +1919,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (e.action.orientation.quickChange)
                 me->SetOrientation(e.target.o);
         }
-        else if (ObjectList* targets = GetTargets(e, unit))
+        else if (ObjectList* targets = GetTargets(e, unit, gob))
         {
             if (!targets->empty())
             {
@@ -1931,7 +1935,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_PLAYMOVIE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -1961,7 +1965,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         e.GetTargetType() == SMART_TARGET_CLOSEST_ENEMY || e.GetTargetType() == SMART_TARGET_CLOSEST_FRIENDLY ||
         e.GetTargetType() == SMART_TARGET_SELF || e.GetTargetType() == SMART_TARGET_STORED) // Xinef: bieda i rozpierdol TC)*/
         {
-            if (ObjectList* targets = GetTargets(e, unit))
+            if (ObjectList* targets = GetTargets(e, unit, gob))
             {
                 // xinef: we want to move to random element
                 target = acore::Containers::SelectRandomContainerElement(*targets);
@@ -1992,7 +1996,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_MOVE_TO_POS_TARGET:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             return;
 
@@ -2012,7 +2016,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_RESPAWN_TARGET:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2039,7 +2043,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_CLOSE_GOSSIP:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2052,7 +2056,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_EQUIP:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2134,7 +2138,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         break;
     case SMART_ACTION_OVERRIDE_SCRIPT_BASE_OBJECT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2179,7 +2183,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         float attackDistance = float(e.action.setRangedMovement.distance);
         float attackAngle = float(e.action.setRangedMovement.angle) / 180.0f * M_PI;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2200,7 +2204,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
         }
 
-        if (ObjectList* targets = GetTargets(e, unit))
+        if (ObjectList* targets = GetTargets(e, unit, gob))
         {
             for (ObjectList::iterator itr = targets->begin(); itr != targets->end(); ++itr)
             {
@@ -2222,7 +2226,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_NPC_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2235,7 +2239,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_NPC_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2248,7 +2252,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_NPC_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2261,11 +2265,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_CROSS_CAST:
     {
-        ObjectList* casters = GetTargets(CreateSmartEvent(SMART_EVENT_UPDATE_IC, 0, 0, 0, 0, 0, 0, SMART_ACTION_NONE, 0, 0, 0, 0, 0, 0, (SMARTAI_TARGETS)e.action.crossCast.targetType, e.action.crossCast.targetParam1, e.action.crossCast.targetParam2, e.action.crossCast.targetParam3, 0, 0), unit);
+        ObjectList* casters = GetTargets(CreateSmartEvent(SMART_EVENT_UPDATE_IC, 0, 0, 0, 0, 0, 0, SMART_ACTION_NONE, 0, 0, 0, 0, 0, 0, (SMARTAI_TARGETS)e.action.crossCast.targetType, e.action.crossCast.targetParam1, e.action.crossCast.targetParam2, e.action.crossCast.targetParam3, 0, 0), unit, gob);
         if (!casters)
             break;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
         {
             delete casters; // casters already validated, delete now
@@ -2333,7 +2337,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
         }
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2363,7 +2367,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
         }
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2386,7 +2390,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ACTIVATE_TAXI:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2399,7 +2403,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_RANDOM_MOVE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2431,7 +2435,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_UNIT_FIELD_BYTES_1:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2443,7 +2447,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_UNIT_FIELD_BYTES_1:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2456,7 +2460,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_INTERRUPT_SPELL:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2469,7 +2473,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SEND_GO_CUSTOM_ANIM:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2482,7 +2486,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_DYNAMIC_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2495,7 +2499,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_DYNAMIC_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2508,7 +2512,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_DYNAMIC_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2521,7 +2525,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_JUMP_TO_POS:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2547,7 +2551,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_GO_SET_LOOT_STATE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2560,7 +2564,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SEND_TARGET_TO_TARGET:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2601,7 +2605,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_SEND_GOSSIP_MENU: gossipMenuId %d, gossipNpcTextId %d",
             e.action.sendGossipMenu.gossipMenuId, e.action.sendGossipMenu.gossipNpcTextId);
 #endif
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2621,7 +2625,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_HOME_POS:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             float x, y, z, o;
@@ -2678,7 +2682,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }*/
     case SMART_ACTION_SET_HEALTH_REGEN:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2691,7 +2695,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_ROOT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2704,7 +2708,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_GO_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2717,7 +2721,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_GO_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2730,7 +2734,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_GO_FLAG:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2758,7 +2762,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_POWER:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
 
         if (targets)
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2770,7 +2774,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_POWER:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
 
         if (targets)
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2782,7 +2786,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_POWER:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
 
         if (targets)
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2830,7 +2834,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         float distanceToClosest = std::numeric_limits<float>::max();
         WayPoint* closestWp = NULL;
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -2878,7 +2882,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_GO_STATE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2891,7 +2895,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_EXIT_VEHICLE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2904,7 +2908,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_UNIT_MOVEMENT_FLAGS:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2920,7 +2924,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_COMBAT_DISTANCE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2944,7 +2948,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_SIGHT_DIST:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2957,7 +2961,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_FLEE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2970,7 +2974,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_THREAT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -2983,7 +2987,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_LOAD_EQUIPMENT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3002,7 +3006,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_HOVER:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3015,7 +3019,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ADD_IMMUNITY:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3028,7 +3032,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_IMMUNITY:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3041,7 +3045,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_FALL:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3059,7 +3063,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_REMOVE_ALL_GAMEOBJECTS:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3072,7 +3076,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_STOP_MOTION:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3090,7 +3094,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_NO_ENVIRONMENT_UPDATE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3103,7 +3107,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ZONE_UNDER_ATTACK:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3126,7 +3130,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_CIRCLE_MOVE:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
         {
             if (me && e.GetTargetType() == SMART_TARGET_POSITION)
@@ -3177,7 +3181,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_HEALTH:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3206,7 +3210,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_DESPAWN_GO:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3234,7 +3238,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
         if (e.action.customTalk.talker == 0 || e.action.customTalk.talkTarget == 0)
         {
-            ObjectList* targets = GetTargets(e, unit);
+            ObjectList* targets = GetTargets(e, unit, gob);
             if (targets)
             {
                 for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -3260,7 +3264,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_CALL_EVENT_SCRIPT:
     {
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -3298,7 +3302,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
         }
 
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
             break;
 
@@ -3318,7 +3322,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     case SMART_ACTION_LOAD_WP_PATH:
     {
         Creature* creature = me;
-        ObjectList* targets = GetTargets(e, unit);
+        ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
@@ -3496,13 +3500,19 @@ SmartScriptHolder SmartScript::CreateSmartEvent(SMART_EVENT e, uint32 event_flag
     return script;
 }
 
-ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*= NULL*/)
+ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*= NULL*/, GameObject* invokerGO /*= NULL*/)
 {
     Unit* scriptTrigger = NULL;
+    GameObject* scriptTriggerGO = NULL;
     if (invoker)
         scriptTrigger = invoker;
     else if (Unit* tempLastInvoker = GetLastInvoker())
         scriptTrigger = tempLastInvoker;
+
+    if (invokerGO)
+        scriptTriggerGO = invokerGO;
+    else if (GameObject* tempLastInvokerGO = GetLastInvokerGO())
+        scriptTriggerGO = tempLastInvokerGO;
 
     WorldObject* baseObject = GetBaseObject();
 
@@ -3575,6 +3585,8 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
     case SMART_TARGET_ACTION_INVOKER:
         if (scriptTrigger)
             l->push_back(scriptTrigger);
+        else if (scriptTriggerGO)
+            l->push_back(scriptTriggerGO);
         break;
     case SMART_TARGET_ACTION_INVOKER_VEHICLE:
         if (scriptTrigger && scriptTrigger->GetVehicle() && scriptTrigger->GetVehicle()->GetBase())
@@ -4298,7 +4310,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         if (e.event.dataSet.id != var0 || e.event.dataSet.value != var1)
             return;
         RecalcTimer(e, e.event.dataSet.cooldownMin, e.event.dataSet.cooldownMax);
-        ProcessAction(e, unit, var0, var1);
+        ProcessAction(e, unit, var0, var1, false, NULL, gob);
         break;
     }
     case SMART_EVENT_PASSENGER_REMOVED:
@@ -5018,6 +5030,15 @@ Unit* SmartScript::GetLastInvoker(Unit* invoker)
     // xinef: used for area triggers invoker cast
     else if (invoker)
         return ObjectAccessor::GetUnit(*invoker, mLastInvoker);
+    return NULL;
+}
+
+GameObject* SmartScript::GetLastInvokerGO(GameObject* invokerGO)
+{
+    if (GetBaseObject())
+        return ObjectAccessor::GetGameObject(*GetBaseObject(), mLastInvoker);
+    else if (invokerGO)
+        return ObjectAccessor::GetGameObject(*invokerGO, mLastInvoker);
     return NULL;
 }
 
