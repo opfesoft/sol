@@ -28,6 +28,7 @@
 #include "SmartScript.h"
 #include "SpellMgr.h"
 #include "Vehicle.h"
+#include "WaypointMovementGenerator.h"
 
 SmartScript::SmartScript()
 {
@@ -3321,7 +3322,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_LOAD_WP_PATH:
     {
-        Creature* creature = me;
+        Creature* creature = nullptr;
         ObjectList* targets = GetTargets(e, unit, gob);
         if (targets)
         {
@@ -3353,6 +3354,20 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             creature->LoadPath(e.action.loadWPPath.pathID);
             creature->SetDefaultMovementType(WAYPOINT_MOTION_TYPE);
             creature->GetMotionMaster()->Initialize();
+        }
+        break;
+    }
+    case SMART_ACTION_STOP_WP_PATH:
+    {
+        ObjectList* targets = GetTargets(e, unit, gob);
+        if (targets)
+        {
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+                if (Creature* creature = (*itr)->ToCreature())
+                    if (creature->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
+                        static_cast<WaypointMovementGenerator<Creature>*>(creature->GetMotionMaster()->top())->Stop(e.action.stopWPPath.duration);
+
+            delete targets;
         }
         break;
     }
