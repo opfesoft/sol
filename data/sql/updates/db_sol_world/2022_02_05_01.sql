@@ -1,0 +1,33 @@
+-- DB update 2022_02_05_00 -> 2022_02_05_01
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2022_02_05_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2022_02_05_00 2022_02_05_01 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1644098879908100853'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1644098879908100853');
+
+UPDATE `creature_template` SET `npcflag` = `npcflag` | 1, `type_flags` = `type_flags` | 134217728 WHERE `entry` = 19471;
+
+DELETE FROM `gossip_menu` WHERE `MenuID` = 9856;
+INSERT INTO `gossip_menu` (`MenuID`, `TextID`)
+VALUES
+(9856,10887);
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
