@@ -703,9 +703,6 @@ Player::Player(WorldSession* session): Unit(true), m_mover(this)
 
     m_lootGuid = 0;
 
-    m_comboTarget = 0;
-    m_comboPoints = 0;
-
     m_usedTalentCount = 0;
     m_questRewardTalentCount = 0;
 
@@ -921,7 +918,6 @@ Player::Player(WorldSession* session): Unit(true), m_mover(this)
 
     // Ours
     m_NeedToSaveGlyphs = false;
-    m_comboPointGain = 0;
     m_MountBlockId = 0;
     m_realDodge = 0.0f;
     m_realParry = 0.0f;
@@ -23233,76 +23229,6 @@ void Player::SetSelection(uint64 guid)
 
     if (NeedSendSpectatorData())
         ArenaSpectator::SendCommand_GUID(FindMap(), GetGUID(), "TRG", guid);
-}
-
-void Player::SendComboPoints()
-{ 
-    Unit* combotarget = ObjectAccessor::GetUnit(*this, m_comboTarget);
-    if (combotarget)
-    {
-        WorldPacket data;
-        if (m_mover != this)
-        {
-            data.Initialize(SMSG_PET_UPDATE_COMBO_POINTS, m_mover->GetPackGUID().size()+combotarget->GetPackGUID().size()+1);
-            data.append(m_mover->GetPackGUID());
-        }
-        else
-            data.Initialize(SMSG_UPDATE_COMBO_POINTS, combotarget->GetPackGUID().size()+1);
-        data.append(combotarget->GetPackGUID());
-        data << uint8(m_comboPoints);
-        GetSession()->SendPacket(&data);
-    }
-}
-
-void Player::AddComboPoints(Unit* target, int8 count)
-{ 
-    if (!count)
-        return;
-
-    int8 * comboPoints = &m_comboPoints;
-
-    // without combo points lost (duration checked in aura)
-    RemoveAurasByType(SPELL_AURA_RETAIN_COMBO_POINTS);
-
-    if (target->GetGUID() == m_comboTarget)
-        *comboPoints += count;
-    else
-    {
-        if (m_comboTarget)
-            if (Unit* target2 = ObjectAccessor::GetUnit(*this, m_comboTarget))
-                target2->RemoveComboPointHolder(GetGUIDLow());
-
-        m_comboTarget = target->GetGUID();
-        *comboPoints = count;
-
-        target->AddComboPointHolder(GetGUIDLow());
-    }
-
-    if (*comboPoints > 5)
-        *comboPoints = 5;
-    else if (*comboPoints < 0)
-        *comboPoints = 0;
-
-
-    SendComboPoints();
-}
-
-void Player::ClearComboPoints()
-{ 
-    if (!m_comboTarget)
-        return;
-
-    // without combopoints lost (duration checked in aura)
-    RemoveAurasByType(SPELL_AURA_RETAIN_COMBO_POINTS);
-
-    m_comboPoints = 0;
-
-    SendComboPoints();
-
-    if (Unit* target = ObjectAccessor::GetUnit(*this, m_comboTarget))
-        target->RemoveComboPointHolder(GetGUIDLow());
-
-    m_comboTarget = 0;
 }
 
 void Player::SetGroup(Group* group, int8 subgroup)

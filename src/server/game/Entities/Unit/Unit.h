@@ -1260,12 +1260,13 @@ struct CharmInfo
 
 enum ReactiveType
 {
-    REACTIVE_DEFENSE      = 0,
-    REACTIVE_HUNTER_PARRY = 1,
-    REACTIVE_OVERPOWER    = 2
+    REACTIVE_DEFENSE        = 0,
+    REACTIVE_HUNTER_PARRY   = 1,
+    REACTIVE_OVERPOWER      = 2,
+    REACTIVE_WOLVERINE_BITE = 3,
 };
 
-#define MAX_REACTIVE 3
+#define MAX_REACTIVE 4
 #define SUMMON_SLOT_PET     0
 #define SUMMON_SLOT_TOTEM   1
 #define MAX_TOTEM_SLOT      5
@@ -1364,7 +1365,7 @@ class Unit : public WorldObject
         typedef std::list<Aura*> AuraList;
         typedef std::list<AuraApplication *> AuraApplicationList;
         typedef std::list<DiminishingReturn> Diminishing;
-        typedef std::unordered_set<uint32> ComboPointHolderSet;
+        typedef std::unordered_set<uint64> ComboPointHolderSet;
 
         typedef std::map<uint8, AuraApplication*> VisibleAuraMap;
 
@@ -2283,8 +2284,8 @@ class Unit : public WorldObject
         void DisableRotate(bool apply);
         void DisableSpline();
 
-        void AddComboPointHolder(uint32 lowguid) { m_ComboPointHolders.insert(lowguid); }
-        void RemoveComboPointHolder(uint32 lowguid) { m_ComboPointHolders.erase(lowguid); }
+        void AddComboPointHolder(uint64 guid) { m_ComboPointHolders.insert(guid); }
+        void RemoveComboPointHolder(uint64 guid) { m_ComboPointHolders.erase(guid); }
         void ClearComboPointHolders();
 
         ///----------Pet responses methods-----------------
@@ -2449,6 +2450,16 @@ class Unit : public WorldObject
         void SetLastPlayerInteraction(uint32 lastPlayerInteraction) { m_lastPlayerInteraction = lastPlayerInteraction; }
         uint32 GetLastPlayerInteraction() { return m_lastPlayerInteraction; }
 
+        uint8 GetComboPoints() const { return m_comboPoints; }
+        uint64 GetComboTarget() const { return m_comboTarget; }
+
+        void AddComboPoints(Unit* target, int8 count);
+        void ClearComboPoints();
+        void SendComboPoints();
+
+        int8 GetComboPointGain() { return m_comboPointGain; }
+        void SetComboPointGain(int8 combo) { m_comboPointGain = combo; }
+
     protected:
         explicit Unit (bool isWorldObject);
 
@@ -2577,6 +2588,10 @@ class Unit : public WorldObject
         uint32 m_lastPlayerInteraction;
 
         void processDummyAuras(float &TakenTotalMod);
+
+        uint64 m_comboTarget;
+        int8 m_comboPoints;
+        int8 m_comboPointGain;
 };
 
 namespace acore

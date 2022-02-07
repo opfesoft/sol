@@ -264,6 +264,10 @@ i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this), 
 
     _oldFactionId = 0;
     m_lastPlayerInteraction = 0;
+
+    m_comboTarget = 0;
+    m_comboPoints = 0;
+    m_comboPointGain = 0;
 }
 
 ////////////////////////////////////////////////////////////
@@ -13765,7 +13769,7 @@ int32 Unit::CalculateSpellDamage(Unit const* target, SpellInfo const* spellProto
 
 int32 Unit::CalcSpellDuration(SpellInfo const* spellProto)
 {
-    uint8 comboPoints = m_movedByPlayer ? m_movedByPlayer->ToPlayer()->GetComboPoints() : 0;
+    uint8 comboPoints = m_movedByPlayer ? m_movedByPlayer->GetComboPoints() : 0;
 
     int32 minduration = spellProto->GetDuration();
     int32 maxduration = spellProto->GetMaxDuration();
@@ -15145,18 +15149,15 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, u
                 {
                     if (GetTypeId() == TYPEID_PLAYER && getClass() == CLASS_WARRIOR)
                     {
-                        ToPlayer()->AddComboPoints(target, 1);
+                        AddComboPoints(target, 1);
                         StartReactiveTimer(REACTIVE_OVERPOWER);
                     }
                 }
                 // Wolverine Bite
-                if (procExtra & PROC_EX_CRITICAL_HIT)
+                if ((procExtra & PROC_EX_CRITICAL_HIT) && IsHunterPet())
                 {
-                    if (GetTypeId() == TYPEID_UNIT && IsPet())
-                    {
-                        ModifyAuraState(AURA_STATE_DEFENSE, true);
-                        StartReactiveTimer( REACTIVE_DEFENSE );
-                    }
+                    StartReactiveTimer(REACTIVE_WOLVERINE_BITE);
+                    AddComboPoints(target, 1);
                 }
             }
         }
@@ -15734,13 +15735,13 @@ void Unit::ClearComboPointHolders()
 {
     while (!m_ComboPointHolders.empty())
     {
-        uint32 lowguid = *m_ComboPointHolders.begin();
+        uint64 guid = *m_ComboPointHolders.begin();
 
-        Player* player = ObjectAccessor::GetPlayer(*this, MAKE_NEW_GUID(lowguid, 0, HIGHGUID_PLAYER));
-        if (player && player->GetComboTarget() == GetGUID())         // recheck for safe
-            player->ClearComboPoints();                        // remove also guid from m_ComboPointHolders;
+        Unit* unit = ObjectAccessor::GetUnit(*this, guid);
+        if (unit && unit->GetComboTarget() == GetGUID())     // recheck for safe
+            unit->ClearComboPoints();                        // remove also guid from m_ComboPointHolders;
         else
-            m_ComboPointHolders.erase(lowguid);             // or remove manually
+            m_ComboPointHolders.erase(guid);                 // or remove manually
     }
 }
 
@@ -15754,7 +15755,7 @@ void Unit::ClearAllReactives()
     if (getClass() == CLASS_HUNTER && HasAuraState(AURA_STATE_HUNTER_PARRY))
         ModifyAuraState(AURA_STATE_HUNTER_PARRY, false);
     if (getClass() == CLASS_WARRIOR && GetTypeId() == TYPEID_PLAYER)
-        ToPlayer()->ClearComboPoints();
+        ClearComboPoints();
 }
 
 void Unit::UpdateReactives(uint32 p_time)
@@ -15782,7 +15783,11 @@ void Unit::UpdateReactives(uint32 p_time)
                     break;
                 case REACTIVE_OVERPOWER:
                     if (getClass() == CLASS_WARRIOR && GetTypeId() == TYPEID_PLAYER)
-                        ToPlayer()->ClearComboPoints();
+                        ClearComboPoints();
+                    break;
+                case REACTIVE_WOLVERINE_BITE:
+                    if (IsHunterPet())
+                        ClearComboPoints();
                     break;
                 default:
                     break;
@@ -19693,4 +19698,85 @@ bool Unit::IsInCombatWith(Unit const* who) const
     }
     // Nothing found, false.
     return false;
+}
+
+void Unit::SendComboPoints()
+{
+    Unit* combotarget = ObjectAccessor::GetUnit(*this, m_comboTarget);
+    if (combotarget)
+    {
+        WorldPacket data;
+
+        if (Player* player = ToPlayer())
+        {
+            if (player->GetMover() != this)
+            {
+                data.Initialize(SMSG_PET_UPDATE_COMBO_POINTS, player->GetMover()->GetPackGUID().size()+combotarget->GetPackGUID().size()+1);
+                data.append(player->GetMover()->GetPackGUID());
+            }
+            else
+                data.Initialize(SMSG_UPDATE_COMBO_POINTS, combotarget->GetPackGUID().size()+1);
+            data.append(combotarget->GetPackGUID());
+            data << uint8(m_comboPoints);
+            player->GetSession()->SendPacket(&data);
+        }
+        else if (Player* player = GetCharmerOrOwnerPlayerOrPlayerItself())
+        {
+            data.Initialize(SMSG_PET_UPDATE_COMBO_POINTS, GetPackGUID().size()+combotarget->GetPackGUID().size()+1);
+            data.append(GetPackGUID());
+            data.append(combotarget->GetPackGUID());
+            data << uint8(m_comboPoints);
+            player->GetSession()->SendPacket(&data);
+        }
+    }
+}
+
+void Unit::AddComboPoints(Unit* target, int8 count)
+{
+    if (!count)
+        return;
+
+    int8 * comboPoints = &m_comboPoints;
+
+    // without combo points lost (duration checked in aura)
+    RemoveAurasByType(SPELL_AURA_RETAIN_COMBO_POINTS);
+
+    if (target->GetGUID() == m_comboTarget)
+        *comboPoints += count;
+    else
+    {
+        if (m_comboTarget)
+            if (Unit* target2 = ObjectAccessor::GetUnit(*this, m_comboTarget))
+                target2->RemoveComboPointHolder(GetGUID());
+
+        m_comboTarget = target->GetGUID();
+        *comboPoints = count;
+
+        target->AddComboPointHolder(GetGUID());
+    }
+
+    if (*comboPoints > 5)
+        *comboPoints = 5;
+    else if (*comboPoints < 0)
+        *comboPoints = 0;
+
+    SendComboPoints();
+}
+
+void Unit::ClearComboPoints()
+{
+    if (!m_comboTarget)
+        return;
+
+    // without combopoints lost (duration checked in aura)
+    RemoveAurasByType(SPELL_AURA_RETAIN_COMBO_POINTS);
+
+    m_comboPoints = 0;
+
+    SendComboPoints();
+
+    if (Unit* target = ObjectAccessor::GetUnit(*this, m_comboTarget))
+        target->RemoveComboPointHolder(GetGUID());
+
+    m_comboTarget = 0;
 }

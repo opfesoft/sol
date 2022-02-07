@@ -1628,13 +1628,6 @@ class Player : public Unit, public GridObject<Player>
         void SetTarget(uint64 /*guid*/) override { } /// Used for serverside target changes, does not apply to players
         void SetSelection(uint64 guid);
 
-        uint8 GetComboPoints() const { return m_comboPoints; }
-        uint64 GetComboTarget() const { return m_comboTarget; }
-
-        void AddComboPoints(Unit* target, int8 count);
-        void ClearComboPoints();
-        void SendComboPoints();
-
         void SendMailResult(uint32 mailId, MailResponseType mailAction, MailResponseResult mailError, uint32 equipError = 0, uint32 item_guid = 0, uint32 item_count = 0);
         void SendNewMail();
         void UpdateNextMailTimeAndUnreads();
@@ -2619,9 +2612,6 @@ class Player : public Unit, public GridObject<Player>
         void PrepareCharmAISpells();
         uint32 m_charmUpdateTimer;
 
-        int8 GetComboPointGain() { return m_comboPointGain; }
-        void SetComboPointGain(int8 combo) { m_comboPointGain = combo; }
-
         bool NeedToSaveGlyphs() { return m_NeedToSaveGlyphs; }
         void SetNeedToSaveGlyphs(bool val) { m_NeedToSaveGlyphs = val; }
 
@@ -2639,12 +2629,12 @@ class Player : public Unit, public GridObject<Player>
         static constexpr std::array<uint32, 10> fishingSkillSteps{ 115, 135, 160, 190, 215, 295, 315, 355, 425, 450 };
         static constexpr std::array<uint8, 11> fishingSkillAvgTries{ 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 1 };
 
+        WorldObject* GetMover() const { return m_mover; }
+
     protected:
         // Gamemaster whisper whitelist
         WhisperListContainer WhisperList;
 
-        // Combo Points
-        int8 m_comboPointGain;
         // Performance Varibales
         bool m_NeedToSaveGlyphs;
         // Mount block bug
@@ -2784,9 +2774,6 @@ class Player : public Unit, public GridObject<Player>
         bool m_itemUpdateQueueBlocked;
 
         uint32 m_ExtraFlags;
-
-        uint64 m_comboTarget;
-        int8 m_comboPoints;
 
         QuestStatusMap m_QuestStatus;
         QuestStatusSaveMap m_QuestStatusSave;

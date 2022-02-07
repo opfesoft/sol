@@ -3417,7 +3417,7 @@ SpellCastResult Spell::prepare(SpellCastTargets const* targets, AuraEffect const
     m_powerCost = m_CastItem ? 0 : m_spellInfo->CalcPowerCost(m_caster, m_spellSchoolMask, this);
 
     // Set combo point requirement
-    if ((_triggeredCastFlags & TRIGGERED_IGNORE_COMBO_POINTS) || m_CastItem || !m_caster->m_movedByPlayer)
+    if ((_triggeredCastFlags & TRIGGERED_IGNORE_COMBO_POINTS) || m_CastItem)
         m_needComboPoints = false;
 
     SpellCastResult result = CheckCast(true);
@@ -4044,16 +4044,20 @@ void Spell::_handle_immediate_phase()
 
 void Spell::_handle_finish_phase()
 {
-    if (m_caster->m_movedByPlayer && m_needComboPoints)
+    if (m_needComboPoints)
     {
+        Unit* unit = m_caster->m_movedByPlayer;
+        if (!unit)
+            unit = m_caster;
+
         // Take for real after all targets are processed
-        m_caster->m_movedByPlayer->ToPlayer()->ClearComboPoints();
+        unit->ClearComboPoints();
 
         // Real add combo points from effects
         if( m_targets.GetUnitTarget() && m_targets.GetUnitTarget()->IsInWorld() && m_targets.GetUnitTarget()->IsAlive() )
-            m_caster->m_movedByPlayer->ToPlayer()->AddComboPoints(m_targets.GetUnitTarget(), m_caster->m_movedByPlayer->ToPlayer()->GetComboPointGain());
+            unit->AddComboPoints(m_targets.GetUnitTarget(), unit->GetComboPointGain());
 
-        m_caster->m_movedByPlayer->ToPlayer()->SetComboPointGain(0);
+        unit->SetComboPointGain(0);
     }
 
     if (m_caster->m_extraAttacks && GetSpellInfo()->HasEffect(SPELL_EFFECT_ADD_EXTRA_ATTACKS))
@@ -6380,9 +6384,18 @@ SpellCastResult Spell::CheckCast(bool strict)
 
     // check if caster has at least 1 combo point for spells that require combo points
     if (m_needComboPoints)
-        if (Player* plrCaster = m_caster->ToPlayer())
-            if (!plrCaster->GetComboPoints())
+    {
+        Unit* unit = m_caster->m_movedByPlayer;
+        if (!unit)
+            unit = m_caster;
+        if (!unit->GetComboPoints())
+        {
+            if (m_caster->GetTypeId() == TYPEID_PLAYER)
                 return SPELL_FAILED_NO_COMBO_POINTS;
+            else
+                return SPELL_FAILED_NOT_READY;
+        }
+    }
 
     // xinef: check relic cooldown
     if (m_CastItem && m_CastItem->GetTemplate()->InventoryType == INVTYPE_RELIC && m_triggeredByAuraSpell)

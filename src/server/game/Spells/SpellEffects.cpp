@@ -499,7 +499,7 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                     float multiple = ap / 410 + m_spellInfo->Effects[effIndex].DamageMultiplier;
                     int32 energy = -(m_caster->ModifyPower(POWER_ENERGY, -30));
                     damage += int32(energy * multiple);
-                    damage += int32(CalculatePct(m_caster->ToPlayer()->GetComboPoints() * ap, 7));
+                    damage += int32(CalculatePct(m_caster->GetComboPoints() * ap, 7));
                 }
                 // Wrath
                 else if (m_spellInfo->SpellFamilyFlags[0] & 0x00000001)
@@ -566,7 +566,7 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                 {
                     if (m_caster->GetTypeId() == TYPEID_PLAYER)
                     {
-                        if (uint32 combo = m_caster->ToPlayer()->GetComboPoints())
+                        if (uint32 combo = m_caster->GetComboPoints())
                         {
                             float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
                             damage += int32(ap * combo * 0.07f);
@@ -3360,7 +3360,7 @@ void Spell::EffectWeaponDmg(SpellEffIndex effIndex)
                 if (m_spellInfo->SpellFamilyFlags[0] & 0x2000000)
                 {
                     if (m_caster->GetTypeId() == TYPEID_PLAYER)
-                        m_caster->ToPlayer()->AddComboPoints(unitTarget, 1);
+                        m_caster->AddComboPoints(unitTarget, 1);
                 }
                 // 50% more damage with daggers
                 if (m_caster->GetTypeId() == TYPEID_PLAYER)
@@ -3421,7 +3421,7 @@ void Spell::EffectWeaponDmg(SpellEffIndex effIndex)
             if (m_spellInfo->SpellFamilyFlags[1] & 0x400)
             {
                 if (m_caster->GetTypeId() == TYPEID_PLAYER)
-                    m_caster->ToPlayer()->AddComboPoints(unitTarget,1);
+                    m_caster->AddComboPoints(unitTarget,1);
             }
             // Shred, Maul - Rend and Tear
             else if (m_spellInfo->SpellFamilyFlags[0] & 0x00008800 && unitTarget->HasAuraState(AURA_STATE_BLEEDING))
@@ -4249,11 +4249,11 @@ void Spell::EffectAddComboPoints(SpellEffIndex /*effIndex*/)
     if (m_spellInfo->Id == 14157 || // Ruthlessness and Netherblade set
         m_spellInfo->Id == 70802)   // xinef: mayhem, rogue t10p4
     {
-        m_caster->m_movedByPlayer->ToPlayer()->SetComboPointGain(m_caster->m_movedByPlayer->ToPlayer()->GetComboPointGain()+damage);
+        m_caster->m_movedByPlayer->SetComboPointGain(m_caster->m_movedByPlayer->GetComboPointGain()+damage);
         return;
     }
 
-    m_caster->m_movedByPlayer->ToPlayer()->AddComboPoints(unitTarget, damage);
+    m_caster->m_movedByPlayer->AddComboPoints(unitTarget, damage);
 }
 
 void Spell::EffectDuel(SpellEffIndex effIndex)
