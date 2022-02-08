@@ -43,6 +43,7 @@ struct FactionState
     uint8 Flags;
     bool needSend;
     bool needSave;
+    float fraction;
 };
 
 typedef std::map<RepListID, FactionState> FactionStateList;
@@ -122,7 +123,7 @@ class ReputationMgr
         void ApplyForceReaction(uint32 faction_id, ReputationRank rank, bool apply);
 
         //! Public for chat command needs
-        bool SetOneFactionReputation(FactionEntry const* factionEntry, int32 standing, bool incremental);
+        bool SetOneFactionReputation(FactionEntry const* factionEntry, int32 standing, bool incremental, float fraction = 0.f);
 
     public:                                                 // senders
         void SendInitialReputations();

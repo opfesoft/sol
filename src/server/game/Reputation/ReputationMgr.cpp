@@ -283,28 +283,29 @@ bool ReputationMgr::SetReputation(FactionEntry const* factionEntry, int32 standi
                 if (_player->GetReputationRank(repTemplate->faction[i]) <= ReputationRank(repTemplate->faction_rank[i]))
                 {
                     // bonuses are already given, so just modify standing by rate
-                    int32 spilloverRep = int32(standing * repTemplate->faction_rate[i]);
-                    SetOneFactionReputation(sFactionStore.LookupEntry(repTemplate->faction[i]), spilloverRep, incremental);
+                    float spilloverRep = float(standing) * repTemplate->faction_rate[i];
+                    float fraction = modff(spilloverRep, &spilloverRep);
+                    SetOneFactionReputation(sFactionStore.LookupEntry(repTemplate->faction[i]), int32(spilloverRep), incremental, fraction);
                 }
             }
         }
     }
     else
     {
-        float spillOverRepOut = float(standing);
         // check for sub-factions that receive spillover
         SimpleFactionsList const* flist = GetFactionTeamList(factionEntry->ID);
         // if has no sub-factions, check for factions with same parent
         if (!flist && factionEntry->team && factionEntry->spilloverRateOut != 0.0f)
         {
-            spillOverRepOut *= factionEntry->spilloverRateOut;
+            float spillOverRepOut = float(standing) * factionEntry->spilloverRateOut;
+            float fraction = modff(spillOverRepOut, &spillOverRepOut);
             if (FactionEntry const* parent = sFactionStore.LookupEntry(factionEntry->team))
             {
                 FactionStateList::iterator parentState = _factions.find(parent->reputationListID);
                 // some team factions have own reputation standing, in this case do not spill to other sub-factions
                 if (parentState != _factions.end() && (parentState->second.Flags & FACTION_FLAG_SPECIAL))
                 {
-                    SetOneFactionReputation(parent, int32(spillOverRepOut), incremental);
+                    SetOneFactionReputation(parent, int32(spillOverRepOut), incremental, fraction);
                 }
                 else    // spill to "sister" factions
                 {
@@ -321,9 +322,11 @@ bool ReputationMgr::SetReputation(FactionEntry const* factionEntry, int32 standi
                 {
                     if (factionEntryCalc == factionEntry || GetRank(factionEntryCalc) > ReputationRank(factionEntryCalc->spilloverMaxRankIn))
                         continue;
-                    int32 spilloverRep = int32(spillOverRepOut * factionEntryCalc->spilloverRateIn);
+                    float spillOverRepOut = float(standing) * factionEntryCalc->spilloverRateIn;
+                    float fraction = modff(spillOverRepOut, &spillOverRepOut);
+                    int32 spilloverRep = int32(spillOverRepOut);
                     if (spilloverRep != 0 || !incremental)
-                        res = SetOneFactionReputation(factionEntryCalc, spilloverRep, incremental);
+                        res = SetOneFactionReputation(factionEntryCalc, spilloverRep, incremental, fraction);
                 }
             }
         }
@@ -342,19 +345,29 @@ bool ReputationMgr::SetReputation(FactionEntry const* factionEntry, int32 standi
     return res;
 }
 
-bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, int32 standing, bool incremental)
+bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, int32 standing, bool incremental, float fraction /*= 0.f*/)
 {
     FactionStateList::iterator itr = _factions.find(factionEntry->reputationListID);
     if (itr != _factions.end())
     {
         int32 BaseRep = GetBaseReputation(factionEntry);
+        int8 fractionBonus = 0;
+        if (fraction)
+        {
+            float tmp = itr->second.fraction + fraction;
+            if (tmp >= 1.f)
+                fractionBonus = 1;
+            else if (tmp <= -1.f)
+                fractionBonus = -1;
+
+            if (fractionBonus)
+                itr->second.fraction = modff(tmp, &tmp);
+            else
+                itr->second.fraction = tmp;
+        }
 
         if (incremental)
-        {
-            // int32 *= float cause one point loss?
-            standing = int32(floor((float)standing * sWorld->getRate(RATE_REPUTATION_GAIN) + 0.5f));
-            standing += itr->second.Standing + BaseRep;
-        }
+            standing = int32(floor((float)standing * sWorld->getRate(RATE_REPUTATION_GAIN) + 0.5f)) + itr->second.Standing + BaseRep + fractionBonus;
 
         if (standing > Reputation_Cap)
             standing = Reputation_Cap;
