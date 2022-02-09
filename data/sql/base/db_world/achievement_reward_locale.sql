@@ -14,7 +14,7 @@ CREATE TABLE `achievement_reward_locale`
   `Subject` text,
   `Text` text,
   PRIMARY KEY (`ID`,`Locale`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `achievement_reward_locale` WRITE;

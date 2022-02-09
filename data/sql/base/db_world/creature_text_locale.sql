@@ -15,7 +15,7 @@ CREATE TABLE `creature_text_locale`
   `Locale` varchar(4) NOT NULL,
   `Text` text,
   PRIMARY KEY (`CreatureID`,`GroupID`,`ID`,`Locale`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_text_locale` WRITE;

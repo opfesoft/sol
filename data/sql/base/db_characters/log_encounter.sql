@@ -15,7 +15,7 @@ CREATE TABLE `log_encounter`
   `creditType` tinyint(3) unsigned NOT NULL,
   `creditEntry` int(10) unsigned NOT NULL,
   `playersInfo` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `log_encounter` WRITE;

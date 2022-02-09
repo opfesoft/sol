@@ -23,7 +23,7 @@ CREATE TABLE `log_arena_fights`
   `loser_tr_change` smallint(6) NOT NULL,
   `currOnline` int(10) unsigned NOT NULL,
   PRIMARY KEY (`fight_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `log_arena_fights` WRITE;

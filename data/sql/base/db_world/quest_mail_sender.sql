@@ -12,7 +12,7 @@ CREATE TABLE `quest_mail_sender`
   `QuestId` int(5) unsigned NOT NULL DEFAULT '0',
   `RewardMailSenderEntry` int(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`QuestId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `quest_mail_sender` WRITE;

@@ -16,7 +16,7 @@ CREATE TABLE `game_graveyard`
   `z` float NOT NULL DEFAULT '0',
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_graveyard` WRITE;

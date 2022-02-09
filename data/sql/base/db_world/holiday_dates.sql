@@ -13,7 +13,7 @@ CREATE TABLE `holiday_dates`
   `date_id` tinyint(3) unsigned NOT NULL,
   `date_value` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`,`date_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `holiday_dates` WRITE;

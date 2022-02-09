@@ -14,7 +14,7 @@ CREATE TABLE `version_db_sol_world` (
   PRIMARY KEY (`sql_rev`),
   KEY `required` (`required_rev`),
   CONSTRAINT `sol_required` FOREIGN KEY (`required_rev`) REFERENCES `version_db_sol_world` (`sql_rev`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Last applied sql update to DB';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Last applied sql update to DB';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `version_db_sol_world` WRITE;

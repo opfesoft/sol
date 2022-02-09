@@ -14,7 +14,7 @@ CREATE TABLE `points_of_interest_locale`
   `Name` text,
   `VerifiedBuild` smallint(5) DEFAULT '0',
   PRIMARY KEY (`ID`,`locale`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `points_of_interest_locale` WRITE;

@@ -18,7 +18,7 @@ CREATE TABLE `log_money`
   `money` bigint(20) unsigned NOT NULL,
   `topic` char(255) CHARACTER SET utf8 NOT NULL,
   `date` datetime NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `log_money` WRITE;

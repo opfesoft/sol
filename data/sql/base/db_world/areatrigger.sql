@@ -20,7 +20,7 @@ CREATE TABLE `areatrigger`
   `height` float NOT NULL DEFAULT '0' COMMENT 'Most commonly used when size is 0, but not always',
   `orientation` float NOT NULL DEFAULT '0' COMMENT 'Most commonly used when size is 0, but not always',
   PRIMARY KEY (`entry`)
-) ENGINE=InnoDB AUTO_INCREMENT=5873 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5873 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `areatrigger` WRITE;
