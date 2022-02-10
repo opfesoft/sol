@@ -8706,7 +8706,7 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
         case 28845:
         {
             // When your health drops below 20%
-            if (HealthBelowPctDamaged(20, damage) || HealthBelowPct(20))
+            if (!HealthBelowPctDamaged(20, damage) && !HealthBelowPct(20))
                 return false;
             break;
         }
