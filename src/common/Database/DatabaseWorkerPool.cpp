@@ -8,8 +8,8 @@
 #include "DatabaseWorkerPool.h"
 #include "DatabaseEnv.h"
 
-#define MIN_MYSQL_SERVER_VERSION 100200u
-#define MIN_MYSQL_CLIENT_VERSION 100200u
+#define MIN_MARIADB_SERVER_VERSION 100605u
+#define MIN_MARIADB_CONNECTOR_VERSION 30205u
 
 template <class T>
 DatabaseWorkerPool<T>::DatabaseWorkerPool() :
@@ -19,8 +19,14 @@ _queue(new ACE_Activation_Queue(_mqueue))
     memset(_connectionCount, 0, sizeof(_connectionCount));
     _connections.resize(IDX_SIZE);
 
+#if defined(MARIADB_VERSION_ID)
+    bool isMariaDB = true;
+#else
+    bool isMariaDB = false;
+#endif
+
     WPFatal(mysql_thread_safe(), "Used MySQL library isn't thread-safe.");
-    WPFatal(mysql_get_client_version() >= MIN_MYSQL_CLIENT_VERSION, "AzerothCore (Project \"Sol\") does not support MySQL and only supports MariaDB versions above or equal 10.2");
+    WPFatal(isMariaDB && mysql_get_client_version() >= MIN_MARIADB_CONNECTOR_VERSION, "Project \"Sol\" does not support MySQL and only supports MariaDB versions above or equal 10.6.5");
 }
 
 template <class T>
@@ -39,7 +45,7 @@ bool DatabaseWorkerPool<T>::Open(const std::string& infoString, uint8 async_thre
         T* t = new T(_queue, _connectionInfo);
         res &= t->Open();
         if (res) // only check mysql version if connection is valid
-            WPFatal(mysql_get_server_version(t->GetHandle()) >= MIN_MYSQL_SERVER_VERSION, "AzerothCore (Project \"Sol\") does not support MySQL and only supports MariaDB versions above or equal 10.2");
+            WPFatal(mysql_get_server_version(t->GetHandle()) >= MIN_MARIADB_SERVER_VERSION, "Project \"Sol\" does not support MySQL and only supports MariaDB versions above or equal 10.6.5");
 
         _connections[IDX_ASYNC][i] = t;
         ++_connectionCount[IDX_ASYNC];
