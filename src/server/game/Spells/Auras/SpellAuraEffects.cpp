@@ -2796,6 +2796,21 @@ void AuraEffect::HandleAuraMounted(AuraApplication const* aurApp, uint8 mode, bo
             else
                 creatureEntry = 15665;
         }
+        else if (target->HasAura(66122)) // Magic Rooster
+        {
+            switch (target->getRace())
+            {
+                case RACE_DRAENEI:
+                    creatureEntry = 34731;
+                    break;
+                case RACE_TAUREN:
+                    creatureEntry = 34732;
+                    break;
+                default:
+                    creatureEntry = 34655;
+                    break;
+            }
+        }
 
         CreatureTemplate const* ci = sObjectMgr->GetCreatureTemplate(creatureEntry);
         if (!ci)

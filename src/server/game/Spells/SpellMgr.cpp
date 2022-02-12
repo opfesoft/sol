@@ -6090,8 +6090,8 @@ void SpellMgr::LoadDbcDataCorrections()
         case 55637:
             spellInfo->EffectMiscValue[1] = 126;
             break;
-        // Magic Broom
-        case 47977:
+        case 47977: // Magic Broom
+        case 65917: // Magic Rooster
             spellInfo->Effect[0] = 0;
             spellInfo->Effect[1] = 0;
             break;
