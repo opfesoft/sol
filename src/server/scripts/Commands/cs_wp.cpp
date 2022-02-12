@@ -858,7 +858,7 @@ public:
                 uint32 point            = fields[1].GetUInt32();
                 uint32 delay            = fields[2].GetUInt32();
                 uint32 flag             = fields[3].GetUInt32();
-                uint32 pathfinding      = fields[4].GetUInt32();
+                uint32 pathfinding      = fields[4].GetUInt8();
                 uint32 ev_id            = fields[5].GetUInt32();
                 uint32 ev_chance        = fields[6].GetInt16();
                 float orientation       = fields[7].GetFloat();
