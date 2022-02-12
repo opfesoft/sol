@@ -332,7 +332,11 @@ bool RandomMovementGenerator<Creature>::DoUpdate(Creature* creature, const uint3
     }
 
     if (creature->GetLastPlayerInteraction() && getMSTimeDiff(creature->GetLastPlayerInteraction(), World::GetGameTimeMS()) < sWorld->getIntConfig(CONFIG_WAYPOINT_MOVEMENT_STOP_TIME_FOR_PLAYER) * IN_MILLISECONDS)
+    {
+        if (!creature->IsStopped())
+            creature->StopMoving();
         return true;
+    }
     else
         creature->SetLastPlayerInteraction(0);
 
