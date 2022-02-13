@@ -4349,6 +4349,12 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectRealPointsPerLevel[EFFECT_0] = 5.0f;
             break;
 
+        // Blackwing Lair
+        // Shadow Flame
+        case 22539:
+            spellInfo->InterruptFlags &= ~SPELL_INTERRUPT_FLAG_INTERRUPT;
+            break;
+
 
         //////////////////////////////////////////
         ////////// TBC Instances
