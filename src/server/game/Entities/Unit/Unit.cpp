@@ -12009,7 +12009,7 @@ bool Unit::IsImmunedToSpellEffect(SpellInfo const* spellInfo, uint32 index) cons
     uint32 effect = spellInfo->Effects[index].Effect;
     SpellImmuneList const& effectList = m_spellImmune[IMMUNITY_EFFECT];
     for (SpellImmuneList::const_iterator itr = effectList.begin(); itr != effectList.end(); ++itr)
-        if (itr->type == effect && (itr->spellId != 62692 || spellInfo->Effects[index].MiscValue == POWER_MANA))
+        if (itr->type == effect && (itr->spellId != 62692 || spellInfo->Effects[index].MiscValue != POWER_MANA))
             return true;
 
     if (uint32 mechanic = spellInfo->Effects[index].Mechanic)
@@ -12024,7 +12024,7 @@ bool Unit::IsImmunedToSpellEffect(SpellInfo const* spellInfo, uint32 index) cons
     {
         SpellImmuneList const& list = m_spellImmune[IMMUNITY_STATE];
         for (SpellImmuneList::const_iterator itr = list.begin(); itr != list.end(); ++itr)
-            if (itr->type == aura && (itr->spellId != 64848 || spellInfo->Effects[index].MiscValue == POWER_MANA))
+            if (itr->type == aura && (itr->spellId != 64848 || spellInfo->Effects[index].MiscValue != POWER_MANA))
                 if (!spellInfo->HasAttribute(SPELL_ATTR3_IGNORE_HIT_RESULT))
                     if (itr->blockType == SPELL_BLOCK_TYPE_ALL || spellInfo->IsPositive()) // xinef: added for pet scaling
                         return true;
