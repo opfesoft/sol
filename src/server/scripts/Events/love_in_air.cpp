@@ -756,6 +756,8 @@ class spell_gen_aura_service_uniform : public SpellScriptLoader
                         target->SetDisplayId(MODEL_GOBLIN_MALE);
                     else
                         target->SetDisplayId(MODEL_GOBLIN_FEMALE);
+
+                    target->RemoveAurasByType(SPELL_AURA_MOUNTED);
                 }
             }
 
