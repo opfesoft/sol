@@ -1594,30 +1594,35 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
         if (targets)
         {
-            float x, y, z, o;
+            Position pos;
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             {
-                (*itr)->GetPosition(x, y, z, o);
-                x += e.target.x;
-                y += e.target.y;
-                z += e.target.z;
-                o += e.target.o;
-
+                (*itr)->GetPosition(&pos);
+                pos.m_positionX += e.target.x;
+                pos.m_positionY += e.target.y;
+                pos.m_positionZ += e.target.z;
+                pos.m_orientation += e.target.o;
                 if (!e.target.z && (e.target.x || e.target.y))
-                    summoner->UpdateGroundPositionZ(x, y, z);
+                    summoner->UpdateGroundPositionZ(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
 
-                if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
+                if (e.action.summonCreature.randomMaxDist)
+                    summoner->MovePositionToFirstCollisionForTotem(pos, // this function is intended for totems, but works quite well here
+                        ((e.action.summonCreature.randomMaxDist - e.action.summonCreature.randomMinDist) * (float)rand_norm()) + e.action.summonCreature.randomMinDist,
+                        (float)rand_norm() * static_cast<float>(2 * M_PI), false);
+
+                if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature,
+                    pos.m_positionX, pos.m_positionY, pos.m_positionZ, pos.m_orientation, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
                 {
-                    if (e.action.summonCreature.attackInvoker == 2)
+                    if (e.action.summonCreature.attackType == 2)
                     {
                         if (unit)
                             summon->AI()->AttackStart(unit);
                         else if (Unit* tempLastInvoker = GetLastInvoker())
                             summon->AI()->AttackStart(tempLastInvoker);
                     }
-                    else if (e.action.summonCreature.attackInvoker)
+                    else if (e.action.summonCreature.attackType == 1)
                         summon->AI()->AttackStart((*itr)->ToUnit());
-                    else if (me && e.action.summonCreature.attackScriptOwner)
+                    else if (me && e.action.summonCreature.attackType == 3)
                         summon->AI()->AttackStart(me);
                 }
             }
@@ -1628,11 +1633,24 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (e.GetTargetType() != SMART_TARGET_POSITION)
             break;
 
-        if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, e.target.x, e.target.y, e.target.z, e.target.o, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
+        Position pos = { e.target.x, e.target.y, e.target.z, e.target.o };
+
+        if (e.action.summonCreature.randomMaxDist)
+            summoner->MovePositionToFirstCollisionForTotem(pos, // this function is intended for totems, but works quite well here
+                ((e.action.summonCreature.randomMaxDist - e.action.summonCreature.randomMinDist) * (float)rand_norm()) + e.action.summonCreature.randomMinDist,
+                (float)rand_norm() * static_cast<float>(2 * M_PI), false);
+
+        if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature,
+            pos.m_positionX, pos.m_positionY, pos.m_positionZ, pos.m_orientation, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
         {
-            if (unit && e.action.summonCreature.attackInvoker)
-                summon->AI()->AttackStart(unit);
-            else if (me && e.action.summonCreature.attackScriptOwner)
+            if (e.action.summonCreature.attackType == 2)
+            {
+                if (unit)
+                    summon->AI()->AttackStart(unit);
+                else if (Unit* tempLastInvoker = GetLastInvoker())
+                    summon->AI()->AttackStart(tempLastInvoker);
+            }
+            else if (me && e.action.summonCreature.attackType == 3)
                 summon->AI()->AttackStart(me);
         }
         break;

@@ -1011,6 +1011,16 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses incorrect TempSummonType %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.summonCreature.type);
                 return false;
             }
+            if (e.action.summonCreature.attackType > 3)
+            {
+                sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses incorrect AttackType %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.summonCreature.attackType);
+                return false;
+            }
+            if (e.action.summonCreature.randomMaxDist < e.action.summonCreature.randomMinDist)
+            {
+                sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses RandomMaxDist %u which is smaller than RandomMinDist %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.summonCreature.randomMaxDist, e.action.summonCreature.randomMinDist);
+                return false;
+            }
             break;
         case SMART_ACTION_CALL_KILLEDMONSTER:
             if (!IsCreatureValid(e, e.action.killedMonster.creature))
