@@ -1,0 +1,28 @@
+-- DB update 2022_02_19_00 -> 2022_02_19_01
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2022_02_19_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2022_02_19_00 2022_02_19_01 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1645273777023166057'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1645273777023166057');
+
+UPDATE `creature` SET `position_x` = 2717.38, `position_y` = 648.202, `position_z` = 100.71, `wander_distance` = 5, `MovementType` = 1 WHERE `guid` = 34982;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
