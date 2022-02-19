@@ -38,6 +38,7 @@ EndContentData */
 #include "Spell.h"
 #include "Player.h"
 #include "WorldSession.h"
+#include "SmartAI.h"
 
 // Ours
 /*######
@@ -356,8 +357,15 @@ public:
         {
             if (player->GetQuestStatus(9678) == QUEST_STATUS_INCOMPLETE)
             {
-                if (Creature* Stillblade = player->SummonCreature(NPC_STILLBLADE, 8106.11f, -7542.06f, 151.775f, 3.02598f, TEMPSUMMON_DEAD_DESPAWN, 60000))
-                    Stillblade->AI()->AttackStart(player);
+                if (!player->FindNearestCreature(NPC_STILLBLADE, 60.0f))
+                    if (Creature* stillblade = player->SummonCreature(NPC_STILLBLADE, 8032.587f, -7524.518f, 149.68073f, 6.161012172698974609f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60000))
+                        if (SmartAI* ai = CAST_AI(SmartAI, stillblade->ToCreature()->AI()))
+                        {
+                            ObjectList* targets = new ObjectList();
+                            targets->push_back(player);
+                            ai->GetScript()->StoreTargetList(targets, 1);
+                            return false;
+                        }
             }
         }
         return true;
