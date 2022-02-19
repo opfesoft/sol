@@ -539,6 +539,9 @@ class CreatureScript : public ScriptObject, public UpdatableScript<Creature>
 
         // Called when a CreatureAI object is needed for the creature.
         virtual CreatureAI* GetAI(Creature* /*creature*/) const { return NULL; }
+
+        // Called when sending the creature values update to the player (can be used to add or remove NPC flags before sending the update)
+        virtual void OnBuildValuesUpdateNpcFlags(Player* /*player*/, Creature const* /*creature*/, uint32& /*npcflagmask*/) { }
 };
 
 class GameObjectScript : public ScriptObject, public UpdatableScript<GameObject>
@@ -1280,6 +1283,7 @@ class ScriptMgr
         uint32 GetDialogStatus(Player* player, Creature* creature);
         CreatureAI* GetCreatureAI(Creature* creature);
         void OnCreatureUpdate(Creature* creature, uint32 diff);
+        void OnBuildValuesUpdateNpcFlags(Player* player, Creature const* creature, uint32& npcflagmask);
 
     public: /* GameObjectScript */
 

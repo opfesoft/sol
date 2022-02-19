@@ -31,7 +31,17 @@ EndContentData */
 
 enum NatPagle
 {
-    QUEST_NATS_MEASURING_TAPE = 8227
+    QUEST_NATS_MEASURING_TAPE     =  8227,
+
+    GOSSIP_TEXT_INTRO             =  7638,
+    GOSSIP_TEXT_LUCKY_TAPE        =  7639,
+
+    GOSSIP_OPTION_CATCH_GAHZRANKA =     0,
+    GOSSIP_OPTION_BUY_MUDSKUNK    =     0,
+    GOSSIP_OPTION_CATCH_MUDSKUNK  =     1,
+
+    GOSSIP_MENU_CATCH_GAHZRANKA   = 57023,
+    GOSSIP_MENU_MUDSKUNK          = 57024,
 };
 
 class npc_nat_pagle : public CreatureScript
@@ -42,8 +52,21 @@ public:
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         ClearGossipMenuFor(player);
-        if (action == GOSSIP_ACTION_TRADE)
-            player->GetSession()->SendListInventory(creature->GetGUID());
+
+        switch (action)
+        {
+            case GOSSIP_ACTION_INFO_DEF + 1:
+                AddGossipItemFor(player, GOSSIP_MENU_CATCH_GAHZRANKA, GOSSIP_OPTION_BUY_MUDSKUNK, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
+                AddGossipItemFor(player, GOSSIP_MENU_CATCH_GAHZRANKA, GOSSIP_OPTION_CATCH_MUDSKUNK, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_CATCH_GAHZRANKA, creature), creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_INFO_DEF + 2:
+                SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_MUDSKUNK, creature), creature->GetGUID());
+                break;
+            case GOSSIP_ACTION_TRADE:
+                player->GetSession()->SendListInventory(creature->GetGUID());
+                break;
+        }
 
         return true;
     }
@@ -55,15 +78,20 @@ public:
 
         if (creature->IsVendor() && player->GetQuestRewardStatus(QUEST_NATS_MEASURING_TAPE))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
-            SendGossipMenuFor(player, 7640, creature->GetGUID());
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), GOSSIP_OPTION_CATCH_GAHZRANKA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            SendGossipMenuFor(player, GOSSIP_TEXT_LUCKY_TAPE, creature->GetGUID());
         }
         else
-            SendGossipMenuFor(player, 7638, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_INTRO, creature->GetGUID());
 
         return true;
     }
 
+    void OnBuildValuesUpdateNpcFlags(Player* /*player*/, Creature const* /*creature*/, uint32& npcflagmask) override
+    {
+        // don't show vendor icon
+        npcflagmask &= ~UNIT_NPC_FLAG_VENDOR;
+    }
 };
 
 /*######

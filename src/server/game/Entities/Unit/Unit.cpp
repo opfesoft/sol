@@ -19504,6 +19504,8 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
 
                     if (!creature->IsValidTrainerForPlayer(target, &appendValue))
                         appendValue &= ~UNIT_NPC_FLAG_TRAINER;
+
+                    sScriptMgr->OnBuildValuesUpdateNpcFlags(target, creature, appendValue);
                 }
 
                 fieldBuffer << uint32(appendValue);

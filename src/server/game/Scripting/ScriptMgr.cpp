@@ -764,6 +764,15 @@ void ScriptMgr::OnCreatureUpdate(Creature* creature, uint32 diff)
     tmpscript->OnUpdate(creature, diff);
 }
 
+void ScriptMgr::OnBuildValuesUpdateNpcFlags(Player* player, Creature const* creature, uint32& npcflagmask)
+{
+    ASSERT(player);
+    ASSERT(creature);
+
+    GET_SCRIPT(CreatureScript, creature->GetScriptId(), tmpscript);
+    tmpscript->OnBuildValuesUpdateNpcFlags(player, creature, npcflagmask);
+}
+
 bool ScriptMgr::OnGossipHello(Player* player, GameObject* go)
 {
     ASSERT(player);
