@@ -6485,7 +6485,7 @@ uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)
         {
             ASSERT(_hiCreatureGuid < 0x00FFFFFE && "Creature guid overflow!");
             ACORE_GUARD(ACE_Thread_Mutex, _hiCreatureGuidMutex);
-            if (_hiCreatureFreeGuids.empty())
+            if (_hiCreatureFreeGuids.empty() || _hiCreatureGuid < 0x00FFFFFD)
                 return _hiCreatureGuid++;
             else
             {
