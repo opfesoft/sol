@@ -408,6 +408,7 @@ void ObjectMgr::LoadCreatureTemplates()
     if (!result)
     {
         sLog->outString(">> Loaded 0 creature template definitions. DB table `creature_template` is empty.");
+        sLog->outString();
         return;
     }
 
@@ -1471,7 +1472,7 @@ void ObjectMgr::LoadLinkedRespawn()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 linked respawns. DB table `linked_respawn` is empty.");
+        sLog->outString(">> Loaded 0 linked respawns. DB table `linked_respawn` is empty.");
         sLog->outString();
         return;
     }
@@ -1704,6 +1705,7 @@ void ObjectMgr::LoadTempSummons()
     if (!result)
     {
         sLog->outString(">> Loaded 0 temp summons. DB table `creature_summon_groups` is empty.");
+        sLog->outString();
         return;
     }
 
@@ -1818,7 +1820,7 @@ void ObjectMgr::LoadCreatures()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 creatures. DB table `creature` is empty.");
+        sLog->outString(">> Loaded 0 creatures. DB table `creature` is empty.");
         sLog->outString();
         return;
     }
@@ -2147,7 +2149,7 @@ void ObjectMgr::LoadGameobjects()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 gameobjects. DB table `gameobject` is empty.");
+        sLog->outString(">> Loaded 0 gameobjects. DB table `gameobject` is empty.");
         sLog->outString();
         return;
     }
@@ -3132,7 +3134,7 @@ void ObjectMgr::LoadVehicleTemplateAccessories()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 vehicle template accessories. DB table `vehicle_template_accessory` is empty.");
+        sLog->outString(">> Loaded 0 vehicle template accessories. DB table `vehicle_template_accessory` is empty.");
         sLog->outString();
         return;
     }
@@ -3230,7 +3232,7 @@ void ObjectMgr::LoadPetLevelInfo()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 level pet stats definitions. DB table `pet_levelstats` is empty.");
+        sLog->outString(">> Loaded 0 level pet stats definitions. DB table `pet_levelstats` is empty.");
         sLog->outString();
         return;
     }
@@ -3373,8 +3375,8 @@ void ObjectMgr::LoadPlayerInfo()
 
         if (!result)
         {
-            sLog->outString();
             sLog->outErrorDb(">> Loaded 0 player create definitions. DB table `playercreateinfo` is empty.");
+            sLog->outString();
             exit(1);
         }
         else
@@ -3534,7 +3536,8 @@ void ObjectMgr::LoadPlayerInfo()
 
         if (!result)
         {
-            sLog->outErrorDb(">> Loaded 0 player create spells. DB table `%s` is empty.", sWorld->getBoolConfig(CONFIG_START_CUSTOM_SPELLS) ? "playercreateinfo_spell_custom" : "playercreateinfo_spell");
+            sLog->outString(">> Loaded 0 player create spells. DB table `%s` is empty.", sWorld->getBoolConfig(CONFIG_START_CUSTOM_SPELLS) ? "playercreateinfo_spell_custom" : "playercreateinfo_spell");
+            sLog->outString();
         }
         else
         {
@@ -3598,7 +3601,7 @@ void ObjectMgr::LoadPlayerInfo()
 
         if (!result)
         {
-            sLog->outErrorDb(">> Loaded 0 player create actions. DB table `playercreateinfo_action` is empty.");
+            sLog->outString(">> Loaded 0 player create actions. DB table `playercreateinfo_action` is empty.");
             sLog->outString();
         }
         else
@@ -3645,7 +3648,8 @@ void ObjectMgr::LoadPlayerInfo()
 
         if (!result)
         {
-            sLog->outError(">> Loaded 0 level health/mana definitions. DB table `player_classlevelstats` is empty.");
+            sLog->outErrorDb(">> Loaded 0 level health/mana definitions. DB table `player_classlevelstats` is empty.");
+            sLog->outString();
             exit(1);
         }
 
@@ -4037,7 +4041,7 @@ void ObjectMgr::LoadQuests()
         " FROM quest_template");
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 quests definitions. DB table `quest_template` is empty.");
+        sLog->outString(">> Loaded 0 quests definitions. DB table `quest_template` is empty.");
         sLog->outString();
         return;
     }
@@ -4079,7 +4083,8 @@ void ObjectMgr::LoadQuests()
 
     if (!result)
     {
-        sLog->outError(">> Loaded 0 quest details. DB table `quest_details` is empty.");
+        sLog->outString(">> Loaded 0 quest details. DB table `quest_details` is empty.");
+        sLog->outString();
     }
     else
     {
@@ -4102,7 +4107,8 @@ void ObjectMgr::LoadQuests()
 
     if (!result)
     {
-        sLog->outError(">> Loaded 0 quest request items. DB table `quest_request_items` is empty.");
+        sLog->outString(">> Loaded 0 quest request items. DB table `quest_request_items` is empty.");
+        sLog->outString();
     }
     else
     {
@@ -4125,7 +4131,8 @@ void ObjectMgr::LoadQuests()
 
     if (!result)
     {
-        sLog->outError(">> Loaded 0 quest reward emotes. DB table `quest_offer_reward` is empty.");
+        sLog->outString(">> Loaded 0 quest reward emotes. DB table `quest_offer_reward` is empty.");
+        sLog->outString();
     }
     else
     {
@@ -4149,7 +4156,8 @@ void ObjectMgr::LoadQuests()
         "RequiredSkillID, RequiredSkillPoints, RequiredMinRepFaction, RequiredMaxRepFaction, RequiredMinRepValue, RequiredMaxRepValue, ProvidedItemCount, RewardMailSenderEntry, SpecialFlags FROM quest_template_addon LEFT JOIN quest_mail_sender ON Id=QuestId");
 
     if (!result) {
-         sLog->outError(">> Loaded 0 quest template addons. DB table `quest_template_addon` is empty.");
+         sLog->outString(">> Loaded 0 quest template addons. DB table `quest_template_addon` is empty.");
+         sLog->outString();
     } else {
         do {
             Field* fields = result->Fetch();
@@ -5470,7 +5478,7 @@ void ObjectMgr::LoadInstanceEncounters()
     QueryResult result = WorldDatabase.Query("SELECT entry, creditType, creditEntry, lastEncounterDungeon FROM instance_encounters");
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 instance encounters, table is empty!");
+        sLog->outString(">> Loaded 0 instance encounters, table is empty!");
         sLog->outString();
         return;
     }
@@ -5572,7 +5580,7 @@ void ObjectMgr::LoadGossipText()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 npc texts, table is empty!");
+        sLog->outString(">> Loaded 0 npc texts, table is empty!");
         sLog->outString();
         return;
     }
@@ -6935,7 +6943,7 @@ void ObjectMgr::LoadExplorationBaseXP()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 BaseXP definitions. DB table `exploration_basexp` is empty.");
+        sLog->outString(">> Loaded 0 BaseXP definitions. DB table `exploration_basexp` is empty.");
         sLog->outString();
         return;
     }
@@ -7186,7 +7194,7 @@ void ObjectMgr::LoadReputationOnKill()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 creature award reputation definitions. DB table `creature_onkill_reputation` is empty.");
+        sLog->outString(">> Loaded 0 creature award reputation definitions. DB table `creature_onkill_reputation` is empty.");
         sLog->outString();
         return;
     }
@@ -7368,7 +7376,7 @@ void ObjectMgr::LoadPointsOfInterest()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 Points of Interest definitions. DB table `points_of_interest` is empty.");
+        sLog->outString(">> Loaded 0 Points of Interest definitions. DB table `points_of_interest` is empty.");
         sLog->outString();
         return;
     }
@@ -7416,7 +7424,7 @@ void ObjectMgr::LoadQuestPOI()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 quest POI definitions. DB table `quest_poi` is empty.");
+        sLog->outString(">> Loaded 0 quest POI definitions. DB table `quest_poi` is empty.");
         sLog->outString();
         return;
     }
@@ -7489,7 +7497,7 @@ void ObjectMgr::LoadNPCSpellClickSpells()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 spellclick spells. DB table `npc_spellclick_spells` is empty.");
+        sLog->outString(">> Loaded 0 spellclick spells. DB table `npc_spellclick_spells` is empty.");
         sLog->outString();
         return;
     }
@@ -7593,7 +7601,7 @@ void ObjectMgr::LoadQuestRelationsHelper(QuestRelations& map, std::string const&
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 quest relations from `%s`, table is empty.", table.c_str());
+        sLog->outString(">> Loaded 0 quest relations from `%s`, table is empty.", table.c_str());
         sLog->outString();
         return;
     }
@@ -8030,7 +8038,7 @@ void ObjectMgr::LoadFishingBaseSkillLevel()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 areas for fishing base skill level. DB table `skill_fishing_base_level` is empty.");
+        sLog->outString(">> Loaded 0 areas for fishing base skill level. DB table `skill_fishing_base_level` is empty.");
         sLog->outString();
         return;
     }
@@ -8176,7 +8184,7 @@ void ObjectMgr::LoadGameTele()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 GameTeleports. DB table `game_tele` is empty!");
+        sLog->outString(">> Loaded 0 GameTeleports. DB table `game_tele` is empty!");
         sLog->outString();
         return;
     }
@@ -8317,7 +8325,7 @@ void ObjectMgr::LoadMailLevelRewards()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 level dependent mail rewards. DB table `mail_level_reward` is empty.");
+        sLog->outString(">> Loaded 0 level dependent mail rewards. DB table `mail_level_reward` is empty.");
         sLog->outString();
         return;
     }
@@ -8458,7 +8466,7 @@ void ObjectMgr::LoadTrainerSpell()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 Trainers. DB table `npc_trainer` is empty!");
+        sLog->outString(">> Loaded 0 Trainers. DB table `npc_trainer` is empty!");
         sLog->outString();
         return;
     }
@@ -8539,8 +8547,8 @@ void ObjectMgr::LoadVendors()
     QueryResult result = WorldDatabase.Query("SELECT entry, item, maxcount, incrtime, ExtendedCost FROM npc_vendor ORDER BY entry, slot ASC");
     if (!result)
     {
+        sLog->outString(">> Loaded 0 Vendors. DB table `npc_vendor` is empty!");
         sLog->outString();
-        sLog->outErrorDb(">> Loaded 0 Vendors. DB table `npc_vendor` is empty!");
         return;
     }
 
@@ -8587,7 +8595,7 @@ void ObjectMgr::LoadGossipMenu()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 gossip_menu entries. DB table `gossip_menu` is empty!");
+        sLog->outString(">> Loaded 0 gossip_menu entries. DB table `gossip_menu` is empty!");
         sLog->outString();
         return;
     }
@@ -8628,7 +8636,7 @@ void ObjectMgr::LoadGossipMenuItems()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 gossip_menu_option IDs. DB table `gossip_menu_option` is empty!");
+        sLog->outString(">> Loaded 0 gossip_menu_option IDs. DB table `gossip_menu_option` is empty!");
         sLog->outString();
         return;
     }
@@ -9117,7 +9125,7 @@ void ObjectMgr::LoadFactionChangeAchievements()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 faction change achievement pairs. DB table `player_factionchange_achievement` is empty.");
+        sLog->outString(">> Loaded 0 faction change achievement pairs. DB table `player_factionchange_achievement` is empty.");
         sLog->outString();
         return;
     }
@@ -9191,7 +9199,7 @@ void ObjectMgr::LoadFactionChangeQuests()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 faction change quest pairs. DB table `player_factionchange_quests` is empty.");
+        sLog->outString(">> Loaded 0 faction change quest pairs. DB table `player_factionchange_quests` is empty.");
         sLog->outString();
         return;
     }
@@ -9228,7 +9236,7 @@ void ObjectMgr::LoadFactionChangeReputations()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 faction change reputation pairs. DB table `player_factionchange_reputations` is empty.");
+        sLog->outString(">> Loaded 0 faction change reputation pairs. DB table `player_factionchange_reputations` is empty.");
         sLog->outString();
         return;
     }
@@ -9265,7 +9273,7 @@ void ObjectMgr::LoadFactionChangeSpells()
 
     if (!result)
     {
-        sLog->outErrorDb(">> Loaded 0 faction change spell pairs. DB table `player_factionchange_spells` is empty.");
+        sLog->outString(">> Loaded 0 faction change spell pairs. DB table `player_factionchange_spells` is empty.");
         sLog->outString();
         return;
     }
@@ -9303,6 +9311,7 @@ void ObjectMgr::LoadFactionChangeTitles()
     if (!result)
     {
         sLog->outString(">> Loaded 0 faction change title pairs. DB table `player_factionchange_title` is empty.");
+        sLog->outString();
         return;
     }
 
@@ -9404,6 +9413,7 @@ void ObjectMgr::LoadGameObjectQuestItems()
     if (!result)
     {
         sLog->outString(">> Loaded 0 gameobject quest items. DB table `gameobject_questitem` is empty.");
+        sLog->outString();
         return;
     }
 
@@ -9435,6 +9445,7 @@ void ObjectMgr::LoadCreatureQuestItems()
     if (!result)
     {
         sLog->outString(">> Loaded 0 creature quest items. DB table `creature_questitem` is empty.");
+        sLog->outString();
         return;
     }
 
