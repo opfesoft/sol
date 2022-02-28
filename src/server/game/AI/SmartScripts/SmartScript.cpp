@@ -3754,13 +3754,33 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         if (e.target.unitGUID.getFromHashMap)
         {
             if ((target = ObjectAccessor::GetCreature(scriptTrigger ? *scriptTrigger : *GetBaseObject(), MAKE_NEW_GUID(e.target.unitGUID.dbGuid, e.target.unitGUID.entry, HIGHGUID_UNIT))))
+            {
+                // check alive state - 1 alive, 2 dead, 0 both
+                if (uint32 state = e.target.unitGUID.livingState)
+                {
+                    if (target->IsAlive() && state == 2)
+                        break;
+                    if (!target->IsAlive() && state == 1)
+                        break;;
+                }
                 l->push_back(target);
+            }
         }
         else
         {
             target = FindCreatureNear(scriptTrigger ? scriptTrigger : GetBaseObject(), e.target.unitGUID.dbGuid);
             if (target && (!e.target.unitGUID.entry || target->GetEntry() == e.target.unitGUID.entry))
+            {
+                // check alive state - 1 alive, 2 dead, 0 both
+                if (uint32 state = e.target.unitGUID.livingState)
+                {
+                    if (target->IsAlive() && state == 2)
+                        break;
+                    if (!target->IsAlive() && state == 1)
+                        break;
+                }
                 l->push_back(target);
+            }
         }
         break;
     }

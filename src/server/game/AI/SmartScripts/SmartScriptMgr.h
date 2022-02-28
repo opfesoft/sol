@@ -1329,7 +1329,7 @@ enum SMARTAI_TARGETS
     SMART_TARGET_ACTION_INVOKER                 = 7,    // Unit who caused this Event to occur
     SMART_TARGET_POSITION                       = 8,    // use xyz from event params
     SMART_TARGET_CREATURE_RANGE                 = 9,    // CreatureEntry(0any), minDist, maxDist, alive(0 - both, 1 - alive, 2 - dead)
-    SMART_TARGET_CREATURE_GUID                  = 10,   // guid, entry, getFromHashMap (0/1, this does not work in instances!)
+    SMART_TARGET_CREATURE_GUID                  = 10,   // guid, entry, getFromHashMap (0/1, this does not work in instances!), alive(0 - both, 1 - alive, 2 - dead)
     SMART_TARGET_CREATURE_DISTANCE              = 11,   // CreatureEntry(0any), maxDist, alive(0 - both, 1 - alive, 2 - dead)
     SMART_TARGET_STORED                         = 12,   // id, uses pre-stored target(list)
     SMART_TARGET_GAMEOBJECT_RANGE               = 13,   // entry(0any), min, max
@@ -1399,6 +1399,7 @@ struct SmartTarget
             uint32 dbGuid;
             uint32 entry;
             uint32 getFromHashMap; // Does not work in instances
+            uint32 livingState;
         } unitGUID;
 
         struct
