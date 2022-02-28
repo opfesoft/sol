@@ -2008,7 +2008,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             float x, y, z;
             target->GetPosition(x, y, z);
             if (e.action.MoveToPos.ContactDistance > 0)
-                target->GetContactPoint(me, x, y, z, e.action.MoveToPos.ContactDistance);
+                target->GetContactPoint(me, x, y, z, e.target.o > 0.f ? e.target.o : e.action.MoveToPos.ContactDistance);
             me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, x + e.target.x, y + e.target.y, z + e.target.z, movementSlot);
         }
         break;
