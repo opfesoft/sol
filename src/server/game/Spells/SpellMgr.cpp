@@ -3398,6 +3398,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 46393: // Brutal Assault
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CHANGE_MAP;
             break;
+        case 33271: // Internal Shake Camera w/ rumble sound
+            spellInfo->Attributes |= SPELL_ATTR0_CASTABLE_WHILE_MOUNTED;
+            break;
 
 
         /////////////////////////////////////////////
