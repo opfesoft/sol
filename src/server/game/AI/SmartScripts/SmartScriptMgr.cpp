@@ -430,7 +430,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has action_type %u which is not supported on 3.3.5a, skipped.",
                              e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetActionType());
             return false;
-        case SMART_ACTION_SET_CORPSE_DELAY:
         case SMART_ACTION_GO_SET_GO_STATE:
         case SMART_ACTION_SET_CAN_FLY:
         case SMART_ACTION_REMOVE_AURAS_BY_TYPE:
@@ -1339,6 +1338,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_DISABLE_EVADE:
         case SMART_ACTION_CREATURE_FORMATION:
         case SMART_ACTION_STOP_WP_PATH:
+        case SMART_ACTION_SET_CORPSE_DELAY:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type %u, event_type %u, entryorguid %d source_type %u id %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);

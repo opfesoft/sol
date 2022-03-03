@@ -564,7 +564,7 @@ enum SMART_ACTION
     SMART_ACTION_START_CLOSEST_WAYPOINT             = 113,    // wp1, wp2, wp3, wp4, wp5, wp6, wp7
     SMART_ACTION_RISE_UP                            = 114,    // distance
     SMART_ACTION_RANDOM_SOUND                       = 115,    // SoundId1, SoundId2, SoundId3, SoundId4, onlySelf, distance
-    SMART_ACTION_SET_CORPSE_DELAY                   = 116,    // TODO: NOT SUPPORTED YET
+    SMART_ACTION_SET_CORPSE_DELAY                   = 116,    // delay
     SMART_ACTION_DISABLE_EVADE                      = 117,    // 0/1 (1 = disabled, 0 = enabled)
     SMART_ACTION_GO_SET_GO_STATE                    = 118,    // TODO: NOT SUPPORTED YET
     SMART_ACTION_SET_CAN_FLY                        = 119,    // TODO: NOT SUPPORTED YET
@@ -1290,6 +1290,11 @@ struct SmartAction
         {
             uint32 duration;
         } stopWPPath;
+
+        struct
+        {
+            uint32 delay;
+        } corpseDelay;
 
         //! Note for any new future actions
         //! All parameters must have type uint32
