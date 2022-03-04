@@ -31,6 +31,7 @@ SmartAI::SmartAI(Creature* c) : CreatureAI(c)
     mWPReached = false;
     mOOCReached = false;
     mWPPauseTimer = 0;
+    mWPPauseOnlyOOC = false;
     mLastWP = NULL;
     mEscortNPCFlags = 0;
 
@@ -252,7 +253,7 @@ bool SmartAI::LoadPath(uint32 entry)
     return true;
 }
 
-void SmartAI::PausePath(uint32 delay, bool forced)
+void SmartAI::PausePath(uint32 delay, bool forced, bool onlyOOC)
 {
     if (!HasEscortState(SMART_ESCORT_ESCORTING))
         return;
@@ -265,6 +266,7 @@ void SmartAI::PausePath(uint32 delay, bool forced)
 
     AddEscortState(SMART_ESCORT_PAUSED);
     mWPPauseTimer = delay;
+    mWPPauseOnlyOOC = onlyOOC;
     if (forced && !mWPReached)
     {
         mForcedPaused = forced;
@@ -303,6 +305,7 @@ void SmartAI::EndPath(bool fail)
     mWayPoints = NULL;
     mLastWP = NULL;
     mWPPauseTimer = 0;
+    mWPPauseOnlyOOC = false;
 
     if (mEscortNPCFlags)
     {
@@ -435,9 +438,10 @@ void SmartAI::UpdatePath(const uint32 diff)
                 }
 
                 mWPPauseTimer = 0;
+                mWPPauseOnlyOOC = false;
             }
         }
-        else
+        else if (!mWPPauseOnlyOOC || (mWPPauseOnlyOOC && !me->IsInCombat()))
             mWPPauseTimer -= diff;
     }
 

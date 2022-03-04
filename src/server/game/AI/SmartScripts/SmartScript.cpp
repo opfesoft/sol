@@ -1899,7 +1899,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
 
         uint32 delay = e.action.wpPause.delay;
-        CAST_AI(SmartAI, me->AI())->PausePath(delay, e.GetEventType() == SMART_EVENT_WAYPOINT_REACHED ? false : true);
+        CAST_AI(SmartAI, me->AI())->PausePath(delay, e.GetEventType() == SMART_EVENT_WAYPOINT_REACHED ? false : true, e.action.wpPause.onlyOOC ? true : false);
         break;
     }
     case SMART_ACTION_WP_STOP:
