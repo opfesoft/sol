@@ -25,7 +25,6 @@
 #    NETWORK CONFIG
 #    CONSOLE AND REMOTE ACCESS
 #    CHARACTER DELETE OPTIONS
-#    ITEM DELETE OPTIONS
 #    CUSTOM SERVER OPTIONS
 #    DENIAL OF SERVICE (DOS) PROTECTION
 #
@@ -2938,55 +2937,6 @@ CharDelete.MinLevel = 0
 #                     0  - (Disabled, Don't delete any characters)
 
 CharDelete.KeepDays = 30
-
-#
-###################################################################################################
-
-###################################################################################################
-# ITEM DELETE OPTIONS
-#
-#    ItemDelete.Method
-#        Description: Item deletion behavior.
-#        Default:     0 - (Completely remove item from the database)
-#                     1 - (Save Item to database)
-
-ItemDelete.Method = 0
-
-#
-#    ItemDelete.Vendor
-#        Description: Saving items into database when the player sells items to vendor
-#        Default:     0 (disabled)
-#                     1 (enabled)
-#
-
-ItemDelete.Vendor = 0
-
-#
-#    ItemDelete.Quality
-#        Description: Saving items into database that have quality greater or equal to ItemDelete.Quality
-#
-#        ID | Color | Quality
-#        0  | Grey  | Poor
-#        1  | White | Common
-#        2  | Green | Uncommon
-#        3  | Blue  | Rare
-#        4  | Purple| Epic
-#        5  | Orange| Legendary
-#        6  | Red   | Artifact
-#        7  | Gold  | Bind to Account
-#
-#        Default:     3
-#
-
-ItemDelete.Quality = 3
-
-#
-#    ItemDelete.ItemLevel
-#        Description: Saving items into database that are Item Levels greater or equal to ItemDelete.ItemLevel
-#        Default:     80
-#
-
-ItemDelete.ItemLevel = 80
 
 #
 ###################################################################################################

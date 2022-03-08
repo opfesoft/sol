@@ -311,8 +311,6 @@ void WorldSession::HandleDestroyItemOpcode(WorldPacket & recvData)
         return;
     }
 
-    recoveryItem(pItem);
-
     if (count)
     {
         uint32 i_count = count;
@@ -737,9 +735,6 @@ void WorldSession::HandleSellItemOpcode(WorldPacket & recvData)
         {
             if (pProto->SellPrice > 0)
             {
-                if (sWorld->getBoolConfig(CONFIG_ITEMDELETE_VENDOR))
-                    recoveryItem(pItem);
-
                 if (count < pItem->GetCount())               // need split items
                 {
                     Item* pNewItem = pItem->CloneItem(count, _player);
@@ -820,15 +815,6 @@ void WorldSession::HandleBuybackItem(WorldPacket & recvData)
         InventoryResult msg = _player->CanStoreItem(NULL_BAG, NULL_SLOT, dest, pItem, false);
         if (msg == EQUIP_ERR_OK)
         {
-            if (sWorld->getBoolConfig(CONFIG_ITEMDELETE_VENDOR))
-            {
-                PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_RECOVERY_ITEM);
-                stmt->setUInt32(0, _player->GetGUID());
-                stmt->setUInt32(1, pItem->GetEntry());
-                stmt->setUInt32(2, pItem->GetCount());
-                CharacterDatabase.Execute(stmt);
-            }
-
             _player->ModifyMoney(-(int32)price);
             _player->RemoveItemFromBuyBackSlot(slot, false);
             _player->ItemAddedQuestCheck(pItem->GetEntry(), pItem->GetCount());
@@ -1734,24 +1720,4 @@ bool WorldSession::CanUseBank(uint64 bankerGUID) const
     }
 
     return true;
-}
-
-bool WorldSession::recoveryItem(Item* pItem)
-{
-    if (sWorld->getBoolConfig(CONFIG_ITEMDELETE_METHOD)
-        && pItem->GetTemplate()->Quality >= sWorld->getIntConfig(CONFIG_ITEMDELETE_QUALITY)
-        && pItem->GetTemplate()->ItemLevel >= sWorld->getIntConfig(CONFIG_ITEMDELETE_ITEM_LEVEL))
-    {
-        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_RECOVERY_ITEM);
-
-        stmt->setUInt32(0, pItem->GetOwnerGUID());
-        stmt->setUInt32(1, pItem->GetTemplate()->ItemId);
-        stmt->setUInt32(2, pItem->GetCount());
-
-        CharacterDatabase.Query(stmt);
-
-        return true;
-    }
-
-    return false;
 }
