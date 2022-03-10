@@ -7487,6 +7487,143 @@ void ObjectMgr::LoadQuestPOI()
     sLog->outString();
 }
 
+void ObjectMgr::LoadQuestGreetings()
+{
+    uint32 oldMSTime = getMSTime();
+
+    _questGreetingStore.clear(); // for reload case
+
+    //                                               0   1     2               3                4
+    QueryResult result = WorldDatabase.Query("SELECT ID, Type, GreetEmoteType, GreetEmoteDelay, Greeting FROM quest_greeting");
+    if (!result)
+    {
+        sLog->outString(">> Loaded 0 quest greetings. DB table `quest_greeting` is empty.");
+        sLog->outString();
+        return;
+    }
+
+    _questGreetingStore.rehash(result->GetRowCount());
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 dbId = fields[0].GetUInt32();
+        uint8 type = fields[1].GetUInt8();
+        int32 id = 0;
+
+        if (type == 0)
+        {
+            if (CreatureTemplate const* ci = GetCreatureTemplate(dbId))
+            {
+                if (ci->npcflag & UNIT_NPC_FLAG_GOSSIP)
+                {
+                    sLog->outErrorDb("Creature template (Entry: %u) has UNIT_NPC_FLAG_GOSSIP set and has a record in `quest_greeting`. Skipped!", dbId);
+                    continue;
+                }
+                if (!(ci->npcflag & UNIT_NPC_FLAG_QUESTGIVER))
+                {
+                    sLog->outErrorDb("Creature template (Entry: %u) has UNIT_NPC_FLAG_QUESTGIVER not set and has a record in `quest_greeting`. Skipped!", dbId);
+                    continue;
+                }
+            }
+            else
+            {
+                sLog->outErrorDb("Creature template (Entry: %u) does not exist but has a record in `quest_greeting`. Skipped!", dbId);
+                continue;
+            }
+            id = (int32)dbId;
+        }
+        else if (type == 1)
+        {
+            if (!GetGameObjectTemplate(dbId))
+            {
+                sLog->outErrorDb("GameObject template (Entry: %u) does not exist but has a record in `quest_greeting`. Skipped!", dbId);
+                continue;
+            }
+            id = -(int32)dbId;
+        }
+        else
+        {
+            sLog->outErrorDb("QuestGreeting (ID: %u) in table `quest_greeting` has wrong Type %u. Skipped!", dbId, type);
+            continue;
+        }
+
+        QuestGreeting questGreeting;
+
+        questGreeting.GreetEmoteType = fields[2].GetUInt16();
+        questGreeting.GreetEmoteDelay = fields[3].GetUInt32();
+        questGreeting.Greeting[DEFAULT_LOCALE] = fields[4].GetString();
+
+        if (questGreeting.GreetEmoteType && !sEmotesStore.LookupEntry(questGreeting.GreetEmoteType))
+        {
+            sLog->outDebug(LOG_FILTER_NONE, "QuestGreeting (Id: %u) in table `quest_greeting` has GreetEmoteType %u but emote does not exist.", dbId, questGreeting.GreetEmoteType);
+            questGreeting.GreetEmoteType = 0;
+        }
+
+        _questGreetingStore[id] = questGreeting;
+    }
+    while (result->NextRow());
+
+    sLog->outString(">> Loaded " SIZEFMTD " quest greetings in %u ms", _questGreetingStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
+void ObjectMgr::LoadQuestGreetingLocales()
+{
+    uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+
+    //                                               0   1     2       3
+    QueryResult result = WorldDatabase.Query("SELECT ID, Type, locale, Greeting FROM quest_greeting_locale");
+
+    if (!result)
+    {
+        sLog->outString(">> Loaded 0 quest greeting locales. DB table `quest_greeting_locale` is empty.");
+        sLog->outString();
+        return;
+    }
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 dbId = fields[0].GetUInt32();
+        uint8 type = fields[1].GetUInt8();
+        int32 id = 0;
+
+        if (type == 0) // creature
+            id = (int32)dbId;
+        else if (type == 1) // gameobject
+            id = -(int32)dbId;
+        else
+        {
+            sLog->outErrorDb("QuestGreeting (ID: %u) in table `quest_greeting_locale` has wrong Type %u. Skipped!", dbId, type);
+            continue;
+        }
+
+        std::string LocaleName = fields[2].GetString();
+        std::string Greeting = fields[3].GetString();
+
+        QuestGreetingContainer::iterator questGreeting = _questGreetingStore.find(id);
+        if (questGreeting == _questGreetingStore.end())
+        {
+            sLog->outErrorDb("QuestGreeting (ID: %u) in table `quest_greeting_locale` does not exist. Skipped!", dbId);
+            continue;
+        }
+
+        LocaleConstant locale = GetLocaleByName(LocaleName);
+        if (locale == LOCALE_enUS)
+            continue;
+
+        AddLocaleString(Greeting, locale, questGreeting->second.Greeting);
+        count++;
+    }
+    while (result->NextRow());
+
+    sLog->outString(">> Loaded %u quest greeting locales in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString();
+}
+
 void ObjectMgr::LoadNPCSpellClickSpells()
 {
     uint32 oldMSTime = getMSTime();

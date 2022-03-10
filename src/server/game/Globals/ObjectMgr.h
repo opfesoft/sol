@@ -637,8 +637,36 @@ struct QuestPOI
     QuestPOI(uint32 id, int32 objIndex, uint32 mapId, uint32 areaId, uint32 floorId, uint32 unk3, uint32 unk4) : Id(id), ObjectiveIndex(objIndex), MapId(mapId), AreaId(areaId), FloorId(floorId), Unk3(unk3), Unk4(unk4) {}
 };
 
+enum QuestGreetingType
+{
+    QUEST_GREETING_TYPE_CREATURE   = 0,
+    QUEST_GREETING_TYPE_GAMEOBJECT = 1,
+    QUEST_GREETING_TYPE_UNDEFINED  = 2,
+};
+
+struct QuestGreeting
+{
+    QuestGreeting() : GreetEmoteType(0), GreetEmoteDelay(0)
+    {
+        Greeting.resize(DEFAULT_LOCALE + 1);
+    }
+
+    uint16 GreetEmoteType;
+    uint32 GreetEmoteDelay;
+    StringVector Greeting;
+
+    std::string const& GetText(LocaleConstant locale = DEFAULT_LOCALE) const
+    {
+        if (Greeting.size() > size_t(locale) && !Greeting[locale].empty())
+            return Greeting[locale];
+        return Greeting[DEFAULT_LOCALE];
+    }
+};
+
 typedef std::vector<QuestPOI> QuestPOIVector;
 typedef std::unordered_map<uint32, QuestPOIVector> QuestPOIContainer;
+
+typedef std::unordered_map<int32, QuestGreeting> QuestGreetingContainer;
 
 typedef std::unordered_map<uint32, VendorItemData> CacheVendorItemContainer;
 typedef std::unordered_map<uint32, TrainerSpellData> CacheTrainerSpellContainer;
@@ -897,6 +925,22 @@ class ObjectMgr
             return NULL;
         }
 
+        QuestGreeting const* GetQuestGreeting(uint8 type, uint32 entry) const
+        {
+            int32 id = 0;
+            if (type == QUEST_GREETING_TYPE_CREATURE)
+                id = (int32)entry;
+            else if (type == QUEST_GREETING_TYPE_GAMEOBJECT)
+                id = -(int32)entry;
+            else
+                return nullptr;
+
+            QuestGreetingContainer::const_iterator itr = _questGreetingStore.find(id);
+            if (itr != _questGreetingStore.end())
+                return &itr->second;
+            return nullptr;
+        }
+
         VehicleAccessoryList const* GetVehicleAccessoryList(Vehicle* veh) const;
 
         DungeonEncounterList const* GetDungeonEncounterList(uint32 mapId, Difficulty difficulty)
@@ -1039,6 +1083,9 @@ class ObjectMgr
 
         void LoadPointsOfInterest();
         void LoadQuestPOI();
+
+        void LoadQuestGreetings();
+        void LoadQuestGreetingLocales();
 
         void LoadNPCSpellClickSpells();
 
@@ -1392,6 +1439,8 @@ class ObjectMgr
         PointOfInterestContainer _pointsOfInterestStore;
 
         QuestPOIContainer _questPOIStore;
+
+        QuestGreetingContainer _questGreetingStore;
 
         QuestRelations _goQuestRelations;
         QuestRelations _goQuestInvolvedRelations;

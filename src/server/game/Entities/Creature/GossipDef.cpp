@@ -302,9 +302,26 @@ void PlayerMenu::SendQuestGiverQuestList(QEmote const& eEmote, const std::string
 {
     WorldPacket data(SMSG_QUESTGIVER_QUEST_LIST, 100 + _questMenu.GetMenuItemCount()*75);    // guess size
     data << uint64(npcGUID);
-    data << Title;
-    data << uint32(eEmote._Delay);                         // player emote
-    data << uint32(eEmote._Emote);                         // NPC emote
+
+    uint8 type = QUEST_GREETING_TYPE_UNDEFINED;
+    if (IS_CRE_OR_VEH_OR_PET_GUID(npcGUID))
+        type = QUEST_GREETING_TYPE_CREATURE;
+    else if (IS_GAMEOBJECT_GUID(npcGUID))
+        type = QUEST_GREETING_TYPE_GAMEOBJECT;
+    QuestGreeting const* questGreeting = sObjectMgr->GetQuestGreeting(type, GUID_ENPART(npcGUID));
+
+    if (questGreeting)
+    {
+        data << questGreeting->GetText(_session->GetSessionDbLocaleIndex());
+        data << uint32(questGreeting->GreetEmoteDelay); // delay in ms
+        data << uint32(questGreeting->GreetEmoteType);  // NPC emote
+    }
+    else
+    {
+        data << Title;
+        data << uint32(eEmote._Delay); // delay in ms
+        data << uint32(eEmote._Emote); // NPC emote
+    }
 
     size_t count_pos = data.wpos();
     data << uint8 (_questMenu.GetMenuItemCount());

@@ -15383,8 +15383,8 @@ void Player::SendPreparedQuest(uint64 guid)
             GossipText const* gossiptext = sObjectMgr->GetGossipText(textid);
             if (!gossiptext)
             {
-                qe._Delay = 0;                              //TEXTEMOTE_MESSAGE;              //zyg: player emote
-                qe._Emote = 0;                              //TEXTEMOTE_HELLO;                //zyg: NPC emote
+                qe._Delay = 0; // delay in ms
+                qe._Emote = 0; // NPC emote
                 title = "";
             }
             else

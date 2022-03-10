@@ -1607,6 +1607,10 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Quests Starters and Enders...");
     sObjectMgr->LoadQuestStartersAndEnders();                    // must be after quest load
 
+    sLog->outString("Loading Quest Greetings...");
+    sObjectMgr->LoadQuestGreetings();
+    sObjectMgr->LoadQuestGreetingLocales();
+
     sLog->outString("Loading Objects Pooling Data...");
     sPoolMgr->LoadFromDB();
 
