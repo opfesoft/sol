@@ -1694,6 +1694,14 @@ class spell_gen_adaptive_warding : public SpellScriptLoader
         }
 };
 
+/* 45822 - Iceblood Warmaster
+   45823 - Tower Point Warmaster
+   45824 - West Frostwolf Warmaster
+   45826 - East Frostwolf Warmaster
+   45828 - Dun Baldar North Marshal
+   45829 - Dun Baldar South Marshal
+   45830 - Stonehearth Marshal
+   45831 - Icewing Marshal */
 class spell_gen_av_drekthar_presence : public SpellScriptLoader
 {
     public:
