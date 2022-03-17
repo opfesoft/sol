@@ -1035,7 +1035,7 @@ public:
                 Reset();
         }
 
-        void PatientSaved(Creature* /*soldier*/, Player* player, Location* point)
+        void PatientSaved(Creature* soldier, Player* player, Location* point)
         {
             if (player && PlayerGUID == player->GetGUID())
             {
@@ -1051,7 +1051,8 @@ public:
                             for (itr = Patients.begin(); itr != Patients.end(); ++itr)
                             {
                                 if (Creature* patient = ObjectAccessor::GetCreature((*me), *itr))
-                                    patient->setDeathState(JUST_DIED);
+                                    if (soldier->GetGUID() != patient->GetGUID())
+                                        patient->setDeathState(JUST_DIED);
                             }
                         }
 
