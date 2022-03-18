@@ -705,23 +705,6 @@ class npc_alexstraza_the_lifebinder : public CreatureScript
                 orphanGUID = 0;
             }
 
-            void SetData(uint32 type, uint32 data)
-            {
-                // Existing SmartAI
-                if (type == 0)
-                {
-                    switch (data)
-                    {
-                        case 1:
-                            me->SetOrientation(1.6049f);
-                            break;
-                        case 2:
-                            me->SetOrientation(me->GetHomePosition().GetOrientation());
-                            break;
-                    }
-                }
-            }
-
             void MoveInLineOfSight(Unit* who)
             {
                 if (!phase && who && who->GetDistance2d(me) < 10.0f)
