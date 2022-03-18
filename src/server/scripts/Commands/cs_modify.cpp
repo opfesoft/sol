@@ -1291,12 +1291,14 @@ public:
     //morph creature or player
     static bool HandleModifyMorphCommand(ChatHandler* handler, const char* args)
     {
-        if (!*args)
+        uint32 display_id = 0;
+        if (*args)
+            display_id = (uint32)atoi((char*)args);
+
+        Unit* target = handler->GetSession()->GetPlayer()->GetSelectedUnit();
+        if (!target && !display_id)
             return false;
 
-        uint32 display_id = (uint32)atoi((char*)args);
-
-        Unit* target = handler->getSelectedUnit();
         if (!target)
             target = handler->GetSession()->GetPlayer();
 
@@ -1304,7 +1306,10 @@ public:
         else if (target->GetTypeId() == TYPEID_PLAYER && handler->HasLowerSecurity(target->ToPlayer(), 0))
             return false;
 
-        target->SetDisplayId(display_id);
+        if (display_id)
+            target->SetDisplayId(display_id);
+        else
+            handler->GetSession()->GetPlayer()->SetDisplayId(target->GetDisplayId());
 
         return true;
     }
