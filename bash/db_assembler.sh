@@ -1,3 +1,11 @@
+#!/bin/bash
+
+set -e
+
+CURRENT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+source "$CURRENT_PATH/includes.sh"
+
 function dbasm_assemble() {
     # to lowercase
     database=${1,,}
@@ -115,3 +123,11 @@ function dbasm_run() {
 
     echo "=====           DONE            ====="
 }
+
+case "$1" in
+    1) dbasm_run true true true ;;
+    2) dbasm_run true false false ;;
+    3) dbasm_run false true false ;;
+    4) dbasm_run false false true ;;
+    *) printf "1 Assemble all\n2 Assemble only bases\n3 Assemble only updates\n4 Assemble only customs\n" ;;
+esac

@@ -1,22 +1,8 @@
-[[ ${GUARDYVAR:-} -eq 1 ]] && return || readonly GUARDYVAR=1 # include this file only once
-
-# force default language for applications
-LC_ALL=C 
-
-AC_PATH_APPS="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-
-unamestr=`uname`
-if [[ "$unamestr" == 'Darwin' ]]; then
-   AC_PATH_ROOT=$(greadlink -f "$AC_PATH_APPS/../")
-else
-   AC_PATH_ROOT=$(readlink -f "$AC_PATH_APPS/../")
-fi
-
+CURRENT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+AC_PATH_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
 AC_PATH_CONF="$AC_PATH_ROOT/conf"
 AC_PATH_MODULES="$AC_PATH_ROOT/modules"
 AC_PATH_DEPS="$AC_PATH_ROOT/deps"
-
-AC_PATH_ROOT=$(pwd)
 
 source "$AC_PATH_CONF/config.sh.dist" # add default configuration parameters
 

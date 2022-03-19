@@ -1,12 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 CURRENT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-source "$CURRENT_PATH/../bash_shared/includes.sh"
+source "$CURRENT_PATH/includes.sh"
 
 UPDATES_PATH="$AC_PATH_ROOT/data/sql/updates/"
-
-COMMIT_HASH=
 
 function import() {
     db=$1
@@ -98,13 +96,6 @@ function import() {
                 echo "CALL updateDb();" >> "$newFile";
                 echo "DROP PROCEDURE IF EXISTS \`updateDb\`;" >> "$newFile";
             fi;
-
-            currentHash="$(git log --diff-filter=A "$entry" | grep "^commit " | sed -e 's/commit //')"
-
-            if [[ "$COMMIT_HASH" != *"$currentHash"* ]]
-            then
-              COMMIT_HASH="$COMMIT_HASH $currentHash"
-            fi
 
             rm $entry;
 
