@@ -30,6 +30,7 @@
 #include "MapManager.h"
 #include "GameGraveyard.h"
 #include "PlayerCommand.h"
+#include "Transport.h"
 
 class misc_commandscript : public CommandScript, public PlayerCommand
 {
@@ -3362,6 +3363,11 @@ public:
                 handler->SetSentErrorMessage(true);
                 return false;
             }
+        }
+        else if ((player->GetTransport() ? player->GetTransport()->ToMotionTransport() : nullptr))
+        {
+            Position pos = { player->GetTransOffsetX(), player->GetTransOffsetY(), 0.f, 0.f };
+            angle = pos.GetAngle(unit->GetTransOffsetX(), unit->GetTransOffsetY());
         }
         else
             angle = player->GetAngle(unit->GetPositionX(), unit->GetPositionY());

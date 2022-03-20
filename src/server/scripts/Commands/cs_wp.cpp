@@ -18,6 +18,7 @@ EndScriptData */
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "WaypointManager.h"
+#include "Transport.h"
 
 class wp_commandscript : public CommandScript
 {
@@ -143,9 +144,19 @@ public:
 
         stmt->setUInt32(0, pathid);
         stmt->setUInt32(1, point + 1);
-        stmt->setFloat(2, player->GetPositionX());
-        stmt->setFloat(3, player->GetPositionY());
-        stmt->setFloat(4, player->GetPositionZ());
+
+        if ((player->GetTransport() ? player->GetTransport()->ToMotionTransport() : nullptr))
+        {
+            stmt->setFloat(2, player->GetTransOffsetX());
+            stmt->setFloat(3, player->GetTransOffsetY());
+            stmt->setFloat(4, player->GetTransOffsetZ());
+        }
+        else
+        {
+            stmt->setFloat(2, player->GetPositionX());
+            stmt->setFloat(3, player->GetPositionY());
+            stmt->setFloat(4, player->GetPositionZ());
+        }
 
         WorldDatabase.DirectExecute(stmt);
 
@@ -612,12 +623,15 @@ public:
             return false;
         }
 
+        Player* player = handler->GetSession()->GetPlayer();
+        bool isOnTransport = (player->GetTransport() ? player->GetTransport()->ToMotionTransport() : nullptr);
+
         if (show == "del")
         {
             handler->PSendSysMessage("|cff00ff00DEBUG: wp modify del, PathID: |r|cff00ffff%u|r", pathid);
 
             if (wpGuid != 0)
-                if (Creature* wpCreature = handler->GetSession()->GetPlayer()->GetMap()->GetCreature(MAKE_NEW_GUID(wpGuid, VISUAL_WAYPOINT, HIGHGUID_UNIT)))
+                if (Creature* wpCreature = player->GetMap()->GetCreature(MAKE_NEW_GUID(wpGuid, VISUAL_WAYPOINT, HIGHGUID_UNIT)))
                 {
                     wpCreature->CombatStop();
                     wpCreature->DeleteFromDB();
@@ -646,8 +660,7 @@ public:
         {
             handler->PSendSysMessage("|cff00ff00DEBUG: wp move, PathID: |r|cff00ffff%u|r", pathid);
 
-            Player* chr = handler->GetSession()->GetPlayer();
-            Map* map = chr->GetMap();
+            Map* map = player->GetMap();
             {
                 // Move the visual waypoint
                 if (wpGuid != 0)
@@ -661,7 +674,7 @@ public:
                     }
                     // create new waypoint
                     Creature* wpCreature2 = new Creature;
-                    if (!wpCreature2->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, chr->GetPhaseMaskForSpawn(), VISUAL_WAYPOINT, 0, chr->GetPositionX(), chr->GetPositionY(), chr->GetPositionZ(), chr->GetOrientation()))
+                    if (!wpCreature2->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, player->GetPhaseMaskForSpawn(), VISUAL_WAYPOINT, 0, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetOrientation()))
                     {
                         handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, VISUAL_WAYPOINT);
                         delete wpCreature2;
@@ -677,8 +690,8 @@ public:
 
                     WorldDatabase.DirectExecute(stmt);
 
-                    wpCreature2->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-                    if (!map->AddToMap(wpCreature2))
+                    wpCreature2->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), player->GetPhaseMaskForSpawn());
+                    if (!map->AddToMap(wpCreature2, isOnTransport))
                     {
                         handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, VISUAL_WAYPOINT);
                         delete wpCreature2;
@@ -691,9 +704,19 @@ public:
 
                 PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_POSITION);
 
-                stmt->setFloat(0, chr->GetPositionX());
-                stmt->setFloat(1, chr->GetPositionY());
-                stmt->setFloat(2, chr->GetPositionZ());
+                if (isOnTransport)
+                {
+                    stmt->setFloat(0, player->GetTransOffsetX());
+                    stmt->setFloat(1, player->GetTransOffsetY());
+                    stmt->setFloat(2, player->GetTransOffsetZ());
+                }
+                else
+                {
+                    stmt->setFloat(0, player->GetPositionX());
+                    stmt->setFloat(1, player->GetPositionY());
+                    stmt->setFloat(2, player->GetPositionZ());
+                }
+
                 stmt->setUInt32(3, pathid);
                 stmt->setUInt32(4, point);
 
@@ -719,7 +742,12 @@ public:
             {
                 float o;
                 if (text2 == "player")
-                    o = handler->GetSession()->GetPlayer()->GetOrientation();
+                {
+                    if (isOnTransport)
+                        o = player->GetTransOffsetO();
+                    else
+                        o = player->GetOrientation();
+                }
                 else
                     o = float(atof(text));
 
@@ -876,6 +904,9 @@ public:
             return true;
         }
 
+        Player* player = handler->GetSession()->GetPlayer();
+        bool isOnTransport = (player->GetTransport() ? player->GetTransport()->ToMotionTransport() : nullptr);
+
         if (show == "on")
         {
             PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_POS_BY_ID);
@@ -907,7 +938,7 @@ public:
                 {
                     Field* fields = result2->Fetch();
                     uint32 wpguid = fields[0].GetUInt32();
-                    Creature* creature = handler->GetSession()->GetPlayer()->GetMap()->GetCreature(MAKE_NEW_GUID(wpguid, VISUAL_WAYPOINT, HIGHGUID_UNIT));
+                    Creature* creature = player->GetMap()->GetCreature(MAKE_NEW_GUID(wpguid, VISUAL_WAYPOINT, HIGHGUID_UNIT));
 
                     if (!creature)
                     {
@@ -948,12 +979,14 @@ public:
 
                 uint32 id = VISUAL_WAYPOINT;
 
-                Player* chr = handler->GetSession()->GetPlayer();
-                Map* map = chr->GetMap();
-                float o = chr->GetOrientation();
+                if (isOnTransport)
+                    player->GetTransport()->CalculatePassengerPosition(x, y, z);
+
+                Map* map = player->GetMap();
+                float o = player->GetOrientation();
 
                 Creature* wpCreature = new Creature;
-                if (!wpCreature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, chr->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
+                if (!wpCreature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, player->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
                 {
                     handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
                     delete wpCreature;
@@ -969,8 +1002,8 @@ public:
 
                 WorldDatabase.DirectExecute(stmt);
 
-                wpCreature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-                if (!map->AddToMap(wpCreature))
+                wpCreature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), player->GetPhaseMaskForSpawn());
+                if (!map->AddToMap(wpCreature, isOnTransport))
                 {
                     handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
                     delete wpCreature;
@@ -1007,20 +1040,22 @@ public:
             float z         = fields[2].GetFloat();
             uint32 id = VISUAL_WAYPOINT;
 
-            Player* chr = handler->GetSession()->GetPlayer();
-            float o = chr->GetOrientation();
-            Map* map = chr->GetMap();
+            if (isOnTransport)
+                player->GetTransport()->CalculatePassengerPosition(x, y, z);
+
+            float o = player->GetOrientation();
+            Map* map = player->GetMap();
 
             Creature* creature = new Creature;
-            if (!creature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, chr->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
+            if (!creature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, player->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
                 delete creature;
                 return false;
             }
 
-            creature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-            if (!map->AddToMap(creature))
+            creature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), player->GetPhaseMaskForSpawn());
+            if (!map->AddToMap(creature, isOnTransport))
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, id);
                 delete creature;
@@ -1057,19 +1092,21 @@ public:
             float o = fields[3].GetFloat();
             uint32 id = VISUAL_WAYPOINT;
 
-            Player* chr = handler->GetSession()->GetPlayer();
-            Map* map = chr->GetMap();
+            if (isOnTransport)
+                player->GetTransport()->CalculatePassengerPosition(x, y, z);
+
+            Map* map = player->GetMap();
 
             Creature* creature = new Creature;
-            if (!creature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, chr->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
+            if (!creature->Create(sObjectMgr->GenerateLowGuid(HIGHGUID_UNIT), map, player->GetPhaseMaskForSpawn(), id, 0, x, y, z, o))
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_NOTCREATED, id);
                 delete creature;
                 return false;
             }
 
-            creature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), chr->GetPhaseMaskForSpawn());
-            if (!map->AddToMap(creature))
+            creature->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), player->GetPhaseMaskForSpawn());
+            if (!map->AddToMap(creature, isOnTransport))
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_NOTCREATED, id);
                 delete creature;
