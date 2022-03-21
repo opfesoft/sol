@@ -21,6 +21,9 @@ void EscortMovementGenerator<T>::DoInitialize(T* unit)
     i_recalculateSpeed = false;
     Movement::MoveSplineInit init(unit);
 
+    if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransGUID())
+        init.DisableTransportPathTransformations(); // Waypoints have to be specified in transport offset coordinates, don't transform them again
+
     if (m_precomputedPath.size() == 2) // xinef: simple case, just call move to
         init.MoveTo(m_precomputedPath[1].x, m_precomputedPath[1].y, m_precomputedPath[1].z);
     else if (m_precomputedPath.size())
@@ -52,6 +55,9 @@ bool EscortMovementGenerator<T>::DoUpdate(T* unit, uint32  /*diff*/)
         i_recalculateSpeed = false;
         Movement::MoveSplineInit init(unit);
 
+        if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransGUID())
+            init.DisableTransportPathTransformations(); // Waypoints have to be specified in transport offset coordinates, don't transform them again
+
         // xinef: speed changed during path execution, calculate remaining path and launch it once more
         if (m_precomputedPath.size())
         {
@@ -61,7 +67,10 @@ bool EscortMovementGenerator<T>::DoUpdate(T* unit, uint32  /*diff*/)
             m_precomputedPath.erase(m_precomputedPath.begin(), offsetItr);
 
             // restore 0 element (current position)
-            m_precomputedPath.insert(m_precomputedPath.begin(), G3D::Vector3(unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ()));
+            if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransGUID())
+                m_precomputedPath.insert(m_precomputedPath.begin(), G3D::Vector3(unit->GetTransOffsetX(), unit->GetTransOffsetY(), unit->GetTransOffsetZ()));
+            else
+                m_precomputedPath.insert(m_precomputedPath.begin(), G3D::Vector3(unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ()));
 
             if (m_precomputedPath.size() > 2)
                 init.MovebyPath(m_precomputedPath);

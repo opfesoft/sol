@@ -20,6 +20,7 @@
 #include "SmartAI.h"
 #include "ScriptMgr.h"
 #include "Vehicle.h"
+#include "Transport.h"
 
 SmartAI::SmartAI(Creature* c) : CreatureAI(c)
 {
@@ -120,7 +121,10 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
     {
         // xinef: first point in vector is unit real position
         points->clear();
-        points->push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+        if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+            points->push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
+        else
+            points->push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
         uint32 wpCounter = mCurrentWPID;
         WPPath::const_iterator itr;
         while ((itr = mWayPoints->find(wpCounter++)) != mWayPoints->end())
@@ -137,7 +141,10 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
         {
             std::vector<G3D::Vector3> pVector;
             // xinef: first point in vector is unit real position
-            pVector.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+            if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+                pVector.push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
+            else
+                pVector.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
             uint32 length = (mWayPoints->size() - mCurrentWPID)*size;
 
             uint32 cnt = 0;
@@ -601,8 +608,21 @@ void SmartAI::MovepointReached(uint32 id)
 
     if (mLastWP)
     {
-        me->SetPosition(mLastWP->x, mLastWP->y, mLastWP->z, me->GetOrientation());
-        me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+        if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+        {
+            float x = mLastWP->x;
+            float y = mLastWP->y;
+            float z = mLastWP->z;
+            me->GetTransport()->CalculatePassengerPosition(x, y, z);
+            me->SetPosition(x, y, z, me->GetOrientation());
+            me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+            me->SetTransportHomePosition(me->m_movementInfo.transport.pos);
+        }
+        else
+        {
+            me->SetPosition(mLastWP->x, mLastWP->y, mLastWP->z, me->GetOrientation());
+            me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+        }
     }
 
     if (HasEscortState(SMART_ESCORT_PAUSED))

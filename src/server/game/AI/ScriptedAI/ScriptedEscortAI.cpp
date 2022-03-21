@@ -15,6 +15,7 @@ EndScriptData */
 #include "ScriptedEscortAI.h"
 #include "Group.h"
 #include "Player.h"
+#include "Transport.h"
 
 enum ePoints
 {
@@ -323,8 +324,21 @@ void npc_escortAI::MovementInform(uint32 moveType, uint32 pointId)
         if (m_uiWPWaitTimer <= 1 && !HasEscortState(STATE_ESCORT_PAUSED) && CurrentWP != WaypointList.end())
         {
             //Call WP function
-            me->SetPosition(CurrentWP->x, CurrentWP->y, CurrentWP->z, me->GetOrientation());
-            me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+            if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+            {
+                float x = CurrentWP->x;
+                float y = CurrentWP->y;
+                float z = CurrentWP->z;
+                me->GetTransport()->CalculatePassengerPosition(x, y, z);
+                me->SetPosition(x, y, z, me->GetOrientation());
+                me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                me->SetTransportHomePosition(me->m_movementInfo.transport.pos);
+            }
+            else
+            {
+                me->SetPosition(CurrentWP->x, CurrentWP->y, CurrentWP->z, me->GetOrientation());
+                me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+            }
             WaypointReached(CurrentWP->id);
 
             m_uiWPWaitTimer = CurrentWP->WaitTimeMs + 1;
@@ -566,7 +580,10 @@ void npc_escortAI::GenerateWaypointArray(Movement::PointsArray* points)
     {
         // xinef: first point in vector is unit real position
         points->clear();
-        points->push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+        if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+            points->push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
+        else
+            points->push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
         for (std::list<Escort_Waypoint>::const_iterator itr = CurrentWP; itr != WaypointList.end(); ++itr)
         {
             points->push_back(G3D::Vector3(itr->x, itr->y, itr->z));
@@ -580,7 +597,10 @@ void npc_escortAI::GenerateWaypointArray(Movement::PointsArray* points)
         {
             std::vector<G3D::Vector3> pVector;
             // xinef: first point in vector is unit real position
-            pVector.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+            if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+                pVector.push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
+            else
+                pVector.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
             uint32 length = (WaypointList.size() - startingWaypointId)*size;
 
             uint32 cnt = 0;
