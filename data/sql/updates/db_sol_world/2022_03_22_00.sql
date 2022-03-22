@@ -204,19 +204,6 @@ VALUES
 (24837,27,35.5704,-2.76658,18.3435,NULL),
 (24837,28,33.8088,0.0680723,18.2875,NULL);
 
-/*
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`)
-VALUES
-(24833,0,0,'Thank you, Mr. Kowalski! You may return to your post to oversee docking!',12,7,100,0,0,0,23945,0,'Captain \"Stash\" Torgoley'),
-(24833,1,0,'Well done, all. Please bring us safely to our next port. ',12,7,100,0,0,0,23946,0,'Captain \"Stash\" Torgoley'),
-(24835,0,0,'Thank you, Mr. Henders.',12,7,100,0,0,0,23942,0,'First Mate Kowalski'),
-(24835,1,0,'Bring us into port, please, Mr. Mehran.',12,7,100,0,0,0,23943,0,'First Mate Kowalski'),
-(24835,2,0,'Captain Stash! We\'ll be arriving shortly, sir!',12,7,100,0,0,0,23944,0,'First Mate Kowalski'),
-(24838,0,0,'Land ho, Mr. Kowalski! Port is in sight, sir!',12,7,100,0,0,0,23941,0,'Sailor Henders');
-
-(24838,0,0,0,25,0,100,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Sailor - on reset - Say Line 0');
-*/
-
 --
 -- END UPDATING QUERIES
 --
