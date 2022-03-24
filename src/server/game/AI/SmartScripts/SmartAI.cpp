@@ -116,71 +116,49 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
     if (!mWayPoints || mWayPoints->empty())
         return;
 
-    // Flying unit, just fill array
-    if (me->m_movementInfo.HasMovementFlag((MovementFlags)(MOVEMENTFLAG_CAN_FLY|MOVEMENTFLAG_DISABLE_GRAVITY)))
+    for (float size = 1.0f; size; size *= 0.5f)
     {
+        std::vector<G3D::Vector3> pVector;
         // xinef: first point in vector is unit real position
-        points->clear();
         if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
-            points->push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
+            pVector.push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
         else
-            points->push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+            pVector.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+        uint32 length = (mWayPoints->size() - mCurrentWPID)*size;
+
+        uint32 cnt = 0;
         uint32 wpCounter = mCurrentWPID;
         WPPath::const_iterator itr;
-        while ((itr = mWayPoints->find(wpCounter++)) != mWayPoints->end())
+        while ((itr = mWayPoints->find(wpCounter++)) != mWayPoints->end() && cnt++ <= length)
         {
             WayPoint* wp = (*itr).second;
-            points->push_back(G3D::Vector3(wp->x, wp->y, wp->z));
+            pVector.push_back(G3D::Vector3(wp->x, wp->y, wp->z));
             if (HasWayPointPause(wpCounter-1))
                 break;
         }
-    }
-    else
-    {
-        for (float size = 1.0f; size; size *= 0.5f)
+
+        if (pVector.size() > 2) // more than source + dest
         {
-            std::vector<G3D::Vector3> pVector;
-            // xinef: first point in vector is unit real position
-            if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
-                pVector.push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
-            else
-                pVector.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
-            uint32 length = (mWayPoints->size() - mCurrentWPID)*size;
+            G3D::Vector3 middle = (pVector[0] + pVector[pVector.size()-1]) / 2.f;
+            G3D::Vector3 offset;
 
-            uint32 cnt = 0;
-            uint32 wpCounter = mCurrentWPID;
-            WPPath::const_iterator itr;
-            while ((itr = mWayPoints->find(wpCounter++)) != mWayPoints->end() && cnt++ <= length)
+            bool continueLoop = false;
+            for (uint32 i = 1; i < pVector.size()-1; ++i)
             {
-                WayPoint* wp = (*itr).second;
-                pVector.push_back(G3D::Vector3(wp->x, wp->y, wp->z));
-                if (HasWayPointPause(wpCounter-1))
-                    break;
-            }
-
-            if (pVector.size() > 2) // more than source + dest
-            {
-                G3D::Vector3 middle = (pVector[0] + pVector[pVector.size()-1]) / 2.f;
-                G3D::Vector3 offset;
-
-                bool continueLoop = false;
-                for (uint32 i = 1; i < pVector.size()-1; ++i)
+                offset = middle - pVector[i];
+                if (fabs(offset.x) >= 0xFF || fabs(offset.y) >= 0xFF || fabs(offset.z) >= 0x7F)
                 {
-                    offset = middle - pVector[i];
-                    if (fabs(offset.x) >= 0xFF || fabs(offset.y) >= 0xFF || fabs(offset.z) >= 0x7F)
-                    {
-                        // offset is too big, split points
-                        continueLoop = true;
-                        break;
-                    }
+                    // offset is too big, split points
+                    continueLoop = true;
+                    break;
                 }
-                if (continueLoop)
-                    continue;
             }
-            // everything ok
-            *points = pVector;
-            break;
+            if (continueLoop)
+                continue;
         }
+        // everything ok
+        *points = pVector;
+        break;
     }
 }
 
