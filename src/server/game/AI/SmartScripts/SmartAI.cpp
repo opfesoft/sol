@@ -460,7 +460,7 @@ void SmartAI::UpdatePath(const uint32 diff)
         {
             SetRun(mRun);
             // xinef: if we have reached waypoint, and there is no working spline movement it means our splitted array has ended, make new one
-            if (me->movespline->Finalized())
+            if (me->movespline->Finalized() && !(mCurrentWPID > 0 && HasWayPointPause(mCurrentWPID - 1)))
                 ResumePath();
         }
     }
@@ -621,7 +621,7 @@ void SmartAI::MovepointReached(uint32 id)
         {
             SetRun(mRun);
             // xinef: if we have reached waypoint, and there is no working spline movement it means our splitted array has ended, make new one
-            if (me->movespline->Finalized())
+            if (me->movespline->Finalized() && !(mCurrentWPID > 0 && HasWayPointPause(mCurrentWPID - 1)))
                 ResumePath();
         }
     }
