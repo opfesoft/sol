@@ -21,6 +21,7 @@ EndContentData */
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "Player.h"
+#include "CreatureTextMgr.h"
 
 /*######
 ## npc_shenthul
@@ -124,25 +125,33 @@ public:
 
 enum ThrallWarchief
 {
-    QUEST_6566              = 6566,
+    QUEST_WHAT_THE_WIND_CARRIES =  6566,
+    QUEST_FOR_THE_HORDE         =  4974,
 
-    SPELL_CHAIN_LIGHTNING   = 16033,
-    SPELL_SHOCK             = 16034
+    SPELL_CHAIN_LIGHTNING       = 16033,
+    SPELL_SHOCK                 = 16034,
+
+    GOSSIP_MENU_THRALL_STORY1   =  3665,
+    GOSSIP_MENU_THRALL_STORY2   =  3666,
+    GOSSIP_MENU_THRALL_STORY3   =  3667,
+    GOSSIP_MENU_THRALL_STORY4   =  3668,
+    GOSSIP_MENU_THRALL_STORY5   =  3669,
+    GOSSIP_MENU_THRALL_STORY6   =  3670,
+    GOSSIP_TEXT_THRALL_STORY1   =  5733,
+    GOSSIP_TEXT_THRALL_STORY2   =  5734,
+    GOSSIP_TEXT_THRALL_STORY3   =  5735,
+    GOSSIP_TEXT_THRALL_STORY4   =  5736,
+    GOSSIP_TEXT_THRALL_STORY5   =  5737,
+    GOSSIP_TEXT_THRALL_STORY6   =  5738,
+
+    FOR_THE_HORDE_YELL_COOLDOWN =  3600,
 };
-
-#define GOSSIP_HTW "Please share your wisdom with me, Warchief."
-#define GOSSIP_STW1 "What discoveries?"
-#define GOSSIP_STW2 "Usurper?"
-#define GOSSIP_STW3 "With all due respect, Warchief - why not allow them to be destroyed? Does this not strengthen our position?"
-#define GOSSIP_STW4 "I... I did not think of it that way, Warchief."
-#define GOSSIP_STW5 "I live only to serve, Warchief! My life is empty and meaningless without your guidance."
-#define GOSSIP_STW6 "Of course, Warchief!"
 
 /// @todo verify abilities/timers
 class npc_thrall_warchief : public CreatureScript
 {
 public:
-    npc_thrall_warchief() : CreatureScript("npc_thrall_warchief") { }
+    npc_thrall_warchief() : CreatureScript("npc_thrall_warchief"), lastTimeForTheHordeYell(0) { }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
@@ -150,32 +159,32 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_STW1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-                SendGossipMenuFor(player, 5733, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_THRALL_STORY1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                SendGossipMenuFor(player, GOSSIP_TEXT_THRALL_STORY1, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+2:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_STW2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
-                SendGossipMenuFor(player, 5734, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_THRALL_STORY2, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
+                SendGossipMenuFor(player, GOSSIP_TEXT_THRALL_STORY2, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+3:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_STW3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
-                SendGossipMenuFor(player, 5735, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_THRALL_STORY3, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
+                SendGossipMenuFor(player, GOSSIP_TEXT_THRALL_STORY3, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+4:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_STW4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
-                SendGossipMenuFor(player, 5736, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_THRALL_STORY4, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
+                SendGossipMenuFor(player, GOSSIP_TEXT_THRALL_STORY4, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+5:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_STW5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+6);
-                SendGossipMenuFor(player, 5737, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_THRALL_STORY5, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+6);
+                SendGossipMenuFor(player, GOSSIP_TEXT_THRALL_STORY5, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+6:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_STW6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+7);
-                SendGossipMenuFor(player, 5738, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_THRALL_STORY6, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+7);
+                SendGossipMenuFor(player, GOSSIP_TEXT_THRALL_STORY6, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+7:
                 CloseGossipMenuFor(player);
-                player->AreaExploredOrEventHappens(QUEST_6566);
+                player->AreaExploredOrEventHappens(QUEST_WHAT_THE_WIND_CARRIES);
                 break;
         }
         return true;
@@ -186,10 +195,20 @@ public:
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->GetQuestStatus(QUEST_6566) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HTW, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        if (player->GetQuestStatus(QUEST_WHAT_THE_WIND_CARRIES) == QUEST_STATUS_INCOMPLETE)
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
         SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    bool OnQuestReward(Player* /*player*/, Creature* creature, Quest const* quest, uint32 /*opt*/) override
+    {
+        if (quest->GetQuestId() == QUEST_FOR_THE_HORDE && lastTimeForTheHordeYell + FOR_THE_HORDE_YELL_COOLDOWN <= sWorld->GetGameTime())
+        {
+            lastTimeForTheHordeYell = sWorld->GetGameTime();
+            sCreatureTextMgr->SendChat(creature, 0, nullptr);
+        }
         return true;
     }
 
@@ -233,6 +252,9 @@ public:
             DoMeleeAttackIfReady();
         }
     };
+
+private:
+    uint32 lastTimeForTheHordeYell;
 };
 
 void AddSC_orgrimmar()
