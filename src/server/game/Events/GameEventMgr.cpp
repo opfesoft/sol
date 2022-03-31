@@ -210,8 +210,10 @@ void GameEventMgr::LoadFromDB()
 {
     {
         uint32 oldMSTime = getMSTime();
-                                                //       1           2                           3                         4          5       6        7             8            9            10
-        QueryResult result = WorldDatabase.Query("SELECT eventEntry, UNIX_TIMESTAMP(start_time), UNIX_TIMESTAMP(end_time), occurence, length, holiday, holidayStage, description, world_event, announce FROM game_event");
+        //                                               0           1                           2                         3          4       5        6             7            8            9
+        QueryResult result = WorldDatabase.Query("SELECT eventEntry, UNIX_TIMESTAMP(start_time), UNIX_TIMESTAMP(end_time), occurence, length, holiday, holidayStage, description, world_event, announce, "
+        //                                        10                11                  12
+                                                 "HOUR(start_time), MINUTE(start_time), SECOND(start_time) FROM game_event");
         if (!result)
         {
             mGameEvent.clear();
@@ -232,17 +234,36 @@ void GameEventMgr::LoadFromDB()
                 continue;
             }
 
+            time_t currenttime = time(nullptr);
             GameEventData& pGameEvent = mGameEvent[event_id];
-            uint64 starttime        = fields[1].GetUInt64();
-            pGameEvent.start        = time_t(starttime);
-            uint64 endtime          = fields[2].GetUInt64();
+            time_t starttime = time_t(fields[1].GetUInt64());
+
+            if (starttime < currenttime)
+            {
+                // ensure the time component stays the same even with DST (daylight saving time)
+                uint32 hour = fields[10].GetUInt32();
+                uint32 min = fields[11].GetUInt32();
+                uint32 sec = fields[12].GetUInt32();
+                starttime -= time_t(hour * HOUR + min * MINUTE + sec);
+                struct tm* tm = localtime(&currenttime);
+                tm->tm_hour = hour;
+                tm->tm_min = min;
+                tm->tm_sec = sec;
+                time_t tmp = mktime(tm);
+                uint64 diff = ((currenttime - starttime) / DAY) * DAY;
+                pGameEvent.start = time_t(tmp - diff);
+            }
+            else
+                pGameEvent.start = starttime;
+
             if (fields[2].IsNull())
-                endtime             = time(nullptr) + 63072000; // add 2 years to current date
-            pGameEvent.end          = time_t(endtime);
+                pGameEvent.end = time_t(currenttime + 63072000); // add 2 years to current date
+            else
+                pGameEvent.end = time_t(fields[2].GetUInt64());
+
             pGameEvent.occurence    = fields[3].GetUInt64();
             pGameEvent.length       = fields[4].GetUInt64();
             pGameEvent.holiday_id   = HolidayIds(fields[5].GetUInt32());
-
             pGameEvent.holidayStage = fields[6].GetUInt8();
             pGameEvent.description  = fields[7].GetString();
             pGameEvent.state        = (GameEventState)(fields[8].GetUInt8());
