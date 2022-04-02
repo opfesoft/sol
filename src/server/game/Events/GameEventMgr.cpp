@@ -1228,6 +1228,9 @@ void GameEventMgr::ApplyNewEvent(uint16 event_id)
     sLog->outDetail("GameEvent %u \"%s\" started.", event_id, mGameEvent[event_id].description.c_str());
 #endif
 
+    //! Run SAI scripts with SMART_EVENT_GAME_EVENT_END
+    RunSmartAIScripts(event_id, true);
+
     // spawn positive event tagget objects
     GameEventSpawn(event_id);
     // un-spawn negative event tagged objects
@@ -1244,9 +1247,6 @@ void GameEventMgr::ApplyNewEvent(uint16 event_id)
     UpdateEventNPCVendor(event_id, true);
     // update bg holiday
     UpdateBattlegroundSettings();
-
-    //! Run SAI scripts with SMART_EVENT_GAME_EVENT_START
-    RunSmartAIScripts(event_id, true);
 }
 
 void GameEventMgr::UpdateEventNPCFlags(uint16 event_id)
