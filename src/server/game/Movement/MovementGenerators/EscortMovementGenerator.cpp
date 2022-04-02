@@ -21,7 +21,7 @@ void EscortMovementGenerator<T>::DoInitialize(T* unit)
     i_recalculateSpeed = false;
     Movement::MoveSplineInit init(unit);
 
-    if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransGUID())
+    if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransport())
         init.DisableTransportPathTransformations(); // Waypoints have to be specified in transport offset coordinates, don't transform them again
 
     if (m_precomputedPath.size() == 2) // xinef: simple case, just call move to
@@ -55,7 +55,7 @@ bool EscortMovementGenerator<T>::DoUpdate(T* unit, uint32  /*diff*/)
         i_recalculateSpeed = false;
         Movement::MoveSplineInit init(unit);
 
-        if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransGUID())
+        if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransport())
             init.DisableTransportPathTransformations(); // Waypoints have to be specified in transport offset coordinates, don't transform them again
 
         // xinef: speed changed during path execution, calculate remaining path and launch it once more
@@ -67,7 +67,7 @@ bool EscortMovementGenerator<T>::DoUpdate(T* unit, uint32  /*diff*/)
             m_precomputedPath.erase(m_precomputedPath.begin(), offsetItr);
 
             // restore 0 element (current position)
-            if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransGUID())
+            if (unit->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && unit->GetTransport())
                 m_precomputedPath.insert(m_precomputedPath.begin(), G3D::Vector3(unit->GetTransOffsetX(), unit->GetTransOffsetY(), unit->GetTransOffsetZ()));
             else
                 m_precomputedPath.insert(m_precomputedPath.begin(), G3D::Vector3(unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ()));

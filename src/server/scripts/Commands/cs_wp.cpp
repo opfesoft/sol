@@ -145,7 +145,7 @@ public:
         stmt->setUInt32(0, pathid);
         stmt->setUInt32(1, point + 1);
 
-        if (player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransGUID())
+        if (player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransport())
         {
             stmt->setFloat(2, player->GetTransOffsetX());
             stmt->setFloat(3, player->GetTransOffsetY());
@@ -624,7 +624,7 @@ public:
         }
 
         Player* player = handler->GetSession()->GetPlayer();
-        bool isOnTransport = player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransGUID();
+        bool isOnTransport = player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransport();
 
         if (show == "del")
         {
@@ -905,7 +905,7 @@ public:
         }
 
         Player* player = handler->GetSession()->GetPlayer();
-        bool isOnTransport = player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransGUID();
+        bool isOnTransport = player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransport();
 
         if (show == "on")
         {

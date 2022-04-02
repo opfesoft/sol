@@ -120,7 +120,7 @@ void SmartAI::GenerateWayPointArray(Movement::PointsArray* points)
     {
         std::vector<G3D::Vector3> pVector;
         // xinef: first point in vector is unit real position
-        if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+        if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransport())
             pVector.push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
         else
             pVector.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
@@ -586,7 +586,7 @@ void SmartAI::MovepointReached(uint32 id)
 
     if (mLastWP)
     {
-        if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransGUID())
+        if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransport())
         {
             float x = mLastWP->x;
             float y = mLastWP->y;

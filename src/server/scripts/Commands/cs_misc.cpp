@@ -3363,7 +3363,7 @@ public:
                 return false;
             }
         }
-        else if (player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransGUID())
+        else if (player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransport())
         {
             Position pos = { player->GetTransOffsetX(), player->GetTransOffsetY(), 0.f, 0.f };
             angle = pos.GetAngle(unit->GetTransOffsetX(), unit->GetTransOffsetY());
