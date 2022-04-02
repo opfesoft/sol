@@ -222,7 +222,8 @@ bool WaypointMovementGenerator<Creature>::DoUpdate(Creature* creature, uint32 di
 
         if (stop)
         {
-            Stop(1000);
+            if (!Stopped())
+                Stop(1000);
             if (!creature->IsStopped())
                 creature->StopMoving();
             return true;
