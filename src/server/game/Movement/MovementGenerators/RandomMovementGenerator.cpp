@@ -324,6 +324,7 @@ bool RandomMovementGenerator<Creature>::DoUpdate(Creature* creature, const uint3
 
         if (stop)
         {
+            _nextMoveTime.Reset(1000);
             if (!creature->IsStopped())
                 creature->StopMoving();
 
