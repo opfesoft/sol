@@ -43,6 +43,11 @@ class TempSummon : public Creature
         TempSummonType const& GetSummonType() { return m_type; }
         uint32 GetTimer() { return m_timer; }
         void SetTimer(uint32 t) { m_timer = t; }
+        void SetOwnerDeathDespawn(bool ownerDeathDespawn) { m_ownerDeathDespawn = ownerDeathDespawn; }
+        bool GetOwnerDeathDespawn() const { return m_ownerDeathDespawn; }
+        void SetOwnerDeathSummonType(TempSummonType ownerDeathSummonType) { m_ownerDeathSummonType = ownerDeathSummonType; }
+        void SetOwnerDeathLifetime(uint32 ownerDeathLifetime) { m_ownerDeathLifetime = ownerDeathLifetime; }
+        void ActivateOwnerDeathSummonType() { m_timer = m_ownerDeathLifetime; m_lifetime = m_ownerDeathLifetime; m_type = m_ownerDeathSummonType; }
 
         const SummonPropertiesEntry* const m_Properties;
     private:
@@ -50,6 +55,9 @@ class TempSummon : public Creature
         uint32 m_timer;
         uint32 m_lifetime;
         uint64 m_summonerGUID;
+        bool m_ownerDeathDespawn;
+        TempSummonType m_ownerDeathSummonType;
+        uint32 m_ownerDeathLifetime;
 };
 
 class Minion : public TempSummon

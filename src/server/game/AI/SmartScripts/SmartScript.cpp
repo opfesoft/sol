@@ -3402,6 +3402,29 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         }
         break;
     }
+    case SMART_ACTION_SET_OWNER_DEATH_DESPAWN:
+    {
+        ObjectList* targets = GetTargets(e, unit, gob);
+        if (targets)
+        {
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+                if (Creature* creature = (*itr)->ToCreature())
+                    if (TempSummon* summon = creature->ToTempSummon())
+                    {
+                        if (e.action.setOwnerDeathDespawn.disable)
+                        {
+                            summon->SetOwnerDeathDespawn(false);
+                            summon->SetOwnerDeathSummonType(e.action.setOwnerDeathDespawn.type ? (TempSummonType)e.action.setOwnerDeathDespawn.type : TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT);
+                            summon->SetOwnerDeathLifetime(e.action.setOwnerDeathDespawn.duration ? e.action.setOwnerDeathDespawn.duration : 5000);
+                        }
+                        else
+                            summon->SetOwnerDeathDespawn(true);
+                    }
+
+            delete targets;
+        }
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;

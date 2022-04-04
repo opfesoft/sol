@@ -1241,6 +1241,15 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
+        case SMART_ACTION_SET_OWNER_DEATH_DESPAWN:
+        {
+            if (e.action.setOwnerDeathDespawn.disable && e.action.setOwnerDeathDespawn.type > TEMPSUMMON_MANUAL_DESPAWN)
+            {
+                sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses incorrect TempSummonType %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.setOwnerDeathDespawn.type);
+                return false;
+            }
+            break;
+        }
         case SMART_ACTION_START_CLOSEST_WAYPOINT:
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:

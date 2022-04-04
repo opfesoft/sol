@@ -10286,7 +10286,18 @@ void Unit::RemoveAllControlled()
         if (target->GetCharmerGUID() == GetGUID())
             target->RemoveCharmAuras();
         else if (target->GetOwnerGUID() == GetGUID() && target->IsSummon())
-            target->ToTempSummon()->UnSummon();
+        {
+            if (TempSummon* summon = target->ToTempSummon())
+            {
+                if (summon->GetOwnerDeathDespawn() || !summon->HasUnitTypeMask(UNIT_MASK_MINION))
+                    summon->UnSummon();
+                else
+                {
+                    summon->ActivateOwnerDeathSummonType();
+                    SetMinion((Minion*)summon, false);
+                }
+            }
+        }
         else
             sLog->outError("Unit %u is trying to release unit %u which is neither charmed nor owned by it", GetEntry(), target->GetEntry());
     }
@@ -10397,8 +10408,16 @@ void Unit::UnsummonAllTotems()
             continue;
 
         if (Creature* OldTotem = GetMap()->GetCreature(m_SummonSlot[i]))
-            if (OldTotem->IsSummon())
-                OldTotem->ToTempSummon()->UnSummon();
+            if (TempSummon* summon = OldTotem->ToTempSummon())
+            {
+                if (summon->GetOwnerDeathDespawn() || !summon->HasUnitTypeMask(UNIT_MASK_MINION))
+                    summon->UnSummon();
+                else
+                {
+                    summon->ActivateOwnerDeathSummonType();
+                    SetMinion((Minion*)summon, false);
+                }
+            }
     }
 }
 
