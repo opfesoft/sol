@@ -699,7 +699,7 @@ public:
                     }
 
                     wpCreature2->SetObjectScale(0.5f);
-                    wpCreature2->SetLevel(point > STRONG_MAX_LEVEL ? STRONG_MAX_LEVEL : point);
+                    wpCreature2->SetLevel(((point - 1) % STRONG_MAX_LEVEL) + 1);
                 }
 
                 PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_POSITION);
@@ -1011,7 +1011,7 @@ public:
                 }
 
                 wpCreature->SetObjectScale(0.5f);
-                wpCreature->SetLevel(point > STRONG_MAX_LEVEL ? STRONG_MAX_LEVEL : point);
+                wpCreature->SetLevel(((point - 1) % STRONG_MAX_LEVEL) + 1);
             }
             while (result->NextRow());
 
