@@ -4265,7 +4265,8 @@ public:
 
 enum GoblinBomb
 {
-    SPELL_SUMMON_GOBLIN_BOMB = 13258
+    SPELL_SUMMON_GOBLIN_BOMB     = 13258,
+    SPELL_MALFUNCTION_EXPLOSION  = 13261,
 };
 
 // 23134 - Goblin Bomb
@@ -4280,7 +4281,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_SUMMON_GOBLIN_BOMB))
+            if (!sSpellMgr->GetSpellInfo(SPELL_SUMMON_GOBLIN_BOMB) || !sSpellMgr->GetSpellInfo(SPELL_MALFUNCTION_EXPLOSION))
                 return false;
             return true;
         }
@@ -4288,7 +4289,7 @@ public:
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
             if (Unit* caster = GetCaster())
-                caster->CastSpell(caster, SPELL_SUMMON_GOBLIN_BOMB, true, GetCastItem());
+                caster->CastSpell(caster, roll_chance_i(95) ? SPELL_SUMMON_GOBLIN_BOMB : SPELL_MALFUNCTION_EXPLOSION, true, GetCastItem());
         }
 
         void Register() override
