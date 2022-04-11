@@ -1566,6 +1566,52 @@ class spell_gen_soul_deflection : public SpellScriptLoader
         }
 };
 
+// 38008 - Seal of Blood
+
+enum SealOfBlood
+{
+    SPELL_SEAL_OF_BLOOD        = 31893,
+    SPELL_SEAL_OF_BLOOD_DAMAGE = 32221,
+};
+
+class spell_gen_seal_of_blood : public SpellScriptLoader
+{
+    public:
+        spell_gen_seal_of_blood() : SpellScriptLoader("spell_gen_seal_of_blood") { }
+
+        class spell_gen_seal_of_blood_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_seal_of_blood_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_SEAL_OF_BLOOD) || !sSpellMgr->GetSpellInfo(SPELL_SEAL_OF_BLOOD_DAMAGE))
+                    return false;
+                return true;
+            }
+
+            void OnProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            {
+                PreventDefaultAction();
+                int32 baseDamage = eventInfo.GetDamageInfo()->GetDamage();
+                int32 holyDamage = CalculatePct(baseDamage, 48);
+                int32 selfDamage = CalculatePct(baseDamage + holyDamage, 10);
+                GetCaster()->CastCustomSpell(SPELL_SEAL_OF_BLOOD, SPELLVALUE_BASE_POINT0, holyDamage, eventInfo.GetProcTarget(), true, nullptr, aurEff);
+                GetCaster()->CastCustomSpell(SPELL_SEAL_OF_BLOOD_DAMAGE, SPELLVALUE_BASE_POINT0, selfDamage, GetCaster(), true, nullptr, aurEff);
+            }
+
+            void Register()
+            {
+                OnEffectProc += AuraEffectProcFn(spell_gen_seal_of_blood_AuraScript::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_seal_of_blood_AuraScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5238,6 +5284,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_haunted();
     new spell_gen_barleybrew_scalder();
     new spell_gen_soul_deflection();
+    new spell_gen_seal_of_blood();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();

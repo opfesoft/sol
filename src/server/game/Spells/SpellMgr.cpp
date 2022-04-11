@@ -3401,6 +3401,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 33271: // Internal Shake Camera w/ rumble sound
             spellInfo->Attributes |= SPELL_ATTR0_CASTABLE_WHILE_MOUNTED;
             break;
+        case 31893: // Seal of Blood
+            spellInfo->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+            break;
 
 
         /////////////////////////////////////////////
