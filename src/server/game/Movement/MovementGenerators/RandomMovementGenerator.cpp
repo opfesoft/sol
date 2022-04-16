@@ -140,6 +140,37 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                 _preComputedPaths.erase(pathIdx);
                 return;
             }
+            else
+            {
+                float x1, y1, z1, x2, y2, z2;
+                Position::GetNearPoint2D(creature->GetPositionX(), creature->GetPositionY(), x1, y1, 0.5f, creature->GetAngle(x, y) + M_PI / 2.f);
+                x2 = x - creature->GetPositionX() + x1;
+                y2 = y - creature->GetPositionY() + y1;
+                map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, creature->GetPositionZ() + 4.0f, &z1);
+                map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, levelZ + 4.0f, &z2);
+
+                if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                {
+                    _validPointsVector[_currentPoint].erase(randomIter);
+                    _preComputedPaths.erase(pathIdx);
+                    return;
+                }
+                else
+                {
+                    Position::GetNearPoint2D(creature->GetPositionX(), creature->GetPositionY(), x1, y1, 0.5f, creature->GetAngle(x, y) - M_PI / 2.f);
+                    x2 = x - creature->GetPositionX() + x1;
+                    y2 = y - creature->GetPositionY() + y1;
+                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, creature->GetPositionZ() + 4.0f, &z1);
+                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, levelZ + 4.0f, &z2);
+
+                    if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                    {
+                        _validPointsVector[_currentPoint].erase(randomIter);
+                        _preComputedPaths.erase(pathIdx);
+                        return;
+                    }
+                }
+            }
 
             bool result = _pathGenerator->CalculatePath(x, y, levelZ, false);
             if (result && !(_pathGenerator->GetPathType() & PATHFIND_NOPATH))
@@ -195,11 +226,43 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                         return;
                     }
 
-                    if (!map->isInLineOfSight((*itr).x, (*itr).y, zCurrent + 0.3f, xNextPost, yNextPost, zNextPost + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                    if (zCurrent <= INVALID_HEIGHT || zNextPost <= INVALID_HEIGHT || !map->isInLineOfSight((*itr).x, (*itr).y, zCurrent + 0.3f, xNextPost, yNextPost, zNextPost + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
                     {
                         _validPointsVector[_currentPoint].erase(randomIter);
                         _preComputedPaths.erase(pathIdx);
                         return;
+                    }
+                    else
+                    {
+                        float x1, y1, z1, x2, y2, z2;
+                        Position p = { (*itr).x, (*itr).y, 0.f, 0.f };
+                        Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x1, y1, 0.5f, p.GetAngle(xNextPost, yNextPost) + M_PI / 2.f);
+                        x2 = xNextPost - p.GetPositionX() + x1;
+                        y2 = yNextPost - p.GetPositionY() + y1;
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, zCurrent + 4.0f, &z1);
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + 4.0f, &z2);
+
+                        if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                        {
+                            _validPointsVector[_currentPoint].erase(randomIter);
+                            _preComputedPaths.erase(pathIdx);
+                            return;
+                        }
+                        else
+                        {
+                            Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x1, y1, 0.5f, p.GetAngle(xNextPost, yNextPost) - M_PI / 2.f);
+                            x2 = xNextPost - p.GetPositionX() + x1;
+                            y2 = yNextPost - p.GetPositionY() + y1;
+                            map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, zCurrent + 4.0f, &z1);
+                            map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + 4.0f, &z2);
+
+                            if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                            {
+                                _validPointsVector[_currentPoint].erase(randomIter);
+                                _preComputedPaths.erase(pathIdx);
+                                return;
+                            }
+                        }
                     }
                 }
 

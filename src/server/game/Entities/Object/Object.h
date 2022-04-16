@@ -550,6 +550,15 @@ struct Position
         }
         return fmod(o, 2.0f * static_cast<float>(M_PI));
     }
+
+    static void GetNearPoint2D(float x1, float y1, float &x2, float &y2, float distance2d, float absAngle)
+    {
+        x2 = x1 + distance2d * cos(absAngle);
+        y2 = y1 + distance2d * sin(absAngle);
+
+        acore::NormalizeMapCoord(x2);
+        acore::NormalizeMapCoord(y2);
+    }
 };
 ByteBuffer& operator<<(ByteBuffer& buf, Position::PositionXYStreamer const& streamer);
 ByteBuffer& operator >> (ByteBuffer& buf, Position::PositionXYStreamer const& streamer);
