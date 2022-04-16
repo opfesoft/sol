@@ -21,7 +21,7 @@ libMPQ (a library for reading MPQ files)
   Version: 1.0.4
 
 libreadline (command line editing library)
-  https://cnswww.cns.cwru.edu/php/chet/readline/rltop.html
+  https://tiswww.case.edu/php/chet/readline/rltop.html
   Version: external
 
 OpenSSL (general-purpose cryptography library)
