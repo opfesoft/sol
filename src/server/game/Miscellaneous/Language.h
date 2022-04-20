@@ -1049,7 +1049,11 @@ enum AcoreStrings
     //Player Ticket Strings
     LANG_TICKET_CLOSED                  = 1334,
     LANG_TICKET_COMPLETED               = 1335,
-    // FREE IDS                           1336-1999
+
+    LANG_BG_AV_A_CAPTAIN_BUFF           = 1336,
+    LANG_BG_AV_H_CAPTAIN_BUFF           = 1337,
+    LANG_BG_AV_S_MINE_BOSS_CLAIMS       = 1338,
+    // FREE IDS                           1339-1999
 
     // Ticket Strings 2000-2030
     LANG_COMMAND_TICKETNEW              = 2000,
