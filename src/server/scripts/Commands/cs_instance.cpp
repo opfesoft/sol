@@ -35,7 +35,9 @@ public:
             { "stats",          SEC_MODERATOR,      true,   &HandleInstanceStatsCommand,        "" },
             { "savedata",       SEC_ADMINISTRATOR,  false,  &HandleInstanceSaveDataCommand,     "" },
             { "setbossstate",   SEC_MODERATOR,      true,   &HandleInstanceSetBossStateCommand, "" },
-            { "getbossstate",   SEC_MODERATOR,      true,   &HandleInstanceGetBossStateCommand, "" }
+            { "getbossstate",   SEC_MODERATOR,      true,   &HandleInstanceGetBossStateCommand, "" },
+            { "setdata",        SEC_MODERATOR,      true,   &HandleInstanceSetDataCommand,      "" },
+            { "getdata",        SEC_MODERATOR,      true,   &HandleInstanceGetDataCommand,      "" }
         };
 
         static std::vector<ChatCommand> commandTable =
@@ -299,6 +301,123 @@ public:
         uint32 state = map->GetInstanceScript()->GetBossState(encounterId);
         std::string stateName = InstanceScript::GetBossStateName(state);
         handler->PSendSysMessage(LANG_COMMAND_INST_GET_BOSS_STATE, encounterId, state, stateName.c_str());
+        return true;
+    }
+
+    static bool HandleInstanceSetDataCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char* param1 = strtok((char*)args, " ");
+        char* param2 = strtok(nullptr, " ");
+        char* param3 = strtok(nullptr, " ");
+        uint32 field = 0;
+        uint32 data = 0;
+        Player* player = nullptr;
+        std::string playerName;
+
+        // Character name must be provided when using this from console.
+        if (!param2 || (!param3 && !handler->GetSession()))
+        {
+            handler->PSendSysMessage(LANG_CMD_SYNTAX);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (!param3)
+            player = handler->GetSession()->GetPlayer();
+        else
+        {
+            playerName = param3;
+            if (normalizePlayerName(playerName))
+                player = ObjectAccessor::FindPlayerByName(playerName);
+        }
+
+        if (!player)
+        {
+            handler->PSendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        InstanceMap* map = player->GetMap()->ToInstanceMap();
+        if (!map)
+        {
+            handler->PSendSysMessage(LANG_NOT_DUNGEON);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (!map->GetInstanceScript())
+        {
+            handler->PSendSysMessage(LANG_NO_INSTANCE_DATA);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        field = atoi(param1);
+        data = atoi(param2);
+
+        map->GetInstanceScript()->SetData(field, data);
+        handler->PSendSysMessage(LANG_COMMAND_INST_SET_DATA, field, data);
+        return true;
+    }
+
+    static bool HandleInstanceGetDataCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        char* param1 = strtok((char*)args, " ");
+        char* param2 = strtok(nullptr, " ");
+        uint32 field = 0;
+        Player* player = nullptr;
+        std::string playerName;
+
+        // Character name must be provided when using this from console.
+        if (!param1 || (!param2 && !handler->GetSession()))
+        {
+            handler->PSendSysMessage(LANG_CMD_SYNTAX);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (!param2)
+            player = handler->GetSession()->GetPlayer();
+        else
+        {
+            playerName = param2;
+            if (normalizePlayerName(playerName))
+                player = ObjectAccessor::FindPlayerByName(playerName);
+        }
+
+        if (!player)
+        {
+            handler->PSendSysMessage(LANG_PLAYER_NOT_FOUND);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        InstanceMap* map = player->GetMap()->ToInstanceMap();
+        if (!map)
+        {
+            handler->PSendSysMessage(LANG_NOT_DUNGEON);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (!map->GetInstanceScript())
+        {
+            handler->PSendSysMessage(LANG_NO_INSTANCE_DATA);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        field = atoi(param1);
+
+        uint32 data = map->GetInstanceScript()->GetData(field);
+        handler->PSendSysMessage(LANG_COMMAND_INST_GET_DATA, field, data);
         return true;
     }
 };

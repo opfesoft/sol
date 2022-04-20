@@ -1336,5 +1336,8 @@ enum AcoreStrings
     LANG_DEBUG_LFG_OFF                            = 30097,
 
     LANG_COMMAND_GOOBJECTMULTIPLE                 = 31077,
+
+    LANG_COMMAND_INST_SET_DATA                    = 31078,
+    LANG_COMMAND_INST_GET_DATA                    = 31079,
 };
 #endif
