@@ -297,12 +297,11 @@ public:
 
 enum ParqualFintallas
 {
-    SPELL_MARK_OF_SHAME         = 6767
+    SPELL_MARK_OF_SHAME         = 6767,
+    QUEST_TEST_OF_LORE_PART_6   = 6628,
+    GOSSIP_TEXT_PARQUAL_INTRO   = 5821,
+    GOSSIP_TEXT_TEST_OF_LORE    = 5822,
 };
-
-#define GOSSIP_HPF1             "Gul'dan"
-#define GOSSIP_HPF2             "Kel'Thuzad"
-#define GOSSIP_HPF3             "Ner'zhul"
 
 class npc_parqual_fintallas : public CreatureScript
 {
@@ -320,7 +319,7 @@ public:
         if (action == GOSSIP_ACTION_INFO_DEF+2)
         {
             CloseGossipMenuFor(player);
-            player->AreaExploredOrEventHappens(6628);
+            player->AreaExploredOrEventHappens(QUEST_TEST_OF_LORE_PART_6);
         }
         return true;
     }
@@ -330,15 +329,16 @@ public:
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->GetQuestStatus(6628) == QUEST_STATUS_INCOMPLETE && !player->HasAura(SPELL_MARK_OF_SHAME))
+        if (player->GetQuestStatus(QUEST_TEST_OF_LORE_PART_6) == QUEST_STATUS_INCOMPLETE && !player->HasAura(SPELL_MARK_OF_SHAME))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HPF1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HPF2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HPF3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-            SendGossipMenuFor(player, 5822, creature->GetGUID());
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+            SendGossipMenuFor(player, GOSSIP_TEXT_TEST_OF_LORE, creature->GetGUID());
         }
         else
-            SendGossipMenuFor(player, 5821, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_PARQUAL_INTRO, creature->GetGUID());
 
         return true;
     }
