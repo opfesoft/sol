@@ -136,22 +136,20 @@ enum Spells
     SPELL_ARTHAS_CRUSADER_STRIKE            = 50773,
 };
 
-
-#define GOSSIP_ITEM_ARTHAS_1 "Yes, my Prince. We're ready."
-#define GOSSIP_ITEM_ARTHAS_2 "We're only doing what is best for Loarderon your Highness."
-#define GOSSIP_ITEM_ARTHAS_3 "Lead the way Prince Arthas."
-#define GOSSIP_ITEM_ARTHAS_4 "I'm ready."
-#define GOSSIP_ITEM_ARTHAS_5 "For Lordaeron!"
-#define GOSSIP_ITEM_ARTHAS_6 "I'm ready to battle the dreadlord, sire."
-
 enum GossipMenuArthas
 {
-   GOSSIP_MENU_ARTHAS_1                     = 13076,
-   GOSSIP_MENU_ARTHAS_2                     = 13125,
-   GOSSIP_MENU_ARTHAS_3                     = 13126,
-   GOSSIP_MENU_ARTHAS_4                     = 13177,
-   GOSSIP_MENU_ARTHAS_5                     = 13179,
-   GOSSIP_MENU_ARTHAS_6                     = 13287,
+   GOSSIP_MENU_ARTHAS_1                     = 9653,
+   GOSSIP_MENU_ARTHAS_2                     = 9680,
+   GOSSIP_MENU_ARTHAS_3                     = 9681,
+   GOSSIP_MENU_ARTHAS_4                     = 9695,
+   GOSSIP_MENU_ARTHAS_5                     = 9696,
+   GOSSIP_MENU_ARTHAS_6                     = 9676,
+   GOSSIP_TEXT_ARTHAS_1                     = 13076,
+   GOSSIP_TEXT_ARTHAS_2                     = 13125,
+   GOSSIP_TEXT_ARTHAS_3                     = 13126,
+   GOSSIP_TEXT_ARTHAS_4                     = 13177,
+   GOSSIP_TEXT_ARTHAS_5                     = 13179,
+   GOSSIP_TEXT_ARTHAS_6                     = 13287,
 };
 
 enum Misc
@@ -292,8 +290,8 @@ public:
                     break;
                 case GOSSIP_ACTION_INFO_DEF+2:
                     ClearGossipMenuFor(player);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
-                    SendGossipMenuFor(player, GOSSIP_MENU_ARTHAS_3, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_ARTHAS_3, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_ARTHAS_3, creature->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF+3:
                     // Start Town Hall part
@@ -333,24 +331,24 @@ public:
         switch (pInstance->GetData(DATA_ARTHAS_EVENT))
         {
             case COS_PROGRESS_FINISHED_INTRO:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-                SendGossipMenuFor(player, GOSSIP_MENU_ARTHAS_1, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_ARTHAS_1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                SendGossipMenuFor(player, GOSSIP_TEXT_ARTHAS_1, creature->GetGUID());
                 break;
             case COS_PROGRESS_REACHED_TOWN_HALL:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-                SendGossipMenuFor(player, GOSSIP_MENU_ARTHAS_2, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_ARTHAS_2, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                SendGossipMenuFor(player, GOSSIP_TEXT_ARTHAS_2, creature->GetGUID());
                 break;
             case COS_PROGRESS_KILLED_EPOCH:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
-                SendGossipMenuFor(player, GOSSIP_MENU_ARTHAS_4, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_ARTHAS_4, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
+                SendGossipMenuFor(player, GOSSIP_TEXT_ARTHAS_4, creature->GetGUID());
                 break;
             case COS_PROGRESS_LAST_CITY:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
-                SendGossipMenuFor(player, GOSSIP_MENU_ARTHAS_5, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_ARTHAS_5, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
+                SendGossipMenuFor(player, GOSSIP_TEXT_ARTHAS_5, creature->GetGUID());
                 break;
             case COS_PROGRESS_BEFORE_MALGANIS:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_ARTHAS_6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+6);
-                SendGossipMenuFor(player, GOSSIP_MENU_ARTHAS_6, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_ARTHAS_6, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+6);
+                SendGossipMenuFor(player, GOSSIP_TEXT_ARTHAS_6, creature->GetGUID());
                 break;
         }
         return true;
