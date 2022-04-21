@@ -37,14 +37,17 @@ EndContentData */
 
 enum Bunthen
 {
-    QUEST_SEA_LION_HORDE        = 30,
-    QUEST_SEA_LION_ALLY         = 272,
-    TAXI_PATH_ID_ALLY           = 315,
-    TAXI_PATH_ID_HORDE          = 316
-};
+    QUEST_SEA_LION_HORDE                =   30,
+    QUEST_SEA_LION_ALLY                 =  272,
+    TAXI_PATH_ID_ALLY                   =  315,
+    TAXI_PATH_ID_HORDE                  =  316,
 
-#define GOSSIP_ITEM_THUNDER     "I'd like to fly to Thunder Bluff."
-#define GOSSIP_ITEM_AQ_END      "Do you know where I can find Half Pendant of Aquatic Endurance?"
+    GOSSIP_TEXT_BUNTHEN_NO_DRUID        = 4916,
+    GOSSIP_TEXT_BUNTHEN_FLIGHT_ALLIANCE = 4917,
+    GOSSIP_TEXT_BUNTHEN_FLIGHT_HORDE    = 4918,
+    GOSSIP_TEXT_BUNTHEN_AQ_END_ALLIANCE = 5373,
+    GOSSIP_TEXT_BUNTHEN_AQ_END_HORDE    = 5374,
+};
 
 class npc_bunthen_plainswind : public CreatureScript
 {
@@ -62,10 +65,10 @@ public:
                     player->ActivateTaxiPathTo(TAXI_PATH_ID_HORDE);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
-                SendGossipMenuFor(player, 5373, creature->GetGUID());
+                SendGossipMenuFor(player, GOSSIP_TEXT_BUNTHEN_AQ_END_ALLIANCE, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                SendGossipMenuFor(player, 5376, creature->GetGUID());
+                SendGossipMenuFor(player, GOSSIP_TEXT_BUNTHEN_AQ_END_HORDE, creature->GetGUID());
                 break;
         }
         return true;
@@ -74,22 +77,22 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (player->getClass() != CLASS_DRUID)
-            SendGossipMenuFor(player, 4916, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_BUNTHEN_NO_DRUID, creature->GetGUID());
         else if (player->GetTeamId() != TEAM_HORDE)
         {
             if (player->GetQuestStatus(QUEST_SEA_LION_ALLY) == QUEST_STATUS_INCOMPLETE)
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_END, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
-            SendGossipMenuFor(player, 4917, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_BUNTHEN_FLIGHT_ALLIANCE, creature->GetGUID());
         }
         else if (player->getClass() == CLASS_DRUID && player->GetTeamId() == TEAM_HORDE)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_THUNDER, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
             if (player->GetQuestStatus(QUEST_SEA_LION_HORDE) == QUEST_STATUS_INCOMPLETE)
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_END, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
-            SendGossipMenuFor(player, 4918, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_BUNTHEN_FLIGHT_HORDE, creature->GetGUID());
         }
         return true;
     }
@@ -100,10 +103,21 @@ public:
 ## npc_great_bear_spirit
 ######*/
 
-#define GOSSIP_BEAR1 "What do you represent, spirit?"
-#define GOSSIP_BEAR2 "I seek to understand the importance of strength of the body."
-#define GOSSIP_BEAR3 "I seek to understand the importance of strength of the heart."
-#define GOSSIP_BEAR4 "I have heard your words, Great Bear Spirit, and I understand. I now seek your blessings to fully learn the way of the Claw."
+enum Bear
+{
+    QUEST_GREAT_BEAR_SPIRIT_ALLIANCE = 5929,
+    QUEST_GREAT_BEAR_SPIRIT_HORDE    = 5930,
+
+    GOSSIP_MENU_BEAR_QUEST_1         = 3881,
+    GOSSIP_MENU_BEAR_QUEST_2         = 3883,
+    GOSSIP_MENU_BEAR_QUEST_3         = 3884,
+    GOSSIP_TEXT_BEAR_QUEST           = 4719,
+    GOSSIP_TEXT_BEAR_NO_QUEST        = 4718,
+    GOSSIP_TEXT_BEAR_QUEST_1         = 4721,
+    GOSSIP_TEXT_BEAR_QUEST_2         = 4733,
+    GOSSIP_TEXT_BEAR_QUEST_3         = 4734,
+    GOSSIP_TEXT_BEAR_QUEST_4         = 4735,
+};
 
 class npc_great_bear_spirit : public CreatureScript
 {
@@ -116,23 +130,23 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_BEAR2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                SendGossipMenuFor(player, 4721, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_BEAR_QUEST_1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                SendGossipMenuFor(player, GOSSIP_TEXT_BEAR_QUEST_1, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 1:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_BEAR3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                SendGossipMenuFor(player, 4733, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_BEAR_QUEST_2, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                SendGossipMenuFor(player, GOSSIP_TEXT_BEAR_QUEST_2, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_BEAR4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                SendGossipMenuFor(player, 4734, creature->GetGUID());
+                AddGossipItemFor(player, GOSSIP_MENU_BEAR_QUEST_3, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                SendGossipMenuFor(player, GOSSIP_TEXT_BEAR_QUEST_3, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                SendGossipMenuFor(player, 4735, creature->GetGUID());
-                if (player->GetQuestStatus(5929) == QUEST_STATUS_INCOMPLETE)
-                    player->AreaExploredOrEventHappens(5929);
-                if (player->GetQuestStatus(5930) == QUEST_STATUS_INCOMPLETE)
-                    player->AreaExploredOrEventHappens(5930);
+                SendGossipMenuFor(player, GOSSIP_TEXT_BEAR_QUEST_4, creature->GetGUID());
+                if (player->GetQuestStatus(QUEST_GREAT_BEAR_SPIRIT_ALLIANCE) == QUEST_STATUS_INCOMPLETE)
+                    player->AreaExploredOrEventHappens(QUEST_GREAT_BEAR_SPIRIT_ALLIANCE);
+                if (player->GetQuestStatus(QUEST_GREAT_BEAR_SPIRIT_HORDE) == QUEST_STATUS_INCOMPLETE)
+                    player->AreaExploredOrEventHappens(QUEST_GREAT_BEAR_SPIRIT_HORDE);
                 break;
         }
         return true;
@@ -141,13 +155,13 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         //ally or horde quest
-        if (player->GetQuestStatus(5929) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(5930) == QUEST_STATUS_INCOMPLETE)
+        if (player->GetQuestStatus(QUEST_GREAT_BEAR_SPIRIT_ALLIANCE) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_GREAT_BEAR_SPIRIT_HORDE) == QUEST_STATUS_INCOMPLETE)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_BEAR1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-            SendGossipMenuFor(player, 4719, creature->GetGUID());
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+            SendGossipMenuFor(player, GOSSIP_TEXT_BEAR_QUEST, creature->GetGUID());
         }
         else
-            SendGossipMenuFor(player, 4718, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_BEAR_NO_QUEST, creature->GetGUID());
 
         return true;
     }
@@ -158,8 +172,14 @@ public:
 ## npc_silva_filnaveth
 ######*/
 
-#define GOSSIP_ITEM_RUTHERAN    "I'd like to fly to Rut'theran Village."
-#define GOSSIP_ITEM_AQ_AGI      "Do you know where I can find Half Pendant of Aquatic Agility?"
+enum Silva
+{
+    GOSSIP_TEXT_SILVA_NO_DRUID        = 4913,
+    GOSSIP_TEXT_SILVA_FLIGHT_ALLIANCE = 4914,
+    GOSSIP_TEXT_SILVA_FLIGHT_HORDE    = 4915,
+    GOSSIP_TEXT_SILVA_AQ_AGI_ALLIANCE = 5375,
+    GOSSIP_TEXT_SILVA_AQ_AGI_HORDE    = 5376,
+};
 
 class npc_silva_filnaveth : public CreatureScript
 {
@@ -177,10 +197,10 @@ public:
                     player->ActivateTaxiPathTo(TAXI_PATH_ID_ALLY);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
-                SendGossipMenuFor(player, 5374, creature->GetGUID());
+                SendGossipMenuFor(player, GOSSIP_TEXT_SILVA_AQ_AGI_HORDE, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                SendGossipMenuFor(player, 5375, creature->GetGUID());
+                SendGossipMenuFor(player, GOSSIP_TEXT_SILVA_AQ_AGI_ALLIANCE, creature->GetGUID());
                 break;
         }
         return true;
@@ -189,22 +209,22 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (player->getClass() != CLASS_DRUID)
-            SendGossipMenuFor(player, 4913, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_SILVA_NO_DRUID, creature->GetGUID());
         else if (player->GetTeamId() != TEAM_ALLIANCE)
         {
             if (player->GetQuestStatus(QUEST_SEA_LION_HORDE) == QUEST_STATUS_INCOMPLETE)
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_AGI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
-            SendGossipMenuFor(player, 4915, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_SILVA_FLIGHT_HORDE, creature->GetGUID());
         }
         else if (player->getClass() == CLASS_DRUID && player->GetTeamId() == TEAM_ALLIANCE)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_RUTHERAN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
             if (player->GetQuestStatus(QUEST_SEA_LION_ALLY) == QUEST_STATUS_INCOMPLETE)
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_AQ_AGI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
-            SendGossipMenuFor(player, 4914, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXT_SILVA_FLIGHT_ALLIANCE, creature->GetGUID());
         }
         return true;
     }
