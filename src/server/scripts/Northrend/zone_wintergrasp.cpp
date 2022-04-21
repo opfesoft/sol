@@ -32,11 +32,6 @@
 #include "GameGraveyard.h"
 #include "World.h"
 
-#define GOSSIP_HELLO_DEMO1  "Build catapult."
-#define GOSSIP_HELLO_DEMO2  "Build demolisher."
-#define GOSSIP_HELLO_DEMO3  "Build siege engine."
-#define GOSSIP_HELLO_DEMO4  "I cannot build more!"
-
 enum eWGqueuenpctext
 {
     WG_NPCQUEUE_TEXT_H_NOWAR            = 14775,
@@ -77,6 +72,8 @@ enum CreatureIds
     NPC_WINTERGRASP_CONTROL_ARMS        = 27852,
 
     NPC_WORLD_TRIGGER_LARGE_AOI_NOT_IMMUNE_PC_NPC = 23742,
+
+    GOSSIP_TEXT_CANNOT_BUILD            = 13786,
 };
 
 enum QuestIds
@@ -139,18 +136,18 @@ class npc_wg_demolisher_engineer : public CreatureScript
             if (canBuild(creature))
             {
                 if (player->HasAura(SPELL_CORPORAL))
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HELLO_DEMO1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
                 else if (player->HasAura(SPELL_LIEUTENANT))
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HELLO_DEMO1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HELLO_DEMO2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HELLO_DEMO3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
                 }
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             }
             else
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HELLO_DEMO4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
+                SendGossipMenuFor(player, GOSSIP_TEXT_CANNOT_BUILD, creature->GetGUID());
 
-            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
