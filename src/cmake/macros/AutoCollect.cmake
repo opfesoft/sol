@@ -19,7 +19,6 @@
 #   ${CMAKE_CURRENT_SOURCE_DIR}
 #   COMMON_PRIVATE_SOURCES
 #   # Exclude
-#   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders
 #   ${CMAKE_CURRENT_SOURCE_DIR}/Platform)
 #
 function(CollectSourceFiles current_dir variable)
@@ -55,7 +54,6 @@ endfunction()
 #   ${CMAKE_CURRENT_SOURCE_DIR}
 #   COMMON_PUBLIC_INCLUDES
 #   # Exclude
-#   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders
 #   ${CMAKE_CURRENT_SOURCE_DIR}/Platform)
 #
 function(CollectIncludeDirectories current_dir variable)

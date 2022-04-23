@@ -8,8 +8,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-# Enable precompiled headers when using the GCC compiler.
-
 CU_RUN_HOOK(BEFORE_SCRIPTS_LIBRARY)
 
 CU_SET_PATH("AC_SCRIPTS_DIR" "${CMAKE_CURRENT_LIST_DIR}")
@@ -70,17 +68,11 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/GenLoader.cpp.cmake ${BUILDDIR}/GenLo
 message(STATUS "SCRIPT PREPARATION COMPLETE")
 message("")
 
-if (USE_SCRIPTPCH)
-  set(PRIVATE_PCH_HEADER PrecompiledHeaders/ScriptPCH.h)
-endif ()
-
 add_library(scripts-interface INTERFACE)
 
 CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PUBLIC_INCLUDES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+  PUBLIC_INCLUDES)
 
 target_include_directories(scripts-interface
   INTERFACE
@@ -109,8 +101,3 @@ set_target_properties(scripts
       "server")
 
 add_dependencies(scripts revision.h)
-
-# Generate precompiled header
-if (USE_SCRIPTPCH)
-  add_cxx_pch(scripts ${PRIVATE_PCH_HEADER})
-endif()

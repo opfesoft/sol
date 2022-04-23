@@ -12,13 +12,7 @@
 
 CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PRIVATE_SOURCES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
-
-if (USE_COREPCH)
-  set(PRIVATE_PCH_HEADER PrecompiledHeaders/worldPCH.h)
-endif()
+  PRIVATE_SOURCES)
 
 add_executable(worldserver
   ${PRIVATE_SOURCES})
@@ -36,9 +30,7 @@ set_target_properties(worldserver PROPERTIES LINK_FLAGS "${worldserver_LINK_FLAG
 
 CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PUBLIC_INCLUDES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+  PUBLIC_INCLUDES)
 
 target_include_directories(worldserver
   PUBLIC
@@ -65,11 +57,6 @@ set_target_properties(worldserver
 install(TARGETS worldserver DESTINATION bin)
 
 install(FILES worldserver.conf.dist DESTINATION ${CONF_DIR})
-
-# Generate precompiled header
-if( USE_COREPCH )
-  add_cxx_pch(worldserver ${PRIVATE_PCH_HEADER})
-endif()
 
 # handle config file
 CU_GET_GLOBAL("MODULE_CONFIG_FILE_LIST")

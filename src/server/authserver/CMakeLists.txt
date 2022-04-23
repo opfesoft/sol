@@ -14,13 +14,7 @@
 
 CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PRIVATE_SOURCES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
-
-if (USE_COREPCH)
-  set(PRIVATE_PCH_HEADER PrecompiledHeaders/authPCH.h)
-endif()
+  PRIVATE_SOURCES)
 
 add_executable(authserver
   ${PRIVATE_SOURCES})
@@ -36,9 +30,7 @@ target_link_libraries(authserver
 
 CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PUBLIC_INCLUDES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+  PUBLIC_INCLUDES)
 
 target_include_directories(authserver
   PUBLIC
@@ -54,10 +46,5 @@ set_target_properties(authserver
 install(TARGETS authserver DESTINATION bin)
 
 install(FILES  authserver.conf.dist DESTINATION ${CONF_DIR})
-
-# Generate precompiled header
-if (USE_COREPCH)
-  add_cxx_pch(authserver ${PRIVATE_PCH_HEADER})
-endif()
 
 CU_RUN_HOOK("AFTER_AUTHSERVER_CMAKE")

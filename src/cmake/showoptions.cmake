@@ -36,18 +36,6 @@ else()
   message("* Build map/vmap tools            : No  (default)")
 endif()
 
-if( USE_COREPCH )
-  message("* Build core w/PCH                : Yes (default)")
-else()
-  message("* Build core w/PCH                : No")
-endif()
-
-if( USE_SCRIPTPCH )
-  message("* Build scripts w/PCH             : Yes (default)")
-else()
-  message("* Build scripts w/PCH             : No")
-endif()
-
 if( WITH_WARNINGS )
   message("* Show all warnings               : Yes")
 else()

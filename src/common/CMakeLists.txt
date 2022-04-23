@@ -14,8 +14,7 @@ CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE_SOURCES
   # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/Debugging
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+  ${CMAKE_CURRENT_SOURCE_DIR}/Debugging)
 
 # Manually set sources for Debugging directory as we don't want to include WheatyExceptionReport in common project
 # It needs to be included both in authserver and worldserver for the static global variable to be properly initialized
@@ -24,18 +23,12 @@ list(APPEND PRIVATE_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Debugging/Errors.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Debugging/Errors.h)
 
-if (USE_COREPCH)
-  set(PRIVATE_PCH_HEADER PrecompiledHeaders/commonPCH.h)
-endif()
-
 add_library(common
   ${PRIVATE_SOURCES})
 
 CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PUBLIC_INCLUDES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+  PUBLIC_INCLUDES)
 
 target_include_directories(common
   PUBLIC
@@ -65,8 +58,3 @@ set_target_properties(common
   PROPERTIES
     FOLDER
       "server")
-
-# Generate precompiled header
-if (USE_COREPCH)
-  add_cxx_pch(common ${PRIVATE_PCH_HEADER})
-endif ()

@@ -80,12 +80,6 @@ if( NOT CMAKE_BUILD_TYPE )
   set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-# turn off PCH totally if enabled (hidden setting, mainly for devs)
-if( NOPCH )
-  set(USE_COREPCH 0)
-  set(USE_SCRIPTPCH 0)
-endif()
-
 include(ConfigureBaseTargets)
 include(CheckPlatform)
 include(AutoCollect)
@@ -95,7 +89,6 @@ CU_RUN_HOOK("AFTER_LOAD_CMAKE_MODULES")
 # basic packagesearching and setup (further support will be needed, this is a preliminary release!)
 set(ACE_EXPECTED_VERSION 6.3.3)
 
-find_package(PCHSupport)
 find_package(ACE REQUIRED)
 find_package(MySQL REQUIRED)
 

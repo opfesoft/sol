@@ -12,21 +12,13 @@ CU_RUN_HOOK(BEFORE_GAME_LIBRARY)
 
 CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PRIVATE_SOURCES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
-
-if (USE_COREPCH)
-  set(PRIVATE_PCH_HEADER PrecompiledHeaders/gamePCH.h)
-endif ()
+  PRIVATE_SOURCES)
 
 add_library(game-interface INTERFACE)
 
 CollectIncludeDirectories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  PUBLIC_INCLUDES
-  # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+  PUBLIC_INCLUDES)
 
 target_include_directories(game-interface
   INTERFACE
@@ -54,10 +46,5 @@ set_target_properties(game
   PROPERTIES
     FOLDER
       "server")
-
-# Generate precompiled header
-if (USE_COREPCH)
-  add_cxx_pch(game ${PRIVATE_PCH_HEADER})
-endif ()
 
 CU_RUN_HOOK(AFTER_GAME_LIBRARY)
