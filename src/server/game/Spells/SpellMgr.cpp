@@ -4160,6 +4160,14 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectApplyAuraName[EFFECT_2] = SPELL_AURA_ADD_PCT_MODIFIER;
             spellInfo->EffectImplicitTargetA[EFFECT_2] = TARGET_UNIT_TARGET_ALLY;
             break;
+        case 63652: // Rapture (Runic Power)
+        case 63653: // Rapture (Rage)
+        case 63654: // Rapture (Mana)
+        case 63655: // Rapture (Energy)
+            spellInfo->AttributesEx |= SPELL_ATTR1_NO_THREAT;
+            spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
+            break;
 
 
 
