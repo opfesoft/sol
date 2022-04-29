@@ -11,12 +11,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-
-# basic packagesearching and setup
-# (further support will be needed, this is a preliminary release!)
-set(OPENSSL_EXPECTED_VERSION 1.0.0)
-
-find_package(OpenSSL REQUIRED)
+find_package(OpenSSL 1.0.0...1.1.1 REQUIRED)
 
 add_library(openssl INTERFACE)
 
