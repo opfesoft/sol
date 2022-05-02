@@ -10,6 +10,8 @@
 #include "SpellScript.h"
 #include "SpellAuraEffects.h"
 #include "Player.h"
+#include "CombatAI.h"
+#include "Vehicle.h"
 
 #define BASE_CAMP    200
 #define GROUNDS      201
@@ -503,6 +505,36 @@ public:
     }
 };
 
+class npc_salvaged_siege_engine : public CreatureScript
+{
+public:
+    npc_salvaged_siege_engine() : CreatureScript("npc_salvaged_siege_engine") { }
+
+    struct npc_salvaged_siege_engineAI : public VehicleAI
+    {
+        npc_salvaged_siege_engineAI(Creature* creature) : VehicleAI(creature) { }
+
+        bool OnBeforeSpellClick(Unit* clicker, int8& /*seatId*/)
+        {
+            if (Vehicle* veh = me->GetVehicleKit())
+                if (!veh->HasEmptySeat(0))
+                    if (Unit* turret = veh->GetPassenger(7))
+                        if (turret->IsVehicle() && turret->GetVehicleKit() && turret->GetVehicleKit()->HasEmptySeat(0))
+                        {
+                            turret->HandleSpellClick(clicker);
+                            return false;
+                        }
+
+            return true;
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_salvaged_siege_engineAI(creature);
+    }
+};
+
 
 void AddSC_ulduar()
 {
@@ -517,4 +549,5 @@ void AddSC_ulduar()
 
     new AreaTrigger_at_celestial_planetarium_enterance();
     new go_call_tram();
+    new npc_salvaged_siege_engine();
 }

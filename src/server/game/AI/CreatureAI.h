@@ -157,6 +157,7 @@ class CreatureAI : public UnitAI
         /// == Fields =======================================
         virtual void PassengerBoarded(Unit* /*passenger*/, int8 /*seatId*/, bool /*apply*/) {}
 
+        virtual bool OnBeforeSpellClick(Unit* /*clicker*/, int8& /*seatId*/) { return true; }
         virtual void OnSpellClick(Unit* /*clicker*/, bool& /*result*/) { }
 
         virtual bool CanSeeAlways(WorldObject const* /*obj*/) { return false; }

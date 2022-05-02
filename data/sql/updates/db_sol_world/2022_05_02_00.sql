@@ -1,0 +1,28 @@
+-- DB update 2022_04_29_00 -> 2022_05_02_00
+DROP PROCEDURE IF EXISTS `updateDb`;
+DELIMITER //
+CREATE PROCEDURE updateDb ()
+proc:BEGIN DECLARE OK VARCHAR(100) DEFAULT 'FALSE';
+SELECT COUNT(*) INTO @COLEXISTS
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'version_db_sol_world' AND COLUMN_NAME = '2022_04_29_00';
+IF @COLEXISTS = 0 THEN LEAVE proc; END IF;
+START TRANSACTION;
+ALTER TABLE version_db_sol_world CHANGE COLUMN 2022_04_29_00 2022_05_02_00 bit;
+SELECT sql_rev INTO OK FROM version_db_sol_world WHERE sql_rev = '1651473596406962770'; IF OK <> 'FALSE' THEN LEAVE proc; END IF;
+--
+-- START UPDATING QUERIES
+--
+
+INSERT INTO `version_db_sol_world` (`sql_rev`) VALUES ('1651473596406962770');
+
+UPDATE `creature_template` SET `ScriptName` = 'npc_salvaged_siege_engine' WHERE `entry` = 33060;
+
+--
+-- END UPDATING QUERIES
+--
+COMMIT;
+END //
+DELIMITER ;
+CALL updateDb();
+DROP PROCEDURE IF EXISTS `updateDb`;
