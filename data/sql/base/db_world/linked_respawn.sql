@@ -7,18 +7,18 @@
 DROP TABLE IF EXISTS `linked_respawn`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `linked_respawn` 
-(
+CREATE TABLE `linked_respawn` (
   `guid` int(10) unsigned NOT NULL COMMENT 'dependent creature',
   `linkedGuid` int(10) unsigned NOT NULL COMMENT 'master creature',
-  `linkType` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `linkType` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`,`linkType`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Creature Respawn Link System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='Creature Respawn Link System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `linked_respawn` WRITE;
 /*!40000 ALTER TABLE `linked_respawn` DISABLE KEYS */;
-INSERT INTO `linked_respawn` VALUES 
+INSERT INTO `linked_respawn`
+VALUES
 (116,12597,0),
 (118,3453,0),
 (120,3453,0),

@@ -7,14 +7,13 @@
 DROP TABLE IF EXISTS `character_achievement_progress`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `character_achievement_progress` 
-(
+CREATE TABLE `character_achievement_progress` (
   `guid` int(10) unsigned NOT NULL,
   `criteria` smallint(5) unsigned NOT NULL,
   `counter` int(10) unsigned NOT NULL,
-  `date` int(10) unsigned NOT NULL DEFAULT '0',
+  `date` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`,`criteria`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_achievement_progress` WRITE;

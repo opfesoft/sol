@@ -7,23 +7,23 @@
 DROP TABLE IF EXISTS `areatrigger_teleport`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `areatrigger_teleport` 
-(
-  `ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Name` text,
-  `target_map` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `target_position_x` float NOT NULL DEFAULT '0',
-  `target_position_y` float NOT NULL DEFAULT '0',
-  `target_position_z` float NOT NULL DEFAULT '0',
-  `target_orientation` float NOT NULL DEFAULT '0',
+CREATE TABLE `areatrigger_teleport` (
+  `ID` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Name` text DEFAULT NULL,
+  `target_map` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `target_position_x` float NOT NULL DEFAULT 0,
+  `target_position_y` float NOT NULL DEFAULT 0,
+  `target_position_z` float NOT NULL DEFAULT 0,
+  `target_orientation` float NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`),
   FULLTEXT KEY `name` (`Name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Trigger System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Trigger System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `areatrigger_teleport` WRITE;
 /*!40000 ALTER TABLE `areatrigger_teleport` DISABLE KEYS */;
-INSERT INTO `areatrigger_teleport` VALUES 
+INSERT INTO `areatrigger_teleport`
+VALUES
 (45,'Scarlet Monastery - Graveyard (Entrance)',189,1688.99,1053.48,18.6775,0.00117),
 (78,'DeadMines Entrance',36,-16.4,-383.07,61.78,1.86),
 (101,'Stormwind Stockades Entrance',34,54.23,0.28,-18.34,6.26),
@@ -138,8 +138,6 @@ INSERT INTO `areatrigger_teleport` VALUES
 (4152,'The Blood Furnace (Entrance)',542,-3.9967,14.6363,-44.8009,4.88748),
 (4153,'Magtheridon\'s Lair (Entrance)',544,187.843,35.9232,67.9252,4.79879),
 (4156,'Naxxramas (to frostwyrm lair)',533,3500.87,-5339.03,145,1.34),
-(4233,'Eversong Woods - Duskwither UP Target',530,9331.49,-7812.27,136.569,5.23599),
-(4267,'Eversong Woods - Duskwither DOWN Target',530,9334.03,-7880.02,74.9095,2.35619),
 (4297,'Hellfire Ramparts (Exit)',530,-360.671,3071.9,-15.0977,5.14274),
 (4304,'Hellfire Ramparts - Omor Exit Target',530,-233.33,3199.71,-50,0.785398),
 (4311,'Battle Of Mount Hyjal, Alliance Base (Entrance)',534,4954,-1886.2,1326,0.13),

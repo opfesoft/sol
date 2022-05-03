@@ -7,14 +7,13 @@
 DROP TABLE IF EXISTS `realmcharacters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `realmcharacters` 
-(
-  `realmid` int(10) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `realmcharacters` (
+  `realmid` int(10) unsigned NOT NULL DEFAULT 0,
   `acctid` int(10) unsigned NOT NULL,
-  `numchars` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `numchars` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`realmid`,`acctid`),
   KEY `acctid` (`acctid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Realm Character Tracker';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Realm Character Tracker';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `realmcharacters` WRITE;

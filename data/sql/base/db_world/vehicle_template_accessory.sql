@@ -7,22 +7,22 @@
 DROP TABLE IF EXISTS `vehicle_template_accessory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `vehicle_template_accessory` 
-(
-  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `accessory_entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `seat_id` tinyint(4) NOT NULL DEFAULT '0',
-  `minion` tinyint(3) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `vehicle_template_accessory` (
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `accessory_entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `seat_id` tinyint(4) NOT NULL DEFAULT 0,
+  `minion` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `description` text NOT NULL,
-  `summontype` tinyint(3) unsigned NOT NULL DEFAULT '6' COMMENT 'see enum TempSummonType',
-  `summontimer` int(10) unsigned NOT NULL DEFAULT '30000' COMMENT 'timer, only relevant for certain summontypes',
+  `summontype` tinyint(3) unsigned NOT NULL DEFAULT 6 COMMENT 'see enum TempSummonType',
+  `summontimer` int(10) unsigned NOT NULL DEFAULT 30000 COMMENT 'timer, only relevant for certain summontypes',
   PRIMARY KEY (`entry`,`seat_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `vehicle_template_accessory` WRITE;
 /*!40000 ALTER TABLE `vehicle_template_accessory` DISABLE KEYS */;
-INSERT INTO `vehicle_template_accessory` VALUES 
+INSERT INTO `vehicle_template_accessory`
+VALUES
 (24083,24082,0,0,'Proto-Drake Handler',6,120000),
 (24750,24751,0,1,'Excelsior rides Hidalgo the Master Falconer',6,30000),
 (25762,25760,0,1,'Kvaldir Raider',8,0),
@@ -33,6 +33,7 @@ INSERT INTO `vehicle_template_accessory` VALUES
 (25762,25760,5,1,'Kvaldir Raider',8,0),
 (25762,25760,6,1,'Kvaldir Raider',8,0),
 (25968,25801,0,0,'Nedar, Lord of Rhinos',6,30000),
+(27213,27206,0,0,'Onslaught Warhorse - Onslaught Knight',8,30000),
 (27241,27268,0,0,'Risen Gryphon',6,30000),
 (27587,27163,1,1,'7th Legion Siege Engineer Rides Alliance Steam Tank',5,0),
 (27587,27588,2,1,'7th Legion Elite Rides Alliance Steam Tank',5,0),
@@ -128,10 +129,10 @@ INSERT INTO `vehicle_template_accessory` VALUES
 (32513,32256,6,1,'Shield Visual Loc Bunny on Horde Infra-green Bomber',8,0),
 (32513,32317,7,1,'Horde Bomber Pilot rides Horde Infra-green Bomber',8,0),
 (32627,32629,7,1,'Wintergrasp Siege Engine',6,30000),
-(32633,32638,1,1,'Traveler Mammoth (A) - Vendor',6,30000),
-(32633,32639,2,1,'Traveler Mammoth (A) - Vendor & Repairer',6,30000),
-(32640,32642,1,1,'Traveler Mammoth (H) - Vendor',6,30000),
-(32640,32641,2,1,'Traveler Mammoth (H) - Vendor & Repairer',6,30000),
+(32633,32638,1,0,'Traveler Mammoth (A) - Vendor',6,30000),
+(32633,32639,2,0,'Traveler Mammoth (A) - Vendor & Repairer',6,30000),
+(32640,32642,1,0,'Traveler Mammoth (H) - Vendor',6,30000),
+(32640,32641,2,0,'Traveler Mammoth (H) - Vendor & Repairer',6,30000),
 (32823,34812,0,1,'Bountiful Table - The Turkey Chair',8,0),
 (32823,34823,1,1,'Bountiful Table - The Cranberry Chair',8,0),
 (32823,34819,2,1,'Bountiful Table - The Stuffing Chair',8,0),

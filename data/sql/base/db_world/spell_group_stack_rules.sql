@@ -7,18 +7,18 @@
 DROP TABLE IF EXISTS `spell_group_stack_rules`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_group_stack_rules` 
-(
-  `group_id` int(11) unsigned NOT NULL DEFAULT '0',
-  `stack_rule` tinyint(3) NOT NULL DEFAULT '0',
+CREATE TABLE `spell_group_stack_rules` (
+  `group_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `stack_rule` tinyint(3) NOT NULL DEFAULT 0,
   `description` varchar(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_group_stack_rules` WRITE;
 /*!40000 ALTER TABLE `spell_group_stack_rules` DISABLE KEYS */;
-INSERT INTO `spell_group_stack_rules` VALUES 
+INSERT INTO `spell_group_stack_rules`
+VALUES
 (1,4,'Group of Battle / Guardian Elixirs, stacking done with exclusive flags'),
 (1001,8,'Group of Food (Well Fed) and similar buffs'),
 (1002,19,'Group of blessings, warrior shouts (with HP increasing buffs), stack for different casters, effect exclusive COMBINED GROUP'),
@@ -53,7 +53,9 @@ INSERT INTO `spell_group_stack_rules` VALUES
 (1031,16,'Group of Death Wish and DK Hysteria, effect exclusive'),
 (1032,17,'Group of Spell Haste Auras'),
 (1033,1,'Group of Howling Rage'),
-(1034,1,'Group of Thorns');
+(1034,1,'Group of Thorns'),
+(1112,8,''),
+(5000,8,'Never stack: Netherwind Focus, Fireball!, Hot Streak');
 /*!40000 ALTER TABLE `spell_group_stack_rules` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

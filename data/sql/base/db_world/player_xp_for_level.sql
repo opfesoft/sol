@@ -7,17 +7,17 @@
 DROP TABLE IF EXISTS `player_xp_for_level`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `player_xp_for_level` 
-(
+CREATE TABLE `player_xp_for_level` (
   `Level` tinyint(3) unsigned NOT NULL,
   `Experience` int(10) unsigned NOT NULL,
   PRIMARY KEY (`Level`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `player_xp_for_level` WRITE;
 /*!40000 ALTER TABLE `player_xp_for_level` DISABLE KEYS */;
-INSERT INTO `player_xp_for_level` VALUES 
+INSERT INTO `player_xp_for_level`
+VALUES
 (1,400),
 (2,900),
 (3,1400),

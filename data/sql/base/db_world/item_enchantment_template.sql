@@ -7,18 +7,18 @@
 DROP TABLE IF EXISTS `item_enchantment_template`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item_enchantment_template` 
-(
-  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `ench` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `chance` float unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `item_enchantment_template` (
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `ench` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `chance` float unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`entry`,`ench`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Item Random Enchantment System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Item Random Enchantment System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `item_enchantment_template` WRITE;
 /*!40000 ALTER TABLE `item_enchantment_template` DISABLE KEYS */;
-INSERT INTO `item_enchantment_template` VALUES 
+INSERT INTO `item_enchantment_template`
+VALUES
 (61,6,7.73),
 (61,8,7.31),
 (61,9,8.02),

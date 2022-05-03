@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `creature_questitem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `creature_questitem` 
-(
-  `CreatureEntry` int(10) unsigned NOT NULL DEFAULT '0',
-  `Idx` int(10) unsigned NOT NULL DEFAULT '0',
-  `ItemId` int(10) unsigned NOT NULL DEFAULT '0',
-  `VerifiedBuild` smallint(5) NOT NULL DEFAULT '0',
+CREATE TABLE `creature_questitem` (
+  `CreatureEntry` int(10) unsigned NOT NULL DEFAULT 0,
+  `Idx` int(10) unsigned NOT NULL DEFAULT 0,
+  `ItemId` int(10) unsigned NOT NULL DEFAULT 0,
+  `VerifiedBuild` smallint(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`CreatureEntry`,`Idx`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_questitem` WRITE;
 /*!40000 ALTER TABLE `creature_questitem` DISABLE KEYS */;
-INSERT INTO `creature_questitem` VALUES 
+INSERT INTO `creature_questitem`
+VALUES
 (3,0,884,0),
 (3,1,1129,0),
 (38,0,752,0),
@@ -2632,7 +2632,13 @@ INSERT INTO `creature_questitem` VALUES
 (16245,0,22893,0),
 (16246,0,22894,0),
 (16294,0,22487,0),
+(16301,0,22641,0),
+(16302,0,22641,0),
+(16303,0,22642,0),
 (16304,0,22580,0),
+(16305,0,22642,0),
+(16307,0,22642,0),
+(16308,0,22642,0),
 (16310,0,22580,0),
 (16323,0,22566,0),
 (16324,0,22567,0),
@@ -2654,10 +2660,13 @@ INSERT INTO `creature_questitem` VALUES
 (16349,0,22570,0),
 (16350,0,22570,0),
 (16350,1,23707,0),
+(16350,2,22644,0),
 (16351,0,22570,0),
 (16351,1,23707,0),
+(16351,2,22644,0),
 (16352,0,22570,0),
 (16352,1,23707,0),
+(16352,2,22644,0),
 (16353,0,22570,0),
 (16354,0,22570,0),
 (16355,0,22570,0),
@@ -2768,7 +2777,9 @@ INSERT INTO `creature_questitem` VALUES
 (17196,0,23685,0),
 (17198,0,23845,0),
 (17199,0,23845,0),
-(17201,0,23677,0),
+(17200,0,23676,0),
+(17201,0,23676,0),
+(17201,1,23677,0),
 (17206,0,23688,0),
 (17207,0,23681,0),
 (17216,0,23757,0),

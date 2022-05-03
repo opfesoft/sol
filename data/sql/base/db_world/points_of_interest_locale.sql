@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `points_of_interest_locale`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `points_of_interest_locale` 
-(
-  `ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `points_of_interest_locale` (
+  `ID` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `locale` varchar(4) NOT NULL,
-  `Name` text,
-  `VerifiedBuild` smallint(5) DEFAULT '0',
+  `Name` text DEFAULT NULL,
+  `VerifiedBuild` smallint(5) DEFAULT 0,
   PRIMARY KEY (`ID`,`locale`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `points_of_interest_locale` WRITE;
 /*!40000 ALTER TABLE `points_of_interest_locale` DISABLE KEYS */;
-INSERT INTO `points_of_interest_locale` VALUES 
+INSERT INTO `points_of_interest_locale`
+VALUES
 (1,'deDE','Gasthaus Zur Höhle des Löwen',0),
 (1,'esES','Posada Orgullo de León',0),
 (1,'esMX','Posada Orgullo de León',0),
@@ -2064,18 +2064,32 @@ INSERT INTO `points_of_interest_locale` VALUES
 (446,'frFR','La Taverne du pendu',0),
 (446,'ruRU','Таверна \"Петля висельника\"',0),
 (447,'deDE','Morganus',0),
+(447,'esES','Morganus',0),
+(447,'esMX','Morganus',0),
 (447,'frFR','Morganus',0),
 (447,'ruRU','Морганус',0),
 (448,'deDE','Braufest Souvenirs',0),
+(448,'esES','Recuerdos de la Fiesta de la Cerveza',0),
+(448,'esMX','Recuerdos de la Fiesta de la Cerveza',0),
 (448,'frFR','Souvenirs de la fête des brasseurs',0),
 (449,'deDE','Braufest Ram Racing',0),
+(449,'esES','Carrera de Carneros de la Fiesta de la Cerveza',0),
+(449,'esMX','Carrera de Carneros de la Fiesta de la Cerveza',0),
 (449,'frFR','Bélier de course de la fête des brasseurs',0),
 (450,'deDE','Bier des Monats e.V. Eisenschmiede',0),
+(450,'esES','Club de la Cerveza del Mes, Forjaz',0),
+(450,'esMX','Club de la Cerveza del Mes, Forjaz',0),
 (450,'frFR','Le club de la Bière du mois, Forgefer',0),
 (451,'deDE','Goblin Braufest Souvenirs',0),
+(451,'esES','Recuerdos de la Fiesta de la Cerveza Goblin',0),
+(451,'esMX','Recuerdos de la Fiesta de la Cerveza Goblin',0),
 (451,'frFR','Souvenirs de la fête des brasseurs Goblin',0),
 (452,'deDE','Bier des Monats e.V. Orgrimmar',0),
+(452,'esES','Carrera de Carneros de la Fiesta de la Cerveza Goblin',0),
+(452,'esMX','Carrera de Carneros de la Fiesta de la Cerveza Goblin',0),
 (452,'frFR','Bélier de course de la fête des brasseurs Goblin',0),
+(453,'esES','Club de la Cerveza del Mes, Orgrimmar',0),
+(453,'esMX','Club de la Cerveza del Mes, Orgrimmar',0),
 (453,'frFR','Le club de la Bière du mois, Orgrimmar',0);
 /*!40000 ALTER TABLE `points_of_interest_locale` ENABLE KEYS */;
 UNLOCK TABLES;

@@ -7,18 +7,18 @@
 DROP TABLE IF EXISTS `game_event_npcflag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `game_event_npcflag` 
-(
+CREATE TABLE `game_event_npcflag` (
   `eventEntry` tinyint(3) unsigned NOT NULL COMMENT 'Entry of the game event',
-  `guid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `npcflag` int(10) unsigned NOT NULL DEFAULT '0',
+  `guid` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `npcflag` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`,`eventEntry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_npcflag` WRITE;
 /*!40000 ALTER TABLE `game_event_npcflag` DISABLE KEYS */;
-INSERT INTO `game_event_npcflag` VALUES 
+INSERT INTO `game_event_npcflag`
+VALUES
 (17,1803,179),
 (17,26771,179),
 (17,38112,129),

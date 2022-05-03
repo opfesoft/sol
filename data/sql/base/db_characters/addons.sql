@@ -7,17 +7,17 @@
 DROP TABLE IF EXISTS `addons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `addons` 
-(
+CREATE TABLE `addons` (
   `name` varchar(120) NOT NULL DEFAULT '',
-  `crc` int(10) unsigned NOT NULL DEFAULT '0',
+  `crc` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Addons';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Addons';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `addons` WRITE;
 /*!40000 ALTER TABLE `addons` DISABLE KEYS */;
-INSERT INTO `addons` VALUES 
+INSERT INTO `addons`
+VALUES
 ('Blizzard_AchievementUI',1276933997),
 ('Blizzard_ArenaUI',1276933997),
 ('Blizzard_AuctionUI',1276933997),

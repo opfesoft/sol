@@ -7,20 +7,20 @@
 DROP TABLE IF EXISTS `uptime`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `uptime` 
-(
+CREATE TABLE `uptime` (
   `realmid` int(10) unsigned NOT NULL,
-  `starttime` int(10) unsigned NOT NULL DEFAULT '0',
-  `uptime` int(10) unsigned NOT NULL DEFAULT '0',
-  `maxplayers` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `starttime` int(10) unsigned NOT NULL DEFAULT 0,
+  `uptime` int(10) unsigned NOT NULL DEFAULT 0,
+  `maxplayers` smallint(5) unsigned NOT NULL DEFAULT 0,
   `revision` varchar(255) NOT NULL DEFAULT 'AzerothCore',
   PRIMARY KEY (`realmid`,`starttime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Uptime system';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Uptime system';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `uptime` WRITE;
 /*!40000 ALTER TABLE `uptime` DISABLE KEYS */;
-INSERT INTO `uptime` VALUES 
+INSERT INTO `uptime`
+VALUES
 (1,1550400304,121,0,'AzerothCore rev. 2bcedc2859e7 2019-02-17 10:04:09 +0100 (master branch) (Unix, Debug)'),
 (1,1550400454,1440,0,'AzerothCore rev. 2bcedc2859e7 2019-02-17 10:04:09 +0100 (master branch) (Unix, Debug)');
 /*!40000 ALTER TABLE `uptime` ENABLE KEYS */;

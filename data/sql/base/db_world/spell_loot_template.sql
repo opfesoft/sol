@@ -7,47 +7,43 @@
 DROP TABLE IF EXISTS `spell_loot_template`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_loot_template` 
-(
-  `Entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Item` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Reference` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Chance` float NOT NULL DEFAULT '100',
-  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
-  `LootMode` smallint(5) unsigned NOT NULL DEFAULT '1',
-  `GroupId` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `MinCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
+CREATE TABLE `spell_loot_template` (
+  `Entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Item` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Reference` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Chance` float NOT NULL DEFAULT 100,
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT 0,
+  `LootMode` smallint(5) unsigned NOT NULL DEFAULT 1,
+  `GroupId` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `MinCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_loot_template` WRITE;
 /*!40000 ALTER TABLE `spell_loot_template` DISABLE KEYS */;
-INSERT INTO `spell_loot_template` VALUES 
+INSERT INTO `spell_loot_template`
+VALUES
 (48247,37168,0,100,0,1,0,1,1,NULL),
 (57844,36782,0,89,0,1,1,1,3,NULL),
 (57844,36783,0,10,0,1,1,1,1,NULL),
 (57844,36784,0,1,0,1,1,1,1,NULL),
-(58160,13926,0,3,0,1,1,1,1,NULL),
-(58160,24477,0,100,0,1,0,1,3,NULL),
-(58160,24478,0,8,0,1,1,1,1,NULL),
-(58160,24479,0,5,0,1,1,1,1,NULL),
-(58165,4655,0,27,0,1,1,1,2,NULL),
-(58165,5500,0,4,0,1,1,1,1,NULL),
-(58165,5504,0,22,0,1,1,1,1,NULL),
-(58165,7971,0,1,0,1,1,1,1,NULL),
-(58165,7974,0,45,0,1,1,1,2,NULL),
-(58165,13926,0,1,0,1,1,1,1,NULL),
-(58168,5498,0,2,0,1,1,1,1,NULL),
-(58168,5500,0,2,0,1,1,1,1,NULL),
-(58168,5503,0,25,0,1,1,1,1,NULL),
-(58168,5504,0,45,0,1,1,1,2,NULL),
-(58172,5498,0,3,0,1,1,1,1,NULL),
-(58172,5500,0,1,0,1,1,1,1,NULL),
-(58172,5503,0,50,0,1,1,1,1,NULL),
-(58172,5504,0,25,0,1,1,1,1,NULL),
+(58160,13926,0,5,0,1,1,1,1,NULL),
+(58160,24477,0,100,0,1,0,1,1,NULL),
+(58160,24478,0,15,0,1,1,1,1,NULL),
+(58160,24479,0,1,0,1,1,1,1,NULL),
+(58165,5498,0,3,0,1,1,1,1,NULL),
+(58165,5500,0,1,0,1,1,1,1,NULL),
+(58165,7971,0,4,0,1,1,1,1,NULL),
+(58165,7974,0,100,0,1,0,1,1,NULL),
+(58165,13926,0,0.5,0,1,1,1,1,NULL),
+(58168,5498,0,5,0,1,1,1,1,NULL),
+(58168,5500,0,2.5,0,1,1,1,1,NULL),
+(58168,5504,0,100,0,1,0,1,1,NULL),
+(58172,5498,0,5,0,1,1,1,1,NULL),
+(58172,5503,0,100,0,1,0,1,1,NULL),
 (59480,44142,0,100,0,1,0,1,1,NULL),
 (59487,44161,0,100,0,1,0,1,1,NULL),
 (59491,44163,0,100,0,1,0,1,1,NULL),
@@ -178,7 +174,7 @@ INSERT INTO `spell_loot_template` VALUES
 (61288,38682,0,0,0,1,1,1,1,NULL),
 (61288,39349,0,0,0,1,1,1,1,NULL),
 (61500,36909,0,0,0,1,1,1,1,NULL),
-(61898,15924,0,100,1,1,0,1,1,NULL),
+(61898,15924,0,100,0,1,0,1,1,NULL),
 (62941,23094,0,0,0,1,1,1,1,NULL),
 (62941,23095,0,0,0,1,1,1,1,NULL),
 (62941,23114,0,0,0,1,1,1,1,NULL),

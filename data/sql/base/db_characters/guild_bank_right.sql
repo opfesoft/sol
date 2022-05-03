@@ -7,16 +7,15 @@
 DROP TABLE IF EXISTS `guild_bank_right`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `guild_bank_right` 
-(
-  `guildid` int(10) unsigned NOT NULL DEFAULT '0',
-  `TabId` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `rid` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `gbright` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `SlotPerDay` int(10) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `guild_bank_right` (
+  `guildid` int(10) unsigned NOT NULL DEFAULT 0,
+  `TabId` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `rid` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `gbright` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `SlotPerDay` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guildid`,`TabId`,`rid`),
   KEY `guildid_key` (`guildid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `guild_bank_right` WRITE;

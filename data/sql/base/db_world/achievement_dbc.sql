@@ -7,22 +7,22 @@
 DROP TABLE IF EXISTS `achievement_dbc`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `achievement_dbc` 
-(
+CREATE TABLE `achievement_dbc` (
   `ID` int(10) unsigned NOT NULL,
-  `requiredFaction` int(11) NOT NULL DEFAULT '-1',
-  `mapID` int(11) NOT NULL DEFAULT '-1',
-  `points` int(10) unsigned NOT NULL DEFAULT '0',
-  `flags` int(10) unsigned NOT NULL DEFAULT '0',
-  `count` int(10) unsigned NOT NULL DEFAULT '0',
-  `refAchievement` int(10) unsigned NOT NULL DEFAULT '0',
+  `requiredFaction` int(11) NOT NULL DEFAULT -1,
+  `mapID` int(11) NOT NULL DEFAULT -1,
+  `points` int(10) unsigned NOT NULL DEFAULT 0,
+  `flags` int(10) unsigned NOT NULL DEFAULT 0,
+  `count` int(10) unsigned NOT NULL DEFAULT 0,
+  `refAchievement` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `achievement_dbc` WRITE;
 /*!40000 ALTER TABLE `achievement_dbc` DISABLE KEYS */;
-INSERT INTO `achievement_dbc` VALUES 
+INSERT INTO `achievement_dbc`
+VALUES
 (3696,-1,-1,0,2,1,0),
 (4788,-1,-1,0,2,1,0),
 (4789,-1,-1,0,2,1,0);

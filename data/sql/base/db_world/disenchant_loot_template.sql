@@ -7,25 +7,25 @@
 DROP TABLE IF EXISTS `disenchant_loot_template`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `disenchant_loot_template` 
-(
-  `Entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Item` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Reference` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Chance` float NOT NULL DEFAULT '100',
-  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
-  `LootMode` smallint(5) unsigned NOT NULL DEFAULT '1',
-  `GroupId` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `MinCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
+CREATE TABLE `disenchant_loot_template` (
+  `Entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Item` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Reference` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Chance` float NOT NULL DEFAULT 100,
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT 0,
+  `LootMode` smallint(5) unsigned NOT NULL DEFAULT 1,
+  `GroupId` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `MinCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `disenchant_loot_template` WRITE;
 /*!40000 ALTER TABLE `disenchant_loot_template` DISABLE KEYS */;
-INSERT INTO `disenchant_loot_template` VALUES 
+INSERT INTO `disenchant_loot_template`
+VALUES
 (1,10938,0,0,0,1,1,1,2,NULL),
 (1,10940,0,80,0,1,1,1,2,NULL),
 (2,10939,0,20,0,1,1,1,2,NULL),

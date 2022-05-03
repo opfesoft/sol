@@ -7,25 +7,25 @@
 DROP TABLE IF EXISTS `fishing_loot_template`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `fishing_loot_template` 
-(
-  `Entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Item` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Reference` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Chance` float NOT NULL DEFAULT '100',
-  `QuestRequired` tinyint(1) NOT NULL DEFAULT '0',
-  `LootMode` smallint(5) unsigned NOT NULL DEFAULT '1',
-  `GroupId` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `MinCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT '1',
+CREATE TABLE `fishing_loot_template` (
+  `Entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Item` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Reference` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `Chance` float NOT NULL DEFAULT 100,
+  `QuestRequired` tinyint(1) NOT NULL DEFAULT 0,
+  `LootMode` smallint(5) unsigned NOT NULL DEFAULT 1,
+  `GroupId` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `MinCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `fishing_loot_template` WRITE;
 /*!40000 ALTER TABLE `fishing_loot_template` DISABLE KEYS */;
-INSERT INTO `fishing_loot_template` VALUES 
+INSERT INTO `fishing_loot_template`
+VALUES
 (1,11000,11000,100,0,1,1,1,1,NULL),
 (1,11799,11799,100,0,32768,1,1,1,NULL),
 (2,11003,11003,100,0,1,1,1,1,NULL),
@@ -190,6 +190,13 @@ INSERT INTO `fishing_loot_template` VALUES
 (3470,11000,11000,100,0,1,1,1,1,NULL),
 (3473,11000,11000,100,0,1,1,1,1,NULL),
 (3475,11000,11000,100,0,1,1,1,1,NULL),
+(3479,6307,0,0.4,0,1,0,1,1,NULL),
+(3479,6352,0,0.4,0,1,0,1,1,NULL),
+(3479,6354,0,0.4,0,1,0,1,1,NULL),
+(3479,6358,0,25,0,1,0,1,1,NULL),
+(3479,6359,0,15,0,1,0,1,1,NULL),
+(3479,6360,0,0.5,0,1,0,1,1,NULL),
+(3479,6361,0,58.8,0,1,0,1,1,NULL),
 (3482,11003,11003,100,0,1,1,1,1,NULL),
 (3483,11011,11011,100,0,1,1,1,1,NULL),
 (3483,34867,0,20,1,1,0,1,1,NULL),

@@ -7,20 +7,20 @@
 DROP TABLE IF EXISTS `achievement_criteria_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `achievement_criteria_data` 
-(
+CREATE TABLE `achievement_criteria_data` (
   `criteria_id` mediumint(8) NOT NULL,
-  `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `value1` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `value2` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `type` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `value1` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `value2` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `ScriptName` char(64) NOT NULL DEFAULT '',
   PRIMARY KEY (`criteria_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Achievment system';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Achievment system';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `achievement_criteria_data` WRITE;
 /*!40000 ALTER TABLE `achievement_criteria_data` DISABLE KEYS */;
-INSERT INTO `achievement_criteria_data` VALUES 
+INSERT INTO `achievement_criteria_data`
+VALUES
 (100,0,0,0,''),
 (102,0,0,0,''),
 (123,0,0,0,''),

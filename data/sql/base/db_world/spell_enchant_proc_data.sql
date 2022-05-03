@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `spell_enchant_proc_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_enchant_proc_data` 
-(
+CREATE TABLE `spell_enchant_proc_data` (
   `entry` int(10) unsigned NOT NULL,
-  `customChance` int(10) unsigned NOT NULL DEFAULT '0',
-  `PPMChance` float unsigned NOT NULL DEFAULT '0',
-  `procEx` int(10) unsigned NOT NULL DEFAULT '0',
+  `customChance` int(10) unsigned NOT NULL DEFAULT 0,
+  `PPMChance` float unsigned NOT NULL DEFAULT 0,
+  `procEx` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Spell enchant proc data';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='Spell enchant proc data';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_enchant_proc_data` WRITE;
 /*!40000 ALTER TABLE `spell_enchant_proc_data` DISABLE KEYS */;
-INSERT INTO `spell_enchant_proc_data` VALUES 
+INSERT INTO `spell_enchant_proc_data`
+VALUES
 (2,0,8.8,0),
 (12,0,8.8,0),
 (323,0,8.53,0),

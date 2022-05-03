@@ -7,16 +7,15 @@
 DROP TABLE IF EXISTS `guild_rank`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `guild_rank` 
-(
-  `guildid` int(10) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `guild_rank` (
+  `guildid` int(10) unsigned NOT NULL DEFAULT 0,
   `rid` tinyint(3) unsigned NOT NULL,
   `rname` varchar(20) NOT NULL DEFAULT '',
-  `rights` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `BankMoneyPerDay` int(10) unsigned NOT NULL DEFAULT '0',
+  `rights` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `BankMoneyPerDay` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guildid`,`rid`),
   KEY `Idx_rid` (`rid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Guild System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `guild_rank` WRITE;

@@ -7,14 +7,13 @@
 DROP TABLE IF EXISTS `character_arena_stats`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `character_arena_stats` 
-(
-  `guid` int(10) NOT NULL,
-  `slot` tinyint(3) NOT NULL,
-  `matchMakerRating` smallint(5) NOT NULL,
+CREATE TABLE `character_arena_stats` (
+  `guid` int(10) unsigned NOT NULL DEFAULT 0,
+  `slot` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `matchMakerRating` smallint(5) unsigned NOT NULL DEFAULT 0,
   `maxMMR` smallint(5) NOT NULL,
   PRIMARY KEY (`guid`,`slot`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_arena_stats` WRITE;

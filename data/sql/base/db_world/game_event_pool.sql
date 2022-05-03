@@ -7,17 +7,19 @@
 DROP TABLE IF EXISTS `game_event_pool`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `game_event_pool` 
-(
-  `eventEntry` tinyint(4) NOT NULL COMMENT 'Entry of the game event. Put negative entry to remove during event.',
-  `pool_entry` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT 'Id of the pool',
-  PRIMARY KEY (`pool_entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `game_event_pool` (
+  `eventEntry` smallint(5) NOT NULL COMMENT 'Entry of the game event. Put negative entry to remove during event.',
+  `pool_entry` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Id of the pool',
+  PRIMARY KEY (`pool_entry`),
+  CONSTRAINT `eventEntry_check` CHECK (`eventEntry` >= -255 and `eventEntry` <= 255 and `eventEntry` <> 0)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_pool` WRITE;
 /*!40000 ALTER TABLE `game_event_pool` DISABLE KEYS */;
-INSERT INTO `game_event_pool` VALUES 
+INSERT INTO `game_event_pool`
+VALUES
+(25,1004),
 (9,5699),
 (9,5700),
 (9,5701),
@@ -25,7 +27,10 @@ INSERT INTO `game_event_pool` VALUES
 (9,5703),
 (9,5704),
 (9,5705),
-(9,5706);
+(9,5706),
+(3,203341),
+(4,203342),
+(5,203343);
 /*!40000 ALTER TABLE `game_event_pool` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

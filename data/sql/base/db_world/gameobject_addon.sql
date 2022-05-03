@@ -7,32 +7,66 @@
 DROP TABLE IF EXISTS `gameobject_addon`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `gameobject_addon` 
-(
-  `guid` int(10) unsigned NOT NULL DEFAULT '0',
-  `invisibilityType` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `invisibilityValue` int(10) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `gameobject_addon` (
+  `guid` int(10) unsigned NOT NULL DEFAULT 0,
+  `invisibilityType` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `invisibilityValue` int(10) unsigned NOT NULL DEFAULT 0,
+  `useRotation` tinyint(1) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `gameobject_addon` WRITE;
 /*!40000 ALTER TABLE `gameobject_addon` DISABLE KEYS */;
-INSERT INTO `gameobject_addon` VALUES 
-(6134,9,1000),
-(6135,9,1000),
-(6342,8,1000),
-(6343,8,1000),
-(24222,0,0),
-(24223,0,0),
-(25023,0,0),
-(25024,0,0),
-(25025,0,0),
-(25026,0,0),
-(25120,0,0),
-(25256,0,0),
-(25257,0,0),
-(50347,0,0);
+INSERT INTO `gameobject_addon`
+VALUES
+(74,0,0,1),
+(270,9,1000,0),
+(987,0,0,1),
+(1427,0,0,1),
+(5141,0,0,1),
+(5193,0,0,1),
+(5195,0,0,1),
+(5203,0,0,1),
+(5205,0,0,1),
+(5352,0,0,1),
+(5382,0,0,1),
+(5396,0,0,1),
+(5398,0,0,1),
+(5405,0,0,1),
+(5422,0,0,1),
+(5425,0,0,1),
+(6134,9,1000,0),
+(6135,9,1000,0),
+(6342,8,1000,0),
+(6343,8,1000,0),
+(6376,0,0,1),
+(6821,0,0,1),
+(11584,0,0,1),
+(14137,0,0,1),
+(17154,0,0,1),
+(20458,0,0,1),
+(20459,0,0,1),
+(24222,0,0,1),
+(24223,0,0,1),
+(25023,0,0,1),
+(25024,0,0,1),
+(25025,0,0,1),
+(25026,0,0,1),
+(25120,0,0,1),
+(25256,0,0,1),
+(25257,0,0,1),
+(26628,0,0,1),
+(31619,0,0,1),
+(44994,0,0,1),
+(50347,0,0,1),
+(57889,0,0,1),
+(268853,8,1000,0),
+(268854,5,1000,0),
+(2133392,7,1000,0),
+(2133393,7,1000,0),
+(2133394,7,1000,0),
+(2133395,7,1000,0);
 /*!40000 ALTER TABLE `gameobject_addon` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

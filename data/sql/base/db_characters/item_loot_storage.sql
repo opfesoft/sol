@@ -7,14 +7,13 @@
 DROP TABLE IF EXISTS `item_loot_storage`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item_loot_storage` 
-(
+CREATE TABLE `item_loot_storage` (
   `containerGUID` int(10) unsigned NOT NULL,
   `itemid` int(10) unsigned NOT NULL,
   `count` int(10) unsigned NOT NULL,
   `randomPropertyId` int(10) NOT NULL,
   `randomSuffix` int(10) unsigned NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `item_loot_storage` WRITE;

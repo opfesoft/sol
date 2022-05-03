@@ -7,17 +7,16 @@
 DROP TABLE IF EXISTS `petition_sign`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `petition_sign` 
-(
+CREATE TABLE `petition_sign` (
   `ownerguid` int(10) unsigned NOT NULL,
-  `petitionguid` int(10) unsigned NOT NULL DEFAULT '0',
-  `playerguid` int(10) unsigned NOT NULL DEFAULT '0',
-  `player_account` int(10) unsigned NOT NULL DEFAULT '0',
-  `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `petitionguid` int(10) unsigned NOT NULL DEFAULT 0,
+  `playerguid` int(10) unsigned NOT NULL DEFAULT 0,
+  `player_account` int(10) unsigned NOT NULL DEFAULT 0,
+  `type` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`petitionguid`,`playerguid`),
   KEY `Idx_playerguid` (`playerguid`),
   KEY `Idx_ownerguid` (`ownerguid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Guild System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `petition_sign` WRITE;

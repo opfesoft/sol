@@ -7,14 +7,13 @@
 DROP TABLE IF EXISTS `instance_reset`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `instance_reset` 
-(
-  `mapid` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `difficulty` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `resettime` int(10) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `instance_reset` (
+  `mapid` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `difficulty` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `resettime` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`mapid`,`difficulty`),
   KEY `difficulty` (`difficulty`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `instance_reset` WRITE;

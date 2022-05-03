@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `pool_pool`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pool_pool` 
-(
-  `pool_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `mother_pool` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `chance` float NOT NULL DEFAULT '0',
+CREATE TABLE `pool_pool` (
+  `pool_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `mother_pool` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `chance` float NOT NULL DEFAULT 0,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`pool_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pool_pool` WRITE;
 /*!40000 ALTER TABLE `pool_pool` DISABLE KEYS */;
-INSERT INTO `pool_pool` VALUES 
+INSERT INTO `pool_pool`
+VALUES
 (3000,2000,0,'Spawn Point 1 - Alterac Mountains (Inner Section)'),
 (3001,2000,0,'Spawn Point 2 - Alterac Mountains (Inner Section)'),
 (3002,2000,0,'Spawn Point 3 - Alterac Mountains (Inner Section)'),
@@ -1032,7 +1032,7 @@ INSERT INTO `pool_pool` VALUES
 (4407,2009,0,'Spawn Point 8 - Duskwood'),
 (4408,2009,0,'Spawn Point 9 - Duskwood'),
 (4409,2009,0,'Spawn Point 10 - Duskwood'),
-(4410,2009,0,'Spawn Point 11 - Duskwood'),
+(4410,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4411,2009,0,'Spawn Point 12 - Duskwood'),
 (4412,2009,0,'Spawn Point 13 - Duskwood'),
 (4413,2009,0,'Spawn Point 14 - Duskwood'),
@@ -1052,7 +1052,7 @@ INSERT INTO `pool_pool` VALUES
 (4428,2009,0,'Spawn Point 29 - Duskwood'),
 (4429,2009,0,'Spawn Point 30 - Duskwood'),
 (4430,2009,0,'Spawn Point 31 - Duskwood'),
-(4431,2009,0,'Spawn Point 32 - Duskwood'),
+(4431,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4432,2009,0,'Spawn Point 33 - Duskwood'),
 (4433,2009,0,'Spawn Point 34 - Duskwood'),
 (4434,2009,0,'Spawn Point 35 - Duskwood'),
@@ -1075,7 +1075,7 @@ INSERT INTO `pool_pool` VALUES
 (4451,2009,0,'Spawn Point 52 - Duskwood'),
 (4452,2009,0,'Spawn Point 53 - Duskwood'),
 (4453,2009,0,'Spawn Point 54 - Duskwood'),
-(4454,2009,0,'Spawn Point 55 - Duskwood'),
+(4454,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4455,2009,0,'Spawn Point 56 - Duskwood'),
 (4456,2009,0,'Spawn Point 57 - Duskwood'),
 (4457,2009,0,'Spawn Point 58 - Duskwood'),
@@ -1089,7 +1089,7 @@ INSERT INTO `pool_pool` VALUES
 (4465,2009,0,'Spawn Point 66 - Duskwood'),
 (4466,2009,0,'Spawn Point 67 - Duskwood'),
 (4467,2009,0,'Spawn Point 68 - Duskwood'),
-(4468,2009,0,'Spawn Point 69 - Duskwood'),
+(4468,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4469,2009,0,'Spawn Point 70 - Duskwood'),
 (4470,2009,0,'Spawn Point 71 - Duskwood'),
 (4471,2009,0,'Spawn Point 72 - Duskwood'),
@@ -1117,7 +1117,7 @@ INSERT INTO `pool_pool` VALUES
 (4493,2009,0,'Spawn Point 94 - Duskwood'),
 (4494,2009,0,'Spawn Point 95 - Duskwood'),
 (4495,2009,0,'Spawn Point 96 - Duskwood'),
-(4496,2009,0,'Spawn Point 97 - Duskwood'),
+(4496,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4497,2009,0,'Spawn Point 98 - Duskwood'),
 (4498,2009,0,'Spawn Point 99 - Duskwood'),
 (4499,2009,0,'Spawn Point 100 - Duskwood'),
@@ -1126,12 +1126,12 @@ INSERT INTO `pool_pool` VALUES
 (4502,2009,0,'Spawn Point 103 - Duskwood'),
 (4503,2009,0,'Spawn Point 104 - Duskwood'),
 (4504,2009,0,'Spawn Point 105 - Duskwood'),
-(4505,2009,0,'Spawn Point 106 - Duskwood'),
+(4505,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4506,2009,0,'Spawn Point 107 - Duskwood'),
 (4507,2009,0,'Spawn Point 108 - Duskwood'),
-(4508,2009,0,'Spawn Point 109 - Duskwood'),
+(4508,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4509,2009,0,'Spawn Point 110 - Duskwood'),
-(4510,2009,0,'Spawn Point 111 - Duskwood'),
+(4510,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4511,2009,0,'Spawn Point 112 - Duskwood'),
 (4512,2009,0,'Spawn Point 113 - Duskwood'),
 (4600,2010,0,'Spawn Point 1 - Eastern Plaguelands'),
@@ -2276,7 +2276,43 @@ INSERT INTO `pool_pool` VALUES
 (11631,9908,0,'Icecrown Ore Spawnpoint 232'),
 (11632,9908,0,'Icecrown Ore Spawnpoint 233'),
 (11633,9908,0,'Icecrown Ore Spawnpoint 234'),
-(11634,9908,0,'Icecrown Ore Spawnpoint 235');
+(11634,9908,0,'Icecrown Ore Spawnpoint 235'),
+(11676,2019,0,'Spawn Point 1 - Redridge Mountains - Zone 44'),
+(11677,2020,0,'Spawn Point 1 - Stranglethorn Vale - Zone 33'),
+(11678,2020,0,'Spawn Point 2 - Stranglethorn Vale - Zone 33'),
+(11679,2020,0,'Spawn Point 3 - Stranglethorn Vale - Zone 33'),
+(11680,2021,0,'Spawn Point 1 - Thousand Needles - Zone 400'),
+(11681,2022,0,'Spawn Point 1 - Searing Gorge - Zone 51'),
+(11682,2022,0,'Spawn Point 2 - Searing Gorge - Zone 51'),
+(11683,2022,0,'Spawn Point 3 - Searing Gorge - Zone 51'),
+(11684,2022,0,'Spawn Point 4 - Searing Gorge - Zone 51'),
+(11685,2022,0,'Spawn Point 5 - Searing Gorge - Zone 51'),
+(11686,2022,0,'Spawn Point 6 - Searing Gorge - Zone 51'),
+(11687,2022,0,'Spawn Point 7 - Searing Gorge - Zone 51'),
+(11688,2022,0,'Spawn Point 8 - Searing Gorge - Zone 51'),
+(11689,2023,0,'Spawn Point 1 - Uldaman - Zone 1337'),
+(11690,2024,0,'Spawn Point 1 - Desolace - Zone 405'),
+(11691,2025,0,'Spawn Point 1 - Darkshore - Zone 148'),
+(11692,2026,0,'Spawn Point 1 - Silverpine Forest - Zone 130'),
+(11693,2027,0,'Spawn Point 1 - Blackfathom Deeps - Zone 719'),
+(11694,2028,0,'Spawn Point 1 - Tanaris - Zone 440'),
+(11695,2029,0,'Spawn Point 1 - Maraudon - Zone 2100'),
+(11696,2029,0,'Spawn Point 2 - Maraudon - Zone 2100'),
+(11697,2029,0,'Spawn Point 3 - Maraudon - Zone 2100'),
+(11698,2030,0,'Spawn Point 1 - Winterspring - Zone 618'),
+(11699,2031,0,'Spawn Point 1 - Hellfire Peninsula - Zone 3483'),
+(11700,2031,0,'Spawn Point 2 - Hellfire Peninsula - Zone 3483'),
+(11701,2032,0,'Spawn Point 1 - Nagrand - Zone 3518'),
+(11702,2032,0,'Spawn Point 2 - Nagrand - Zone 3518'),
+(11703,2032,0,'Spawn Point 3 - Nagrand - Zone 3518'),
+(11704,2032,0,'Spawn Point 4 - Nagrand - Zone 3518'),
+(11705,2032,0,'Spawn Point 5 - Nagrand - Zone 3518'),
+(11706,2033,0,'Spawn Point 1 - Terokkar Forest - Zone 3519'),
+(11707,2033,0,'Spawn Point 2 - Terokkar Forest - Zone 3519'),
+(11708,2033,0,'Spawn Point 3 - Terokkar Forest - Zone 3519'),
+(11709,2034,0,'Spawn Point 1 - Mana-Tombs - Zone 3792'),
+(11710,2035,0,'Spawn Point 1 - The Underbog - Zone 3716'),
+(11711,2036,0,'Spawn Point 1 - Zangarmarsh - Zone 3521');
 /*!40000 ALTER TABLE `pool_pool` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -7,17 +7,17 @@
 DROP TABLE IF EXISTS `areatrigger_tavern`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `areatrigger_tavern` 
-(
-  `id` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT 'Identifier',
-  `name` text,
+CREATE TABLE `areatrigger_tavern` (
+  `id` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Identifier',
+  `name` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Trigger System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Trigger System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `areatrigger_tavern` WRITE;
 /*!40000 ALTER TABLE `areatrigger_tavern` DISABLE KEYS */;
-INSERT INTO `areatrigger_tavern` VALUES 
+INSERT INTO `areatrigger_tavern`
+VALUES
 (71,'Westfall - Sentinel Hill Inn'),
 (98,'Nesingwary\'s Expedition'),
 (178,'Strahnbrad'),

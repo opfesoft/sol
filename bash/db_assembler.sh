@@ -66,20 +66,17 @@ function dbasm_assemble() {
         if [ ! ${#updates[@]} -eq 0 ]; then
             echo "Generate $updFile"
             echo "Search directories:"
-            echo "(file names instead of file paths will be used to determine the order of the SQL update files!)"
             for i in ${updates[@]}; do
                 echo "  $i"
             done
             updateFileCount=0
 
-            # sort by file name instead of file path because the SQL update files use the date as file name
-            # and should be concatenated in the right order even if using multiple update directories
             while read entry; do
                 echo "-- $entry" >> $updFile
                 cat "$entry" >> $updFile
                 printf "\n\n" >> $updFile
                 updateFileCount=$((updateFileCount+1))
-            done < <(find ${updates[@]} -type f -name '*.sql' | awk -F'/' '{printf("%s %s\n", $0, $(NF))}' | sort -k2 | awk '{print $1}')
+            done < <(find ${updates[@]} -type f -name '*.sql' | sort)
 
             printf "Total update files found: %s\n\n" $updateFileCount
         fi

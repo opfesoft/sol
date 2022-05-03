@@ -7,8 +7,7 @@
 DROP TABLE IF EXISTS `battleground_deserters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `battleground_deserters` 
-(
+CREATE TABLE `battleground_deserters` (
   `guid` int(10) unsigned NOT NULL COMMENT 'characters.guid',
   `type` tinyint(3) unsigned NOT NULL COMMENT 'type of the desertion',
   `datetime` datetime NOT NULL COMMENT 'datetime of the desertion'

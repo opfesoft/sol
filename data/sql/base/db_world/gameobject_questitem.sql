@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `gameobject_questitem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `gameobject_questitem` 
-(
-  `GameObjectEntry` int(10) unsigned NOT NULL DEFAULT '0',
-  `Idx` int(10) unsigned NOT NULL DEFAULT '0',
-  `ItemId` int(10) unsigned NOT NULL DEFAULT '0',
-  `VerifiedBuild` smallint(5) NOT NULL DEFAULT '0',
+CREATE TABLE `gameobject_questitem` (
+  `GameObjectEntry` int(10) unsigned NOT NULL DEFAULT 0,
+  `Idx` int(10) unsigned NOT NULL DEFAULT 0,
+  `ItemId` int(10) unsigned NOT NULL DEFAULT 0,
+  `VerifiedBuild` smallint(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`GameObjectEntry`,`Idx`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `gameobject_questitem` WRITE;
 /*!40000 ALTER TABLE `gameobject_questitem` DISABLE KEYS */;
-INSERT INTO `gameobject_questitem` VALUES 
+INSERT INTO `gameobject_questitem`
+VALUES
 (32,0,1309,0),
 (41,0,1923,0),
 (52,0,2007,0),
@@ -46,11 +46,6 @@ INSERT INTO `gameobject_questitem` VALUES
 (1562,0,921,0),
 (1571,0,3155,0),
 (1594,0,3255,0),
-(1617,0,5056,0),
-(1618,0,5056,0),
-(1619,0,5056,0),
-(1620,0,5056,0),
-(1622,0,5056,0),
 (1673,0,3418,0),
 (1723,0,3502,0),
 (1727,0,3517,0),

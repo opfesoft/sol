@@ -7,13 +7,12 @@
 DROP TABLE IF EXISTS `game_event_save`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `game_event_save` 
-(
+CREATE TABLE `game_event_save` (
   `eventEntry` tinyint(3) unsigned NOT NULL,
-  `state` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `next_start` int(10) unsigned NOT NULL DEFAULT '0',
+  `state` tinyint(3) unsigned NOT NULL DEFAULT 1,
+  `next_start` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`eventEntry`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_save` WRITE;

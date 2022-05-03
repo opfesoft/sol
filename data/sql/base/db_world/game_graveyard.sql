@@ -7,21 +7,21 @@
 DROP TABLE IF EXISTS `game_graveyard`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `game_graveyard` 
-(
-  `ID` int(10) NOT NULL DEFAULT '0',
-  `Map` int(10) NOT NULL DEFAULT '0',
-  `x` float NOT NULL DEFAULT '0',
-  `y` float NOT NULL DEFAULT '0',
-  `z` float NOT NULL DEFAULT '0',
+CREATE TABLE `game_graveyard` (
+  `ID` int(10) NOT NULL DEFAULT 0,
+  `Map` int(10) NOT NULL DEFAULT 0,
+  `x` float NOT NULL DEFAULT 0,
+  `y` float NOT NULL DEFAULT 0,
+  `z` float NOT NULL DEFAULT 0,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_graveyard` WRITE;
 /*!40000 ALTER TABLE `game_graveyard` DISABLE KEYS */;
-INSERT INTO `game_graveyard` VALUES 
+INSERT INTO `game_graveyard`
+VALUES
 (1,0,-9115,423,96,'Stormwind'),
 (2,0,-9194.31,-2313.26,88.8265,'Redridge Mountains'),
 (3,0,-10774.3,-1189.67,33.1494,'Duskwood, Darkshire'),

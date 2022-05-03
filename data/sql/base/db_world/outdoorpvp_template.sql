@@ -7,18 +7,18 @@
 DROP TABLE IF EXISTS `outdoorpvp_template`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `outdoorpvp_template` 
-(
+CREATE TABLE `outdoorpvp_template` (
   `TypeId` tinyint(3) unsigned NOT NULL,
   `ScriptName` char(64) NOT NULL DEFAULT '',
-  `comment` text,
+  `comment` text DEFAULT NULL,
   PRIMARY KEY (`TypeId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='OutdoorPvP Templates';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='OutdoorPvP Templates';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `outdoorpvp_template` WRITE;
 /*!40000 ALTER TABLE `outdoorpvp_template` DISABLE KEYS */;
-INSERT INTO `outdoorpvp_template` VALUES 
+INSERT INTO `outdoorpvp_template`
+VALUES
 (1,'outdoorpvp_hp','Hellfire Peninsula'),
 (2,'outdoorpvp_na','Nagrand'),
 (3,'outdoorpvp_tf','Terokkar Forest'),

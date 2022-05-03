@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `playercreateinfo_spell`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `playercreateinfo_spell` 
-(
-  `racemask` int(10) unsigned NOT NULL DEFAULT '0',
-  `classmask` int(10) unsigned NOT NULL DEFAULT '0',
-  `Spell` mediumint(8) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `playercreateinfo_spell` (
+  `racemask` int(10) unsigned NOT NULL DEFAULT 0,
+  `classmask` int(10) unsigned NOT NULL DEFAULT 0,
+  `Spell` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `Note` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`racemask`,`classmask`,`Spell`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `playercreateinfo_spell` WRITE;
 /*!40000 ALTER TABLE `playercreateinfo_spell` DISABLE KEYS */;
-INSERT INTO `playercreateinfo_spell` VALUES 
+INSERT INTO `playercreateinfo_spell`
+VALUES
 (0,0,81,'Dodge'),
 (0,0,203,'Unarmed'),
 (0,0,204,'Defense'),

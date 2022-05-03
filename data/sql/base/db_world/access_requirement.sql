@@ -7,27 +7,27 @@
 DROP TABLE IF EXISTS `access_requirement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `access_requirement` 
-(
+CREATE TABLE `access_requirement` (
   `mapId` mediumint(8) unsigned NOT NULL,
-  `difficulty` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `level_min` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `level_max` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `item_level` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `item` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `item2` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `quest_done_A` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `quest_done_H` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `completed_achievement` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `quest_failed_text` text,
-  `comment` text,
+  `difficulty` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `level_min` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `level_max` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `item_level` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `item` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `item2` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `quest_done_A` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `quest_done_H` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `completed_achievement` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `quest_failed_text` text DEFAULT NULL,
+  `comment` text DEFAULT NULL,
   PRIMARY KEY (`mapId`,`difficulty`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Access Requirements';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='Access Requirements';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `access_requirement` WRITE;
 /*!40000 ALTER TABLE `access_requirement` DISABLE KEYS */;
-INSERT INTO `access_requirement` VALUES 
+INSERT INTO `access_requirement`
+VALUES
 (33,0,14,0,0,0,0,0,0,0,NULL,'Shadowfang Keep Entrance'),
 (34,0,15,0,0,0,0,0,0,0,NULL,'Stormwind Stockades Entrance'),
 (36,0,10,0,0,0,0,0,0,0,NULL,'DeadMines Entrance'),

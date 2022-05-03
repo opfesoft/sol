@@ -7,14 +7,13 @@
 DROP TABLE IF EXISTS `game_event_model_equip`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `game_event_model_equip` 
-(
+CREATE TABLE `game_event_model_equip` (
   `eventEntry` tinyint(4) NOT NULL COMMENT 'Entry of the game event.',
-  `guid` int(10) unsigned NOT NULL DEFAULT '0',
-  `modelid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `equipment_id` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `guid` int(10) unsigned NOT NULL DEFAULT 0,
+  `modelid` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `equipment_id` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_model_equip` WRITE;

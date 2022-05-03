@@ -7,28 +7,28 @@
 DROP TABLE IF EXISTS `realmlist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `realmlist` 
-(
+CREATE TABLE `realmlist` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL DEFAULT '',
   `address` varchar(255) NOT NULL DEFAULT '127.0.0.1',
   `localAddress` varchar(255) NOT NULL DEFAULT '127.0.0.1',
   `localSubnetMask` varchar(255) NOT NULL DEFAULT '255.255.255.0',
-  `port` smallint(5) unsigned NOT NULL DEFAULT '8085',
-  `icon` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `flag` tinyint(3) unsigned NOT NULL DEFAULT '2',
-  `timezone` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `allowedSecurityLevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `population` float unsigned NOT NULL DEFAULT '0',
-  `gamebuild` int(10) unsigned NOT NULL DEFAULT '12340',
+  `port` smallint(5) unsigned NOT NULL DEFAULT 8085,
+  `icon` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `flag` tinyint(3) unsigned NOT NULL DEFAULT 2,
+  `timezone` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `allowedSecurityLevel` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `population` float unsigned NOT NULL DEFAULT 0,
+  `gamebuild` int(10) unsigned NOT NULL DEFAULT 12340,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Realm System';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='Realm System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `realmlist` WRITE;
 /*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
-INSERT INTO `realmlist` VALUES 
+INSERT INTO `realmlist`
+VALUES
 (1,'AzerothCore','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,12340);
 /*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
 UNLOCK TABLES;

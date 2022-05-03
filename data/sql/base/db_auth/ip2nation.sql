@@ -7,12 +7,11 @@
 DROP TABLE IF EXISTS `ip2nation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ip2nation` 
-(
-  `ip` int(11) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `ip2nation` (
+  `ip` int(11) unsigned NOT NULL DEFAULT 0,
   `country` char(2) NOT NULL DEFAULT '',
   KEY `ip` (`ip`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `ip2nation` WRITE;

@@ -7,8 +7,7 @@
 DROP TABLE IF EXISTS `log_arena_memberstats`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log_arena_memberstats` 
-(
+CREATE TABLE `log_arena_memberstats` (
   `fight_id` int(10) unsigned NOT NULL,
   `member_id` tinyint(3) unsigned NOT NULL,
   `name` char(20) NOT NULL,
@@ -20,7 +19,7 @@ CREATE TABLE `log_arena_memberstats`
   `heal` int(10) unsigned NOT NULL,
   `kblows` int(10) unsigned NOT NULL,
   PRIMARY KEY (`fight_id`,`member_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `log_arena_memberstats` WRITE;

@@ -7,15 +7,14 @@
 DROP TABLE IF EXISTS `group_member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `group_member` 
-(
+CREATE TABLE `group_member` (
   `guid` int(10) unsigned NOT NULL,
   `memberGuid` int(10) unsigned NOT NULL,
-  `memberFlags` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `subgroup` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `roles` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `memberFlags` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `subgroup` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `roles` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`memberGuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Groups';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Groups';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `group_member` WRITE;

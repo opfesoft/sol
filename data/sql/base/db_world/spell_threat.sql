@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `spell_threat`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_threat` 
-(
+CREATE TABLE `spell_threat` (
   `entry` mediumint(8) unsigned NOT NULL,
   `flatMod` int(11) DEFAULT NULL,
-  `pctMod` float NOT NULL DEFAULT '1' COMMENT 'threat multiplier for damage/healing',
-  `apPctMod` float NOT NULL DEFAULT '0' COMMENT 'additional threat bonus from attack power',
+  `pctMod` float NOT NULL DEFAULT 1 COMMENT 'threat multiplier for damage/healing',
+  `apPctMod` float NOT NULL DEFAULT 0 COMMENT 'additional threat bonus from attack power',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_threat` WRITE;
 /*!40000 ALTER TABLE `spell_threat` DISABLE KEYS */;
-INSERT INTO `spell_threat` VALUES 
+INSERT INTO `spell_threat`
+VALUES
 (78,5,1,0),
 (284,10,1,0),
 (285,16,1,0),

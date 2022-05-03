@@ -7,18 +7,17 @@
 DROP TABLE IF EXISTS `guild_member_withdraw`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `guild_member_withdraw` 
-(
+CREATE TABLE `guild_member_withdraw` (
   `guid` int(10) unsigned NOT NULL,
-  `tab0` int(10) unsigned NOT NULL DEFAULT '0',
-  `tab1` int(10) unsigned NOT NULL DEFAULT '0',
-  `tab2` int(10) unsigned NOT NULL DEFAULT '0',
-  `tab3` int(10) unsigned NOT NULL DEFAULT '0',
-  `tab4` int(10) unsigned NOT NULL DEFAULT '0',
-  `tab5` int(10) unsigned NOT NULL DEFAULT '0',
-  `money` int(10) unsigned NOT NULL DEFAULT '0',
+  `tab0` int(10) unsigned NOT NULL DEFAULT 0,
+  `tab1` int(10) unsigned NOT NULL DEFAULT 0,
+  `tab2` int(10) unsigned NOT NULL DEFAULT 0,
+  `tab3` int(10) unsigned NOT NULL DEFAULT 0,
+  `tab4` int(10) unsigned NOT NULL DEFAULT 0,
+  `tab5` int(10) unsigned NOT NULL DEFAULT 0,
+  `money` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Guild Member Daily Withdraws';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Guild Member Daily Withdraws';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `guild_member_withdraw` WRITE;

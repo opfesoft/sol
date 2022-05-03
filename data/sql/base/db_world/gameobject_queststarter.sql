@@ -7,17 +7,17 @@
 DROP TABLE IF EXISTS `gameobject_queststarter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `gameobject_queststarter` 
-(
-  `id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `quest` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT 'Quest Identifier',
+CREATE TABLE `gameobject_queststarter` (
+  `id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `quest` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Quest Identifier',
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `gameobject_queststarter` WRITE;
 /*!40000 ALTER TABLE `gameobject_queststarter` DISABLE KEYS */;
-INSERT INTO `gameobject_queststarter` VALUES 
+INSERT INTO `gameobject_queststarter`
+VALUES
 (31,248),
 (31,249),
 (34,140),
@@ -187,10 +187,10 @@ INSERT INTO `gameobject_queststarter` VALUES
 (175085,4602),
 (175085,4604),
 (175085,4606),
-(175226,4723),
-(175227,4725),
-(175230,4730),
-(175233,4731),
+(175226,4728),
+(175227,4730),
+(175230,4733),
+(175233,4723),
 (175265,4561),
 (175320,4740),
 (175524,4813),
@@ -209,12 +209,12 @@ INSERT INTO `gameobject_queststarter` VALUES
 (176091,5085),
 (176115,5147),
 (176190,4722),
-(176191,4728),
+(176191,4732),
 (176192,5166),
 (176192,5167),
-(176196,4733),
-(176197,4732),
-(176198,4727),
+(176196,4727),
+(176197,4725),
+(176198,4731),
 (176361,5217),
 (176361,5218),
 (176361,5230),

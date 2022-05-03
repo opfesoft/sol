@@ -7,21 +7,21 @@
 DROP TABLE IF EXISTS `disables`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `disables` 
-(
+CREATE TABLE `disables` (
   `sourceType` int(10) unsigned NOT NULL,
   `entry` int(10) unsigned NOT NULL,
-  `flags` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `flags` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `params_0` varchar(255) NOT NULL DEFAULT '',
   `params_1` varchar(255) NOT NULL DEFAULT '',
   `comment` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`sourceType`,`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `disables` WRITE;
 /*!40000 ALTER TABLE `disables` DISABLE KEYS */;
-INSERT INTO `disables` VALUES 
+INSERT INTO `disables`
+VALUES
 (0,128,8,'','','Spell for deprecated item'),
 (0,698,17,'30,489','','Disable of Ritual of Summoning on Alterac Valley and Warsong Gulch'),
 (0,758,8,'','','Spell for deprecated item 1254'),
@@ -208,6 +208,7 @@ INSERT INTO `disables` VALUES
 (1,912,0,'','','Deprecated quest'),
 (1,946,0,'','','Deprecated quest: <UNUSED>'),
 (1,960,0,'','','Deprecated quest'),
+(1,961,0,'','','Deprecated quest \'Onu is meditating\''),
 (1,987,0,'','','Deprecated quest: <UNUSED>'),
 (1,988,0,'','','Deprecated quest: <UNUSED>'),
 (1,989,0,'','','Deprecated quest: <UNUSED>'),
@@ -406,6 +407,7 @@ INSERT INTO `disables` VALUES
 (1,5711,0,'','','Deprecated quest: <NYI> The Lost Ways'),
 (1,5712,0,'','','Deprecated quest: <NYI> The Lost Ways'),
 (1,6003,0,'','','Deprecated quest: <nyi> <txt> Green With Envy'),
+(1,6145,0,'','','Deprecated quest'),
 (1,6165,0,'','','Deprecated quest: <NYI> <TXT> Archmage Timolain\'s Remains'),
 (1,6201,0,'','','Deprecated quest'),
 (1,6202,0,'','','Deprecated quest: <UNUSED> Good and Evil'),
@@ -446,7 +448,15 @@ INSERT INTO `disables` VALUES
 (1,8024,0,'','','Deprecated quest'),
 (1,8025,0,'','','Deprecated quest'),
 (1,8026,0,'','','Deprecated quest'),
+(1,8080,0,'','','Deprecated quest: Arathi Basin Resources!'),
+(1,8123,0,'','','Deprecated quest: Cut Arathor Supply Lines'),
 (1,8152,0,'','','Deprecated quest: REUSE'),
+(1,8154,0,'','','Deprecated quest: Arathi Basin Resources!'),
+(1,8155,0,'','','Deprecated quest: Arathi Basin Resources!'),
+(1,8156,0,'','','Deprecated quest: Arathi Basin Resources!'),
+(1,8160,0,'','','Deprecated quest: Cut Arathor Supply Lines'),
+(1,8161,0,'','','Deprecated quest: Cut Arathor Supply Lines'),
+(1,8162,0,'','','Deprecated quest: Cut Arathor Supply Lines'),
 (1,8226,0,'','','Deprecated quest'),
 (1,8230,0,'','','Deprecated quest: Collin\'s Test Quest'),
 (1,8237,0,'','','Deprecated quest: REUSE'),
@@ -456,11 +466,17 @@ INSERT INTO `disables` VALUES
 (1,8248,0,'','','Deprecated quest: <UNUSED>'),
 (1,8270,0,'','','Deprecated quest: test copy quest'),
 (1,8274,0,'','','Deprecated quest: Test Kill Quest'),
+(1,8297,0,'','','Deprecated quest: Arathi Basin Resources!'),
+(1,8299,0,'','','Deprecated quest: Cut Arathor Supply Lines'),
 (1,8337,0,'','','Deprecated quest: <UNUSED>'),
 (1,8339,0,'','','Deprecated quest: Royalty of the Council <NYI> <TXT> UNUSED'),
 (1,8340,0,'','','Deprecated quest: Twilight Signet Ring <NYI> <TXT>'),
+(1,8367,0,'','','Deprecated Quest: For Great Honor'),
+(1,8371,0,'','','Deprecated Quest: Concerted Efforts'),
 (1,8384,0,'','','Deprecated quest: Claiming Arathi Basin'),
+(1,8385,0,'','','Deprecated Quest: Concerted Efforts'),
 (1,8386,0,'','','Deprecated quest: Fight for Warsong Gulch'),
+(1,8388,0,'','','Deprecated Quest: For Great Honor'),
 (1,8389,0,'','','Deprecated quest: Battle of Warsong Gulch'),
 (1,8390,0,'','','Deprecated quest: Conquering Arathi Basin'),
 (1,8391,0,'','','Deprecated quest: Claiming Arathi Basin'),
@@ -502,6 +518,9 @@ INSERT INTO `disables` VALUES
 (1,8617,0,'','','Deprecated quest'),
 (1,8618,0,'','','Deprecated quest'),
 (1,8869,0,'','','Deprecated quest'),
+(1,8897,0,'','','Deprecated quest: Dearest Colara,'),
+(1,8898,0,'','','Deprecated quest: Dearest Colara,'),
+(1,8899,0,'','','Deprecated quest: Dearest Colara,'),
 (1,8971,0,'','','Deprecated quest: REUSE'),
 (1,8972,0,'','','Deprecated quest: REUSE'),
 (1,8973,0,'','','Deprecated quest: REUSE'),
@@ -784,10 +803,15 @@ INSERT INTO `disables` VALUES
 (1,13210,0,'','','Deprecated quest: Blizzard Account: - DEM - E - FLAG'),
 (1,13303,0,'','','Deprecated quest'),
 (1,13317,0,'','','Deprecated quest: ----'),
+(1,13381,0,'','','Deprecated Quest: Watts My Target'),
 (1,13405,0,'','','Deprecated quest: Call to Arms: Strand of the Ancients'),
 (1,13407,0,'','','Deprecated quest: Call to Arms: Strand of the Ancients'),
 (1,13427,0,'','','Deprecated quest: Call to Arms: Alterac Valley'),
 (1,13428,0,'','','Deprecated quest: Call to Arms: Alterac Valley'),
+(1,13475,0,'','','Deprecated Quest: For Great Honor'),
+(1,13476,0,'','','Deprecated Quest: For Great Honor'),
+(1,13477,0,'','','Deprecated Quest: Concerted Efforts'),
+(1,13478,0,'','','Deprecated Quest: Concerted Efforts'),
 (1,13541,0,'','','Deprecated quest: '),
 (1,13649,0,'','','Deprecated quest: Justin\'s Fun Test'),
 (1,13827,0,'','','Deprecated quest'),
@@ -807,6 +831,7 @@ INSERT INTO `disables` VALUES
 (1,14181,0,'','','Deprecated quest: Call to Arms: Arathi Basin'),
 (1,14182,0,'','','Deprecated quest: Call to Arms: Eye of the Storm'),
 (1,14183,0,'','','Deprecated quest: Call to Arms: Warsong Gulch'),
+(1,14349,0,'','','Deprecated quest'),
 (1,14441,0,'','','Deprecated quest'),
 (1,24216,0,'','','Deprecated quest: Call to Arms: Warsong Gulch'),
 (1,24217,0,'','','Deprecated quest: Call to Arms: Warsong Gulch'),

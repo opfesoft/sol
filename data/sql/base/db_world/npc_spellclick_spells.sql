@@ -7,24 +7,23 @@
 DROP TABLE IF EXISTS `npc_spellclick_spells`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `npc_spellclick_spells` 
-(
+CREATE TABLE `npc_spellclick_spells` (
   `npc_entry` int(10) unsigned NOT NULL COMMENT 'reference to creature_template',
   `spell_id` int(10) unsigned NOT NULL COMMENT 'spell which should be casted ',
   `cast_flags` tinyint(3) unsigned NOT NULL COMMENT 'first bit defines caster: 1=player, 0=creature; second bit defines target, same mapping as caster bit',
-  `user_type` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'relation with summoner: 0-no 1-friendly 2-raid 3-party player can click',
+  `user_type` smallint(5) unsigned NOT NULL DEFAULT 0 COMMENT 'relation with summoner: 0-no 1-friendly 2-raid 3-party player can click',
   PRIMARY KEY (`npc_entry`,`spell_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `npc_spellclick_spells` WRITE;
 /*!40000 ALTER TABLE `npc_spellclick_spells` DISABLE KEYS */;
-INSERT INTO `npc_spellclick_spells` VALUES 
+INSERT INTO `npc_spellclick_spells`
+VALUES
 (24083,46598,1,0),
 (24418,43768,3,0),
 (24750,46598,1,0),
 (24992,45008,0,0),
-(25334,46598,1,0),
 (25334,47917,1,0),
 (25460,46598,1,0),
 (25596,45875,0,0),
@@ -45,6 +44,7 @@ INSERT INTO `npc_spellclick_spells` VALUES
 (26813,47424,1,0),
 (27061,47920,1,0),
 (27131,48754,1,0),
+(27213,43671,0,0),
 (27241,46598,1,0),
 (27258,48365,1,0),
 (27354,43671,1,0),

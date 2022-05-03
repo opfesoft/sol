@@ -7,13 +7,12 @@
 DROP TABLE IF EXISTS `channels_bans`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `channels_bans` 
-(
+CREATE TABLE `channels_bans` (
   `channelId` int(10) unsigned NOT NULL,
   `playerGUID` int(10) unsigned NOT NULL,
   `banTime` int(10) unsigned NOT NULL,
   PRIMARY KEY (`channelId`,`playerGUID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `channels_bans` WRITE;

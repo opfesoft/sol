@@ -7,18 +7,18 @@
 DROP TABLE IF EXISTS `game_event_creature_quest`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `game_event_creature_quest` 
-(
+CREATE TABLE `game_event_creature_quest` (
   `eventEntry` tinyint(3) unsigned NOT NULL COMMENT 'Entry of the game event.',
-  `id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `quest` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `quest` mediumint(8) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_creature_quest` WRITE;
 /*!40000 ALTER TABLE `game_event_creature_quest` DISABLE KEYS */;
-INSERT INTO `game_event_creature_quest` VALUES 
+INSERT INTO `game_event_creature_quest`
+VALUES
 (8,279,9025),
 (8,5204,8980),
 (12,6740,8356),

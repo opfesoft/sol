@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `spell_ranks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_ranks` 
-(
-  `first_spell_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `spell_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `rank` tinyint(3) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `spell_ranks` (
+  `first_spell_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `spell_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `rank` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`first_spell_id`,`rank`),
   UNIQUE KEY `spell_id` (`spell_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Spell Rank Data';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Spell Rank Data';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_ranks` WRITE;
 /*!40000 ALTER TABLE `spell_ranks` DISABLE KEYS */;
-INSERT INTO `spell_ranks` VALUES 
+INSERT INTO `spell_ranks`
+VALUES
 (10,10,1),
 (10,6141,2),
 (10,8427,3),

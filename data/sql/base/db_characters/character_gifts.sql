@@ -7,15 +7,14 @@
 DROP TABLE IF EXISTS `character_gifts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `character_gifts` 
-(
-  `guid` int(10) unsigned NOT NULL DEFAULT '0',
-  `item_guid` int(10) unsigned NOT NULL DEFAULT '0',
-  `entry` int(10) unsigned NOT NULL DEFAULT '0',
-  `flags` int(10) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `character_gifts` (
+  `guid` int(10) unsigned NOT NULL DEFAULT 0,
+  `item_guid` int(10) unsigned NOT NULL DEFAULT 0,
+  `entry` int(10) unsigned NOT NULL DEFAULT 0,
+  `flags` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`item_guid`),
   KEY `idx_guid` (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_gifts` WRITE;

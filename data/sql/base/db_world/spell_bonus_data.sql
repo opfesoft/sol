@@ -7,21 +7,21 @@
 DROP TABLE IF EXISTS `spell_bonus_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_bonus_data` 
-(
-  `entry` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `direct_bonus` float NOT NULL DEFAULT '0',
-  `dot_bonus` float NOT NULL DEFAULT '0',
-  `ap_bonus` float NOT NULL DEFAULT '0',
-  `ap_dot_bonus` float NOT NULL DEFAULT '0',
+CREATE TABLE `spell_bonus_data` (
+  `entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `direct_bonus` float NOT NULL DEFAULT 0,
+  `dot_bonus` float NOT NULL DEFAULT 0,
+  `ap_bonus` float NOT NULL DEFAULT 0,
+  `ap_dot_bonus` float NOT NULL DEFAULT 0,
   `comments` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_bonus_data` WRITE;
 /*!40000 ALTER TABLE `spell_bonus_data` DISABLE KEYS */;
-INSERT INTO `spell_bonus_data` VALUES 
+INSERT INTO `spell_bonus_data`
+VALUES
 (116,0.857,0,0,0,'Mage - Frost Bolt'),
 (120,0.2036,0,0,0,'Mage - Cone of Cold'),
 (122,0.1936,0,0,0,'Mage - Frost Nova'),

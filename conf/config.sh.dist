@@ -48,8 +48,6 @@ DB_CHARACTERS_UPDATES_PATHS=(
 DB_WORLD_UPDATES_PATHS=(
     $SRCPATH"/data/sql/updates/db_world/"
     $SRCPATH"/data/sql/updates/pending_db_world/"
-    $SRCPATH"/data/sql/updates/db_sol_world/"
-    $SRCPATH"/data/sql/updates/pending_db_sol_world/"
 )
 
 # CUSTOM

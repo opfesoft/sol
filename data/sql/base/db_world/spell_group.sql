@@ -7,18 +7,18 @@
 DROP TABLE IF EXISTS `spell_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_group` 
-(
-  `id` int(10) unsigned NOT NULL DEFAULT '0',
-  `spell_id` int(11) unsigned NOT NULL DEFAULT '0',
-  `special_flag` int(11) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `spell_group` (
+  `id` int(10) unsigned NOT NULL DEFAULT 0,
+  `spell_id` int(11) unsigned NOT NULL DEFAULT 0,
+  `special_flag` int(11) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`,`spell_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Spell System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Spell System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_group` WRITE;
 /*!40000 ALTER TABLE `spell_group` DISABLE KEYS */;
-INSERT INTO `spell_group` VALUES 
+INSERT INTO `spell_group`
+VALUES
 (1,673,2),
 (1,2367,1),
 (1,2374,1),
@@ -146,8 +146,14 @@ INSERT INTO `spell_group` VALUES
 (1001,5021,0),
 (1001,5257,0),
 (1001,6114,0),
+(1001,15852,0),
 (1001,18125,0),
 (1001,18141,0),
+(1001,18191,0),
+(1001,18192,0),
+(1001,18193,0),
+(1001,18194,0),
+(1001,18222,0),
 (1001,19705,0),
 (1001,19706,0),
 (1001,19708,0),
@@ -155,6 +161,7 @@ INSERT INTO `spell_group` VALUES
 (1001,19710,0),
 (1001,19711,0),
 (1001,20875,0),
+(1001,22730,0),
 (1001,22789,0),
 (1001,23697,0),
 (1001,24799,0),
@@ -275,7 +282,7 @@ INSERT INTO `spell_group` VALUES
 (1009,51466,0),
 (1010,12579,0),
 (1010,22959,0),
-(1011,48090,33),
+(1011,48090,17),
 (1011,52109,0),
 (1011,57658,0),
 (1012,31579,0),
@@ -319,18 +326,23 @@ INSERT INTO `spell_group` VALUES
 (1022,5760,0),
 (1022,31589,0),
 (1023,1126,0),
+(1023,16878,0),
 (1023,21849,0),
+(1023,24752,0),
+(1023,39233,0),
 (1023,72588,0),
 (1024,1243,0),
 (1024,8099,0),
 (1024,21562,0),
+(1024,23947,0),
+(1024,23948,0),
 (1024,72590,0),
 (1025,976,0),
 (1025,27683,0),
 (1026,348,0),
 (1026,30108,0),
-(1027,604,0),
-(1027,1008,0),
+(1027,604,32),
+(1027,1008,32),
 (1028,1490,0),
 (1028,51726,32),
 (1028,60431,0),
@@ -354,7 +366,14 @@ INSERT INTO `spell_group` VALUES
 (1033,7481,0),
 (1033,7483,0),
 (1033,7484,0),
-(1034,467,64);
+(1034,467,64),
+(1112,8219,0),
+(1112,8220,0),
+(1112,8221,0),
+(1112,8222,0),
+(5000,22008,0),
+(5000,48108,0),
+(5000,57761,0);
 /*!40000 ALTER TABLE `spell_group` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

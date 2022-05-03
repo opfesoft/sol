@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `spell_pet_auras`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `spell_pet_auras` 
-(
+CREATE TABLE `spell_pet_auras` (
   `spell` mediumint(8) unsigned NOT NULL COMMENT 'dummy spell id',
-  `effectId` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `pet` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT 'pet id; 0 = all',
+  `effectId` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `pet` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'pet id; 0 = all',
   `aura` mediumint(8) unsigned NOT NULL COMMENT 'pet aura id',
   PRIMARY KEY (`spell`,`effectId`,`pet`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_pet_auras` WRITE;
 /*!40000 ALTER TABLE `spell_pet_auras` DISABLE KEYS */;
-INSERT INTO `spell_pet_auras` VALUES 
+INSERT INTO `spell_pet_auras`
+VALUES
 (19028,0,0,25228),
 (19578,0,0,19579),
 (20895,0,0,24529),

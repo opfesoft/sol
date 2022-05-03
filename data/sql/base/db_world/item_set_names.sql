@@ -7,19 +7,19 @@
 DROP TABLE IF EXISTS `item_set_names`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item_set_names` 
-(
+CREATE TABLE `item_set_names` (
   `entry` mediumint(8) unsigned NOT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `InventoryType` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `VerifiedBuild` smallint(5) DEFAULT '0',
+  `InventoryType` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `VerifiedBuild` smallint(5) DEFAULT 0,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `item_set_names` WRITE;
 /*!40000 ALTER TABLE `item_set_names` DISABLE KEYS */;
-INSERT INTO `item_set_names` VALUES 
+INSERT INTO `item_set_names`
+VALUES
 (6473,'Armor of the Fang',5,11723),
 (6833,'White Tuxedo Shirt',4,11723),
 (6835,'Black Tuxedo Pants',7,11723),
