@@ -391,6 +391,7 @@ bool SmartAIMgr::IsTargetValid(SmartScriptHolder const& e)
         case SMART_TARGET_STORED:
         case SMART_TARGET_FARTHEST:
         case SMART_TARGET_VEHICLE_PASSENGER:
+        case SMART_TARGET_CREATURE_FORMATION:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled target_type %u, entryorguid %d source_type %u id %u action_type %u, skipped.", e.GetTargetType(), e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
@@ -443,7 +444,9 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         default:
             break;
     }
-    if (e.target.type < 0 || e.target.type >= SMART_TARGET_TC_END)
+    if (e.target.type < 0
+        || (e.target.type >= SMART_TARGET_TC_END && e.target.type <= SMART_TARGET_SOL_START)
+        || e.target.type >= SMART_TARGET_SOL_END)
     {
         sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has an invalid target_type %u, skipped.",
                 e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetTargetType());
@@ -698,6 +701,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                     case SMART_TARGET_PLAYER_RANGE:
                     case SMART_TARGET_PLAYER_DISTANCE:
                     case SMART_TARGET_ACTION_INVOKER:
+                    case SMART_TARGET_CREATURE_FORMATION:
                         break;
                     default:
                         sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses invalid target_type %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.GetTargetType());

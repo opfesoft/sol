@@ -3972,6 +3972,33 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
                         l->push_back(u);
         break;
     }
+    case SMART_TARGET_CREATURE_FORMATION:
+    {
+        if (me)
+            if (CreatureGroup* f = me->GetFormation())
+            {
+                Creature* leader = f->getLeader();
+                if (e.target.creatureFormation.memberType == 1)
+                {
+                    l->push_back(leader);
+                    break;
+                }
+
+                const CreatureGroup::CreatureGroupMemberType& m = f->GetMembers();
+                for (CreatureGroup::CreatureGroupMemberType::const_iterator itr = m.begin(); itr != m.end(); ++itr)
+                {
+                    Creature* member = itr->first;
+                    if (member->IsAlive())
+                    {
+                        if (member == leader && e.target.creatureFormation.memberType == 0)
+                            continue;
+                        l->push_back(member);
+                    }
+                }
+            }
+
+        break;
+    }
     case SMART_TARGET_NONE:
     case SMART_TARGET_POSITION:
     default:
@@ -4472,6 +4499,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         case SMART_TARGET_CLOSEST_PLAYER:
         case SMART_TARGET_PLAYER_RANGE:
         case SMART_TARGET_PLAYER_DISTANCE:
+        case SMART_TARGET_CREATURE_FORMATION:
         {
             ObjectList* _targets = GetTargets(e);
             if (!_targets)

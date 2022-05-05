@@ -1364,7 +1364,15 @@ enum SMARTAI_TARGETS
     SMART_TARGET_FARTHEST                       = 28,   // maxDist, playerOnly, isInLos
     SMART_TARGET_VEHICLE_PASSENGER              = 29,   // seatMask (0 - all seats)
 
-    SMART_TARGET_TC_END                         = 30    // placeholder
+    SMART_TARGET_TC_END                         = 30,   // placeholder
+
+    // Sol-only SmartTargets:
+
+    SMART_TARGET_SOL_START                      = 230,  // placeholder
+
+    SMART_TARGET_CREATURE_FORMATION             = 231,  // memberType (0 - members only, 1 - leader only, 2 - leader and members)
+
+    SMART_TARGET_SOL_END                        = 232   // placeholder
 };
 
 struct SmartTarget
@@ -1493,6 +1501,11 @@ struct SmartTarget
         {
             uint32 seatMask;
         } vehicle;
+
+        struct
+        {
+            uint32 memberType;
+        } creatureFormation;
 
         struct
         {
