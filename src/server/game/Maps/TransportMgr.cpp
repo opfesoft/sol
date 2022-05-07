@@ -431,6 +431,33 @@ void TransportMgr::SpawnContinentTransports()
         sLog->outString(">> Spawned %u continent motion transports in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
         sLog->outString();
     }
+
+    // pussywizard: preload grids for continent static transports
+    oldMSTime = getMSTime();
+    result = WorldDatabase.Query("SELECT map, position_x, position_y FROM gameobject g JOIN gameobject_template t ON g.id = t.entry WHERE t.type = 11");
+    count = 0;
+    if (result)
+    {
+        do
+        {
+            Field* fields = result->Fetch();
+            uint16 mapId = fields[0].GetUInt16();
+            float x = fields[1].GetFloat();
+            float y = fields[2].GetFloat();
+
+            MapEntry const* mapEntry = sMapStore.LookupEntry(mapId);
+            if (mapEntry && !mapEntry->Instanceable())
+                if (Map* map = sMapMgr->CreateBaseMap(mapId))
+                {
+                    map->LoadGrid(x, y);
+                    ++count;
+                }
+
+        } while (result->NextRow());
+    }
+
+    sLog->outString(">> Preloaded grids for %u continent static transports in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString();
 }
 
 void TransportMgr::CreateInstanceTransports(Map* map)
