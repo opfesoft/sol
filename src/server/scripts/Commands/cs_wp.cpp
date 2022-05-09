@@ -617,7 +617,7 @@ public:
         arg_str = strtok((char*)nullptr, " ");
 
         // Check for argument
-        if (show != "del" && show != "move" && arg_str == nullptr)
+        if (show != "del" && show != "move" && show != "orientation" && arg_str == nullptr)
         {
             handler->PSendSysMessage(LANG_WAYPOINT_ARGUMENTREQ, show_str);
             return false;
@@ -889,7 +889,9 @@ public:
                 uint32 pathfinding      = fields[4].GetUInt8();
                 uint32 ev_id            = fields[5].GetUInt32();
                 uint32 ev_chance        = fields[6].GetInt16();
-                float orientation       = fields[7].GetFloat();
+                float orientation       = -1.f;
+                if (!fields[7].IsNull())
+                    orientation         = fields[7].GetFloat();
 
                 handler->PSendSysMessage("|cff00ff00Show info: for current point: |r|cff00ffff%u|r|cff00ff00, Path ID: |r|cff00ffff%u|r", point, pathid);
                 handler->PSendSysMessage("|cff00ff00Show info: Delay: |r|cff00ffff%u|r", delay);
@@ -897,7 +899,10 @@ public:
                 handler->PSendSysMessage("|cff00ff00Show info: Pathfinding: |r|cff00ffff%u|r", pathfinding);
                 handler->PSendSysMessage("|cff00ff00Show info: Waypoint event: |r|cff00ffff%u|r", ev_id);
                 handler->PSendSysMessage("|cff00ff00Show info: Event chance: |r|cff00ffff%i|r", ev_chance);
-                handler->PSendSysMessage("|cff00ff00Show info: Orientation: |r|cff00ffff%f|r", orientation);
+                if (orientation >= 0.f)
+                    handler->PSendSysMessage("|cff00ff00Show info: Orientation: |r|cff00ffff%f|r", orientation);
+                else
+                    handler->PSendSysMessage("|cff00ff00Show info: Orientation: |r|cff00ffffnone|r");
             }
             while (result->NextRow());
 

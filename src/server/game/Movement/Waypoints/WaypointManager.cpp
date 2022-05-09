@@ -52,15 +52,25 @@ void WaypointMgr::Load()
         uint32 pathId = fields[0].GetUInt32();
         WaypointPath& path = _waypointStore[pathId];
 
+        wp->id = fields[1].GetUInt32();
         float x = fields[2].GetFloat();
         float y = fields[3].GetFloat();
         float z = fields[4].GetFloat();
-        float o = fields[5].GetFloat();
+        float o = -1.f;
+        if (!fields[5].IsNull())
+        {
+            o = fields[5].GetFloat();
+            if (o < 0.f || o > 6.28318f)
+            {
+                sLog->outErrorDb("Path %u point %u in waypoint_data has invalid orientation %f (must not be < 0 or > 6.28318), ignoring", pathId, wp->id, o);
+                delete wp;
+                continue;
+            }
+        }
 
         acore::NormalizeMapCoord(x);
         acore::NormalizeMapCoord(y);
 
-        wp->id = fields[1].GetUInt32();
         wp->x = x;
         wp->y = y;
         wp->z = z;
@@ -69,7 +79,7 @@ void WaypointMgr::Load()
 
         if (wp->move_type >= WAYPOINT_MOVE_TYPE_MAX)
         {
-            sLog->outErrorDb("Waypoint %u in waypoint_data has invalid move_type %u, ignoring", wp->id, wp->move_type);
+            sLog->outErrorDb("Path %u waypoint %u in waypoint_data has invalid move_type %u, ignoring", pathId, wp->id, wp->move_type);
             delete wp;
             continue;
         }
@@ -78,12 +88,20 @@ void WaypointMgr::Load()
 
         if (wp->pathfinding >= WAYPOINT_PATHFINDING_MAX)
         {
-            sLog->outErrorDb("Waypoint %u in waypoint_data has invalid pathfinding %u, ignoring", wp->id, wp->pathfinding);
+            sLog->outErrorDb("Path %u waypoint %u in waypoint_data has invalid pathfinding %u, ignoring", pathId, wp->id, wp->pathfinding);
             delete wp;
             continue;
         }
 
         wp->delay = fields[8].GetUInt32();
+
+        if (wp->orientation >= 0.f && wp->delay == 0)
+        {
+            sLog->outErrorDb("Path %u waypoint %u in waypoint_data has invalid delay %u (has to be > 0 if orientation is set), ignoring", pathId, wp->id, wp->delay);
+            delete wp;
+            continue;
+        }
+
         wp->event_id = fields[9].GetUInt32();
         wp->event_chance = fields[10].GetInt16();
 
@@ -123,15 +141,25 @@ void WaypointMgr::ReloadPath(uint32 id)
         Field* fields = result->Fetch();
         WaypointData* wp = new WaypointData();
 
+        wp->id = fields[0].GetUInt32();
         float x = fields[1].GetFloat();
         float y = fields[2].GetFloat();
         float z = fields[3].GetFloat();
-        float o = fields[4].GetFloat();
+        float o = -1.f;
+        if (!fields[4].IsNull())
+        {
+            o = fields[4].GetFloat();
+            if (o < 0.f || o > 6.28318f)
+            {
+                sLog->outErrorDb("Path %u point %u in waypoint_data has invalid orientation %f (must not be < 0 or > 6.28318), ignoring", id, wp->id, o);
+                delete wp;
+                continue;
+            }
+        }
 
         acore::NormalizeMapCoord(x);
         acore::NormalizeMapCoord(y);
 
-        wp->id = fields[0].GetUInt32();
         wp->x = x;
         wp->y = y;
         wp->z = z;
@@ -140,14 +168,31 @@ void WaypointMgr::ReloadPath(uint32 id)
         
         if (wp->move_type >= WAYPOINT_MOVE_TYPE_MAX)
         {
-            //TC_LOG_ERROR("sql.sql", "Waypoint %u in waypoint_data has invalid move_type, ignoring", wp->id);
+            sLog->outErrorDb("Path %u waypoint %u in waypoint_data has invalid move_type %u, ignoring", id, wp->id, wp->move_type);
             delete wp;
             continue;
         }
         
-        wp->delay = fields[6].GetUInt32();
-        wp->event_id = fields[7].GetUInt32();
-        wp->event_chance = fields[8].GetUInt8();
+        wp->pathfinding = fields[6].GetUInt8();
+
+        if (wp->pathfinding >= WAYPOINT_PATHFINDING_MAX)
+        {
+            sLog->outErrorDb("Path %u waypoint %u in waypoint_data has invalid pathfinding %u, ignoring", id, wp->id, wp->pathfinding);
+            delete wp;
+            continue;
+        }
+
+        wp->delay = fields[7].GetUInt32();
+
+        if (wp->orientation >= 0.f && wp->delay == 0.f)
+        {
+            sLog->outErrorDb("Path %u waypoint %u in waypoint_data has invalid delay %u (has to be > 0 if orientation is set), ignoring", id, wp->id, wp->delay);
+            delete wp;
+            continue;
+        }
+
+        wp->event_id = fields[8].GetUInt32();
+        wp->event_chance = fields[9].GetUInt8();
 
         path.push_back(wp);
 

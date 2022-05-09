@@ -165,8 +165,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
     //! but formationDest contains global coordinates
     init.MoveTo(node->x, node->y, node->z, (node->pathfinding == WAYPOINT_PATHFINDING_NODE || node->pathfinding == WAYPOINT_PATHFINDING_ALL));
 
-    //! Accepts angles such as 0.00001 and -0.00001, 0 must be ignored, default value in waypoint table
-    if (node->orientation && node->delay)
+    if (node->orientation >= 0.f && node->delay)
         init.SetFacing(node->orientation);
 
     switch (node->move_type)
