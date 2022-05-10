@@ -263,6 +263,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
     uint32 processedPackets = 0;
     time_t currentTime = time(nullptr);
 
+    constexpr uint32 MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE = 150;
+
     while (m_Socket && !m_Socket->IsClosed() && !_recvQueue.empty() && _recvQueue.peek(true) != firstDelayedPacket && _recvQueue.next(packet, updater))
     {
         if (packet->GetOpcode() >= NUM_MSG_TYPES)
@@ -305,6 +307,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                             }
                             (this->*opHandle.handler)(*packet);
                         }
+                        else
+                            processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
                         break;
                     case STATUS_TRANSFER:
                         if (_player && !_player->IsInWorld() && AntiDOS.EvaluateOpcode(*packet, currentTime))
@@ -316,6 +320,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                             }
                             (this->*opHandle.handler)(*packet);
                         }
+                        else
+                            processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
                         break;
                     case STATUS_AUTHED:
                         if (m_inQueue) // prevent cheating
@@ -325,6 +331,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         {
                             (this->*opHandle.handler)(*packet);
                         }
+                        else
+                            processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
                         break;
                     case STATUS_NEVER:
                         break;
@@ -348,7 +356,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
 
         deletePacket = true;
 
-        if (++processedPackets >= 150) // limit (by count) packets processed in one update, prevent DDoS
+        if (++processedPackets >= MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE) // limit (by count) packets processed in one update, prevent DDoS
             break;
 
         if (getMSTimeDiff(_startMSTime, getMSTime()) >= 3) // limit (by time) packets processed in one update, prevent DDoS
