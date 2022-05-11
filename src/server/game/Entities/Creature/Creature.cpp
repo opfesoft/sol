@@ -665,7 +665,7 @@ void Creature::Update(uint32 diff)
     if (IsInWorld() && !IsDuringRemoveFromWorld())
     {
         // pussywizard:
-        if (IS_PLAYER_GUID(GetOwnerGUID()))
+        if (IS_PLAYER_GUID(GetOwnerGUID()) && !(IsVehicle() && GetVehicleKit()->GetSeatForPassengerGuid(GetOwnerGUID())))
         {
             if (m_transportCheckTimer <= diff)
             {

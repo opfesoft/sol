@@ -46,6 +46,7 @@ class Vehicle : public TransportBase
 
         SeatMap Seats;
 
+        VehicleSeatEntry const* GetSeatForPassengerGuid(uint64 guid);
         VehicleSeatEntry const* GetSeatForPassenger(Unit const* passenger);
         SeatMap::iterator GetSeatIteratorForPassenger(Unit* passenger);
 

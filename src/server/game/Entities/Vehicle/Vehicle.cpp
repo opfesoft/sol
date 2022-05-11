@@ -581,14 +581,19 @@ void Vehicle::InitMovementInfoForBase()
         _me->AddExtraUnitMovementFlag(MOVEMENTFLAG2_FULL_SPEED_PITCHING);
 }
 
-VehicleSeatEntry const* Vehicle::GetSeatForPassenger(Unit const* passenger)
+VehicleSeatEntry const* Vehicle::GetSeatForPassengerGuid(uint64 guid)
 {
     SeatMap::iterator itr;
     for (itr = Seats.begin(); itr != Seats.end(); ++itr)
-        if (itr->second.Passenger.Guid == passenger->GetGUID())
+        if (itr->second.Passenger.Guid == guid)
             return itr->second.SeatInfo;
 
     return NULL;
+}
+
+VehicleSeatEntry const* Vehicle::GetSeatForPassenger(Unit const* passenger)
+{
+    return GetSeatForPassengerGuid(passenger->GetGUID());
 }
 
 SeatMap::iterator Vehicle::GetSeatIteratorForPassenger(Unit* passenger)
