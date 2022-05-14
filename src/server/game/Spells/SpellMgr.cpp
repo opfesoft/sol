@@ -3896,6 +3896,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 16280: // Flurry Rank 5
             spellInfo->EffectBasePoints[EFFECT_0] = 24;
             break;
+        case 16312: // Flametongue Weapon (Passive) Rank 6
+            spellInfo->Attributes |= SPELL_ATTR0_PASSIVE;
+            spellInfo->DurationIndex = 21;
+            break;
 
         /////////////////////////////////
         ///// WARLOCK
