@@ -3937,6 +3937,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 47205:
             spellInfo->EffectSpellClassMask[1][0] |= 2; // add corruption to affected spells
             break;
+        case 47422:
+            spellInfo->SchoolMask = SPELL_SCHOOL_MASK_SHADOW;
+            break;
         // Death's Embrace
         case 47198:
         case 47199:
