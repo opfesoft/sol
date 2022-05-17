@@ -49,7 +49,7 @@ enum CreatureFlagsExtra : uint32
     CREATURE_FLAG_EXTRA_NO_SKILLGAIN                    = 0x00040000,   // creature won't increase weapon skills
     CREATURE_FLAG_EXTRA_TAUNT_DIMINISH                  = 0x00080000,   // Taunt is a subject to diminishing returns on this creautre
     CREATURE_FLAG_EXTRA_ALL_DIMINISH                    = 0x00100000,   // Creature is subject to all diminishing returns as player are
-    CREATURE_FLAG_EXTRA_UNUSED_22                       = 0x00200000,
+    CREATURE_FLAG_EXTRA_NO_PLAYER_DAMAGE_REQ            = 0x00200000,   // creature does not need to take player damage for kill credit
     CREATURE_FLAG_EXTRA_AVOID_AOE                       = 0x00400000,   // pussywizard: ignored by aoe attacks (for icc blood prince council npc - Dark Nucleus)
     CREATURE_FLAG_EXTRA_NO_DODGE                        = 0x00800000,   // xinef: target cannot dodge
     CREATURE_FLAG_EXTRA_UNUSED_25                       = 0x01000000,
@@ -63,7 +63,7 @@ enum CreatureFlagsExtra : uint32
 
     // Masks
     CREATURE_FLAG_EXTRA_UNUSED                          = (CREATURE_FLAG_EXTRA_UNUSED_12 |
-                                                           CREATURE_FLAG_EXTRA_UNUSED_14 | CREATURE_FLAG_EXTRA_UNUSED_22 |
+                                                           CREATURE_FLAG_EXTRA_UNUSED_14 |
                                                            CREATURE_FLAG_EXTRA_UNUSED_25 | CREATURE_FLAG_EXTRA_UNUSED_26 | CREATURE_FLAG_EXTRA_UNUSED_27 |
                                                            CREATURE_FLAG_EXTRA_UNUSED_28 | CREATURE_FLAG_EXTRA_UNUSED_32),
     CREATURE_FLAG_EXTRA_DB_ALLOWED                      = (0xFFFFFFFF & ~(CREATURE_FLAG_EXTRA_UNUSED | CREATURE_FLAG_EXTRA_DUNGEON_BOSS))
@@ -730,7 +730,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         void SetDisableReputationGain(bool disable) { DisableReputationGain = disable; }
         bool IsReputationGainDisabled() const { return DisableReputationGain; }
-        bool IsDamageEnoughForLootingAndReward() const { return m_PlayerDamageReq == 0; }
+        bool IsDamageEnoughForLootingAndReward() const { return (m_creatureInfo->flags_extra & CREATURE_FLAG_EXTRA_NO_PLAYER_DAMAGE_REQ) || (m_PlayerDamageReq == 0); }
         void LowerPlayerDamageReq(uint32 unDamage)
         {
             if (m_PlayerDamageReq)
