@@ -3404,6 +3404,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 31893: // Seal of Blood
             spellInfo->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
             break;
+        case 26385: // You'll Need a Gryphon: Uzo's Ritual of Blood Triggered Transform
+        case  6600: // Salt Flats Racer Speed
+        case  6601: // Salt Flats Racer Slow
+            spellInfo->Attributes |= SPELL_ATTR0_PASSIVE;
+            break;
 
 
         /////////////////////////////////////////////
