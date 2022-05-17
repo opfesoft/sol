@@ -1254,10 +1254,17 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
+        case SMART_ACTION_STORE_TARGET_LIST:
+        {
+            if (e.action.storeTargets.id == SMART_ESCORT_TARGETS || (e.action.storeTargets.id <= SMART_ESCORT_TARGETS && e.action.storeTargets.idRange >= SMART_ESCORT_TARGETS))
+            {
+                sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses incorrect IDs (%u is not allowed), skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), SMART_ESCORT_TARGETS);
+                return false;
+            }
+        }
         case SMART_ACTION_START_CLOSEST_WAYPOINT:
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:
-        case SMART_ACTION_STORE_TARGET_LIST:
         case SMART_ACTION_EVADE:
         case SMART_ACTION_FLEE_FOR_ASSIST:
         case SMART_ACTION_COMBAT_STOP:
