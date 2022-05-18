@@ -6021,6 +6021,8 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
                 break;
             // Ritual of Doom, Warlock summon spell
             case 60478:
+                summon->NeedChangeAI = true;
+                summon->IsAIEnabled = false;
                 caster->AddAura(SPELL_RITUAL_ENSLAVEMENT, summon);
                 break;
         }
