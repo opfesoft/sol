@@ -3827,6 +3827,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->spellLevel = 0;
             spellInfo->baseLevel = 0;
             spellInfo->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+            spellInfo->rangeIndex = 5; // 40yd
             break;
         // Earth Shield
         case 379:
@@ -3904,6 +3905,12 @@ void SpellMgr::LoadDbcDataCorrections()
         case 16312: // Flametongue Weapon (Passive) Rank 6
             spellInfo->Attributes |= SPELL_ATTR0_PASSIVE;
             spellInfo->DurationIndex = 21;
+            break;
+        case 39609: // Mana Tide Totem
+            spellInfo->rangeIndex = 5; // 40yd
+            break;
+        case 21895: // Increased Totem Radius
+            spellInfo->EffectSpellClassMask[EFFECT_0] = flag96(0x0603E000, 0x00200100); // add Windfury & Flametongue Totem
             break;
 
         /////////////////////////////////
