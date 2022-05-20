@@ -1762,13 +1762,6 @@ public:
 # npc_wormhole
 ######*/
 
-#define GOSSIP_ENGINEERING1   "Borean Tundra"
-#define GOSSIP_ENGINEERING2   "Howling Fjord"
-#define GOSSIP_ENGINEERING3   "Sholazar Basin"
-#define GOSSIP_ENGINEERING4   "Icecrown"
-#define GOSSIP_ENGINEERING5   "Storm Peaks"
-#define GOSSIP_ENGINEERING6   "Underground..."
-
 enum WormholeSpells
 {
     SPELL_BOREAN_TUNDRA         = 67834,
@@ -1812,16 +1805,16 @@ class npc_wormhole : public CreatureScript
             {
                 if (player == creature->ToTempSummon()->GetSummoner())
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
 
                     if (creature->AI()->GetData(DATA_SHOW_UNDERGROUND))
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
 
-                    SendGossipMenuFor(player, TEXT_WORMHOLE, creature);
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature);
                 }
             }
 
@@ -1911,46 +1904,38 @@ public:
 
 enum LockSmith
 {
+    QUEST_THE_KEY_TO_SCHOLOMANCE_A        =  5505,
+    QUEST_THE_KEY_TO_SCHOLOMANCE_H        =  5511,
     QUEST_HOW_TO_BRAKE_IN_TO_THE_ARCATRAZ = 10704,
-    QUEST_DARK_IRON_LEGACY                = 3802,
-    QUEST_THE_KEY_TO_SCHOLOMANCE_A        = 5505,
-    QUEST_THE_KEY_TO_SCHOLOMANCE_H        = 5511,
     QUEST_HOTTER_THAN_HELL_A              = 10758,
     QUEST_HOTTER_THAN_HELL_H              = 10764,
-    QUEST_RETURN_TO_KHAGDAR               = 9837,
+    QUEST_AT_LAST                         =  3201,
+    QUEST_DARK_IRON_LEGACY                =  3802,
+    QUEST_EYE_OF_HARAMAD                  = 10982,
+    QUEST_RETURN_TO_KHADGAR               =  9837,
     QUEST_CONTAINMENT                     = 13159,
     QUEST_ETERNAL_VIGILANCE               = 11011,
-    QUEST_KEY_TO_THE_FOCUSING_IRIS        = 13372,
-    QUEST_HC_KEY_TO_THE_FOCUSING_IRIS     = 13375,
 
-    ITEM_ARCATRAZ_KEY                     = 31084,
-    ITEM_SHADOWFORGE_KEY                  = 11000,
     ITEM_SKELETON_KEY                     = 13704,
+    ITEM_ARCATRAZ_KEY                     = 31084,
     ITEM_SHATTERED_HALLS_KEY              = 28395,
+    ITEM_KEY_TO_SEARING_GORGE             =  5396,
+    ITEM_SHADOWFORGE_KEY                  = 11000,
+    ITEM_EYE_OF_HARAMAD                   = 32092,
     ITEM_THE_MASTERS_KEY                  = 24490,
     ITEM_VIOLET_HOLD_KEY                  = 42482,
     ITEM_ESSENCE_INFUSED_MOONSTONE        = 32449,
-    ITEM_KEY_TO_THE_FOCUSING_IRIS         = 44582,
-    ITEM_HC_KEY_TO_THE_FOCUSING_IRIS      = 44581,
 
-    SPELL_ARCATRAZ_KEY                    = 54881,
-    SPELL_SHADOWFORGE_KEY                 = 54882,
     SPELL_SKELETON_KEY                    = 54883,
+    SPELL_ARCATRAZ_KEY                    = 54881,
     SPELL_SHATTERED_HALLS_KEY             = 54884,
+    SPELL_KEY_TO_SEARING_GORGE            = 54880,
+    SPELL_SHADOWFORGE_KEY                 = 54882,
+    SPELL_EYE_OF_HARAMAD                  = 54887,
     SPELL_THE_MASTERS_KEY                 = 54885,
     SPELL_VIOLET_HOLD_KEY                 = 67253,
     SPELL_ESSENCE_INFUSED_MOONSTONE       = 40173,
 };
-
-#define GOSSIP_LOST_ARCATRAZ_KEY                "I've lost my key to the Arcatraz."
-#define GOSSIP_LOST_SHADOWFORGE_KEY             "I've lost my key to the Blackrock Depths."
-#define GOSSIP_LOST_SKELETON_KEY                "I've lost my key to the Scholomance."
-#define GOSSIP_LOST_SHATTERED_HALLS_KEY         "I've lost my key to the Shattered Halls."
-#define GOSSIP_LOST_THE_MASTERS_KEY             "I've lost my key to the Karazhan."
-#define GOSSIP_LOST_VIOLET_HOLD_KEY             "I've lost my key to the Violet Hold."
-#define GOSSIP_LOST_ESSENCE_INFUSED_MOONSTONE   "I've lost my Essence-Infused Moonstone."
-#define GOSSIP_LOST_KEY_TO_THE_FOCUSING_IRIS    "I've lost my Key to the Focusing Iris."
-#define GOSSIP_LOST_HC_KEY_TO_THE_FOCUSING_IRIS "I've lost my Heroic Key to the Focusing Iris."
 
 class npc_locksmith : public CreatureScript
 {
@@ -1959,43 +1944,43 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
-        // Arcatraz Key
-        if (player->GetQuestRewardStatus(QUEST_HOW_TO_BRAKE_IN_TO_THE_ARCATRAZ) && !player->HasItemCount(ITEM_ARCATRAZ_KEY, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_ARCATRAZ_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-
-        // Shadowforge Key
-        if (player->GetQuestRewardStatus(QUEST_DARK_IRON_LEGACY) && !player->HasItemCount(ITEM_SHADOWFORGE_KEY, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_SHADOWFORGE_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-
         // Skeleton Key
         if ((player->GetQuestRewardStatus(QUEST_THE_KEY_TO_SCHOLOMANCE_A) || player->GetQuestRewardStatus(QUEST_THE_KEY_TO_SCHOLOMANCE_H)) &&
             !player->HasItemCount(ITEM_SKELETON_KEY, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_SKELETON_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
+        // Arcatraz Key
+        if (player->GetQuestRewardStatus(QUEST_HOW_TO_BRAKE_IN_TO_THE_ARCATRAZ) && !player->HasItemCount(ITEM_ARCATRAZ_KEY, 1, true))
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
         // Shatered Halls Key
         if ((player->GetQuestRewardStatus(QUEST_HOTTER_THAN_HELL_A) || player->GetQuestRewardStatus(QUEST_HOTTER_THAN_HELL_H)) &&
             !player->HasItemCount(ITEM_SHATTERED_HALLS_KEY, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_SHATTERED_HALLS_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+
+        // Key to Searing Gorge
+        if (player->GetQuestRewardStatus(QUEST_AT_LAST) && !player->HasItemCount(ITEM_KEY_TO_SEARING_GORGE, 1, true))
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+
+        // Shadowforge Key
+        if (player->GetQuestRewardStatus(QUEST_DARK_IRON_LEGACY) && !player->HasItemCount(ITEM_SHADOWFORGE_KEY, 1, true))
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+
+        // The Eye of Haramad
+        if (player->GetQuestRewardStatus(QUEST_EYE_OF_HARAMAD) && !player->HasItemCount(ITEM_EYE_OF_HARAMAD, 1, true))
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
 
         // Master's Key
-        if (player->GetQuestRewardStatus(QUEST_RETURN_TO_KHAGDAR) && !player->HasItemCount(ITEM_THE_MASTERS_KEY, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_THE_MASTERS_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+        if (player->GetQuestRewardStatus(QUEST_RETURN_TO_KHADGAR) && !player->HasItemCount(ITEM_THE_MASTERS_KEY, 1, true))
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
 
         // Violet Hold Key
         if (player->GetQuestRewardStatus(QUEST_CONTAINMENT) && !player->HasItemCount(ITEM_VIOLET_HOLD_KEY, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_VIOLET_HOLD_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
 
         // Essence-Infused Moonstone
         if (player->GetQuestRewardStatus(QUEST_ETERNAL_VIGILANCE) && !player->HasItemCount(ITEM_ESSENCE_INFUSED_MOONSTONE, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_ESSENCE_INFUSED_MOONSTONE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
-
-        // Key to the Focusing Iris
-        if (player->GetQuestRewardStatus(QUEST_KEY_TO_THE_FOCUSING_IRIS) && !player->HasItemCount(ITEM_KEY_TO_THE_FOCUSING_IRIS, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_KEY_TO_THE_FOCUSING_IRIS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
-
-        // Heroic Key to the Focusing Iris
-        if (player->GetQuestRewardStatus(QUEST_HC_KEY_TO_THE_FOCUSING_IRIS) && !player->HasItemCount(ITEM_HC_KEY_TO_THE_FOCUSING_IRIS, 1, true))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LOST_HC_KEY_TO_THE_FOCUSING_IRIS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 8, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
 
         SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
@@ -2009,39 +1994,39 @@ public:
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
                 CloseGossipMenuFor(player);
-                player->CastSpell(player, SPELL_ARCATRAZ_KEY, false);
+                player->CastSpell(player, SPELL_SKELETON_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
                 CloseGossipMenuFor(player);
-                player->CastSpell(player, SPELL_SHADOWFORGE_KEY, false);
+                player->CastSpell(player, SPELL_ARCATRAZ_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
                 CloseGossipMenuFor(player);
-                player->CastSpell(player, SPELL_SKELETON_KEY, false);
+                player->CastSpell(player, SPELL_SHATTERED_HALLS_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 4:
                 CloseGossipMenuFor(player);
-                player->CastSpell(player, SPELL_SHATTERED_HALLS_KEY, false);
+                player->CastSpell(player, SPELL_KEY_TO_SEARING_GORGE, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 5:
                 CloseGossipMenuFor(player);
-                player->CastSpell(player, SPELL_THE_MASTERS_KEY, false);
+                player->CastSpell(player, SPELL_SHADOWFORGE_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 6:
                 CloseGossipMenuFor(player);
-                player->CastSpell(player, SPELL_VIOLET_HOLD_KEY, false);
+                player->CastSpell(player, SPELL_EYE_OF_HARAMAD, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 7:
                 CloseGossipMenuFor(player);
-                player->CastSpell(player, SPELL_ESSENCE_INFUSED_MOONSTONE, false);
+                player->CastSpell(player, SPELL_THE_MASTERS_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 8:
                 CloseGossipMenuFor(player);
-                player->AddItem(ITEM_KEY_TO_THE_FOCUSING_IRIS, 1);
+                player->CastSpell(player, SPELL_VIOLET_HOLD_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 9:
                 CloseGossipMenuFor(player);
-                player->AddItem(ITEM_HC_KEY_TO_THE_FOCUSING_IRIS, 1);
+                player->CastSpell(player, SPELL_ESSENCE_INFUSED_MOONSTONE, false);
                 break;
         }
         return true;

@@ -1,0 +1,1 @@
+UPDATE `item_template` SET `Flags` = `Flags` | 131072 WHERE `entry` IN (13704,31084,28395,5396,11000,32092,24490,42482,32449);
