@@ -9,6 +9,7 @@
 #include "ScriptedCreature.h"
 #include "SpellAuras.h"
 #include "Player.h"
+#include "ScriptedGossip.h"
 
 enum Orphans
 {
@@ -688,6 +689,15 @@ class npc_the_etymidian : public CreatureScript
 /*######
 ## npc_cw_alexstrasza_trigger
 ######*/
+
+enum Alexstrasza
+{
+    QUEST_KEY_TO_THE_FOCUSING_IRIS        = 13372,
+    QUEST_HEROIC_KEY_TO_THE_FOCUSING_IRIS = 13375,
+    ITEM_KEY_TO_THE_FOCUSING_IRIS         = 44582,
+    ITEM_HEROIC_KEY_TO_THE_FOCUSING_IRIS  = 44581,
+};
+
 class npc_alexstraza_the_lifebinder : public CreatureScript
 {
     public:
@@ -821,6 +831,40 @@ class npc_alexstraza_the_lifebinder : public CreatureScript
                 uint64 orphanGUID;
 
         };
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            if (creature->IsQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (player->GetQuestRewardStatus(QUEST_KEY_TO_THE_FOCUSING_IRIS) && !player->HasItemCount(ITEM_KEY_TO_THE_FOCUSING_IRIS, 1, true))
+                AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
+            if (player->GetQuestRewardStatus(QUEST_HEROIC_KEY_TO_THE_FOCUSING_IRIS) && !player->HasItemCount(ITEM_HEROIC_KEY_TO_THE_FOCUSING_IRIS, 1, true))
+                AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action)
+        {
+            ClearGossipMenuFor(player);
+
+            switch (action)
+            {
+                case GOSSIP_ACTION_INFO_DEF + 1:
+                    CloseGossipMenuFor(player);
+                    player->AddItem(ITEM_KEY_TO_THE_FOCUSING_IRIS, 1);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 2:
+                    CloseGossipMenuFor(player);
+                    player->AddItem(ITEM_HEROIC_KEY_TO_THE_FOCUSING_IRIS, 1);
+                    break;
+            }
+
+            return true;
+        }
 
         CreatureAI* GetAI(Creature* creature) const
         {
