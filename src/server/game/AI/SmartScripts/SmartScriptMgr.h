@@ -572,7 +572,7 @@ enum SMART_ACTION
     SMART_ACTION_SET_SIGHT_DIST                     = 121,    // sightDistance
     SMART_ACTION_FLEE                               = 122,    // fleeTime
     SMART_ACTION_ADD_THREAT                         = 123,    // +threat, -threat
-    SMART_ACTION_LOAD_EQUIPMENT                     = 124,    // id
+    SMART_ACTION_LOAD_EQUIPMENT                     = 124,    // id, force, maxId
     SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT         = 125,    // id min range, id max range
     SMART_ACTION_REMOVE_ALL_GAMEOBJECTS             = 126,
     SMART_ACTION_REMOVE_MOVEMENT                    = 127,    // TODO: NOT SUPPORTED YET
@@ -1200,6 +1200,7 @@ struct SmartAction
         {
             uint32 id;
             uint32 force;
+            uint32 maxId;
         } loadEquipment;
 
         struct

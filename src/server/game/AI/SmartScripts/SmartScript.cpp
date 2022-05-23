@@ -3010,9 +3010,14 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!targets)
             break;
 
+        uint32 id = e.action.loadEquipment.id;
+
+        if (e.action.loadEquipment.maxId > 0 && e.action.loadEquipment.maxId > id)
+            id = urand(id, e.action.loadEquipment.maxId);
+
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             if (IsCreature(*itr))
-                (*itr)->ToCreature()->LoadEquipment(e.action.loadEquipment.id, e.action.loadEquipment.force);
+                (*itr)->ToCreature()->LoadEquipment(id, e.action.loadEquipment.force);
 
         delete targets;
         break;
