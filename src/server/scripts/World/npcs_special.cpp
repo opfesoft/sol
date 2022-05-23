@@ -2314,6 +2314,9 @@ public:
                 case NPC_CLUSTER_ELUNE:
                     spellId = GetFireworkSpell(urand(NPC_FIREWORK_BLUE, NPC_FIREWORK_WHITE));
                     break;
+                default:
+                    spellId = GetFireworkSpell(me->GetEntry());
+                    break;
             }
 
             const SpellInfo* spellInfo = sSpellMgr->GetSpellInfo(spellId);
@@ -2364,8 +2367,7 @@ public:
                     me->SummonGameObject(GetFireworkGameObjectId(), me->GetPositionX() + (i%2 == 0 ? displacement : -displacement), me->GetPositionY() + (i > 1 ? displacement : -displacement), me->GetPositionZ() + 4.0f, me->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, 1);
             }
             else
-                //me->CastSpell(me, GetFireworkSpell(me->GetEntry()), true);
-                me->CastSpell(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), GetFireworkSpell(me->GetEntry()), true);
+                me->SummonGameObject(GetFireworkGameObjectId(), me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), 0.0f, 0.0f, 0.0f, 0.0f, 1);
         }
     };
 
