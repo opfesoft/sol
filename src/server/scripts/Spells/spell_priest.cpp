@@ -962,6 +962,8 @@ class spell_pri_vampiric_touch : public SpellScriptLoader
 
             bool CheckProc(ProcEventInfo& eventInfo)
             {
+                if (SpellInfo const* spellInfo = eventInfo.GetDamageInfo()->GetSpellInfo(); spellInfo && !spellInfo->IsRankOf(sSpellMgr->GetSpellInfo(8092))) // Mind Blast
+                    return false;
                 return eventInfo.GetActionTarget() && eventInfo.GetActionTarget()->IsAlive() && GetOwner()->GetGUID() == eventInfo.GetActionTarget()->GetGUID();
             }
 
