@@ -3409,6 +3409,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case  6601: // Salt Flats Racer Slow
             spellInfo->Attributes |= SPELL_ATTR0_PASSIVE;
             break;
+        case 48600: // Ride Flamebringer
+            spellInfo->Attributes |= SPELL_ATTR0_CASTABLE_WHILE_MOUNTED;
+            break;
 
 
         /////////////////////////////////////////////
