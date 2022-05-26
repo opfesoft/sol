@@ -3410,6 +3410,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->Attributes |= SPELL_ATTR0_PASSIVE;
             break;
         case 48600: // Ride Flamebringer
+        case 51258: // Forcecast Summon Crocolisk
             spellInfo->Attributes |= SPELL_ATTR0_CASTABLE_WHILE_MOUNTED;
             break;
 
