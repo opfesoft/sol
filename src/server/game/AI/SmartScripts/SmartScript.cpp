@@ -4437,9 +4437,9 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
     case SMART_EVENT_PASSENGER_REMOVED:
     case SMART_EVENT_PASSENGER_BOARDED:
     {
-        if (!unit)
+        if (!unit || (e.event.passenger.seatId && var0 != e.event.passenger.seatId - 1) || (e.event.passenger.playerOnly && unit->GetTypeId() != TYPEID_PLAYER))
             return;
-        RecalcTimer(e, e.event.minMax.repeatMin, e.event.minMax.repeatMax);
+        RecalcTimer(e, e.event.passenger.repeatMin, e.event.passenger.repeatMax);
         ProcessAction(e, unit);
         break;
     }

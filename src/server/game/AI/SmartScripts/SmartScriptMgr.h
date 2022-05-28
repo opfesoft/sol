@@ -116,8 +116,8 @@ enum SMART_EVENT
     SMART_EVENT_TARGET_BUFFED            = 24,      // Param1 = SpellID, Param2 = Stack amount, Param3/4 RepeatMin, RepeatMax
     SMART_EVENT_RESET                    = 25,      // Called after combat, when the creature respawn and spawn.
     SMART_EVENT_IC_LOS                   = 26,      // NoHostile, MaxRnage, CooldownMin, CooldownMax, PlayerOnly
-    SMART_EVENT_PASSENGER_BOARDED        = 27,      // CooldownMin, CooldownMax
-    SMART_EVENT_PASSENGER_REMOVED        = 28,      // CooldownMin, CooldownMax
+    SMART_EVENT_PASSENGER_BOARDED        = 27,      // CooldownMin, CooldownMax, seatId (0: all seats; 1: seat 0; 2: seat 1 etc.), playerOnly (0/1)
+    SMART_EVENT_PASSENGER_REMOVED        = 28,      // CooldownMin, CooldownMax, seatId (0: all seats; 1: seat 0; 2: seat 1 etc.), playerOnly (0/1)
     SMART_EVENT_CHARMED                  = 29,      // NONE
     SMART_EVENT_CHARMED_TARGET           = 30,      // NONE
     SMART_EVENT_SPELLHIT_TARGET          = 31,      // SpellID, School, CooldownMin, CooldownMax
@@ -426,6 +426,14 @@ struct SmartEvent
             uint32 range;
             uint32 heartbeat;
         } followTargetLost;
+
+        struct
+        {
+            uint32 repeatMin;
+            uint32 repeatMax;
+            uint32 seatId;
+            uint32 playerOnly;
+        } passenger;
 
         struct
         {
