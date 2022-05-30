@@ -557,6 +557,7 @@ struct GameObjectTemplateAddon
     uint32  flags;
     uint32  mingold;
     uint32  maxgold;
+    bool    isLarge;
 };
 
 // Benchmarked: Faster than std::map (insert/find)

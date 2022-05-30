@@ -6874,8 +6874,8 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3        4
-    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold FROM gameobject_template_addon");
+    //                                                0       1       2      3        4        5
+    QueryResult result = WorldDatabase.Query("SELECT entry, faction, flags, mingold, maxgold, isLarge FROM gameobject_template_addon");
 
     if (!result)
     {
@@ -6905,6 +6905,7 @@ void ObjectMgr::LoadGameObjectTemplateAddons()
         gameObjectAddon.flags   = fields[2].GetUInt32();
         gameObjectAddon.mingold = fields[3].GetUInt32();
         gameObjectAddon.maxgold = fields[4].GetUInt32();
+        gameObjectAddon.isLarge = fields[5].GetBool();
 
         // checks
         if (gameObjectAddon.faction && !sFactionTemplateStore.LookupEntry(gameObjectAddon.faction))

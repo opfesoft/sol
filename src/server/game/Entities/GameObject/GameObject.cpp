@@ -277,11 +277,13 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map* map, uint32 phaseMa
     SetTransportPathRotation(0.0f, 0.0f, 0.0f, 1.0f);
 
     SetObjectScale(goinfo->size);
+    bool isLarge = false;
 
     if (GameObjectTemplateAddon const* addon = GetTemplateAddon())
     {
         SetUInt32Value(GAMEOBJECT_FACTION, addon->faction);
         SetUInt32Value(GAMEOBJECT_FLAGS, addon->flags);
+        isLarge = addon->isLarge;
     }
 
     SetEntry(goinfo->entry);
@@ -343,7 +345,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map* map, uint32 phaseMa
     AIM_Initialize();
 
     // Check if GameObject is Large
-    if (goinfo->IsLargeGameObject())
+    if (isLarge || goinfo->IsLargeGameObject())
         SetVisibilityDistanceOverride(true);
 
     return true;
