@@ -68,6 +68,15 @@ public:
     }
 };
 
+// The cleansing
+enum TurmoilTexts
+{
+    SAY_TURMOIL_0                = 0,
+    SAY_TURMOIL_1                = 1,
+    SAY_TURMOIL_HALF_HP          = 2,
+    SAY_TURMOIL_DEATH            = 3,
+};
+
 class npc_your_inner_turmoil : public CreatureScript
 {
 public:
@@ -79,16 +88,18 @@ public:
 
         uint32 timer;
         short phase;
+        bool health50;
 
         void Reset()
         {
             timer = 0;
             phase = 0;
+            health50 = false;
         }
 
         void UpdateAI(uint32 diff)
         {
-            if (timer >= 6000 && phase < 4)
+            if (timer >= 6000 && phase < 2)
             {
                 phase++;
                 setphase(phase);
@@ -97,7 +108,21 @@ public:
 
             timer += diff;
 
-            DoMeleeAttackIfReady();
+            ScriptedAI::UpdateAI(diff);
+        }
+
+        void DamageTaken(Unit*, uint32& /*damage*/, DamageEffectType  /*damagetype*/, SpellSchoolMask  /*damageSchoolMask*/)
+        {
+            if (HealthBelowPct(50) && !health50)
+            {
+                Talk(SAY_TURMOIL_HALF_HP, me->ToTempSummon()->GetSummoner()->ToPlayer());
+                health50 = true;
+            }
+        }
+
+        void JustDied(Unit* /*killer*/)
+        {
+            Talk(SAY_TURMOIL_DEATH, me->ToTempSummon()->GetSummoner()->ToPlayer());
         }
 
         void setphase(short phase)
@@ -109,21 +134,16 @@ public:
             switch (phase)
             {
                 case 1:
-                    me->MonsterWhisper("You think that you can get rid of me through meditation?", summoner->ToPlayer());
+                    Talk(SAY_TURMOIL_0, summoner->ToPlayer());
                     return;
                 case 2:
-                    me->MonsterWhisper("Fool! I will destroy you and finally become that which has been building inside of you all these years!", summoner->ToPlayer());
-                    return;
-                case 3:
-                    me->MonsterWhisper("You cannot defeat me. I'm an inseparable part of you!", summoner->ToPlayer());
-                    return;
-                case 4:
-                    me->MonsterWhisper("NOOOOOOOoooooooooo!", summoner->ToPlayer());
+                    Talk(SAY_TURMOIL_1, summoner->ToPlayer());
                     me->SetLevel(summoner->getLevel());
                     me->setFaction(14);
                     if (me->GetExactDist(summoner) < 50.0f)
                     {
                         me->UpdatePosition(summoner->GetPositionX(), summoner->GetPositionY(), summoner->GetPositionZ(), 0.0f, true);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                         summoner->CastSpell(me, 50218, true); // clone caster
                         AttackStart(summoner);
                     }
