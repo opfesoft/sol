@@ -233,7 +233,7 @@ class spell_pal_sacred_shield_base : public SpellScriptLoader
 
             bool CheckProc(ProcEventInfo& eventInfo)
             {
-                return !(eventInfo.GetHitMask() & PROC_EX_INTERNAL_HOT) && eventInfo.GetDamageInfo()->GetDamage() > 0;
+                return !(eventInfo.GetHitMask() & PROC_EX_INTERNAL_HOT) && (eventInfo.GetDamageInfo()->GetDamage() > 0 || eventInfo.GetHealInfo()->GetHeal() > 0);
             }
 
             void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
@@ -243,11 +243,11 @@ class spell_pal_sacred_shield_base : public SpellScriptLoader
                 if (eventInfo.GetTypeMask() & PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_POS)
                 {
                     Unit* caster = eventInfo.GetActor();
-                    const SpellInfo* procSpell = eventInfo.GetDamageInfo()->GetSpellInfo();
+                    const SpellInfo* procSpell = eventInfo.GetHealInfo()->GetSpellInfo();
                     if (caster && procSpell->SpellFamilyName == SPELLFAMILY_PALADIN &&
                         procSpell->SpellFamilyFlags.HasFlag(0x40000000) && caster->GetAuraEffect(SPELL_AURA_PROC_TRIGGER_SPELL, SPELLFAMILY_PALADIN, 3021, 0)) // need infusion of light
                     {
-                        int32 basepoints = int32(float(eventInfo.GetDamageInfo()->GetDamage())/12.0f);
+                        int32 basepoints = int32(float(eventInfo.GetHealInfo()->GetHeal())/12.0f);
                         // Item - Paladin T9 Holy 4P Bonus (Flash of Light)
                         if (AuraEffect const* aurEffect = caster->GetAuraEffect(67191, EFFECT_0))
                             AddPct(basepoints, aurEffect->GetAmount());
