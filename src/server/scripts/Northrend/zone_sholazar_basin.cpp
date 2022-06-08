@@ -103,6 +103,16 @@ enum AHerosBurden
     ACTION_MAKE_FRIENDLY        = 2,
 
     GO_ARTRUIS_PHYLACTERY       = 190777,
+
+    // Texts
+    SAY_TURNED_FRIENDLY         = 0, // Zepik and Jaloot
+
+    SAY_ARTRUIS_AGGRO           = 0,
+    SAY_ARTRUIS_TALK_1          = 1,
+    SAY_ARTRUIS_TALK_2          = 2,
+    SAY_ARTRUIS_TALK_3          = 5,
+    SAY_ARTRUIS_TALK_SHIELD     = 3,
+    SAY_ARTRUIS_EMOTE_SHIELD    = 4, // Boss emote
 };
 
 class npc_artruis_the_hearthless : public CreatureScript
@@ -128,12 +138,16 @@ public:
                 summons.Summon(cr);
                 cr->CastSpell(cr, SPELL_TOMB_OF_THE_HEARTLESS, true);
                 cr->setFaction(me->getFaction());
+                cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                cr->SetPvP(false);
             }
             if ((cr = me->SummonCreature(NPC_ZEPIK, 5631.63f, 3794.36f, -92.24f, 3.45f)))
             {
                 summons.Summon(cr);
                 cr->CastSpell(cr, SPELL_TOMB_OF_THE_HEARTLESS, true);
                 cr->setFaction(me->getFaction());
+                cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                cr->SetPvP(false);
             }
         }
 
@@ -147,7 +161,7 @@ public:
 
         void EnterCombat(Unit*  /*who*/)
         {
-            me->MonsterYell("Ah, the heroes. Your little friends said you would come. This certainly saves me the trouble of hunting you down myself.", LANG_UNIVERSAL, 0);
+            Talk(SAY_ARTRUIS_AGGRO);
             me->CastSpell(me, SPELL_ARTRUIS_ICY_VEINS, true);
             events.RescheduleEvent(EVENT_CAST_FROST_BOLT, 4000);
             events.RescheduleEvent(EVENT_CAST_FROST_NOVA, 15000);
@@ -159,7 +173,7 @@ public:
 
         void JustDied(Unit* /*killer*/)
         {
-            if (GameObject* go = me->SummonGameObject(GO_ARTRUIS_PHYLACTERY, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 600000))
+            if (GameObject* go = me->SummonGameObject(GO_ARTRUIS_PHYLACTERY, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 600))
                 me->RemoveGameObject(go, false);
         }
 
@@ -186,12 +200,13 @@ public:
                         if (action == ACTION_BIND_MINIONS)
                         {
                             minion->RemoveAurasDueToSpell(SPELL_TOMB_OF_THE_HEARTLESS);
+                            minion->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                             if (me->GetVictim())
                                 minion->AI()->AttackStart(me->GetVictim());
                         }
                         else if (action == ACTION_MAKE_FRIENDLY && me->GetVictim())
                         {
-                            minion->MonsterSay("Now you not catch us with back turned! Now we hurt you bad undead. BAD!", LANG_UNIVERSAL, 0);
+                            minion->AI()->Talk(SAY_TURNED_FRIENDLY);
                             minion->RemoveAurasDueToSpell(SPELL_ARTRUIS_BINDING);
                             minion->setFaction(me->GetVictim()->getFaction());
                             minion->AddThreat(me, 100000.0f);
@@ -219,21 +234,22 @@ public:
                     if (me->GetHealthPct() <= 30)
                     {
                         me->SetControlled(true, UNIT_STATE_STUNNED);
-                        me->MonsterTextEmote("Artruis is shielded. You must choose your side quickly to break his spell.", 0, true);
+                        Talk(SAY_ARTRUIS_EMOTE_SHIELD);
+                        Talk(SAY_ARTRUIS_TALK_SHIELD);
                         SummonsAction(ACTION_BIND_MINIONS);
                         break;
                     }
                     events.RepeatEvent(1000);
                     break;
                 case EVENT_ARTRUIS_TALK1:
-                    me->MonsterYell("I have weathered a hundred years of war and suffering. Do you truly think it wise to pit your mortal bodies against a being that cannot die? I'd venture you have more to lose.", LANG_UNIVERSAL, 0);
+                    Talk(SAY_ARTRUIS_TALK_1);
                     events.RescheduleEvent(EVENT_ARTRUIS_TALK2, 10000);
                     break;
                 case EVENT_ARTRUIS_TALK2:
-                    me->MonsterYell("Even shattered into countless pieces, the crystals all around weaken me... perhaps i should not have underestimated the titans so...", LANG_UNIVERSAL, 0);
+                    Talk(SAY_ARTRUIS_TALK_2);
                     break;
                 case EVENT_ARTRUIS_TALK3:
-                    me->MonsterYell("Arthas once mustered strength... of the very same sort... perhaps he is the path that you will follow.", LANG_UNIVERSAL, 0);
+                    Talk(SAY_ARTRUIS_TALK_3);
                     break;
                 case EVENT_CAST_FROST_BOLT:
                     me->CastSpell(me->GetVictim(), SPELL_ARTRUIS_FROSTBOLT, false);
