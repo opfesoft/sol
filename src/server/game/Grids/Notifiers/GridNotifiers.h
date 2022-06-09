@@ -838,7 +838,7 @@ namespace acore
     class AnyUnfriendlyNoTotemUnitInObjectRangeCheck
     {
         public:
-            AnyUnfriendlyNoTotemUnitInObjectRangeCheck(WorldObject const* obj, Unit const* funit, float range) : i_obj(obj), i_funit(funit), i_range(range) {}
+            AnyUnfriendlyNoTotemUnitInObjectRangeCheck(WorldObject const* obj, Unit const* funit, float range, bool losCheck = false) : i_obj(obj), i_funit(funit), i_range(range), i_losCheck(losCheck) {}
             bool operator()(Unit* u)
             {
                 if (!u->IsAlive())
@@ -853,12 +853,16 @@ namespace acore
                 if (!u->isTargetableForAttack(false, i_funit))
                     return false;
 
+                if (i_losCheck && !i_obj->IsWithinLOSInMap(u))
+                    return false;
+
                 return i_obj->IsWithinDistInMap(u, i_range) && !i_funit->IsFriendlyTo(u);
             }
         private:
             WorldObject const* i_obj;
             Unit const* i_funit;
             float i_range;
+            bool i_losCheck;
     };
 
     class AnyUnfriendlyAttackableVisibleUnitInObjectRangeCheck

@@ -592,7 +592,10 @@ void GameObject::Update(uint32 diff)
                     // search unfriendly creature
                     if (owner)                    // hunter trap
                     {
-                        acore::AnyUnfriendlyNoTotemUnitInObjectRangeCheck checker(this, owner, radius);
+                        bool losCheck = false;
+                        if (Player* p = owner->ToPlayer(); p && p->getClass() == CLASS_HUNTER && goInfo->trap.type == 1)
+                            losCheck = true;
+                        acore::AnyUnfriendlyNoTotemUnitInObjectRangeCheck checker(this, owner, radius, losCheck);
                         acore::UnitSearcher<acore::AnyUnfriendlyNoTotemUnitInObjectRangeCheck> searcher(this, target, checker);
                         VisitNearbyGridObject(radius, searcher);
                         if (!target)
