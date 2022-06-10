@@ -3413,6 +3413,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 51258: // Forcecast Summon Crocolisk
             spellInfo->Attributes |= SPELL_ATTR0_CASTABLE_WHILE_MOUNTED;
             break;
+        case 51469: // Frenzyheart's Fury
+            spellInfo->AttributesEx4 &= ~SPELL_ATTR4_CAN_CAST_WHILE_CASTING;
+            break;
 
 
         /////////////////////////////////////////////

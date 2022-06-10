@@ -549,17 +549,18 @@ public:
 ## npc_vekjik
 ######*/
 
-#define GOSSIP_VEKJIK_ITEM1 "Shaman Vekjik, I have spoken with the big-tongues and they desire peace. I have brought this offering on their behalf."
-#define GOSSIP_VEKJIK_ITEM2 "No no... I had no intentions of betraying your people. I was only defending myself. it was all a misunderstanding."
-
 enum Vekjik
 {
+    GOSSIP_VEKJIK_MENU1         = 9678,
+    GOSSIP_VEKJIK_MENU2         = 9686,
+
     GOSSIP_TEXTID_VEKJIK1       = 13137,
     GOSSIP_TEXTID_VEKJIK2       = 13138,
+    GOSSIP_TEXTID_VEKJIK3       = 13136,
 
     SAY_TEXTID_VEKJIK1          = 0,
 
-    SPELL_FREANZYHEARTS_FURY    = 51469,
+    SPELL_FRENZYHEARTS_FURY     = 51469,
 
     QUEST_MAKING_PEACE          = 12573
 };
@@ -576,12 +577,12 @@ public:
 
         if (player->GetQuestStatus(QUEST_MAKING_PEACE) == QUEST_STATUS_INCOMPLETE)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_VEKJIK_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            AddGossipItemFor(player, GOSSIP_VEKJIK_MENU1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
             SendGossipMenuFor(player, GOSSIP_TEXTID_VEKJIK1, creature->GetGUID());
             return true;
         }
 
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, GOSSIP_TEXTID_VEKJIK3, creature->GetGUID());
         return true;
     }
 
@@ -591,15 +592,14 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_VEKJIK_ITEM2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                AddGossipItemFor(player, GOSSIP_VEKJIK_MENU2, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
                 SendGossipMenuFor(player, GOSSIP_TEXTID_VEKJIK2, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+2:
                 CloseGossipMenuFor(player);
                 creature->AI()->Talk(SAY_TEXTID_VEKJIK1, player);
                 player->AreaExploredOrEventHappens(QUEST_MAKING_PEACE);
-                //creature->CastSpell(player, SPELL_FREANZYHEARTS_FURY, true);
-                player->KnockbackFrom(creature->GetPositionX(), creature->GetPositionY(), 30.0f, 18.0f);
+                creature->CastSpell(creature, SPELL_FRENZYHEARTS_FURY, false);
                 break;
         }
 

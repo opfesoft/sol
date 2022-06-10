@@ -1015,6 +1015,34 @@ class spell_q10985_light_of_the_naaru : public SpellScriptLoader
         }
 };
 
+class spell_q12573_frenzyhearts_fury : public SpellScriptLoader
+{
+    public:
+        spell_q12573_frenzyhearts_fury() : SpellScriptLoader("spell_q12573_frenzyhearts_fury") { }
+
+        class spell_q12573_frenzyhearts_fury_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_q12573_frenzyhearts_fury_SpellScript);
+
+            void HandleKnockBack(SpellEffIndex effIndex)
+            {
+                PreventHitDefaultEffect(effIndex);
+                if (Unit* target = GetHitUnit(); target && target->GetTypeId() == TYPEID_PLAYER)
+                    target->KnockbackFrom(5396.74f, 4648.86f, 30.0f, 18.0f);
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_q12573_frenzyhearts_fury_SpellScript::HandleKnockBack, EFFECT_0, SPELL_EFFECT_KNOCK_BACK_DEST);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_q12573_frenzyhearts_fury_SpellScript();
+        }
+};
+
 
 // Theirs
 class spell_generic_quest_update_entry_SpellScript : public SpellScript
@@ -3086,6 +3114,7 @@ void AddSC_quest_spell_scripts()
     new spell_q11653_youre_not_so_big_now();
     new spell_q10985_light_of_the_naaru();
     new spell_q9718_crow_transform();
+    new spell_q12573_frenzyhearts_fury();
 
     // Theirs
     new spell_q55_sacred_cleansing();
