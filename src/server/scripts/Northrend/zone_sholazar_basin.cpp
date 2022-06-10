@@ -1045,10 +1045,6 @@ public:
 ## npc_adventurous_dwarf
 ######*/
 
-#define GOSSIP_OPTION_ORANGE    "Can you spare an orange?"
-#define GOSSIP_OPTION_BANANAS   "Have a spare bunch of bananas?"
-#define GOSSIP_OPTION_PAPAYA    "I could really use a papaya."
-
 enum AdventurousDwarf
 {
     QUEST_12634         = 12634,
@@ -1060,8 +1056,6 @@ enum AdventurousDwarf
     SPELL_ADD_ORANGE    = 52073,
     SPELL_ADD_BANANAS   = 52074,
     SPELL_ADD_PAPAYA    = 52076,
-
-    GOSSIP_MENU_DWARF   = 13307,
 
     SAY_DWARF_OUCH      = 0,
     SAY_DWARF_HELP      = 1
@@ -1088,18 +1082,21 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (player->GetQuestStatus(QUEST_12634) != QUEST_STATUS_INCOMPLETE)
-            return false;
+        {
+            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
+            return true;
+        }
 
         if (player->GetItemCount(ITEM_ORANGE) < 1)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_OPTION_ORANGE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
         if (player->GetItemCount(ITEM_BANANAS) < 2)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_OPTION_BANANAS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
         if (player->GetItemCount(ITEM_PAPAYA) < 1)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_OPTION_PAPAYA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
-        SendGossipMenuFor(player, GOSSIP_MENU_DWARF, creature);
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature);
         return true;
     }
 
@@ -1125,7 +1122,7 @@ public:
             player->CastSpell(player, spellId, true);
 
         creature->AI()->Talk(SAY_DWARF_HELP);
-        creature->DespawnOrUnsummon();
+        creature->DespawnOrUnsummon(500);
         return true;
     }
 };
