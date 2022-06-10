@@ -282,24 +282,25 @@ public:
 quest Still At It (12644)
 ******/
 
-#define MCM_TEXT_START "Beginning the distillation in 5 seconds."
-#define MCM_TEXT_PRESSURE "Pressure's too high! Open the pressure valve!"
-#define MCM_TEXT_HEAT "The still needs heat! Light the brazier!"
-#define MCM_TEXT_BANANA "Add bananas!"
-#define MCM_TEXT_ORANGE "Add another orange! Quickly!"
-#define MCM_TEXT_PAPAYA "Put a papaya in the still!"
-#define MCM_TEXT_CORRECT1 "Nicely handled! Stay on your toes!"
-#define MCM_TEXT_CORRECT2 "That'll do. Never know what it'll need next..."
-#define MCM_TEXT_CORRECT3 "Good job! Keep your eyes open, now."
-#define MCM_TEXT_SUCCESS1 "Well done! Be ready for anything!"
-#define MCM_TEXT_SUCCESS2 "We've done it! Come get the cask."
-#define MCM_TEXT_FAILED "You have FAILED!!!"
-#define ACTION_PRESSURE 1
-#define ACTION_HEAT 2
-#define ACTION_BANANA 3
-#define ACTION_ORANGE 4
-#define ACTION_PAPAYA 5
-#define NPC_WANTS_BANANAS 28537
+enum StillAtIt
+{
+    NPC_WANTS_BANANAS            =  28537,
+    GO_THUNDERBREWS_JUNGLE_PUNCH = 190643,
+
+    QUEST_STILL_AT_IT            =  12644,
+    GOSSIP_MCMANUS_MENU          =   9713,
+
+    SAY_MCMANUS_START            =      0,
+    SAY_MCMANUS_ORANGE           =      1,
+    SAY_MCMANUS_PAPAYA           =      2,
+    SAY_MCMANUS_BANANA           =      3,
+    SAY_MCMANUS_PRESSURE         =      4,
+    SAY_MCMANUS_HEAT             =      5,
+    SAY_MCMANUS_WELL_DONE        =      6,
+    SAY_MCMANUS_FAILED           =      7,
+    SAY_MCMANUS_END              =      8,
+};
+
 
 class npc_still_at_it_trigger : public CreatureScript
 {
@@ -328,6 +329,8 @@ public:
 
         void Reset()
         {
+            if (Creature* mcmanus = ObjectAccessor::GetCreature(*me, thunderbrewGUID))
+                mcmanus->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             running = false;
             success = false;
             playerGUID = 0;
@@ -345,12 +348,10 @@ public:
             damage = 0;
         }
 
-        void Say(const char* text)
+        void Say(uint8 groupID)
         {
-            if (Creature* th = ObjectAccessor::GetCreature(*me, thunderbrewGUID))
-                th->MonsterSay(text, LANG_UNIVERSAL, 0);
-            else
-                Reset();
+            if (Creature* mcmanus = ObjectAccessor::GetCreature(*me, thunderbrewGUID))
+                mcmanus->AI()->Talk(groupID);
         }
 
         void Start()
@@ -358,7 +359,12 @@ public:
             timer = 5000;
             running = true;
             stepcount = urand(5,10);
-            Say(MCM_TEXT_START);
+
+            if (Creature* mcmanus = ObjectAccessor::GetCreature(*me, thunderbrewGUID))
+            {
+                mcmanus->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                mcmanus->AI()->Talk(SAY_MCMANUS_START);
+            }
         }
 
         void CheckAction(uint8 a, uint64 guid)
@@ -369,33 +375,26 @@ public:
             if (a == expectedaction)
             {
                 currentstep++;
-                uint8 s = urand(0,2);
 
                 if (Creature* th = ObjectAccessor::GetCreature(*me, thunderbrewGUID))
                     th->HandleEmoteCommand(EMOTE_ONESHOT_CHEER_NO_SHEATHE);
 
-                switch (s)
-                {
-                    case 0: Say(MCM_TEXT_CORRECT1); break;
-                    case 1: Say(MCM_TEXT_CORRECT2); break;
-                    default:Say(MCM_TEXT_CORRECT3); break;
-                }
+                Say(SAY_MCMANUS_WELL_DONE);
 
                 if (currentstep >= stepcount)
                 {
-                    Say(MCM_TEXT_SUCCESS1);
                     success = true;
-                    timer = 3000;
+                    timer = 5000;
                 }
                 else
                 {
                     expectedaction = 0;
-                    timer = 3000;
+                    timer = urand(5000,10000);
                 }
             }
             else
             {
-                Say(MCM_TEXT_FAILED);
+                Say(SAY_MCMANUS_FAILED);
                 Reset();
             }
         }
@@ -426,15 +425,20 @@ public:
                     if( timer < 0 )
                         timer = 0;
                 }
-                else if ( success)
+                else if (success)
                 {
-                    Say(MCM_TEXT_SUCCESS2);
-                    me->SummonGameObject(190643, 5546.55f, 5768.0f, -78.03f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 60000);
+                    Say(SAY_MCMANUS_END);
+                    if (GameObject* go = GetClosestGameObjectWithEntry(me, GO_THUNDERBREWS_JUNGLE_PUNCH, 20.f))
+                    {
+                        go->SetLootState(GO_READY);
+                        go->SetRespawnTime(60);
+                        go->GetMap()->AddToMap(go);
+                    }
                     Reset();
                 }
                 else if (expectedaction != 0) // didn't make it in 10 seconds
                 {
-                    Say(MCM_TEXT_FAILED);
+                    Say(SAY_MCMANUS_FAILED);
                     Reset();
                 }
                 else // it's time to rand next move
@@ -442,11 +446,11 @@ public:
                     expectedaction = urand(1,5);
                     switch (expectedaction)
                     {
-                        case 1: Say(MCM_TEXT_PRESSURE); break;
-                        case 2: Say(MCM_TEXT_HEAT); break;
-                        case 3: Say(MCM_TEXT_BANANA); break;
-                        case 4: Say(MCM_TEXT_ORANGE); break;
-                        case 5: Say(MCM_TEXT_PAPAYA); break;
+                        case 1: Say(SAY_MCMANUS_PRESSURE); break;
+                        case 2: Say(SAY_MCMANUS_HEAT);     break;
+                        case 3: Say(SAY_MCMANUS_BANANA);   break;
+                        case 4: Say(SAY_MCMANUS_ORANGE);   break;
+                        case 5: Say(SAY_MCMANUS_PAPAYA);   break;
                     }
                     timer = 10000;
                 }
@@ -468,10 +472,14 @@ public:
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->GetQuestStatus(12644) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "I'm ready to start the distillation, uh, Tipsy.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        if (player->GetQuestStatus(QUEST_STILL_AT_IT) == QUEST_STATUS_INCOMPLETE)
+        {
+            AddGossipItemFor(player, GOSSIP_MCMANUS_MENU, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+        }
+        else
+            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
 
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         return true;
     }
 
