@@ -611,15 +611,15 @@ public:
 ## avatar_of_freya
 ######*/
 
-#define GOSSIP_ITEM_AOF1 "I want to stop the Scourge as much as you do. How can I help?"
-#define GOSSIP_ITEM_AOF2 "You can trust me. I am no friend of the Lich King."
-#define GOSSIP_ITEM_AOF3 "I will not fail."
-
 enum Freya
 {
     QUEST_FREYA_PACT         = 12621,
 
     SPELL_FREYA_CONVERSATION = 52045,
+
+    GOSSIP_AVATAR_MENU1      = 9720,
+    GOSSIP_AVATAR_MENU2      = 9721,
+    GOSSIP_AVATAR_MENU3      = 9722,
 
     GOSSIP_TEXTID_AVATAR1    = 13303,
     GOSSIP_TEXTID_AVATAR2    = 13304,
@@ -637,7 +637,7 @@ public:
             player->PrepareQuestMenu(creature->GetGUID());
 
         if (player->GetQuestStatus(QUEST_FREYA_PACT) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_AOF1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            AddGossipItemFor(player, GOSSIP_AVATAR_MENU1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
         SendGossipMenuFor(player, GOSSIP_TEXTID_AVATAR1, creature);
         return true;
@@ -649,11 +649,11 @@ public:
         switch (action)
         {
         case GOSSIP_ACTION_INFO_DEF+1:
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_AOF2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+            AddGossipItemFor(player, GOSSIP_AVATAR_MENU2, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
             SendGossipMenuFor(player, GOSSIP_TEXTID_AVATAR2, creature);
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM_AOF3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
+            AddGossipItemFor(player, GOSSIP_AVATAR_MENU3, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
             SendGossipMenuFor(player, GOSSIP_TEXTID_AVATAR3, creature);
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
