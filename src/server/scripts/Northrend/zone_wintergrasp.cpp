@@ -274,8 +274,11 @@ class npc_wg_queue : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            if (!sWorld->getBoolConfig(CONFIG_MINIGOB_MANABONK))
-                return false;
+            if (!sWorld->getBoolConfig(CONFIG_WINTERGRASP_ENABLE))
+            {
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
+                return true;
+            }
 
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
@@ -286,7 +289,7 @@ class npc_wg_queue : public CreatureScript
 
             if (wintergrasp->IsWarTime())
             {
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT_19, "Queue for Wintergrasp.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
                 SendGossipMenuFor(player, wintergrasp->GetDefenderTeam()? WG_NPCQUEUE_TEXT_H_WAR : WG_NPCQUEUE_TEXT_A_WAR, creature->GetGUID());
             }
             else
@@ -295,7 +298,7 @@ class npc_wg_queue : public CreatureScript
                 player->SendUpdateWorldState(4354, time(NULL) + timer);
                 if (timer < 15 * MINUTE)
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Queue for Wintergrasp.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+                    AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
                     SendGossipMenuFor(player, wintergrasp->GetDefenderTeam() ? WG_NPCQUEUE_TEXT_H_QUEUE : WG_NPCQUEUE_TEXT_A_QUEUE, creature->GetGUID());
                 }
                 else
