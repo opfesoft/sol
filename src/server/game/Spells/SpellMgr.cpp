@@ -3416,6 +3416,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 51469: // Frenzyheart's Fury
             spellInfo->AttributesEx4 &= ~SPELL_ATTR4_CAN_CAST_WHILE_CASTING;
             break;
+        case 49889: // Mystery of the Infinite: Future You's Mirror Image Aura
+            spellInfo->rangeIndex = 6; // 100 yards
+            break;
 
 
         /////////////////////////////////////////////

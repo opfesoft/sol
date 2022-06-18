@@ -28,6 +28,7 @@ EndContentData */
 #include "SpellAuras.h"
 #include "Chat.h"
 #include "CellImpl.h"
+#include <random>
 
 // Ours
 /********
@@ -283,18 +284,36 @@ enum hourglass
     NPC_INFINITE_CHRONO_MAGUS       = 27898,
     NPC_INFINITE_DESTROYER          = 27897,
     NPC_INFINITE_TIMERENDER         = 27900,
+    NPC_NOZDORMU                    = 27925,
 
     SPELL_CLONE_CASTER              = 49889,
     SPELL_TELEPORT_EFFECT           = 52096,
+    SPELL_TIME_STOP                 = 60074,
 
     EVENT_START_EVENT               = 1,
     EVENT_FIGHT_1                   = 2,
     EVENT_FIGHT_2                   = 3,
     EVENT_CHECK_FINISH              = 4,
     EVENT_FINISH_EVENT              = 5,
+    EVENT_TALK                      = 6,
 
     QUEST_MYSTERY_OF_THE_INFINITE   = 12470,
     QUEST_MYSTERY_OF_THE_INFINITE_REDUX = 13343,
+
+    SAY_HOURGLASS_START_1           = 1,
+    SAY_HOURGLASS_START_2           = 2,
+    SAY_HOURGLASS_RANDOM_1          = 3,
+    SAY_HOURGLASS_RANDOM_2          = 4,
+    SAY_HOURGLASS_RANDOM_3          = 5,
+    SAY_HOURGLASS_RANDOM_4          = 6,
+    SAY_HOURGLASS_RANDOM_5          = 7,
+    SAY_HOURGLASS_RANDOM_6          = 8,
+    SAY_HOURGLASS_RANDOM_7          = 9,
+    SAY_HOURGLASS_RANDOM_8          = 10,
+    SAY_HOURGLASS_END_1             = 11,
+    SAY_HOURGLASS_END_2             = 12,
+
+    FACTION_ESCORTEE                = 250,
 };
 
 class npc_hourglass_of_eternity : public CreatureScript
@@ -316,6 +335,7 @@ public:
         EventMap events;
         uint8 count[3];
         uint8 phase;
+        std::vector<uint8> randomGroupIds;
 
         bool IsFuture() { return me->GetEntry() == NPC_FUTURE_HOURGLASS; }
         void InitializeAI()
@@ -326,18 +346,25 @@ public:
                     summonerGUID = summoner->GetGUID();
                     float x,y,z;
                     me->GetNearPoint(summoner, x, y, z, me->GetCombatReach(), 0.0f, rand_norm()*2*M_PI);
-                    if (Creature* cr = summoner->SummonCreature((IsFuture() ? NPC_FUTURE_YOU : NPC_PAST_YOU), x, y, z, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 210000))
+                    Position pos = { x, y, z, 0.f };
+                    if (Creature* cr = summoner->SummonCreature((IsFuture() ? NPC_FUTURE_YOU : NPC_PAST_YOU), x, y, z, pos.GetAngle(summoner->GetPositionX(), summoner->GetPositionY()), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 210000))
                     {
                         futureGUID = cr->GetGUID();
                         summoner->CastSpell(cr, SPELL_CLONE_CASTER, true);
-                        cr->setFaction(summoner->getFaction());
                         cr->SetReactState(REACT_AGGRESSIVE);
+                        cr->ApplySpellImmune(SPELL_TIME_STOP, 0, IMMUNITY_ID, true);
+                        cr->SetCorpseDelay(5);
                     }
                 }
 
             count[0] = 2;
             count[1] = 2;
             count[2] = 3;
+
+            randomGroupIds = { SAY_HOURGLASS_RANDOM_1, SAY_HOURGLASS_RANDOM_2, SAY_HOURGLASS_RANDOM_3, SAY_HOURGLASS_RANDOM_4, SAY_HOURGLASS_RANDOM_5, SAY_HOURGLASS_RANDOM_6, SAY_HOURGLASS_RANDOM_7, SAY_HOURGLASS_RANDOM_8 };
+            std::random_device rd;
+            std::shuffle(randomGroupIds.begin(), randomGroupIds.end(), std::default_random_engine{rd()});
+            me->SetCorpseDelay(1);
 
             phase = 0;
             events.Reset();
@@ -360,18 +387,21 @@ public:
             {
                 case EVENT_START_EVENT:
                     if (Creature* cr = getFuture())
-                        cr->MonsterWhisper(IsFuture() ? "Hey there, $N, don't be alarmed. It's me... you... from the future. I'm here to help." : "Whoa! You're me, but from the future! Hey, my equipment got an upgrade! Cool!", getSummoner());
+                        cr->AI()->Talk(SAY_HOURGLASS_START_1, getSummoner());
                     events.ScheduleEvent(EVENT_FIGHT_1, 7000);
                     break;
                 case EVENT_FIGHT_1:
                     if (Creature* cr = getFuture())
-                        cr->MonsterWhisper(IsFuture() ? "Heads up... here they come. I'll help as much as I can. Let's just keep them off the hourglass!" : "Here come the Infinites! I've got to keep the hourglass safe. Can you help?", getSummoner());
+                    {
+                        cr->AI()->Talk(SAY_HOURGLASS_START_2, getSummoner());
+                        cr->setFaction(FACTION_ESCORTEE);
+                    }
                     events.ScheduleEvent(EVENT_FIGHT_2, 6000);
                     break;
                 case EVENT_FIGHT_2:
                 {
                     if (phase)
-                        randomWhisper();
+                        events.ScheduleEvent(EVENT_TALK, urand(10000, 15000));
 
                     Creature* cr = NULL;
                     float x, y, z;
@@ -385,16 +415,19 @@ public:
                                 cr->CastSpell(cr, SPELL_TELEPORT_EFFECT, true);
                                 cr->AI()->AttackStart(me);
                                 cr->AddThreat(me, 100.0f);
+                                cr->SetCorpseDelay(5);
                             }
                         }
                     }
                     else if (phase == 3)
                     {
                         me->GetNearPoint(me, x, y, z, me->GetCombatReach(), 20.0f, rand_norm()*2*M_PI);
-                        if ((cr = me->SummonCreature(NPC_INFINITE_TIMERENDER, x, y, z, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000)))
+                        if ((cr = me->SummonCreature(NPC_INFINITE_TIMERENDER, x, y, z+5.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000)))
                         {
                             cr->CastSpell(cr, SPELL_TELEPORT_EFFECT, true);
                             cr->AI()->AttackStart(me);
+                            cr->AddThreat(me, 100.0f);
+                            cr->SetCorpseDelay(5);
                         }
 
                         events.ScheduleEvent(EVENT_CHECK_FINISH, 20000);
@@ -416,38 +449,41 @@ public:
                     if (Player* player = getSummoner())
                         player->GroupEventHappens(IsFuture() ? QUEST_MYSTERY_OF_THE_INFINITE : QUEST_MYSTERY_OF_THE_INFINITE_REDUX, me);
 
-                    me->MonsterWhisper(IsFuture() ? "Look, $N, the hourglass has revealed Nozdormu!" : "What the heck? Nozdormu is up there!", getSummoner());
+                    if (Creature* cr = getFuture())
+                    {
+                        cr->SetFacingToObject(me->FindNearestCreature(NPC_NOZDORMU, 100.0f));
+                        cr->AI()->Talk(SAY_HOURGLASS_END_1, getSummoner());
+                    }
                     events.ScheduleEvent(EVENT_FINISH_EVENT, 6000);
                     break;
                 }
                 case EVENT_FINISH_EVENT:
                 {
-                    me->MonsterWhisper(IsFuture() ? "Farewell, $N. Keep us alive and get some better equipment!" : "I feel like I'm being pulled away through time. Thanks for the help....", getSummoner());
+                    if (Creature* cr = getFuture())
+                    {
+                        cr->AI()->Talk(SAY_HOURGLASS_END_2, getSummoner());
+                        cr->DespawnOrUnsummon(500);
+                    }
                     me->DespawnOrUnsummon(500);
-                    if (getFuture())
-                        getFuture()->DespawnOrUnsummon(500);
+                    break;
+                }
+                case EVENT_TALK:
+                {
+                    if (!randomGroupIds.empty())
+                        if (Creature* cr = getFuture())
+                        {
+                            cr->AI()->Talk(randomGroupIds.back(), getSummoner());
+                            randomGroupIds.pop_back();
+                        }
                     break;
                 }
             }
         }
 
-        void randomWhisper()
+        void JustDied(Unit* /*killer*/)
         {
-            std::string text = "";
-            switch(urand(0, IsFuture() ? 7 : 5))
-            {
-                case 0: text = IsFuture() ? "What? Am I here alone. We both have a stake at this, you know!" : "This equipment looks cool and all, but couldn't we have done a little better? Are you even raiding?"; break;
-                case 1: text = IsFuture() ? "No matter what, you can't die, because would mean that I would cease to exist, right? But, I was here before when I was you. I'm so confused!" : "Chromie said that if I don't do this just right, I might wink out of existence. If I go, then you go!"; break;
-                case 2: text = IsFuture() ? "Sorry, but Chromie said that I couldn't reveal anything about your future to you. She said that if I did, I would cease to exist." : "I just want you to know that if we get through this alive, I'm making sure that we turn out better than you. No offense."; break;
-                case 3: text = IsFuture() ? "Look at you fight; no wonder I turned to drinking." : "Looks like I'm an underachiever."; break;
-                case 4: text = IsFuture() ? "Wow, I'd forgotten how inexperienced I used to be." : "Wait a minute! If you're here, then that means that in the not-so-distant future I'm going to be you helping me? Are we stuck in a time loop?!"; break;
-                case 5: text = IsFuture() ? "I can't believe that I used to wear that." : "I think I'm going to turn to drinking after this."; break;
-                case 6: text = "Listen. I'm not supposed to tell you this, but there's going to be this party that you're invited to. Whatever you do, DO NOT DRINK THE PUNCH!"; break;
-                case 7: text = "Wish I could remember how many of the Infinite Dragonflight were going to try to stop you. This fight was so long ago."; break;
-            }
-
             if (Creature* cr = getFuture())
-                cr->MonsterWhisper(text.c_str(), getSummoner());
+                cr->DespawnOrUnsummon(500);
         }
     };
 };
@@ -466,22 +502,26 @@ public:
     {
         npc_future_youAI(Creature* c) : ScriptedAI(c) {}
 
+        void AttackStart(Unit* who)
+        {
+            if (who->GetEntry() >= NPC_INFINITE_ASSAILANT && who->GetEntry() <= NPC_INFINITE_TIMERENDER)
+                ScriptedAI::AttackStart(who);
+        }
+
         void EnterEvadeMode()
         {
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
-            me->ClearUnitState(UNIT_STATE_EVADE);
-        }
+            if (!me->IsAlive())
+                return;
 
-        void Reset()
-        {
-            if (me->ToTempSummon() && me->ToTempSummon()->GetSummoner())
-                me->setFaction(me->ToTempSummon()->GetSummoner()->getFaction());
-        }
+            me->DeleteThreatList();
+            me->CombatStop(true);
 
-        void MoveInLineOfSight(Unit* who)
-        {
-            if (!me->GetVictim() && who->GetEntry() >= NPC_INFINITE_ASSAILANT && who->GetEntry() <= NPC_INFINITE_TIMERENDER)
-                AttackStart(who);
+            if (me->IsInEvadeMode())
+                return;
+
+            me->AddUnitState(UNIT_STATE_EVADE);
+            me->GetMotionMaster()->MoveTargetedHome();
+            Reset();
         }
 
         void UpdateAI(uint32  /*diff*/)
