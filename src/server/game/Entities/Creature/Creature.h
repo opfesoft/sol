@@ -730,14 +730,10 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         void SetDisableReputationGain(bool disable) { DisableReputationGain = disable; }
         bool IsReputationGainDisabled() const { return DisableReputationGain; }
-        bool IsDamageEnoughForLootingAndReward() const { return (m_creatureInfo->flags_extra & CREATURE_FLAG_EXTRA_NO_PLAYER_DAMAGE_REQ) || (m_PlayerDamageReq == 0); }
-        void LowerPlayerDamageReq(uint32 unDamage)
-        {
-            if (m_PlayerDamageReq)
-                m_PlayerDamageReq > unDamage ? m_PlayerDamageReq -= unDamage : m_PlayerDamageReq = 0;
-        }
-        void ResetPlayerDamageReq() { m_PlayerDamageReq = GetHealth() / 2; }
-        uint32 m_PlayerDamageReq;
+        bool IsDamageEnoughForLootingAndReward() const;
+        void LowerPlayerDamageReq(uint32 unDamage, bool damagedByPlayer = true);
+        void ResetPlayerDamageReq();
+        uint32 GetPlayerDamageReq() const;
 
         uint32 GetOriginalEntry() const { return m_originalEntry; }
         void SetOriginalEntry(uint32 entry) { m_originalEntry = entry; }
@@ -845,6 +841,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         int32 m_idleLosCheckTimer;
         uint32 m_assistanceTimer;
         bool m_spawnedByDefault;
+        uint32 m_playerDamageReq;
+        bool m_damagedByPlayer;
 
         inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
         inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;

@@ -163,12 +163,12 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
     return true;
 }
 
-Creature::Creature(bool isWorldObject): Unit(isWorldObject), MovableMapObject(), m_groupLootTimer(0), lootingGroupLowGUID(0), m_PlayerDamageReq(0), m_lootRecipient(0), m_lootRecipientGroup(0),
+Creature::Creature(bool isWorldObject): Unit(isWorldObject), MovableMapObject(), m_groupLootTimer(0), lootingGroupLowGUID(0), m_lootRecipient(0), m_lootRecipientGroup(0),
 m_corpseRemoveTime(0), m_respawnTime(0), m_respawnDelay(300), m_corpseDelay(60), m_wanderDistance(0.0f),
 m_transportCheckTimer(1000), lootPickPocketRestoreTime(0),  m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
-m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0), m_spawnedByDefault(true)
+m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0), m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
     m_idleLosCheckTimer = CREATURE_IDLE_LOS_CHECK_INTERVAL;
@@ -438,7 +438,7 @@ bool Creature::UpdateEntry(uint32 Entry, const CreatureData* data, bool changele
 
     uint32 previousHealth = GetHealth();
     uint32 previousMaxHealth = GetMaxHealth();
-    uint32 previousPlayerDamageReq = m_PlayerDamageReq;
+    uint32 previousPlayerDamageReq = m_playerDamageReq;
 
     SelectLevel(changelevel);
     if (previousHealth > 0)
@@ -446,9 +446,9 @@ bool Creature::UpdateEntry(uint32 Entry, const CreatureData* data, bool changele
         SetHealth(previousHealth);
 
         if (previousMaxHealth && previousMaxHealth > GetMaxHealth())
-            m_PlayerDamageReq = (uint32)(previousPlayerDamageReq * GetMaxHealth() / previousMaxHealth);
+            m_playerDamageReq = (uint32)(previousPlayerDamageReq * GetMaxHealth() / previousMaxHealth);
         else
-            m_PlayerDamageReq = previousPlayerDamageReq;
+            m_playerDamageReq = previousPlayerDamageReq;
     }
 
     SetMeleeDamageSchool(SpellSchools(cInfo->dmgschool));
@@ -3185,4 +3185,29 @@ void Creature::RemoveRolledGuidFromMap()
         if (creatureGuidMap.mapId == GetMap()->GetId() && creatureGuidMap.guid == m_DBTableGuid)
             _creatureGuidChanceMapIdMap.erase(itr);
     }
+}
+
+bool Creature::IsDamageEnoughForLootingAndReward() const
+{
+    return (m_creatureInfo->flags_extra & CREATURE_FLAG_EXTRA_NO_PLAYER_DAMAGE_REQ) || (m_playerDamageReq == 0 && m_damagedByPlayer);
+}
+
+void Creature::LowerPlayerDamageReq(uint32 unDamage, bool damagedByPlayer /*= true*/)
+{
+    if (m_playerDamageReq)
+        m_playerDamageReq > unDamage ? m_playerDamageReq -= unDamage : m_playerDamageReq = 0;
+
+    if (!m_damagedByPlayer)
+        m_damagedByPlayer = damagedByPlayer;
+}
+
+void Creature::ResetPlayerDamageReq()
+{
+    m_playerDamageReq = GetHealth() / 2;
+    m_damagedByPlayer = false;
+}
+
+uint32 Creature::GetPlayerDamageReq() const
+{
+    return m_playerDamageReq;
 }
