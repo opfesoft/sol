@@ -12633,6 +12633,11 @@ void Unit::CombatStart(Unit* target, bool initialAggro)
             owner->SetInCombatWith(target);
             target->SetInCombatWith(owner);
         }
+
+        // Patch 3.0.8: All player spells which cause a creature to become aggressive to you will now also immediately cause the creature to be tapped.
+        if (Creature* creature = target->ToCreature())
+            if (!creature->hasLootRecipient() && GetTypeId() == TYPEID_PLAYER)
+                creature->SetLootRecipient(this);
     }
 
     Unit* who = target->GetCharmerOrOwnerOrSelf();
