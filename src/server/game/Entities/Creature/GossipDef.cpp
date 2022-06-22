@@ -515,7 +515,13 @@ void PlayerMenu::SendQuestQueryResponse(Quest const* quest) const
     data << uint32(quest->GetRepObjectiveFaction2());       // shown in quest log as part of quest objective OPPOSITE faction
     data << uint32(quest->GetRepObjectiveValue2());         // shown in quest log as part of quest objective OPPOSITE faction
 
-    data << uint32(quest->GetNextQuestInChain());           // client will request this quest from NPC, if not 0
+    uint32 nextQuestInChainId = quest->GetNextQuestInChain();
+
+    if (nextQuestInChainId)
+        if (Quest const* nextQuestInChain = sObjectMgr->GetQuestTemplate(nextQuestInChainId); nextQuestInChain && !_session->GetPlayer()->CanTakeQuest(nextQuestInChain, false))
+            nextQuestInChainId = 0;
+
+    data << uint32(nextQuestInChainId);                     // client will request this quest from NPC, if not 0
     data << uint32(quest->GetXPId());                       // used for calculating rewarded experience
 
     if (quest->HasFlag(QUEST_FLAGS_HIDDEN_REWARDS))
