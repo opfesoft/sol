@@ -335,30 +335,30 @@ class spell_item_magic_dust : public SpellScriptLoader
 public:
     spell_item_magic_dust() : SpellScriptLoader("spell_item_magic_dust") { }
 
-    class spell_item_magic_dust_AuraScript : public AuraScript
+    class spell_item_magic_dust_SpellScript : public SpellScript
     {
-        PrepareAuraScript(spell_item_magic_dust_AuraScript);
+        PrepareSpellScript(spell_item_magic_dust_SpellScript);
 
-        void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        void CheckTarget(WorldObject*& obj)
         {
-            Unit* target = GetTarget();
-            if (target->getLevel() >= 30)
-            {
-                uint8 chance = 100 - std::min<uint8>(100, target->getLevel() - 30 * urand(3, 10));
-                if (!roll_chance_i(chance))
-                    PreventDefaultAction();
-            }
+            if (Unit* target = obj->ToUnit())
+                if (target->getLevel() > 30)
+                {
+                    uint8 chance = 100 - std::min<uint8>(100, (target->getLevel() - 30) * 2 + 50); // 48% chance at 31, 10% at 50, 0% at 55+
+                    if (!roll_chance_i(chance))
+                        FinishCast(SPELL_FAILED_FIZZLE);
+                }
         }
 
         void Register()
         {
-            OnEffectApply += AuraEffectApplyFn(spell_item_magic_dust_AuraScript::OnApply, EFFECT_0, SPELL_AURA_MOD_STUN, AURA_EFFECT_HANDLE_REAL);
+            OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_item_magic_dust_SpellScript::CheckTarget, EFFECT_0, TARGET_UNIT_TARGET_ENEMY);
         }
     };
 
-    AuraScript* GetAuraScript() const
+    SpellScript* GetSpellScript() const
     {
-        return new spell_item_magic_dust_AuraScript();
+        return new spell_item_magic_dust_SpellScript();
     }
 };
 
