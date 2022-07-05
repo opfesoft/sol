@@ -864,7 +864,7 @@ class spell_charge_shield_bomber : public SpellScriptLoader
                 if (!aura)
                     return;
 
-                aura->ModStackAmount(GetEffectValue() - 1);
+                aura->ModStackAmount(urand(30, 40));
             }
 
             void Register()
@@ -938,11 +938,8 @@ class spell_fight_fire_bomber : public SpellScriptLoader
                             {
                                 GetCaster()->CastSpell(banner, SPELL_EXTINGUISH_FIRE, true);
                                 extinguished = true;
-                                if (urand(0,2))
-                                {
-                                    banner->RemoveAurasDueToSpell(SPELL_COSMETIC_FIRE);
-                                    continue;
-                                }
+                                banner->RemoveAurasDueToSpell(SPELL_COSMETIC_FIRE);
+                                continue;
                             }
                             fireCount++;
                         }
@@ -1028,20 +1025,20 @@ class npc_infra_green_bomber_generic : public CreatureScript
             void DamageTaken(Unit* who, uint32&, DamageEffectType, SpellSchoolMask)
             {
                 if (who != me)
-                    if (me->HealthBelowPct(80) && urand(0,1))
-                        SpreadFire(true);
+                    if (me->HealthBelowPct(80) && !urand(0,5))
+                        SpreadFire();
             }
 
-            void SpreadFire(bool init)
+            void SpreadFire()
             {
                 Vehicle* kit = me->GetVehicleKit();
                 if (!kit)
                     return;
 
                 if (Unit* passenger = kit->GetPassenger(SEAT_ENGINEERING))
-                    if (init && !passenger->HasAura(SPELL_BURNING))
+                    if (!passenger->HasAura(SPELL_BURNING))
                     {
-                        me->MonsterTextEmote("Your Vehicle is burning!", GetSummoner(), true);
+                        Talk(0, GetSummoner());
                         passenger->AddAura(SPELL_BURNING, passenger);
                     }
 
@@ -1115,7 +1112,7 @@ class npc_infra_green_bomber_generic : public CreatureScript
                                         fireCount++;
 
                         if (fireCount)
-                            Unit::DealDamage(me, me, 3000*fireCount, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE);
+                            Unit::DealDamage(me, me, 500*fireCount, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE);
                         else // Heal
                             me->ModifyHealth(2000);
 
@@ -1133,7 +1130,10 @@ class npc_infra_green_bomber_generic : public CreatureScript
                                 {
                                     if (Vehicle* stationKit = station->GetVehicleKit())
                                         if (stationKit->GetPassenger(0))
+                                        {
                                             playerPresent = true;
+                                            station->SetHealth(station->GetMaxHealth() * me->GetHealthPct() / 100.0f);
+                                        }
 
                                     if (stackAmount)
                                         station->SetAuraStack(SPELL_INFRA_GREEN_SHIELD, station, stackAmount);

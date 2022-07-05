@@ -29,7 +29,10 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
         return;
 
     if (owner->HasUnitState(UNIT_STATE_NOT_MOVE))
+    {
+        D::_clearUnitStateMove(owner);
         return;
+    }
 
     if (owner->HasUnitState(UNIT_STATE_CASTING) && !owner->CanMoveDuringChannel())
         return;

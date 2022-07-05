@@ -1809,8 +1809,6 @@ float tangent(float x)
     return 0.0f;
 }
 
-#define DEBUG_TRAJ(a) //a
-
 void Spell::SelectImplicitTrajTargets(SpellEffIndex effIndex, SpellImplicitTargetInfo const& targetType)
 {
     if (!m_targets.HasTraj())
@@ -1820,15 +1818,17 @@ void Spell::SelectImplicitTrajTargets(SpellEffIndex effIndex, SpellImplicitTarge
     if (!dist2d)
         return;
 
-    float srcToDestDelta = m_targets.GetDstPos()->m_positionZ - m_targets.GetSrcPos()->m_positionZ;
+    Position srcPos = *m_targets.GetSrcPos();
+    srcPos.SetOrientation(m_caster->GetOrientation());
+    float srcToDestDelta = m_targets.GetDstPos()->m_positionZ - srcPos.m_positionZ;
 
 
     // xinef: supply correct target type, DEST_DEST and similar are ALWAYS undefined
     // xinef: correct target is stored in TRIGGERED SPELL, however as far as i noticed, all checks are ENTRY, ENEMY
     std::list<WorldObject*> targets;
-    acore::WorldObjectSpellTrajTargetCheck check(dist2d, m_targets.GetSrcPos(), m_caster, m_spellInfo, TARGET_CHECK_ENEMY /*targetCheckType*/, m_spellInfo->Effects[effIndex].ImplicitTargetConditions);
+    acore::WorldObjectSpellTrajTargetCheck check(dist2d, &srcPos, m_caster, m_spellInfo, TARGET_CHECK_ENEMY /*targetCheckType*/, m_spellInfo->Effects[effIndex].ImplicitTargetConditions);
     acore::WorldObjectListSearcher<acore::WorldObjectSpellTrajTargetCheck> searcher(m_caster, targets, check, GRID_MAP_TYPE_MASK_ALL);
-    SearchTargets<acore::WorldObjectListSearcher<acore::WorldObjectSpellTrajTargetCheck> > (searcher, GRID_MAP_TYPE_MASK_ALL, m_caster, m_targets.GetSrcPos(), dist2d);
+    SearchTargets<acore::WorldObjectListSearcher<acore::WorldObjectSpellTrajTargetCheck> > (searcher, GRID_MAP_TYPE_MASK_ALL, m_caster, &srcPos, dist2d);
     if (targets.empty())
         return;
 
@@ -1838,7 +1838,6 @@ void Spell::SelectImplicitTrajTargets(SpellEffIndex effIndex, SpellImplicitTarge
     float a = (srcToDestDelta - dist2d * b) / (dist2d * dist2d);
     if (a > -0.0001f)
         a = 0;
-    DEBUG_TRAJ(sLog->outError("Spell::SelectTrajTargets: a %f b %f", a, b);)
 
     // Xinef: hack for distance, many trajectory spells have RangeEntry 1 (self)
     float bestDist = m_spellInfo->GetMaxRange(false)*2;
@@ -1849,88 +1848,43 @@ void Spell::SelectImplicitTrajTargets(SpellEffIndex effIndex, SpellImplicitTarge
     for (; itr != targets.end(); ++itr)
     {
         if (Unit* unitTarget = (*itr)->ToUnit())
-            if (m_caster == *itr || m_caster->IsOnVehicle(unitTarget) || (unitTarget)->GetVehicle())//(*itr)->IsOnVehicle(m_caster))
+        {
+            if (m_caster == *itr || m_caster->IsOnVehicle(unitTarget) || (unitTarget)->GetVehicle())
                 continue;
 
-        const float size = std::max((*itr)->GetObjectSize() * 0.7f, 1.0f); // 1/sqrt(3)
-        // TODO: all calculation should be based on src instead of m_caster
-        const float objDist2d = fabs(m_targets.GetSrcPos()->GetExactDist2d(*itr) * cos(m_targets.GetSrcPos()->GetRelativeAngle(*itr)));
-        const float dz = fabs((*itr)->GetPositionZ() - m_targets.GetSrcPos()->m_positionZ);
-
-        DEBUG_TRAJ(sLog->outError("Spell::SelectTrajTargets: check %u, dist between %f %f, height between %f %f.", (*itr)->GetEntry(), objDist2d - size, objDist2d + size, dz - size, dz + size);)
-
-        float dist = objDist2d - size;
-        float height = dist * (a * dist + b);
-        DEBUG_TRAJ(sLog->outError("Spell::SelectTrajTargets: dist %f, height %f.", dist, height);)
-        if (dist < bestDist && height < dz + size && height > dz - size)
-        {
-            bestDist = dist > 0 ? dist : 0;
-            break;
+            if (Creature* creatureTarget = unitTarget->ToCreature())
+                if (!(creatureTarget->GetCreatureTemplate()->type_flags & CREATURE_TYPE_FLAG_CAN_COLLIDE_WITH_MISSILES))
+                    continue;
         }
 
-#define CHECK_DIST {\
-            DEBUG_TRAJ(sLog->outError("Spell::SelectTrajTargets: dist %f, height %f.", dist, height);)\
-            if (dist > bestDist)\
-                continue;\
-            if (dist < objDist2d + size && dist > objDist2d - size)\
-            {\
-                bestDist = dist;\
-                break;\
-            }\
-        }
+        float const size = std::max((*itr)->GetObjectSize() * 0.7f, 1.0f); // 1/sqrt(3)
+        float const objDist2d = srcPos.GetExactDist2d(*itr);
+        float const dz = (*itr)->GetPositionZ() - srcPos.m_positionZ;
+
+        float const horizontalDistToTraj = std::fabs(objDist2d * std::sin(srcPos.GetRelativeAngle(*itr)));
+        float const sizeFactor = std::cos((horizontalDistToTraj / size) * (M_PI / 2.0f));
+        float const distToHitPoint = std::max(objDist2d * std::cos(srcPos.GetRelativeAngle(*itr)) - size * sizeFactor, 0.0f);
+        float const height = distToHitPoint * (a * distToHitPoint + b);
 
         // RP-GG only, search in straight line, as item have no trajectory
         if (m_CastItem)
         {
-            if (dist < bestDist && fabs(dz) < 6.0f) // closes target, also check Z difference)
+            if (distToHitPoint < bestDist && fabs(dz) < 6.0f) // closest target, also check Z difference
             {
-                bestDist = dist;
-                break;
-            }
-                
-            continue;
-        }
-
-        if (!a)
-        {
-            // Xinef: everything remade
-            dist = m_targets.GetSrcPos()->GetExactDist(*itr);
-            height = m_targets.GetSrcPos()->GetExactDist2d(*itr)*b;
-
-            if (height < dz + size*(b+1) && height > dz - size*(b+1) && dist < bestDist)
-            {
-                bestDist = dist;
+                bestDist = distToHitPoint;
                 break;
             }
 
             continue;
         }
 
-        height = dz - size;
-        float sqrt1 = b * b + 4 * a * height;
-        if (sqrt1 > 0)
-        {
-            sqrt1 = sqrt(sqrt1);
-            dist = (sqrt1 - b) / (2 * a);
-            CHECK_DIST;
-        }
+        if (fabs(dz - height) > size + b / 2.0f + TRAJECTORY_MISSILE_SIZE)
+            continue;
 
-        height = dz + size;
-        float sqrt2 = b * b + 4 * a * height;
-        if (sqrt2 > 0)
+        if (distToHitPoint < bestDist)
         {
-            sqrt2 = sqrt(sqrt2);
-            dist = (sqrt2 - b) / (2 * a);
-            CHECK_DIST;
-
-            dist = (-sqrt2 - b) / (2 * a);
-            CHECK_DIST;
-        }
-
-        if (sqrt1 > 0)
-        {
-            dist = (-sqrt1 - b) / (2 * a);
-            CHECK_DIST;
+            bestDist = distToHitPoint;
+            break;
         }
     }
 
@@ -1939,24 +1893,6 @@ void Spell::SelectImplicitTrajTargets(SpellEffIndex effIndex, SpellImplicitTarge
         float x = m_targets.GetSrcPos()->m_positionX + cos(m_caster->GetOrientation()) * bestDist;
         float y = m_targets.GetSrcPos()->m_positionY + sin(m_caster->GetOrientation()) * bestDist;
         float z = m_targets.GetSrcPos()->m_positionZ + bestDist * (a * bestDist + b);
-
-        if (itr != targets.end())
-        {
-            float distSq = (*itr)->GetExactDistSq(x, y, z);
-            float sizeSq = (*itr)->GetObjectSize();
-            sizeSq *= sizeSq;
-            DEBUG_TRAJ(sLog->outError("Initial %f %f %f %f %f", x, y, z, distSq, sizeSq);)
-            if (distSq > sizeSq)
-            {
-                float factor = 1 - sqrt(sizeSq / distSq);
-                x += factor * ((*itr)->GetPositionX() - x);
-                y += factor * ((*itr)->GetPositionY() - y);
-                z += factor * ((*itr)->GetPositionZ() - z);
-
-                distSq = (*itr)->GetExactDistSq(x, y, z);
-                DEBUG_TRAJ(sLog->outError("Initial %f %f %f %f %f", x, y, z, distSq, sizeSq);)
-            }
-        }
 
         Position trajDst;
         trajDst.Relocate(x, y, z, m_caster->GetOrientation());
@@ -8666,7 +8602,7 @@ WorldObjectSpellTrajTargetCheck::WorldObjectSpellTrajTargetCheck(float range, Po
 bool WorldObjectSpellTrajTargetCheck::operator()(WorldObject* target)
 {
     // return all targets on missile trajectory (0 - size of a missile)
-    if (!_caster->HasInLine(target, 0))
+    if (!_caster->HasInLine(target, std::max(target->GetObjectSize() * 0.7f, 1.0f) + TRAJECTORY_MISSILE_SIZE))
         return false;
     return WorldObjectSpellAreaTargetCheck::operator ()(target);
 }
