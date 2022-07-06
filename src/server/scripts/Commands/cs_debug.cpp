@@ -37,7 +37,8 @@ public:
         {
             { "cinematic",      SEC_MODERATOR,      false, &HandleDebugPlayCinematicCommand,   "" },
             { "movie",          SEC_MODERATOR,      false, &HandleDebugPlayMovieCommand,       "" },
-            { "sound",          SEC_MODERATOR,      false, &HandleDebugPlaySoundCommand,       "" }
+            { "sound",          SEC_MODERATOR,      false, &HandleDebugPlaySoundCommand,       "" },
+            { "visual",         SEC_MODERATOR,      false, &HandleDebugVisualCommand,          "" }
         };
         static std::vector<ChatCommand> debugSendCommandTable =
         {
@@ -174,6 +175,26 @@ public:
             unit->PlayDirectSound(soundId, handler->GetSession()->GetPlayer());
 
         handler->PSendSysMessage(LANG_YOU_HEAR_SOUND, soundId);
+        return true;
+    }
+
+    static bool HandleDebugVisualCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        uint32 visualId = atoi((char*)args);
+
+        Unit* unit = handler->getSelectedUnit();
+
+        if (!unit)
+        {
+            handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        unit->SendPlaySpellVisual(visualId);
         return true;
     }
 
