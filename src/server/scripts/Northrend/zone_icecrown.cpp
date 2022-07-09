@@ -28,6 +28,8 @@ EndContentData */
 #include "SmartScriptMgr.h"
 #include "SpellScript.h"
 #include "PassiveAI.h"
+#include "GridNotifiers.h"
+#include "CellImpl.h"
 
 // Ours
 enum eBKG
@@ -764,30 +766,99 @@ class npc_tirions_gambit_tirion : public CreatureScript
 
 enum infraGreenBomberQuests
 {
-    SPELL_ENGINEERING           = 59193,
-    SPELL_BOMBER_BAY            = 59194,
-    SPELL_ANTI_AIR_TURRET       = 59196,
+    SPELL_INFRA_GREEN_VISION                  = 59651,
+    SPELL_INSIDE_CLOAK_DOME                   = 59660,
+    SPELL_ENGINEERING                         = 59193,
+    SPELL_BOMBER_BAY                          = 59194,
+    SPELL_ANTI_AIR_TURRET                     = 59196,
 
-    SPELL_CHARGE_SHIELD         = 59061,
-    SPELL_INFRA_GREEN_SHIELD    = 59288,
+    SPELL_CHARGE_SHIELD                       = 59061,
+    SPELL_INFRA_GREEN_SHIELD                  = 59288,
 
-    SPELL_BURNING               = 61171,
-    SPELL_COSMETIC_FIRE         = 51195,
-    SPELL_EXTINGUISH_FIRE       = 61172,
+    SPELL_BURNING                             = 61171,
+    SPELL_COSMETIC_FIRE                       = 51195,
+    SPELL_EXTINGUISH_FIRE                     = 61172,
 
-    SPELL_WAITING_FOR_A_BOMBER  = 59563,
-    SPELL_FLIGHT_ORDERS         = 61281,
+    SPELL_WAITING_FOR_A_BOMBER                = 59563,
+    SPELL_FLIGHT_ORDERS                       = 61281,
 
+    EVENT_TAKE_PASSENGER                      =     1,
+    EVENT_START_FLIGHT                        =     2,
+    EVENT_CHECK_PATH_REGEN_HEALTH_BURN_DAMAGE =     3,
+    EVENT_SYNCHRONIZE_SHIELDS                 =     4,
+    EVENT_SPREAD_FIRE                         =     5,
 
-    EVENT_TAKE_PASSENGER        = 1,
-    EVENT_START_FLIGHT          = 2,
-    EVENT_CHECK_PATH_REGEN_HEALTH_BURN_DAMAGE           = 3,
-    EVENT_SYNCHRONIZE_SHIELDS   = 4,
-    EVENT_SPREAD_FIRE           = 5,
+    SEAT_BOMBER                               =     0,
+    SEAT_TURRET                               =     1,
+    SEAT_ENGINEERING                          =     2,
+};
 
-    SEAT_BOMBER                 = 0,
-    SEAT_TURRET                 = 1,
-    SEAT_ENGINEERING            = 2
+class spell_inside_cloak_dome : public SpellScriptLoader
+{
+public:
+    spell_inside_cloak_dome() : SpellScriptLoader("spell_inside_cloak_dome") { }
+
+    class spell_inside_cloak_dome_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_inside_cloak_dome_AuraScript)
+
+        void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            Unit* target = GetTarget();
+            if (target && target->ToPlayer())
+            {
+                PreventDefaultAction();
+                SetDuration(10000);
+                target->RemoveAurasDueToSpell(SPELL_INFRA_GREEN_VISION);
+            }
+        }
+
+        void Register()
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_inside_cloak_dome_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_MOD_INVISIBILITY, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_inside_cloak_dome_AuraScript();
+    }
+};
+
+class npc_cloak_dome_bunny : public CreatureScript
+{
+    public:
+        npc_cloak_dome_bunny() : CreatureScript("npc_cloak_dome_bunny") { }
+
+        struct npc_cloak_dome_bunnyAI : public CreatureAI
+        {
+            npc_cloak_dome_bunnyAI(Creature* creature) : CreatureAI(creature)
+            {
+                m_timer = 0;
+            }
+
+            void UpdateAI(uint32 diff)
+            {
+                m_timer += diff;
+                if (m_timer > 5000)
+                {
+                    std::list<Player*> players;
+                    acore::AnyPlayerInObjectRangeCheck checker(me, 12.f);
+                    acore::PlayerListSearcher<acore::AnyPlayerInObjectRangeCheck> searcher(me, players, checker);
+                    me->VisitNearbyWorldObject(12.f, searcher);
+                    for (auto const& player : players)
+                        player->AddAura(SPELL_INSIDE_CLOAK_DOME, player);
+                    m_timer = 0;
+                }
+            }
+
+            uint32 m_timer;
+        };
+
+        CreatureAI* GetAI(Creature* me) const
+        {
+            return new npc_cloak_dome_bunnyAI(me);
+        }
 };
 
 class spell_switch_infragreen_bomber_station : public SpellScriptLoader
@@ -998,6 +1069,7 @@ class npc_infra_green_bomber_generic : public CreatureScript
             npc_infra_green_bomber_genericAI(Creature* creature) : NullCreatureAI(creature)
             {
                 events.Reset();
+                me->SetPhaseMask(5, false);
             }
 
             Unit* GetSummoner()
@@ -1064,6 +1136,7 @@ class npc_infra_green_bomber_generic : public CreatureScript
                                 {
                                     me->SetSpeed(MOVE_FLIGHT, 1.2f);
                                     owner->RemoveAurasDueToSpell(SPELL_WAITING_FOR_A_BOMBER);
+                                    owner->RemoveAurasDueToSpell(SPELL_INSIDE_CLOAK_DOME);
                                     turret->HandleSpellClick(owner, 0);
                                     return;
                                 }
@@ -1846,6 +1919,8 @@ void AddSC_icecrown()
     new npc_lord_arete();
     new npc_boneguard_footman();
     new npc_tirions_gambit_tirion();
+    new spell_inside_cloak_dome();
+    new npc_cloak_dome_bunny();
     new spell_switch_infragreen_bomber_station();
     new spell_charge_shield_bomber();
     new spell_fight_fire_bomber();
