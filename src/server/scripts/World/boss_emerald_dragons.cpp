@@ -644,6 +644,12 @@ class boss_taerar : public CreatureScript
                 emerald_dragonAI::UpdateAI(diff);
             }
 
+            void JustDied(Unit* killer)
+            {
+                emerald_dragonAI::JustDied(killer);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            }
+
         private:
             bool   _banished;                              // used for shades activation testing
             uint32 _banishedTimer;                         // counter for banishment timeout
