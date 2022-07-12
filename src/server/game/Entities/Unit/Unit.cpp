@@ -170,7 +170,6 @@ i_motionMaster(new MotionMaster(this)), m_regenTimer(0), m_ThreatManager(this), 
     m_rootTimes = 0;
 
     m_state = 0;
-    m_petCatchUp = false;
     m_deathState = ALIVE;
 
     for (uint8 i = 0; i < CURRENT_MAX_SPELL; ++i)
@@ -13290,17 +13289,19 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                 MovementGenerator* movementGenerator = GetMotionMaster()->GetMotionSlot(MOTION_SLOT_ACTIVE);
                 if (movementGenerator && movementGenerator->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
                     isFollowing = true;
-                float offset = 0.f, angle = 0.f;
+                Position pos;
                 Unit* pOwner = GetCharmerOrOwner();
-                if (!pOwner && isFollowing) // charmer or owner not found; check if the creature is following a player
-                    if (Unit* target = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetTarget())
-                        if (target && target->GetTypeId() == TYPEID_PLAYER)
-                        {
+                if (isFollowing)
+                {
+                    FollowMovementGenerator<Creature> const* follow = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator);
+                    if (Unit* target = follow->GetTarget(); target && target->GetTypeId() == TYPEID_PLAYER)
+                    {
+                        if (!pOwner)
                             pOwner = target;
-                            npcFollowingPlayer = true;
-                            offset = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetOffset();
-                            angle = static_cast<FollowMovementGenerator<Creature> const*>(movementGenerator)->GetAngle();
-                        }
+                        npcFollowingPlayer = true;
+                        pos.Relocate(follow->GetNextPos());
+                    }
+                }
 
                 if (pOwner && isFollowing && !IsInCombat() && !IsVehicle() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && (npcFollowingPlayer || IsPet() || IsGuardian() || GetGUID() == pOwner->GetCritterGUID() || GetCharmerGUID() == pOwner->GetGUID()))
                 {
@@ -13321,42 +13322,9 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                                 else if (pOwner->isSwimming() && !isSwimming())
                                     ownerSpeed = pOwner->GetSpeedRate(MOVE_SWIM) * playerBaseMoveSpeed[MOVE_SWIM] / playerBaseMoveSpeed[MOVE_RUN];
                             }
-
-                        float distOwner;
-
-                        if (npcFollowingPlayer)
-                        {
-                            float x, y, z;
-                            pOwner->GetClosePoint(x, y, z, 0.0f, offset, angle, this, true);
-                            distOwner = GetDistance(x, y, z);
-                        }
-                        else
-                            distOwner = GetDistance(pOwner);
-
-                        float minDist = ownerSpeed >= 1.0f ? ownerSpeed * 2.5f : 2.5f;
-
-                        if (creature->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET)
-                            minDist *= 2.0f; // different minimum distance for vanity pets
-
-                        float maxDist = ownerSpeed >= 1.0f ? minDist * ownerSpeed * 1.5f : minDist * 1.5f;
-                        float speedFactor;
-
-                        if (distOwner < minDist)
-                            m_petCatchUp = false;
-                        else if (distOwner >= minDist && distOwner <= maxDist)
-                            speedFactor = 1.01f + (distOwner - minDist) * 0.01f;
-                        else
-                        {
-                            speedFactor = (1.01f + (maxDist - minDist) * 0.01f) + (distOwner - maxDist) * 0.1f;
-                            m_petCatchUp = true;
-                        }
-
-                        speedFactor = m_petCatchUp ? std::min(speedFactor, mtype == MOVE_RUN ? 1.2f : 2.0f) : 0.95f;
-
-                        if (npcFollowingPlayer && (ownerSpeed * speedFactor > speed * creatureSpeedRun))
-                            speed *= creatureSpeedRun;
-                        else
-                            speed = ownerSpeed * speedFactor;
+                        if (speed < ownerSpeed || IsInDist(&pos, 10.0f * ownerSpeed))
+                            speed = ownerSpeed;
+                        speed *= std::min(std::max(1.0f, 0.75f + GetExactDist(&pos) * 0.05f / ownerSpeed), 1.3f);
                     }
                 }
                 else

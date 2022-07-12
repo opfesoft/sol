@@ -41,6 +41,7 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
         Unit* GetTarget() const { return i_target.getTarget(); }
         float GetOffset() const { return i_offset; }
         float GetAngle() const { return i_angle; }
+        Position const* GetNextPos() const { return &i_nextPos; }
 
         void unitSpeedChanged() { i_recalculateTravel = true; }
         bool IsReachable() const { return (i_path) ? (i_path->GetPathType() & PATHFIND_NORMAL) : true; }
@@ -57,6 +58,7 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
         bool i_recalculateTravel;
         bool i_targetReached;
         bool i_forceRecheckDistance;
+        Position i_nextPos;
 };
 
 template<class T>

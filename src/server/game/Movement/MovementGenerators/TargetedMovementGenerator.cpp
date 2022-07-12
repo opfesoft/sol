@@ -178,6 +178,7 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
                                     init.SetFacing(i_target.getTarget());
                                 init.SetWalk(((D*)this)->EnableWalking());
                                 init.Launch();
+                                i_nextPos.Relocate(x, y, z);
                                 return;
                             }
                             if (pillar->GetGoState() == GO_STATE_ACTIVE || (pillar->GetGoState() == GO_STATE_READY && pillar->ToTransport()->GetPathProgress() > 0))
@@ -219,6 +220,7 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
                     init.SetFacing(i_target.getTarget());
                 init.SetWalk(((D*)this)->EnableWalking());
                 init.Launch();
+                i_nextPos.Relocate(x, y, z);
                 return;
             }
         }
@@ -236,6 +238,7 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
 
     init.SetWalk(((D*)this)->EnableWalking());
     init.Launch();
+    i_nextPos.Relocate(x, y, z);
 }
 
 template<class T, typename D>
