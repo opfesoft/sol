@@ -14,7 +14,7 @@ G3D (a commercial-grade C++ 3D engine available as Open Source (BSD License)
 
 jemalloc is a general purpose malloc(3) implementation that emphasizes fragmentation avoidance and scalable concurrency support.
   https://github.com/jemalloc/jemalloc
-  Version: 5.2.1
+  Version: external
 
 libMPQ (a library for reading MPQ files)
   https://libmpq.org/
