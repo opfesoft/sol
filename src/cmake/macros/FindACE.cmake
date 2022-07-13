@@ -14,14 +14,6 @@ if (NOT ACE_INCLUDE_DIR)
     NAMES
       ace/ACE.h
     PATHS
-      /usr/include
-      /usr/include/ace
-      /usr/local/include
-      /usr/local/include/ace
-      $ENV{ACE_ROOT}
-      $ENV{ACE_ROOT}/ace
-      $ENV{ACE_ROOT}/include
-      ${CMAKE_SOURCE_DIR}/externals/ace
       ${LIBSDIR}/ace/include
   DOC
     "Specify include-directories that might contain ace.h here."
@@ -33,13 +25,6 @@ if (NOT ACE_LIBRARY)
     NAMES
       ace ACE
     PATHS
-      /usr/lib
-      /usr/lib/ace
-      /usr/local/lib
-      /usr/local/lib/ace
-      /usr/local/ace/lib
-      $ENV{ACE_ROOT}/lib
-      $ENV{ACE_ROOT}
       ${LIBSDIR}/ace/lib
     DOC "Specify library-locations that might contain the ACE library here."
   )
