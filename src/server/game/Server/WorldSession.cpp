@@ -1289,7 +1289,6 @@ void WorldSession::ProcessQueryCallbackPet()
             SQLQueryHolder* param;
             _loadPetFromDBSecondCallback.get(param);
             HandleLoadPetFromDBSecondCallback((LoadPetFromDBQueryHolder*)param);
-            delete param;
             _loadPetFromDBSecondCallback.cancel();
         }
         return;

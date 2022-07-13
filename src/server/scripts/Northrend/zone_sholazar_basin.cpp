@@ -325,12 +325,13 @@ public:
         uint8 expectedaction;
         uint8 playeraction;
 
-        npc_still_at_it_triggerAI(Creature* pCreature) : NullCreatureAI(pCreature) {}
-
-        void Reset()
+        npc_still_at_it_triggerAI(Creature* pCreature) : NullCreatureAI(pCreature)
         {
-            if (Creature* mcmanus = ObjectAccessor::GetCreature(*me, thunderbrewGUID))
-                mcmanus->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            ResetValues();
+        }
+
+        void ResetValues()
+        {
             running = false;
             success = false;
             playerGUID = 0;
@@ -341,6 +342,13 @@ public:
             currentstep = 0;
             expectedaction = 0;
             playeraction = 0;
+        }
+
+        void Reset()
+        {
+            if (Creature* mcmanus = ObjectAccessor::GetCreature(*me, thunderbrewGUID))
+                mcmanus->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            ResetValues();
         }
 
         void DamageTaken(Unit*, uint32& damage, DamageEffectType, SpellSchoolMask)

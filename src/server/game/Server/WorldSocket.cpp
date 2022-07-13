@@ -685,8 +685,12 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
                     m_Session->ResetTimeOutTime(true);
                 return 0;
             case CMSG_TIME_SYNC_RESP:
-                new_pct = new WorldPacket(std::move(*new_pct), ACE_OS::gettimeofday());
+            {
+                WorldPacket* p = new WorldPacket(std::move(*new_pct), ACE_OS::gettimeofday());
+                aptr.reset(p);
+                new_pct = p;
                 break;
+            }
             default:
                 break;
         }

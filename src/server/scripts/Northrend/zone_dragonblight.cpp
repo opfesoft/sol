@@ -74,7 +74,10 @@ public:
 
     struct npc_conversing_with_the_depths_triggerAI : public ScriptedAI
     {
-        npc_conversing_with_the_depths_triggerAI(Creature* c) : ScriptedAI(c) { }
+        npc_conversing_with_the_depths_triggerAI(Creature* c) : ScriptedAI(c)
+        {
+            ResetValues();
+        }
 
         bool running;
         bool secondpart;
@@ -86,15 +89,20 @@ public:
 
         Creature* GetOachanoa() {return ObjectAccessor::GetCreature(*me, oachanoaGUID);}
 
-        void Reset()
+        void ResetValues()
         {
-            DespawnOachanoa();
             running = false;
             secondpart = false;
             timer = 0;
             step = 0;
             pGUID = 0;
             oachanoaGUID = 0;
+        }
+
+        void Reset()
+        {
+            DespawnOachanoa();
+            ResetValues();
         }
 
         void NextStep(const uint32 time)

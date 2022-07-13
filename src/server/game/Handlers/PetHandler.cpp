@@ -285,12 +285,18 @@ uint8 WorldSession::HandleLoadPetFromDBFirstCallback(PreparedQueryResult result,
 void WorldSession::HandleLoadPetFromDBSecondCallback(LoadPetFromDBQueryHolder* holder)
 {
     if (!GetPlayer())
+    {
+        delete holder;
         return;
+    }
 
     Player* owner = GetPlayer();
     Pet* pet = owner->GetPet();
     if (!pet)
+    {
+        delete holder;
         return;
+    }
 
     pet->_LoadAuras(holder->GetPreparedResult(PET_LOAD_QUERY_LOADAURAS), holder->GetDiffTime());
     bool current = holder->GetCurrent();
@@ -347,11 +353,12 @@ void WorldSession::HandleLoadPetFromDBSecondCallback(LoadPetFromDBQueryHolder* h
     if (current && owner->IsPetNeedBeTemporaryUnsummoned())
     {
         owner->UnsummonPetTemporaryIfAny();
+        delete holder;
         return;
     }
 
     pet->HandleAsynchLoadSucceed();
-    return;
+    delete holder;
 }
 
 void WorldSession::HandleDismissCritter(WorldPacket &recvData)
