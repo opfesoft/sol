@@ -28,11 +28,11 @@ add_headers(FMT_HEADERS
   core.h
   format-inl.h
   format.h
-  locale.h
   os.h
   ostream.h
   printf.h
   ranges.h
+  std.h
   xchar.h)
 
 set(FMT_SOURCES 

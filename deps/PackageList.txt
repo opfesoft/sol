@@ -50,4 +50,4 @@ recastnavigation (Recast is state of the art navigation mesh construction toolse
 
 {fmt} is an open-source formatting library providing a fast and safe alternative to C stdio and C++ iostreams.
   https://github.com/fmtlib/fmt
-  Version: 8.1.1
+  Version: 9.0.0
