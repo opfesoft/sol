@@ -17,6 +17,7 @@
 #include "Player.h"
 #include "SpellInfo.h"
 #include "TemporarySummon.h"
+#include "Pet.h"
 
 enum WarlockSpells
 {
@@ -1391,6 +1392,45 @@ class spell_warl_glyph_of_shadowflame : public SpellScriptLoader
         }
 };
 
+// 56246 - Glyph of Felguard
+class spell_warl_glyph_of_felguard : public SpellScriptLoader
+{
+    public:
+        spell_warl_glyph_of_felguard() : SpellScriptLoader("spell_warl_glyph_of_felguard") { }
+
+        class spell_warl_glyph_of_felguard_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_warl_glyph_of_felguard_AuraScript);
+
+            void HandleApply(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetCaster()->ToPlayer())
+                    if (Pet* pet = player->GetPet())
+                        if (pet->GetEntry() == NPC_FELGUARD)
+                            pet->HandleStatModifier(UNIT_MOD_ATTACK_POWER, TOTAL_PCT, aurEff->GetAmount(), true);
+            }
+
+            void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetCaster()->ToPlayer())
+                    if (Pet* pet = player->GetPet())
+                        if (pet->GetEntry() == NPC_FELGUARD)
+                            pet->HandleStatModifier(UNIT_MOD_ATTACK_POWER, TOTAL_PCT, aurEff->GetAmount(), false);
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_warl_glyph_of_felguard_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+                OnEffectRemove += AuraEffectRemoveFn(spell_warl_glyph_of_felguard_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_warl_glyph_of_felguard_AuraScript();
+        }
+};
+
 void AddSC_warlock_spell_scripts()
 {
     // Ours
@@ -1403,6 +1443,7 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_demonic_knowledge();
     new spell_warl_generic_scaling();
     new spell_warl_infernal_scaling();
+    new spell_warl_glyph_of_felguard();
 
     // Theirs
     new spell_warl_banish();
