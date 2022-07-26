@@ -200,7 +200,7 @@ enum ProcFlagsExLegacy
     PROC_EX_RESERVED2           = 0x0004000,
     PROC_EX_NOT_ACTIVE_SPELL    = 0x0008000,                 // Spell mustn't do damage/heal to proc
     PROC_EX_EX_TRIGGER_ALWAYS   = 0x0010000,                 // If set trigger always no matter of hit result
-    PROC_EX_EX_ONE_TIME_TRIGGER = 0x0020000,                 // If set trigger always but only one time (not implemented yet)
+    PROC_EX_ONLY_ON_PLAYER_CAST = 0x0020000,                 // If set trigger only once on player cast
     PROC_EX_ONLY_ACTIVE_SPELL   = 0x0040000,                 // Spell has to do damage/heal to proc
     PROC_EX_NO_OVERHEAL         = 0x0080000,                 // Proc if heal did some work
     PROC_EX_NO_AURA_REFRESH     = 0x0100000,                 // Proc if aura was not refreshed

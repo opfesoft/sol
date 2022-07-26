@@ -3587,6 +3587,19 @@ void Spell::cast(bool skipCheck)
 
     if (lastMod)
         modOwner->SetSpellModTakingSpell(lastMod, true);
+
+    if (m_caster->GetTypeId() == TYPEID_PLAYER && !IsTriggered())
+    {
+        uint32 procAttacker = m_procAttacker;
+        if (!procAttacker)
+        {
+            if (m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MAGIC)
+                procAttacker = m_spellInfo->IsPositive() ? PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS : PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG;
+            else
+                procAttacker = m_spellInfo->IsPositive() ? PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS : PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG;
+        }
+        m_caster->ProcDamageAndSpell(m_caster, procAttacker, PROC_FLAG_NONE, PROC_EX_ONLY_ON_PLAYER_CAST, 0, BASE_ATTACK, m_spellInfo, nullptr, this);
+    }
 }
 
 void Spell::_cast(bool skipCheck)
