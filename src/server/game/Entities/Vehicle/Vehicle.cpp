@@ -512,6 +512,12 @@ void Vehicle::RelocatePassengers()
             float px, py, pz, po;
             passenger->m_movementInfo.transport.pos.GetPosition(px, py, pz, po);
             CalculatePassengerPosition(px, py, pz, &po);
+            if (passenger->GetTypeId() == TYPEID_PLAYER && itr.second.SeatInfo->m_flags & VEHICLE_SEAT_FLAG_ALLOW_TURNING)
+            {
+                if (passenger->GetOrientation() != passenger->m_movementInfo.transport.seatO)
+                    passenger->m_movementInfo.transport.pos.SetOrientation(Position::NormalizeOrientation(passenger->GetOrientation() - GetBase()->GetOrientation()));
+                passenger->m_movementInfo.transport.seatO = po;
+            }
             seatRelocation.emplace_back(passenger, Position(px, py, pz, po));
         }
     }
