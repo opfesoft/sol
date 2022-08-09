@@ -4110,6 +4110,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 42846:
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
             break;
+        case 28772: // Elemental Vulnerability
+            spellInfo->speed = 1;
+            break;
 
 
         /////////////////////////////////
