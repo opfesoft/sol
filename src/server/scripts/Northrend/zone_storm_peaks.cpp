@@ -170,9 +170,13 @@ public:
             }
             if (hpTimer >= 1000)
             {
+                me->ClearDiminishings();
+
                 if (me->HealthBelowPct(40))
                 {
                     Talk(0);
+                    me->setActive(true);
+                    me->DespawnOrUnsummon(60000);
                     me->RemoveAllAuras();
                     me->CastSpell(me, SPELL_SHATTERED_EYES, true);
                     me->ApplySpellImmune(SPELL_SHATTERED_EYES, IMMUNITY_MECHANIC, MECHANIC_STUN, false);
