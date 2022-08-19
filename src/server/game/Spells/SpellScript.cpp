@@ -972,6 +972,11 @@ uint64 AuraScript::GetCasterGUID() const
     return m_aura->GetCasterGUID();
 }
 
+uint64 AuraScript::GetActualCasterGUID() const
+{
+    return m_aura->GetActualCasterGUID();
+}
+
 Unit* AuraScript::GetCaster() const
 {
     return m_aura->GetCaster();

@@ -460,9 +460,24 @@ class spell_pri_lightwell_renew : public SpellScriptLoader
                 }
             }
 
+            void HandleUpdateSpellclick(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetTarget()->ToPlayer(); player && GetActualCasterGUID())
+                    if (Unit* caster = ObjectAccessor::GetUnit(*player, GetActualCasterGUID()))
+                    {
+                        UpdateData data;
+                        WorldPacket packet;
+                        caster->BuildValuesUpdateBlockForPlayer(&data, player);
+                        data.BuildPacket(&packet);
+                        player->SendDirectMessage(&packet);
+                    }
+            }
+
             void Register()
             {
                 DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_pri_lightwell_renew_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_PERIODIC_HEAL);
+                AfterEffectApply += AuraEffectApplyFn(spell_pri_lightwell_renew_AuraScript::HandleUpdateSpellclick, EFFECT_0, SPELL_AURA_PERIODIC_HEAL, AURA_EFFECT_HANDLE_REAL);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_pri_lightwell_renew_AuraScript::HandleUpdateSpellclick, EFFECT_0, SPELL_AURA_PERIODIC_HEAL, AURA_EFFECT_HANDLE_REAL);
             }
         };
 
