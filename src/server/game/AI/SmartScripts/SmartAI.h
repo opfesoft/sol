@@ -269,6 +269,7 @@ class SmartGameObjectAI : public GameObjectAI
         void OnStateChanged(uint32 state, Unit* unit);
         void EventInform(uint32 eventId);
         void SpellHit(Unit* unit, const SpellInfo* spellInfo);
+        void JustSummoned(Creature* creature);
 
     protected:
         SmartScript mScript;

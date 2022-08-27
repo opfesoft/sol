@@ -13,18 +13,25 @@
 #include "Pet.h"
 #include "Player.h"
 #include "ScriptMgr.h"
+#include "GameObjectAI.h"
 
-TempSummon::TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject) :
+TempSummon::TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint64 summonerGO /* = 0*/) :
 Creature(isWorldObject), m_Properties(properties), m_type(TEMPSUMMON_MANUAL_DESPAWN),
 m_timer(0), m_lifetime(0), m_ownerDeathDespawn(true), m_ownerDeathSummonType(TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT), m_ownerDeathLifetime(5000)
 {
     m_summonerGUID = owner;
+    m_summonerGO_GUID = summonerGO;
     m_unitTypeMask |= UNIT_MASK_SUMMON;
 }
 
 Unit* TempSummon::GetSummoner() const
 { 
     return m_summonerGUID ? ObjectAccessor::GetUnit(*this, m_summonerGUID) : NULL;
+}
+
+GameObject* TempSummon::GetSummonerGameObject() const
+{
+    return m_summonerGO_GUID ? ObjectAccessor::GetGameObject(*this, m_summonerGO_GUID) : NULL;
 }
 
 void TempSummon::Update(uint32 diff)
@@ -205,6 +212,9 @@ void TempSummon::InitSummon()
         if (owner->GetTypeId() == TYPEID_UNIT && owner->ToCreature()->IsAIEnabled)
             owner->ToCreature()->AI()->JustSummoned(this);
     }
+    else if (GameObject* summonerGO = GetSummonerGameObject())
+        if (GameObjectAI* ai = summonerGO->ToGameObject()->AI())
+            ai->JustSummoned(this);
 
     // Xinef: Allow to call this hook when npc is summoned by gameobject, in this case pass this as summoner to avoid possible null checks
     if (IsAIEnabled)

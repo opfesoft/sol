@@ -29,7 +29,7 @@ struct TempSummonData
 class TempSummon : public Creature
 {
     public:
-        explicit TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject);
+        explicit TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint64 summonerGO = 0);
         virtual ~TempSummon() {}
         void Update(uint32 time);
         virtual void InitStats(uint32 lifetime);
@@ -39,6 +39,7 @@ class TempSummon : public Creature
         void SetTempSummonType(TempSummonType type);
         void SaveToDB(uint32 /*mapid*/, uint8 /*spawnMask*/, uint32 /*phaseMask*/) {}
         Unit* GetSummoner() const;
+        GameObject* GetSummonerGameObject() const;
         uint64 GetSummonerGUID() { return m_summonerGUID; }
         TempSummonType const& GetSummonType() { return m_type; }
         uint32 GetTimer() { return m_timer; }
@@ -55,6 +56,7 @@ class TempSummon : public Creature
         uint32 m_timer;
         uint32 m_lifetime;
         uint64 m_summonerGUID;
+        uint64 m_summonerGO_GUID;
         bool m_ownerDeathDespawn;
         TempSummonType m_ownerDeathSummonType;
         uint32 m_ownerDeathLifetime;

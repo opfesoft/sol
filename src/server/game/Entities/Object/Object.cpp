@@ -2097,7 +2097,7 @@ void WorldObject::AddObjectToRemoveList()
     map->AddObjectToRemoveList(this);
 }
 
-TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= NULL*/, uint32 duration /*= 0*/, Unit* summoner /*= NULL*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/)
+TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= NULL*/, uint32 duration /*= 0*/, Unit* summoner /*= NULL*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, GameObject* summonerGO /*= NULL*/)
 { 
     uint32 mask = UNIT_MASK_SUMMON;
     if (properties)
@@ -2156,7 +2156,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
     switch (mask)
     {
         case UNIT_MASK_SUMMON:
-            summon = new TempSummon(properties, summoner ? summoner->GetGUID() : 0, false);
+            summon = new TempSummon(properties, summoner ? summoner->GetGUID() : 0, false, summonerGO ? summonerGO->GetGUID() : 0);
             break;
         case UNIT_MASK_GUARDIAN:
             summon = new Guardian(properties, summoner ? summoner->GetGUID() : 0, false);
@@ -2260,7 +2260,7 @@ TempSummon* WorldObject::SummonCreature(uint32 entry, const Position &pos, TempS
 { 
     if (Map* map = FindMap())
     {
-        if (TempSummon* summon = map->SummonCreature(entry, pos, properties, duration, isType(TYPEMASK_UNIT) ? (Unit*)this : NULL))
+        if (TempSummon* summon = map->SummonCreature(entry, pos, properties, duration, isType(TYPEMASK_UNIT) ? (Unit*)this : NULL, 0, 0, isType(TYPEMASK_GAMEOBJECT) ? (GameObject*)this : NULL))
         {
             summon->SetTempSummonType(spwtype);
             return summon;
