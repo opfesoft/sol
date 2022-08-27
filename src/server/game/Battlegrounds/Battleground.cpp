@@ -13,7 +13,7 @@
 #include "Chat.h"
 #include "Formulas.h"
 #include "GridNotifiersImpl.h"
-#include "Group.h"
+#include "GroupMgr.h"
 #include "MapManager.h"
 #include "Object.h"
 #include "ObjectMgr.h"
@@ -1275,6 +1275,7 @@ void Battleground::AddOrSetPlayerToCorrectBgGroup(Player* player, TeamId teamId)
         group = new Group;
         SetBgRaid(teamId, group);
         group->Create(player);
+        sGroupMgr->AddGroup(group);
     }
     else if (group->IsMember(playerGuid))
     {
