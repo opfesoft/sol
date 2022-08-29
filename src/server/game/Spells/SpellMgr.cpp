@@ -822,6 +822,11 @@ bool SpellMgr::IsSpellProcEventCanTriggeredBy(SpellInfo const* spellProto, Spell
             return false;
     }
 
+    if (procExtra & PROC_EX_ONLY_ON_PLAYER_PRE_CAST)
+        return procEvent_procEx & PROC_EX_ONLY_ON_PLAYER_PRE_CAST;
+    else if (procEvent_procEx & PROC_EX_ONLY_ON_PLAYER_PRE_CAST)
+        return false;
+
     if (procExtra & PROC_EX_ONLY_ON_PLAYER_CAST)
         return procEvent_procEx & PROC_EX_ONLY_ON_PLAYER_CAST;
     else if (procEvent_procEx & PROC_EX_ONLY_ON_PLAYER_CAST)

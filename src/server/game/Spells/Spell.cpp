@@ -3583,11 +3583,18 @@ void Spell::cast(bool skipCheck)
             modOwner->SetSpellModTakingSpell(lastMod, false);
     }
 
+    procOnlyOnPlayerCast(PROC_EX_ONLY_ON_PLAYER_PRE_CAST);
+
     _cast(skipCheck);
 
     if (lastMod)
         modOwner->SetSpellModTakingSpell(lastMod, true);
 
+    procOnlyOnPlayerCast(PROC_EX_ONLY_ON_PLAYER_CAST);
+}
+
+void Spell::procOnlyOnPlayerCast(uint32 procEx)
+{
     if (m_caster->GetTypeId() == TYPEID_PLAYER && !IsTriggered())
     {
         uint32 procAttacker = m_procAttacker;
@@ -3598,7 +3605,7 @@ void Spell::cast(bool skipCheck)
             else
                 procAttacker = m_spellInfo->IsPositive() ? PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS : PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG;
         }
-        m_caster->ProcDamageAndSpell(m_caster, procAttacker, PROC_FLAG_NONE, PROC_EX_ONLY_ON_PLAYER_CAST, 0, BASE_ATTACK, m_spellInfo, nullptr, this);
+        m_caster->ProcDamageAndSpell(m_caster, procAttacker, PROC_FLAG_NONE, procEx, 0, BASE_ATTACK, m_spellInfo, nullptr, this);
     }
 }
 

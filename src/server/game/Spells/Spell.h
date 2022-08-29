@@ -405,6 +405,7 @@ class Spell
         void cancel(bool bySelf = false);
         void update(uint32 difftime);
         void cast(bool skipCheck = false);
+        void procOnlyOnPlayerCast(uint32 procEx);
         void _cast(bool skipCheck);
         void finish(bool ok = true);
         void TakePower();
