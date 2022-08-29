@@ -366,6 +366,35 @@ class spell_dru_treant_scaling : public SpellScriptLoader
         }
 };
 
+// 24905 - Moonkin Form (Passive)
+class spell_dru_moonkin_form_passive_proc : public SpellScriptLoader
+{
+    public:
+        spell_dru_moonkin_form_passive_proc() : SpellScriptLoader("spell_dru_moonkin_form_passive_proc") { }
+
+        class spell_dru_moonkin_form_passive_proc_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_dru_moonkin_form_passive_proc_AuraScript);
+
+            bool CheckProc(ProcEventInfo& eventInfo)
+            {
+                if (SpellInfo const* spellInfo = eventInfo.GetDamageInfo()->GetSpellInfo())
+                    return !spellInfo->IsAffectingArea();
+                return false;
+            }
+
+            void Register()
+            {
+                DoCheckProc += AuraCheckProcFn(spell_dru_moonkin_form_passive_proc_AuraScript::CheckProc);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_dru_moonkin_form_passive_proc_AuraScript();
+        }
+};
+
 
 // Theirs
 // -1850 - Dash
@@ -1420,6 +1449,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_barkskin();
     new spell_dru_treant_scaling();
     new spell_dru_berserk();
+    new spell_dru_moonkin_form_passive_proc();
 
     // Theirs
     new spell_dru_dash();
