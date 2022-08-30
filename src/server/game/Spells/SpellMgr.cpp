@@ -3658,6 +3658,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 19574: // Bestial Wrath
             spellInfo->AttributesEx4 |= SPELL_ATTR4_FADES_WHILE_LOGGED_OUT;
             break;
+        case 24131: // Wyvern Sting (DoT, Rank 1)
+        case 24134: // Wyvern Sting (DoT, Rank 2)
+        case 24135: // Wyvern Sting (DoT, Rank 3)
+            spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_UNIT_TARGET_ENEMY;
+            break;
 
 
         /////////////////////////////////
