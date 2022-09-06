@@ -1,9 +1,9 @@
 #
-# Find the JEMALLOC client includes and library
+# Find the JEMALLOC includes and library
 #
 
 # This module defines
-# JEMALLOC_INCLUDE_DIR, where to find ace.h
+# JEMALLOC_INCLUDE_DIR, where to find jemalloc.h
 # JEMALLOC_LIBRARY, where to find the jemalloc library.
 
 if (NOT JEMALLOC_INCLUDE_DIR)
@@ -12,6 +12,7 @@ if (NOT JEMALLOC_INCLUDE_DIR)
       jemalloc/jemalloc.h
     PATHS
       ${LIBSDIR}/jemalloc/include
+    NO_DEFAULT_PATH
   )
 endif()
 
@@ -21,8 +22,8 @@ if (NOT JEMALLOC_LIBRARY)
       jemalloc
     PATHS
       ${LIBSDIR}/jemalloc/lib
+    NO_DEFAULT_PATH
   )
-
 endif()
 
 if ( JEMALLOC_LIBRARY )

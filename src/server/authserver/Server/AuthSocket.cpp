@@ -1194,14 +1194,14 @@ void Patcher::LoadPatchMD5(char *szFileName)
     }
 
     // Calculate the MD5 hash
-    MD5_CTX ctx;
-    MD5_Init(&ctx);
+    EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+    EVP_DigestInit_ex2(ctx, EVP_md5(), NULL);
     uint8* buf = new uint8[512 * 1024];
 
     while (!feof(pPatch))
     {
         size_t read = fread(buf, 1, 512 * 1024, pPatch);
-        MD5_Update(&ctx, buf, read);
+        EVP_DigestUpdate(ctx, buf, read);
     }
 
     delete [] buf;
@@ -1209,7 +1209,8 @@ void Patcher::LoadPatchMD5(char *szFileName)
 
     // Store the result in the internal patch hash map
     _patches[path] = new PATCH_INFO;
-    MD5_Final((uint8 *)&_patches[path]->md5, &ctx);
+    EVP_DigestFinal_ex(ctx, (uint8 *)&_patches[path]->md5, NULL);
+    EVP_MD_CTX_free(ctx);
 }
 
 // Get cached MD5 hash for a given patch file

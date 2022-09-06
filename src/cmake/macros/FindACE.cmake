@@ -15,8 +15,9 @@ if (NOT ACE_INCLUDE_DIR)
       ace/ACE.h
     PATHS
       ${LIBSDIR}/ace/include
-  DOC
-    "Specify include-directories that might contain ace.h here."
+    DOC
+      "Specify include-directories that might contain ace.h here."
+    NO_DEFAULT_PATH
   )
 endif()
 
@@ -26,7 +27,9 @@ if (NOT ACE_LIBRARY)
       ace ACE
     PATHS
       ${LIBSDIR}/ace/lib
-    DOC "Specify library-locations that might contain the ACE library here."
+    DOC
+      "Specify library-locations that might contain the ACE library here."
+    NO_DEFAULT_PATH
   )
 
 endif()

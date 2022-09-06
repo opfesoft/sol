@@ -11,18 +11,19 @@
 
 SHA1Hash::SHA1Hash()
 {
-    SHA1_Init(&mC);
+    mC = EVP_MD_CTX_new();
+    EVP_DigestInit_ex2(mC, EVP_sha1(), NULL);
     memset(mDigest, 0, SHA_DIGEST_LENGTH * sizeof(uint8));
 }
 
 SHA1Hash::~SHA1Hash()
 {
-    SHA1_Init(&mC);
+    EVP_MD_CTX_free(mC);
 }
 
 void SHA1Hash::UpdateData(const uint8 *dta, int len)
 {
-    SHA1_Update(&mC, dta, len);
+    EVP_DigestUpdate(mC, dta, len);
 }
 
 void SHA1Hash::UpdateData(const std::string &str)
@@ -47,11 +48,11 @@ void SHA1Hash::UpdateBigNumbers(BigNumber* bn0, ...)
 
 void SHA1Hash::Initialize()
 {
-    SHA1_Init(&mC);
+    EVP_DigestInit_ex2(mC, EVP_sha1(), NULL);
 }
 
 void SHA1Hash::Finalize(void)
 {
-    SHA1_Final(mDigest, &mC);
+    EVP_DigestFinal_ex(mC, mDigest, NULL);
 }
 

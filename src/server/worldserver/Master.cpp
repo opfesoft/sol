@@ -24,8 +24,8 @@
 #include "RealmList.h"
 #include "ScriptMgr.h"
 #include "BigNumber.h"
-#include "OpenSSLCrypto.h"
 #include <ace/Sig_Handler.h>
+#include <openssl/provider.h>
 
 #ifdef __linux__
 #include <sched.h>
@@ -93,7 +93,7 @@ public:
 /// Main function
 int Master::Run()
 {
-    OpenSSLCrypto::threadsSetup();
+    osslInit();
     BigNumber seed1;
     seed1.SetRand(16 * 8);
 
@@ -258,9 +258,21 @@ int Master::Run()
     // fixes a memory leak related to detaching threads from the module
     //UnloadScriptingModule();
 
-    OpenSSLCrypto::threadsCleanup();
+    osslCleanup();
     // Exit the process with specified return value
     return World::GetExitCode();
+}
+
+void Master::osslInit()
+{
+    osslDefaultProvider = OSSL_PROVIDER_load(NULL, "default");
+    osslLegacyProvider = OSSL_PROVIDER_load(NULL, "legacy");
+}
+
+void Master::osslCleanup()
+{
+    OSSL_PROVIDER_unload(osslDefaultProvider);
+    OSSL_PROVIDER_unload(osslLegacyProvider);
 }
 
 /// Initialize connection to the databases

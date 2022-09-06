@@ -11,7 +11,7 @@
 #include "Timer.h"
 
 #include <list>
-#include <openssl/md5.h>
+#include <openssl/evp.h>
 
 namespace AddonMgr
 {
@@ -75,8 +75,8 @@ void LoadFromDB()
             std::string name = fields[1].GetString();
             std::string version = fields[2].GetString();
 
-            MD5(reinterpret_cast<uint8 const*>(name.c_str()), name.length(), addon.NameMD5);
-            MD5(reinterpret_cast<uint8 const*>(version.c_str()), version.length(), addon.VersionMD5);
+            EVP_Q_digest(NULL, (char*)"MD5", NULL, reinterpret_cast<uint8 const*>(name.c_str()), name.length(), addon.NameMD5, NULL);
+            EVP_Q_digest(NULL, (char*)"MD5", NULL, reinterpret_cast<uint8 const*>(version.c_str()), version.length(), addon.VersionMD5, NULL);
 
             m_bannedAddons.push_back(addon);
 

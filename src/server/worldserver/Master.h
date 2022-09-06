@@ -21,6 +21,12 @@ class Master
         void _StopDB();
 
         void ClearOnlineAccounts();
+
+        void osslInit();
+        void osslCleanup();
+
+        OSSL_PROVIDER* osslDefaultProvider;
+        OSSL_PROVIDER* osslLegacyProvider;
 };
 
 #define sMaster ACE_Singleton<Master, ACE_Null_Mutex>::instance()

@@ -11,6 +11,7 @@
 #include "Define.h"
 #include <string>
 #include <openssl/sha.h>
+#include <openssl/evp.h>
 
 class BigNumber;
 
@@ -32,7 +33,7 @@ class SHA1Hash
         int GetLength(void) const { return SHA_DIGEST_LENGTH; };
 
     private:
-        SHA_CTX mC;
+        EVP_MD_CTX* mC;
         uint8 mDigest[SHA_DIGEST_LENGTH];
 };
 #endif
