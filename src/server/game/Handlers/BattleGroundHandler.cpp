@@ -377,6 +377,12 @@ void WorldSession::HandleBattleFieldPortOpcode(WorldPacket &recvData)
     if (!_player->InBattlegroundQueue())
         return;
 
+    if (_player->GetCharmGUID() || _player->IsInCombat())
+    {
+        _player->GetSession()->SendNotification(LANG_YOU_IN_COMBAT);
+        return;
+    }
+
     // get BattlegroundQueue for received 
     BattlegroundTypeId bgTypeId = BattlegroundTypeId(bgTypeId_);
     BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(bgTypeId, arenaType);
