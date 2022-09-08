@@ -35,7 +35,8 @@ public:
             { "modify",         SEC_ADMINISTRATOR,     false, &HandleWpModifyCommand,             "" },
             { "unload",         SEC_ADMINISTRATOR,     false, &HandleWpUnLoadCommand,             "" },
             { "reload",         SEC_ADMINISTRATOR,     false, &HandleWpReloadCommand,             "" },
-            { "show",           SEC_ADMINISTRATOR,     false, &HandleWpShowCommand,               "" }
+            { "show",           SEC_ADMINISTRATOR,     false, &HandleWpShowCommand,               "" },
+            { "go",             SEC_ADMINISTRATOR,     false, &HandleWpGoCommand,                 "" }
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1181,6 +1182,66 @@ public:
         }
 
         handler->PSendSysMessage("|cffff33ffDEBUG: wpshow - no valid command found|r");
+        return true;
+    }
+
+    static bool HandleWpGoCommand(ChatHandler* handler, const char* args)
+    {
+        if (!handler->GetSession())
+            return false;
+
+        if (!*args)
+            return false;
+
+        uint32 pathid = 0;
+        uint32 point = 0;
+
+        char* pathid_str = strtok((char*)args, " ");
+
+        if (!pathid_str)
+            return false;
+
+        char* point_str = strtok((char*)nullptr, " ");
+
+        if (!point_str)
+            return false;
+
+        pathid = atoi(pathid_str);
+        point = atoi(point_str);
+
+        PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_POS_BY_ID_AND_POINT);
+        stmt->setUInt32(0, pathid);
+        stmt->setUInt32(1, point);
+        PreparedQueryResult result = WorldDatabase.Query(stmt);
+
+        if (result)
+        {
+            Field* fields = result->Fetch();
+            float posx = fields[0].GetFloat();
+            float posy = fields[1].GetFloat();
+            float posz = fields[2].GetFloat();
+
+            Player* player = handler->GetSession()->GetPlayer();
+
+            // stop flight if needed
+            if (player->IsInFlight())
+            {
+                player->GetMotionMaster()->MovementExpired();
+                player->CleanupAfterTaxiFlight();
+            }
+            // save only in non-flight case
+            else
+                player->SaveRecallPosition();
+
+            player->TeleportTo(player->GetMapId(), posx, posy, posz, player->GetOrientation());
+        }
+        else
+        {
+            handler->SendSysMessage("|cffff33ffWaypoint not found.|r");
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
         return true;
     }
 };
