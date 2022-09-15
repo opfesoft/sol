@@ -19,6 +19,7 @@ EndScriptData */
 #include "ScriptMgr.h"
 #include "WaypointManager.h"
 #include "Transport.h"
+#include "WaypointMovementGenerator.h"
 
 class wp_commandscript : public CommandScript
 {
@@ -36,7 +37,8 @@ public:
             { "unload",         SEC_ADMINISTRATOR,     false, &HandleWpUnLoadCommand,             "" },
             { "reload",         SEC_ADMINISTRATOR,     false, &HandleWpReloadCommand,             "" },
             { "show",           SEC_ADMINISTRATOR,     false, &HandleWpShowCommand,               "" },
-            { "go",             SEC_ADMINISTRATOR,     false, &HandleWpGoCommand,                 "" }
+            { "go",             SEC_ADMINISTRATOR,     false, &HandleWpGoCommand,                 "" },
+            { "stop",           SEC_ADMINISTRATOR,     false, &HandleWpStopCommand,               "" }
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -875,7 +877,7 @@ public:
 
             if (!result)
             {
-                handler->SendSysMessage(LANG_WAYPOINT_NOTFOUNDDBPROBLEM);
+                handler->PSendSysMessage(LANG_WAYPOINT_NOTFOUNDDBPROBLEM, target->GetGUIDLow());
                 return true;
             }
 
@@ -1241,6 +1243,39 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
+
+        return true;
+    }
+
+    static bool HandleWpStopCommand(ChatHandler* handler, const char* args)
+    {
+        if (!handler->GetSession())
+            return false;
+
+        if (!*args)
+            return false;
+
+        uint32 duration = 0;
+
+        char* duration_str = strtok((char*)args, " ");
+
+        if (!duration_str)
+            return false;
+
+        duration = atoi(duration_str);
+        Creature* target = handler->getSelectedCreature();
+
+        if (!target)
+        {
+            handler->SendSysMessage(LANG_SELECT_CREATURE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (target->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
+            static_cast<WaypointMovementGenerator<Creature>*>(target->GetMotionMaster()->top())->Stop(duration);
+        else
+            handler->PSendSysMessage(LANG_WAYPOINT_NOTFOUNDDBPROBLEM, target->GetGUIDLow());
 
         return true;
     }
