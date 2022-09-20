@@ -31,8 +31,9 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode(WorldPacket & recvData)
 void WorldSession::SendTaxiStatus(uint64 guid)
 {
     // cheating checks
-    Creature* unit = GetPlayer()->GetMap()->GetCreature(guid);
-    if (!unit)
+    Player* const player = GetPlayer();
+    Creature* unit = player->GetMap()->GetCreature(guid);
+    if (!unit || unit->IsHostileTo(player) || !unit->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_FLIGHTMASTER))
     {
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
         sLog->outDebug(LOG_FILTER_NETWORKIO, "WorldSession::SendTaxiStatus - Unit (GUID: %u) not found.", uint32(GUID_LOPART(guid)));
@@ -40,7 +41,7 @@ void WorldSession::SendTaxiStatus(uint64 guid)
         return;
     }
 
-    uint32 curloc = sObjectMgr->GetNearestTaxiNode(unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ(), unit->GetMapId(), GetPlayer()->GetTeamId());
+    uint32 curloc = sObjectMgr->GetNearestTaxiNode(unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ(), unit->GetMapId(), player->GetTeamId());
 
     // not found nearest
     if (curloc == 0)
@@ -52,7 +53,7 @@ void WorldSession::SendTaxiStatus(uint64 guid)
 
     WorldPacket data(SMSG_TAXINODE_STATUS, 9);
     data << guid;
-    data << uint8(GetPlayer()->m_taxi.IsTaximaskNodeKnown(curloc) ? 1 : 0);
+    data << uint8(player->m_taxi.IsTaximaskNodeKnown(curloc) ? 1 : 0);
     SendPacket(&data);
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: Sent SMSG_TAXINODE_STATUS");
@@ -187,6 +188,7 @@ void WorldSession::HandleActivateTaxiExpressOpcode (WorldPacket & recvData)
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
         sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: HandleActivateTaxiExpressOpcode - Unit (GUID: %u) not found or you can't interact with it.", uint32(GUID_LOPART(guid)));
 #endif
+        SendActivateTaxiReply(ERR_TAXITOOFARAWAY);
         return;
     }
     std::vector<uint32> nodes;
@@ -230,6 +232,41 @@ void WorldSession::HandleMoveSplineDoneOpcode(WorldPacket& recvData)
     ReadMovementInfo(recvData, &movementInfo);
 
     recvData.read_skip<uint32>();                          // spline id
+
+    // in taxi flight packet received in 2 case:
+    // 1) end taxi path in far (multi-node) flight
+    // 2) switch from one map to other in case multim-map taxi path
+    // we need process only (1)
+
+    Player* const player = GetPlayer();
+    uint32 curDest = player->m_taxi.GetTaxiDestination();
+    if (curDest)
+    {
+        TaxiNodesEntry const* curDestNode = sTaxiNodesStore.LookupEntry(curDest);
+
+        // far teleport case
+        if (curDestNode && curDestNode->map_id != player->GetMapId() && player->GetMotionMaster()->GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE)
+            if (FlightPathMovementGenerator* flight = dynamic_cast<FlightPathMovementGenerator*>(player->GetMotionMaster()->top()))
+            {
+                // short preparations to continue flight
+                flight->SetCurrentNodeAfterTeleport();
+                TaxiPathNodeEntry const* node = flight->GetPath()[flight->GetCurrentNode()];
+                flight->SkipCurrentNode();
+
+                player->TeleportTo(curDestNode->map_id, node->x, node->y, node->z, player->GetOrientation(), TELE_TO_NOT_LEAVE_TAXI);
+            }
+
+        return;
+    }
+
+    // at this point only 1 node is expected (final destination)
+    if (player->m_taxi.GetPath().size() != 1)
+        return;
+
+    player->CleanupAfterTaxiFlight();
+    player->SetFallInformation(time(NULL), player->GetPositionZ());
+    if (player->pvpInfo.IsHostile)
+        player->CastSpell(player, 2479, true);
 }
 
 void WorldSession::HandleActivateTaxiOpcode(WorldPacket & recvData)
@@ -252,6 +289,7 @@ void WorldSession::HandleActivateTaxiOpcode(WorldPacket & recvData)
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
         sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: HandleActivateTaxiOpcode - Unit (GUID: %u) not found or you can't interact with it.", uint32(GUID_LOPART(guid)));
 #endif
+        SendActivateTaxiReply(ERR_TAXITOOFARAWAY);
         return;
     }
 

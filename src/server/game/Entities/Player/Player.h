@@ -956,29 +956,27 @@ class PlayerTaxi
         bool LoadTaxiDestinationsFromString(std::string const& values, TeamId teamId);
         std::string SaveTaxiDestinationsToString();
 
-        void ClearTaxiDestinations() { m_TaxiDestinations.clear(); _taxiSegment = 0; }
+        void ClearTaxiDestinations() { m_TaxiDestinations.clear(); m_flightMasterFactionId = 0; }
         void AddTaxiDestination(uint32 dest) { m_TaxiDestinations.push_back(dest); }
-        uint32 GetTaxiSource() const { return m_TaxiDestinations.size() <= _taxiSegment+1 ? 0 : m_TaxiDestinations[_taxiSegment]; }
-        uint32 GetTaxiDestination() const { return m_TaxiDestinations.size() <= _taxiSegment+1 ? 0 : m_TaxiDestinations[_taxiSegment+1]; }
+        uint32 GetTaxiSource() const { return m_TaxiDestinations.empty() ? 0 : m_TaxiDestinations.front(); }
+        uint32 GetTaxiDestination() const { return m_TaxiDestinations.size() < 2 ? 0 : m_TaxiDestinations[1]; }
         uint32 GetCurrentTaxiPath() const;
         uint32 NextTaxiDestination()
         {
-            ++_taxiSegment;
+            m_TaxiDestinations.pop_front();
             return GetTaxiDestination();
         }
 
-        // xinef:
-        void SetTaxiSegment(uint32 segment) { _taxiSegment = segment; }
-        uint32 GetTaxiSegment() const { return _taxiSegment; }
-
-        std::vector<uint32> const& GetPath() const { return m_TaxiDestinations; }
+        std::deque<uint32> const& GetPath() const { return m_TaxiDestinations; }
         bool empty() const { return m_TaxiDestinations.empty(); }
+        FactionTemplateEntry const* GetFlightMasterFactionTemplate() const;
+        void SetFlightMasterFactionTemplateId(uint32 factionTemplateId) { m_flightMasterFactionId = factionTemplateId; }
 
         friend std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi);
     private:
         TaxiMask m_taximask;
-        std::vector<uint32> m_TaxiDestinations;
-        uint32 _taxiSegment;
+        std::deque<uint32> m_TaxiDestinations;
+        uint32 m_flightMasterFactionId;
 };
 
 std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi);
@@ -1011,11 +1009,11 @@ struct EntryPointData
     }
 
     uint32 mountSpell;
-    std::vector<uint32> taxiPath;
+    uint32 taxiPath[2];
     WorldLocation joinPos;
 
-    void ClearTaxiPath()     { taxiPath.clear(); }
-    bool HasTaxiPath() const { return !taxiPath.empty(); }
+    void ClearTaxiPath()     { memset(taxiPath, 0, sizeof(taxiPath)); }
+    bool HasTaxiPath() const { return taxiPath[0] && taxiPath[1]; }
 };
 
 class TradeData
@@ -1182,6 +1180,7 @@ class Player : public Unit, public GridObject<Player>
         bool ActivateTaxiPathTo(uint32 taxi_path_id, uint32 spellid = 1);
         void CleanupAfterTaxiFlight();
         void ContinueTaxiFlight();
+        void SendTaxiNodeStatusMultiple();
                                                             // mount_id can be used in scripting calls
         bool isAcceptWhispers() const { return m_ExtraFlags & PLAYER_EXTRA_ACCEPT_WHISPERS; }
         void SetAcceptWhispers(bool on) { if (on) m_ExtraFlags |= PLAYER_EXTRA_ACCEPT_WHISPERS; else m_ExtraFlags &= ~PLAYER_EXTRA_ACCEPT_WHISPERS; }
@@ -1370,6 +1369,7 @@ class Player : public Unit, public GridObject<Player>
         bool _StoreOrEquipNewItem(uint32 vendorslot, uint32 item, uint8 count, uint8 bag, uint8 slot, int32 price, ItemTemplate const* pProto, Creature* pVendor, VendorItem const* crItem, bool bStore);
 
         float GetReputationPriceDiscount(Creature const* creature) const;
+        float GetReputationPriceDiscount(FactionTemplateEntry const* factionTemplate) const;
 
         Player* GetTrader() const { return m_trade ? m_trade->GetTrader() : NULL; }
         TradeData* GetTradeData() const { return m_trade; }

@@ -146,7 +146,7 @@ static uint32 copseReclaimDelay[MAX_DEATH_COUNT] = { 30, 60, 120 };
 
 // == PlayerTaxi ================================================
 
-PlayerTaxi::PlayerTaxi() : _taxiSegment(0)
+PlayerTaxi::PlayerTaxi() : m_flightMasterFactionId(0)
 {
     memset(m_taximask, 0, sizeof(m_taximask));
 }
@@ -225,20 +225,24 @@ bool PlayerTaxi::LoadTaxiDestinationsFromString(const std::string& values, TeamI
     ClearTaxiDestinations();
 
     Tokenizer tokens(values, ' ');
+    Tokenizer::const_iterator iter = tokens.begin();
+    if (iter != tokens.end())
+        m_flightMasterFactionId = uint32(atol(*iter));
+    else
+        return false;
 
-    for (Tokenizer::const_iterator iter = tokens.begin(); iter != tokens.end(); ++iter)
+    while ((++iter) != tokens.end())
     {
         uint32 node = uint32(atol(*iter));
         AddTaxiDestination(node);
     }
 
-    // Check integrity
-    if (m_TaxiDestinations.size() < 3)
-        return false;
+    if (m_TaxiDestinations.empty())
+        return true;
 
-    // xinef: current segment is saved as last destination in db
-    _taxiSegment = m_TaxiDestinations[m_TaxiDestinations.size()-1];
-    m_TaxiDestinations.pop_back();
+    // Check integrity
+    if (m_TaxiDestinations.size() < 2)
+        return false;
 
     for (size_t i = 0; i < m_TaxiDestinations.size()-1; ++i)
     {
@@ -261,24 +265,26 @@ std::string PlayerTaxi::SaveTaxiDestinationsToString()
     if (m_TaxiDestinations.empty())
         return "";
 
+    ASSERT(m_TaxiDestinations.size() >= 2);
+
     std::ostringstream ss;
+    ss << m_flightMasterFactionId << ' ';
 
     for (size_t i = 0; i < m_TaxiDestinations.size(); ++i)
         ss << m_TaxiDestinations[i] << ' ';
 
-    ss << _taxiSegment << ' ';
     return ss.str();
 }
 
 uint32 PlayerTaxi::GetCurrentTaxiPath() const
 {
-    if (m_TaxiDestinations.size() < 2 || m_TaxiDestinations.size() <= _taxiSegment+1)
+    if (m_TaxiDestinations.size() < 2)
         return 0;
 
     uint32 path;
     uint32 cost;
 
-    sObjectMgr->GetTaxiPath(m_TaxiDestinations[_taxiSegment], m_TaxiDestinations[_taxiSegment+1], path, cost);
+    sObjectMgr->GetTaxiPath(m_TaxiDestinations[0], m_TaxiDestinations[1], path, cost);
 
     return path;
 }
@@ -288,6 +294,11 @@ std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi)
     for (uint8 i = 0; i < TaxiMaskSize; ++i)
         ss << taxi.m_taximask[i] << ' ';
     return ss;
+}
+
+FactionTemplateEntry const* PlayerTaxi::GetFlightMasterFactionTemplate() const
+{
+    return sFactionTemplateStore.LookupEntry(m_flightMasterFactionId);
 }
 
 //== TradeData =================================================
@@ -2482,10 +2493,8 @@ void Player::ProcessDelayedOperations()
     {
         if (m_entryPointData.HasTaxiPath())
         {
-            for (size_t i = 0; i < m_entryPointData.taxiPath.size() - 1; ++i)
-                m_taxi.AddTaxiDestination(m_entryPointData.taxiPath[i]);
-            m_taxi.SetTaxiSegment(m_entryPointData.taxiPath[m_entryPointData.taxiPath.size() - 1]);
-
+            m_taxi.AddTaxiDestination(m_entryPointData.taxiPath[0]);
+            m_taxi.AddTaxiDestination(m_entryPointData.taxiPath[1]);
             m_entryPointData.ClearTaxiPath();
             ContinueTaxiFlight();
         }
@@ -17754,22 +17763,9 @@ void Player::_LoadEntryPointData(PreparedQueryResult result)
                                                   fields[2].GetFloat(),   // Z
                                                   fields[3].GetFloat());  // Orientation
 
-    std::string taxi = fields[5].GetString();
-    if (!taxi.empty())
-    {
-        Tokenizer tokens(taxi, ' ');
-        for (Tokenizer::const_iterator iter = tokens.begin(); iter != tokens.end(); ++iter)
-        {
-            uint32 node = uint32(atol(*iter));
-            m_entryPointData.taxiPath.push_back(node);
-        }
-
-        // Check integrity
-        if (m_entryPointData.taxiPath.size() < 3)
-            m_entryPointData.ClearTaxiPath();
-    }
-
-    m_entryPointData.mountSpell   = fields[6].GetUInt32();
+    m_entryPointData.taxiPath[0]  = fields[5].GetUInt32();
+    m_entryPointData.taxiPath[1]  = fields[6].GetUInt32();
+    m_entryPointData.mountSpell   = fields[7].GetUInt32();
 }
 
 bool Player::LoadPositionFromDB(uint32& mapid, float& x, float& y, float& z, float& o, bool& in_flight, uint64 guid)
@@ -18060,10 +18056,8 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
             // xinef: restore taxi flight from entry point data
             if (m_entryPointData.HasTaxiPath())
             {
-                for (size_t i = 0; i < m_entryPointData.taxiPath.size() - 1; ++i)
-                    m_taxi.AddTaxiDestination(m_entryPointData.taxiPath[i]);
-                m_taxi.SetTaxiSegment(m_entryPointData.taxiPath[m_entryPointData.taxiPath.size() - 1]);
-
+                m_taxi.AddTaxiDestination(m_entryPointData.taxiPath[0]);
+                m_taxi.AddTaxiDestination(m_entryPointData.taxiPath[1]);
                 m_entryPointData.ClearTaxiPath();
             }
         }
@@ -21815,6 +21809,7 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
     // fill destinations path tail
     uint32 sourcepath = 0;
     uint32 totalcost = 0;
+    uint32 firstcost = 0;
 
     uint32 prevnode = sourcenode;
     uint32 lastnode = 0;
@@ -21833,6 +21828,8 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
         }
 
         totalcost += cost;
+        if (i == 1)
+            firstcost = cost;
 
         if (prevnode == sourcenode)
             sourcepath = path;
@@ -21861,7 +21858,14 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
     uint32 money = GetMoney();
 
     if (npc)
-        totalcost = (uint32)ceil(totalcost*GetReputationPriceDiscount(npc));
+    {
+        float discount = GetReputationPriceDiscount(npc);
+        totalcost = uint32(ceil(totalcost * discount));
+        firstcost = uint32(ceil(firstcost * discount));
+        m_taxi.SetFlightMasterFactionTemplateId(npc->getFaction());
+    }
+    else
+        m_taxi.SetFlightMasterFactionTemplateId(0);
 
     if (money < totalcost)
     {
@@ -21872,8 +21876,6 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
 
     //Checks and preparations done, DO FLIGHT
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_FLIGHT_PATHS_TAKEN, 1);
-    ModifyMoney(-(int32)totalcost);
-    UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_FOR_TRAVELLING, totalcost);
 
     // prevent stealth flight
     //RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_TALK);
@@ -21883,12 +21885,16 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
     {
         TaxiNodesEntry const* lastPathNode = sTaxiNodesStore.LookupEntry(nodes[nodes.size()-1]);
         m_taxi.ClearTaxiDestinations();
+        ModifyMoney(-(int32)totalcost);
+        UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_FOR_TRAVELLING, totalcost);
         TeleportTo(lastPathNode->map_id, lastPathNode->x, lastPathNode->y, lastPathNode->z, GetOrientation());
         return false;
     }
     else
     {
         m_flightSpellActivated = spellid;
+        ModifyMoney(-(int32)firstcost);
+        UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_FOR_TRAVELLING, firstcost);
         GetSession()->SendActivateTaxiReply(ERR_TAXIOK);
         GetSession()->SendDoFlight(mount_display_id, sourcepath);
     }
@@ -21946,25 +21952,46 @@ void Player::ContinueTaxiFlight()
     TaxiPathNodeList const& nodeList = sTaxiPathNodesByPath[path];
 
     float bestDist = SIZE_OF_GRIDS*SIZE_OF_GRIDS; // xinef: large value
-    float currDist = 0.0f;
+    float nextDist = GetExactDistSq(nodeList[0]->x, nodeList[0]->y, nodeList[0]->z);
+    float prevDist = 0.f;
+    uint32 startNodeAlt = 0;
 
-    // xinef: changed to -1, we dont want to catch last node
-    for (uint32 i = 0; i < nodeList.size() - 1; ++i)
+    for (uint32 i = 1; i < nodeList.size(); ++i)
     {
         TaxiPathNodeEntry const* node = nodeList[i];
-        TaxiPathNodeEntry const* nextNode = nodeList[i+1];
+        TaxiPathNodeEntry const* prevNode = nodeList[i - 1];
 
         // xinef: skip nodes at another map, get last valid node on current map
-        if (nextNode->mapid != GetMapId() || node->mapid != GetMapId())
+        if (node->mapid != GetMapId())
             continue;
 
-        currDist = (node->x - GetPositionX())*(node->x - GetPositionX())+(node->y - GetPositionY())*(node->y - GetPositionY())+(node->z - GetPositionZ())*(node->z - GetPositionZ());
-        if (currDist < bestDist)
+        prevDist = nextDist;
+
+        Position pos = { prevNode->x, prevNode->y, prevNode->z, 0.f };
+        float nodeDist = pos.GetExactDistSq(node->x, node->y, node->z);
+        nextDist = GetExactDistSq(node->x, node->y, node->z);
+        if (prevDist + nextDist < nodeDist)
         {
             startNode = i;
-            bestDist = currDist;
+            break;
+        }
+        else if (prevDist < bestDist || nextDist < bestDist) // use bestDist if start node cannot be determined (between two paths)
+        {
+            if (prevDist <= nextDist)
+            {
+                bestDist = prevDist;
+                startNodeAlt = i - 1;
+            }
+            else
+            {
+                bestDist = nextDist;
+                startNodeAlt = i;
+            }
         }
     }
+
+    if (startNode == 0 && startNodeAlt > 0)
+        startNode = startNodeAlt; // use alternative start node (between two paths)
 
     // xinef: no proper node was found
     if (startNode == 0)
@@ -21980,6 +22007,31 @@ void Player::ContinueTaxiFlight()
         RemoveAurasByType(SPELL_AURA_MOUNTED);
 
     GetSession()->SendDoFlight(mountDisplayId, path, startNode);
+}
+
+void Player::SendTaxiNodeStatusMultiple()
+{
+    for (auto itr = m_clientGUIDs.begin(); itr != m_clientGUIDs.end(); ++itr)
+    {
+        if (!IS_CREATURE_GUID(*itr))
+            continue;
+
+        Creature* creature = ObjectAccessor::GetCreature(*this, *itr);
+        if (!creature || creature->IsHostileTo(this))
+            continue;
+
+        if (!creature->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_FLIGHTMASTER))
+            continue;
+
+        uint32 nearestNode = sObjectMgr->GetNearestTaxiNode(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), creature->GetMapId(), GetTeamId());
+        if (!nearestNode)
+            continue;
+
+        WorldPacket data(SMSG_TAXINODE_STATUS, 9);
+        data << *itr;
+        data << uint8(m_taxi.IsTaximaskNodeKnown(nearestNode) ? 1 : 0);
+        SendDirectMessage(&data);
+    }
 }
 
 void Player::ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs)
@@ -22834,12 +22886,8 @@ void Player::SetEntryPoint()
     {
         m_entryPointData.mountSpell  = 0;
         m_entryPointData.joinPos = WorldLocation(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
-
-        std::vector<uint32> const& taxi = m_taxi.GetPath();
-        for (std::vector<uint32>::const_iterator itr = taxi.begin(); itr != taxi.end(); ++itr)
-            m_entryPointData.taxiPath.push_back(*itr);
-
-        m_entryPointData.taxiPath.push_back(m_taxi.GetTaxiSegment());
+        m_entryPointData.taxiPath[0] = m_taxi.GetTaxiSource();
+        m_entryPointData.taxiPath[1] = m_taxi.GetTaxiDestination();
     }
     else
     {
@@ -23356,6 +23404,7 @@ void Player::SendInitialPacketsAfterAddToMap()
     SendEnchantmentDurations();                             // must be after add to map
     SendItemDurations();                                    // must be after add to map
     SendQuestGiverStatusMultiple();
+    SendTaxiNodeStatusMultiple();
 
     // raid downscaling - send difficulty to player
     if (GetMap()->IsRaid())
@@ -23778,12 +23827,16 @@ bool Player::GetBGAccessByLevel(BattlegroundTypeId bgTypeId) const
 }
 
 float Player::GetReputationPriceDiscount(Creature const* creature) const
-{ 
-    FactionTemplateEntry const* vendor_faction = creature->GetFactionTemplateEntry();
-    if (!vendor_faction || !vendor_faction->faction)
+{
+    return GetReputationPriceDiscount(creature->GetFactionTemplateEntry());
+}
+
+float Player::GetReputationPriceDiscount(FactionTemplateEntry const* factionTemplate) const
+{
+    if (!factionTemplate || !factionTemplate->faction)
         return 1.0f;
 
-    ReputationRank rank = GetReputationRank(vendor_faction->faction);
+    ReputationRank rank = GetReputationRank(factionTemplate->faction);
     if (rank <= REP_NEUTRAL)
         return 1.0f;
 
@@ -26329,16 +26382,9 @@ void Player::_SaveEntryPoint(SQLTransaction& trans)
     stmt->setFloat (3, m_entryPointData.joinPos.GetPositionZ());
     stmt->setFloat (4, m_entryPointData.joinPos.GetOrientation());
     stmt->setUInt32(5, m_entryPointData.joinPos.GetMapId());
-
-    std::ostringstream ss("");
-    if (m_entryPointData.HasTaxiPath())
-    {
-        for (size_t i = 0; i < m_entryPointData.taxiPath.size(); ++i)
-            ss << m_entryPointData.taxiPath[i] << ' '; // xinef: segment is stored as last point
-    }
-
-    stmt->setString(6, ss.str());
-    stmt->setUInt32(7, m_entryPointData.mountSpell);
+    stmt->setUInt32(6, m_entryPointData.taxiPath[0]);
+    stmt->setUInt32(7, m_entryPointData.taxiPath[1]);
+    stmt->setUInt32(8, m_entryPointData.mountSpell);
     trans->Append(stmt);
 }
 

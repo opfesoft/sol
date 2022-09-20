@@ -176,6 +176,22 @@ void WorldSession::HandleMoveWorldportAckOpcode()
 
     GetPlayer()->SendInitialPacketsAfterAddToMap();
 
+    // flight fast teleport case
+    if (GetPlayer()->IsInFlight())
+    {
+        if (!GetPlayer()->InBattleground())
+        {
+            // short preparations to continue flight
+            MovementGenerator* movementGenerator = GetPlayer()->GetMotionMaster()->top();
+            movementGenerator->Initialize(GetPlayer());
+            return;
+        }
+
+        // battleground state prepare, stop flight
+        GetPlayer()->GetMotionMaster()->MovementExpired();
+        GetPlayer()->CleanupAfterTaxiFlight();
+    }
+
     // resurrect character at enter into instance where his corpse exist after add to map
     Corpse* corpse = GetPlayer()->GetCorpse();
     if (corpse && corpse->GetType() != CORPSE_BONES && corpse->GetMapId() == GetPlayer()->GetMapId())
