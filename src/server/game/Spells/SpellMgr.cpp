@@ -3429,6 +3429,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 49889: // Mystery of the Infinite: Future You's Mirror Image Aura
             spellInfo->rangeIndex = 6; // 100 yards
             break;
+        case 11371: // Gift of Arthas
+            spellInfo->SpellFamilyName = SPELLFAMILY_POTION;
+            break;
 
 
         /////////////////////////////////////////////
