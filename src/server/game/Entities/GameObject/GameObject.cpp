@@ -1585,11 +1585,11 @@ void GameObject::Use(Unit* user)
                     sLog->outStaticDebug("Fishing check (skill: %i zone min skill: %i chance %i roll: %i", skill, zone_skill, chance, roll);
 #endif
 
+                    player->UpdateFishingSkill();
+
                     // but you will likely cause junk in areas that require a high fishing skill (not yet implemented)
                     if (chance >= roll)
                     {
-                        player->UpdateFishingSkill();
-
                         //TODO: I do not understand this hack. Need some explanation.
                         // prevent removing GO at spell cancel
                         RemoveFromOwner();
