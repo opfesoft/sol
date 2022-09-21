@@ -4367,6 +4367,38 @@ public:
     }
 };
 
+// https://www.wowhead.com/wotlk/spell=16028 Freeze Rookery Egg - Prototype
+// https://www.wowhead.com/wotlk/spell=15748 Freeze Rookery Egg
+class spell_item_freeze_rookery_egg : public SpellScriptLoader
+{
+public:
+    spell_item_freeze_rookery_egg() : SpellScriptLoader("spell_item_freeze_rookery_egg") {}
+
+    class spell_item_freeze_rookery_egg_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_item_freeze_rookery_egg_SpellScript);
+
+        void HandleOpenObject(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+
+            if (GameObject* rookery = GetHitGObj())
+                if (rookery->getLootState() == GO_READY)
+                    rookery->UseDoorOrButton(0, true);
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_item_freeze_rookery_egg_SpellScript::HandleOpenObject, EFFECT_0, SPELL_EFFECT_OPEN_LOCK);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_item_freeze_rookery_egg_SpellScript();
+    }
+};
+
 void AddSC_item_spell_scripts()
 {
     // Ours
@@ -4476,4 +4508,5 @@ void AddSC_item_spell_scripts()
     new spell_item_eggnog();
     new spell_item_goblin_bomb();
     new spell_item_linken_boomerang();
+    new spell_item_freeze_rookery_egg();
 }
