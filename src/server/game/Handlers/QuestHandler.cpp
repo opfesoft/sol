@@ -55,7 +55,8 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode(WorldPacket & recvData)
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
             sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: Received CMSG_QUESTGIVER_STATUS_QUERY for GameObject guid = %u", uint32(GUID_LOPART(guid)));
 #endif
-            questStatus = _player->GetQuestDialogStatus(questGiver);
+            if (sWorld->getBoolConfig(CONFIG_OBJECT_QUEST_MARKERS))
+                questStatus = _player->GetQuestDialogStatus(questGiver);
             break;
         }
         default:
