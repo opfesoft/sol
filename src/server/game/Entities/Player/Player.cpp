@@ -15344,6 +15344,14 @@ void Player::SendPreparedQuest(uint64 guid)
     if (questMenu.Empty())
         return;
 
+    uint8 type = QUEST_GREETING_TYPE_UNDEFINED;
+    if (IS_CRE_OR_VEH_OR_PET_GUID(guid))
+        type = QUEST_GREETING_TYPE_CREATURE;
+    else if (IS_GAMEOBJECT_GUID(guid))
+        type = QUEST_GREETING_TYPE_GAMEOBJECT;
+    QuestGreeting const* questGreeting = sObjectMgr->GetQuestGreeting(type, GUID_ENPART(guid));
+    bool showQuestMenu = false;
+
     // single element case
     if (questMenu.GetMenuItemCount() == 1)
     {
@@ -15366,18 +15374,25 @@ void Player::SendPreparedQuest(uint64 guid)
                     return;
                 }
 
+                bool autoAccept = true;
                 if (quest->IsAutoAccept() && CanAddQuest(quest, true) && CanTakeQuest(quest, true))
                     AddQuestAndCheckCompletion(quest, object);
+                else
+                    autoAccept = false;
 
                 if ((quest->IsAutoComplete() && quest->IsRepeatable() && !quest->IsDailyOrWeekly()) || quest->HasFlag(QUEST_FLAGS_AUTOCOMPLETE))
                     PlayerTalkClass->SendQuestGiverRequestItems(quest, guid, CanCompleteRepeatableQuest(quest), true);
-                else
+                else if (!questGreeting || autoAccept)
                     PlayerTalkClass->SendQuestGiverQuestDetails(quest, guid, true);
+                else
+                    showQuestMenu = true;
             }
         }
     }
-    // multiple entries
     else
+        showQuestMenu = true; // multiple entries
+
+    if (showQuestMenu)
     {
         QEmote qe;
         qe._Delay = 0;
@@ -15420,7 +15435,7 @@ void Player::SendPreparedQuest(uint64 guid)
                 }
             }
         }
-        PlayerTalkClass->SendQuestGiverQuestList(qe, title, guid);
+        PlayerTalkClass->SendQuestGiverQuestList(qe, title, guid, questGreeting);
     }
 }
 

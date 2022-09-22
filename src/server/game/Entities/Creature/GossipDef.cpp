@@ -7,7 +7,6 @@
 
 #include "QuestDef.h"
 #include "GossipDef.h"
-#include "ObjectMgr.h"
 #include "Opcodes.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
@@ -298,17 +297,10 @@ void QuestMenu::ClearMenu()
     _questMenuItems.clear();
 }
 
-void PlayerMenu::SendQuestGiverQuestList(QEmote const& eEmote, const std::string& Title, uint64 npcGUID)
+void PlayerMenu::SendQuestGiverQuestList(QEmote const& eEmote, const std::string& Title, uint64 npcGUID, QuestGreeting const* questGreeting)
 {
     WorldPacket data(SMSG_QUESTGIVER_QUEST_LIST, 100 + _questMenu.GetMenuItemCount()*75);    // guess size
     data << uint64(npcGUID);
-
-    uint8 type = QUEST_GREETING_TYPE_UNDEFINED;
-    if (IS_CRE_OR_VEH_OR_PET_GUID(npcGUID))
-        type = QUEST_GREETING_TYPE_CREATURE;
-    else if (IS_GAMEOBJECT_GUID(npcGUID))
-        type = QUEST_GREETING_TYPE_GAMEOBJECT;
-    QuestGreeting const* questGreeting = sObjectMgr->GetQuestGreeting(type, GUID_ENPART(npcGUID));
 
     if (questGreeting)
     {

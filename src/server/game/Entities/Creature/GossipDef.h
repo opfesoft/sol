@@ -11,6 +11,7 @@
 #include "Common.h"
 #include "QuestDef.h"
 #include "NPCHandler.h"
+#include "ObjectMgr.h"
 
 class WorldSession;
 
@@ -263,7 +264,7 @@ class PlayerMenu
         /*********************************************************/
         void SendQuestGiverStatus(uint8 questStatus, uint64 npcGUID) const;
 
-        void SendQuestGiverQuestList(QEmote const& eEmote, const std::string& Title, uint64 npcGUID);
+        void SendQuestGiverQuestList(QEmote const& eEmote, const std::string& Title, uint64 npcGUID, QuestGreeting const* questGreeting);
 
         void SendQuestQueryResponse(Quest const* quest) const;
         void SendQuestGiverQuestDetails(Quest const* quest, uint64 npcGUID, bool activateAccept) const;
