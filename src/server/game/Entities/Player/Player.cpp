@@ -1102,7 +1102,16 @@ bool Player::Create(uint32 guidlow, CharacterCreateInfo* createInfo)
 
     InitRunes();
 
-    SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld->getIntConfig(CONFIG_START_PLAYER_MONEY));
+    if (getClass() == CLASS_DEATH_KNIGHT)
+    {
+        if (sWorld->getBoolConfig(CONFIG_START_PLAYER_MONEY_OVERRIDE_HERO_CLASS))
+            SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld->getIntConfig(CONFIG_START_PLAYER_MONEY_HERO_CLASS));
+        else
+            SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld->getIntConfig(CONFIG_START_PLAYER_MONEY) + sWorld->getIntConfig(CONFIG_START_PLAYER_MONEY_HERO_CLASS));
+    }
+    else
+        SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld->getIntConfig(CONFIG_START_PLAYER_MONEY));
+
     SetHonorPoints(sWorld->getIntConfig(CONFIG_START_HONOR_POINTS));
     SetArenaPoints(sWorld->getIntConfig(CONFIG_START_ARENA_POINTS));
 

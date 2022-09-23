@@ -801,6 +801,33 @@ void World::LoadConfigSettings(bool reload)
         m_int_configs[CONFIG_START_PLAYER_MONEY] = MAX_MONEY_AMOUNT;
     }
 
+    int32 startPlayerMoneyHeroClass = int32(sConfigMgr->GetIntDefault("StartPlayerMoneyHeroClass", 0));
+    if (startPlayerMoneyHeroClass < 0)
+    {
+        m_bool_configs[CONFIG_START_PLAYER_MONEY_OVERRIDE_HERO_CLASS] = true;
+        if (-startPlayerMoneyHeroClass > MAX_MONEY_AMOUNT)
+        {
+            sLog->outError("StartPlayerMoneyHeroClass (%i) must be in range -%u..%u. Set to -%u",
+                startPlayerMoneyHeroClass, MAX_MONEY_AMOUNT, MAX_MONEY_AMOUNT, MAX_MONEY_AMOUNT);
+            m_int_configs[CONFIG_START_PLAYER_MONEY_HERO_CLASS] = MAX_MONEY_AMOUNT;
+        }
+        else
+            m_int_configs[CONFIG_START_PLAYER_MONEY_HERO_CLASS] = -startPlayerMoneyHeroClass;
+    }
+    else
+    {
+        m_bool_configs[CONFIG_START_PLAYER_MONEY_OVERRIDE_HERO_CLASS] = false;
+        uint32 startPlayerMoney = startPlayerMoneyHeroClass + m_int_configs[CONFIG_START_PLAYER_MONEY];
+        if (startPlayerMoney > MAX_MONEY_AMOUNT)
+        {
+            sLog->outError("StartPlayerMoneyHeroClass (%i) and StartPlayerMoney (%u) together must not be greater than %u. Set to %u",
+                startPlayerMoneyHeroClass, m_int_configs[CONFIG_START_PLAYER_MONEY], MAX_MONEY_AMOUNT, MAX_MONEY_AMOUNT - m_int_configs[CONFIG_START_PLAYER_MONEY]);
+            m_int_configs[CONFIG_START_PLAYER_MONEY_HERO_CLASS] = MAX_MONEY_AMOUNT - m_int_configs[CONFIG_START_PLAYER_MONEY];
+        }
+        else
+            m_int_configs[CONFIG_START_PLAYER_MONEY_HERO_CLASS] = startPlayerMoneyHeroClass;
+    }
+
     m_int_configs[CONFIG_MAX_HONOR_POINTS] = sConfigMgr->GetIntDefault("MaxHonorPoints", 75000);
     if (int32(m_int_configs[CONFIG_MAX_HONOR_POINTS]) < 0)
     {
