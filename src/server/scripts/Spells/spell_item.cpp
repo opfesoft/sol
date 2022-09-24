@@ -4399,6 +4399,37 @@ public:
     }
 };
 
+class spell_item_collect_rookery_egg : public SpellScriptLoader
+{
+public:
+    spell_item_collect_rookery_egg() : SpellScriptLoader("spell_item_collect_rookery_egg") { }
+
+    class spell_item_collect_rookery_egg_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_item_collect_rookery_egg_SpellScript);
+
+        void HandleActivateObject(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+            if (GameObject* go = GetHitGObj())
+            {
+                go->ResetDoorOrButton();
+                go->Despawn(0, false);
+            }
+        }
+
+        void Register()
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_item_collect_rookery_egg_SpellScript::HandleActivateObject, EFFECT_0, SPELL_EFFECT_ACTIVATE_OBJECT);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_item_collect_rookery_egg_SpellScript();
+    }
+};
+
 void AddSC_item_spell_scripts()
 {
     // Ours
@@ -4509,4 +4540,5 @@ void AddSC_item_spell_scripts()
     new spell_item_goblin_bomb();
     new spell_item_linken_boomerang();
     new spell_item_freeze_rookery_egg();
+    new spell_item_collect_rookery_egg();
 }

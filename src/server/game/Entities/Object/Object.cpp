@@ -2356,10 +2356,10 @@ Creature* WorldObject::FindNearestCreature(uint32 entry, float range, bool alive
     return creature;
 }
 
-GameObject* WorldObject::FindNearestGameObject(uint32 entry, float range) const
+GameObject* WorldObject::FindNearestGameObject(uint32 entry, float range, bool spawnedOnly /*= false*/) const
 { 
     GameObject* go = NULL;
-    acore::NearestGameObjectEntryInObjectRangeCheck checker(*this, entry, range);
+    acore::NearestGameObjectEntryInObjectRangeCheck checker(*this, entry, range, spawnedOnly);
     acore::GameObjectLastSearcher<acore::NearestGameObjectEntryInObjectRangeCheck> searcher(this, go, checker);
     VisitNearbyGridObject(range, searcher);
     return go;

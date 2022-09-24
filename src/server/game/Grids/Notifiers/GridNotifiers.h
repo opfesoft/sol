@@ -678,11 +678,14 @@ namespace acore
     class NearestGameObjectEntryInObjectRangeCheck
     {
         public:
-            NearestGameObjectEntryInObjectRangeCheck(WorldObject const& obj, uint32 entry, float range) : i_obj(obj), i_entry(entry), i_range(range) {}
+            NearestGameObjectEntryInObjectRangeCheck(WorldObject const& obj, uint32 entry, float range, bool spawnedOnly = false) : i_obj(obj), i_entry(entry), i_range(range), i_spawnedOnly(spawnedOnly) {}
             bool operator()(GameObject* go)
             {
                 if (go->GetEntry() == i_entry && i_obj.IsWithinDistInMap(go, i_range))
                 {
+                    if (i_spawnedOnly && !go->isSpawned())
+                        return false;
+
                     i_range = i_obj.GetDistance(go);        // use found GO range as new range limit for next check
                     return true;
                 }
@@ -692,6 +695,7 @@ namespace acore
             WorldObject const& i_obj;
             uint32 i_entry;
             float  i_range;
+            bool   i_spawnedOnly;
 
             // prevent clone this object
             NearestGameObjectEntryInObjectRangeCheck(NearestGameObjectEntryInObjectRangeCheck const&);
