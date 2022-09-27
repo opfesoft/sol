@@ -5233,6 +5233,39 @@ public:
     }
 };
 
+enum BasicCampfire
+{
+    GO_BASIC_CAMPFIRE = 29784
+};
+
+class spell_gen_basic_campfire : public SpellScriptLoader
+{
+public:
+    spell_gen_basic_campfire() : SpellScriptLoader("spell_gen_basic_campfire") {}
+
+    class spell_gen_basic_campfire_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_gen_basic_campfire_SpellScript);
+
+        void DestTargetSelectHandler(SpellDestination& dest)
+        {
+            if (Unit* caster = GetCaster())
+                if (GameObject* go = caster->GetGameObjectInRange(GO_BASIC_CAMPFIRE, dest._position.m_positionX, dest._position.m_positionY, dest._position.m_positionZ, 0.1f))
+                    dest._position.m_positionZ = go->GetPositionZ();
+        }
+
+        void Register() override
+        {
+            OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_gen_basic_campfire_SpellScript::DestTargetSelectHandler, EFFECT_0, TARGET_DEST_CASTER_SUMMON);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_gen_basic_campfire_SpellScript();
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     // ours:
@@ -5367,4 +5400,5 @@ void AddSC_generic_spell_scripts()
     new spell_gen_eject_passenger();
     new spell_gen_charmed_unit_spell_cooldown();
     new spell_gen_shadowmeld();
+    new spell_gen_basic_campfire();
 }

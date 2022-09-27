@@ -2398,6 +2398,20 @@ void WorldObject::GetGameObjectListWithEntryInGrid(std::list<GameObject*>& gameo
     cell.Visit(pair, visitor, *(this->GetMap()), *this, maxSearchRange);
 }
 
+GameObject* WorldObject::GetGameObjectInRange(uint32 entry, float x, float y, float z, float range) const
+{
+    GameObject* go = nullptr;
+    CellCoord pair(acore::ComputeCellCoord(x, y));
+    Cell cell(pair);
+    cell.SetNoCreate();
+
+    acore::GameObjectInRangeCheck check(x, y, z, range, entry);
+    acore::GameObjectSearcher<acore::GameObjectInRangeCheck> searcher(this, go, check);
+    TypeContainerVisitor<acore::GameObjectSearcher<acore::GameObjectInRangeCheck>, GridTypeMapContainer> visitor(searcher);
+    cell.Visit(pair, visitor, *(this->GetMap()), *this, this->GetGridActivationRange());
+    return go;
+}
+
 void WorldObject::GetCreatureListWithEntryInGrid(std::list<Creature*>& creatureList, uint32 entry, float maxSearchRange) const
 { 
     CellCoord pair(acore::ComputeCellCoord(this->GetPositionX(), this->GetPositionY()));
