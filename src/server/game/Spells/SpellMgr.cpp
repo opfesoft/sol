@@ -3666,6 +3666,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 24135: // Wyvern Sting (DoT, Rank 3)
             spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_UNIT_TARGET_ENEMY;
             break;
+        case 24531: // Refocus (Renataki's Charm of Beasts)
+            spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_UNIT_CASTER;
+            break;
 
 
         /////////////////////////////////
