@@ -16,7 +16,7 @@
 #include "SpellInfo.h"
 #include "WorldPacket.h"
 
-Totem::Totem(SummonPropertiesEntry const* properties, uint64 owner) : Minion(properties, owner, false)
+Totem::Totem(SummonPropertiesEntry const* properties, uint64 owner, uint8 overrideLevel) : Minion(properties, owner, false, overrideLevel)
 {
     m_unitTypeMask |= UNIT_MASK_TOTEM;
     m_duration = 0;
@@ -61,7 +61,7 @@ void Totem::InitStats(uint32 duration)
             SetDisplayId(owner->GetModelForTotem(PlayerTotemType(m_Properties->Id)));
         }
 
-        SetLevel(owner->getLevel());
+        SetLevel(m_overrideLevel ? m_overrideLevel : owner->getLevel());
     }
 
     Minion::InitStats(duration);

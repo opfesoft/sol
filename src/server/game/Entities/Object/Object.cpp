@@ -2097,7 +2097,7 @@ void WorldObject::AddObjectToRemoveList()
     map->AddObjectToRemoveList(this);
 }
 
-TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= NULL*/, uint32 duration /*= 0*/, Unit* summoner /*= NULL*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, GameObject* summonerGO /*= NULL*/)
+TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= NULL*/, uint32 duration /*= 0*/, Unit* summoner /*= NULL*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, GameObject* summonerGO /*= NULL*/, uint8 overrideLevel /*= 0*/)
 { 
     uint32 mask = UNIT_MASK_SUMMON;
     if (properties)
@@ -2156,19 +2156,19 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
     switch (mask)
     {
         case UNIT_MASK_SUMMON:
-            summon = new TempSummon(properties, summoner ? summoner->GetGUID() : 0, false, summonerGO ? summonerGO->GetGUID() : 0);
+            summon = new TempSummon(properties, summoner ? summoner->GetGUID() : 0, false, summonerGO ? summonerGO->GetGUID() : 0, overrideLevel);
             break;
         case UNIT_MASK_GUARDIAN:
-            summon = new Guardian(properties, summoner ? summoner->GetGUID() : 0, false);
+            summon = new Guardian(properties, summoner ? summoner->GetGUID() : 0, false, overrideLevel);
             break;
         case UNIT_MASK_PUPPET:
-            summon = new Puppet(properties, summoner ? summoner->GetGUID() : 0);
+            summon = new Puppet(properties, summoner ? summoner->GetGUID() : 0, overrideLevel);
             break;
         case UNIT_MASK_TOTEM:
-            summon = new Totem(properties, summoner ? summoner->GetGUID() : 0);
+            summon = new Totem(properties, summoner ? summoner->GetGUID() : 0, overrideLevel);
             break;
         case UNIT_MASK_MINION:
-            summon = new Minion(properties, summoner ? summoner->GetGUID() : 0, false);
+            summon = new Minion(properties, summoner ? summoner->GetGUID() : 0, false, overrideLevel);
             break;
         default:
             return NULL;

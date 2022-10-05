@@ -5952,9 +5952,31 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
 
             switch (m_spellInfo->Id)
             {
-                // Dragon's Call
-                case 13049:
+                case 13049: // Dragon's Call
                     summonLevel = 55;
+                    break;
+
+                case  5666: // Summon Timberling (Cleansed Timberling Heart)
+                    summonLevel = 7;
+                    break;
+
+                case  6084: // Summon Ghost Saber (Glowing Cat Figurine)
+                    summonLevel = urand(19,20);
+                    break;
+
+                case  8176: // Summon Felhunter (Spiked Collar)
+                case  9515: // Summon Tracking Hound (Dog Whistle)
+                    summonLevel = 30;
+                    break;
+
+                case 18307: // Death by Peasant (Barov Peasant Caller)
+                case 18308: // Death by Peasant (Barov Peasant Caller)
+                case 22792: // Plant Thornling (Thornling Seed)
+                    summonLevel = 60;
+                    break;
+
+                case  6251: // Summon Crimson Cannon (Cannonball Runner)
+                    summonLevel = 61;
                     break;
             }
         }
@@ -5982,12 +6004,9 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
             // randomize position for multiple summons
             m_caster->GetRandomPoint(*destTarget, radius, pos);
 
-        summon = map->SummonCreature(entry, pos, properties, duration, caster, m_spellInfo->Id);
+        summon = map->SummonCreature(entry, pos, properties, duration, caster, m_spellInfo->Id, 0, NULL, summonLevel);
         if (!summon)
             return;
-
-        // xinef: set calculated level
-        summon->SetLevel(summonLevel);
 
         // xinef: if we have more than one guardian, change follow angle
         if (summon->HasUnitTypeMask(UNIT_MASK_MINION) && numGuardians > 1)

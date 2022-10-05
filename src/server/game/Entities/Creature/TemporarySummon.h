@@ -29,7 +29,7 @@ struct TempSummonData
 class TempSummon : public Creature
 {
     public:
-        explicit TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint64 summonerGO = 0);
+        explicit TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint64 summonerGO, uint8 overrideLevel);
         virtual ~TempSummon() {}
         void Update(uint32 time);
         virtual void InitStats(uint32 lifetime);
@@ -51,6 +51,8 @@ class TempSummon : public Creature
         void ActivateOwnerDeathSummonType() { m_timer = m_ownerDeathLifetime; m_lifetime = m_ownerDeathLifetime; m_type = m_ownerDeathSummonType; }
 
         const SummonPropertiesEntry* const m_Properties;
+    protected:
+        uint8 m_overrideLevel;
     private:
         TempSummonType m_type;
         uint32 m_timer;
@@ -65,7 +67,7 @@ class TempSummon : public Creature
 class Minion : public TempSummon
 {
     public:
-        Minion(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject);
+        Minion(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint8 overrideLevel);
         void InitStats(uint32 duration);
         void RemoveFromWorld();
         Unit* GetOwner() const;
@@ -82,7 +84,7 @@ class Minion : public TempSummon
 class Guardian : public Minion
 {
     public:
-        Guardian(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject);
+        Guardian(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint8 overrideLevel);
         void InitStats(uint32 duration);
         bool InitStatsForLevel(uint8 level);
         void InitSummon();
@@ -99,7 +101,7 @@ class Guardian : public Minion
 class Puppet : public Minion
 {
     public:
-        Puppet(SummonPropertiesEntry const* properties, uint64 owner);
+        Puppet(SummonPropertiesEntry const* properties, uint64 owner, uint8 overrideLevel);
         void InitStats(uint32 duration);
         void InitSummon();
         void Update(uint32 time);

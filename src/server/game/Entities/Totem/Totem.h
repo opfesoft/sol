@@ -27,7 +27,7 @@ constexpr uint32 SPELL_CYCLONE = 33786;
 class Totem : public Minion
 {
     public:
-        explicit Totem(SummonPropertiesEntry const *properties, uint64 owner);
+        explicit Totem(SummonPropertiesEntry const *properties, uint64 owner, uint8 overrideLevel);
         virtual ~Totem(){};
         void Update(uint32 time);
         void InitStats(uint32 duration);

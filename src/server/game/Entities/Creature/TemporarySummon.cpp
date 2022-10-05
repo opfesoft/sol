@@ -15,13 +15,14 @@
 #include "ScriptMgr.h"
 #include "GameObjectAI.h"
 
-TempSummon::TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint64 summonerGO /* = 0*/) :
+TempSummon::TempSummon(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint64 summonerGO, uint8 overrideLevel) :
 Creature(isWorldObject), m_Properties(properties), m_type(TEMPSUMMON_MANUAL_DESPAWN),
 m_timer(0), m_lifetime(0), m_ownerDeathDespawn(true), m_ownerDeathSummonType(TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT), m_ownerDeathLifetime(5000)
 {
     m_summonerGUID = owner;
     m_summonerGO_GUID = summonerGO;
     m_unitTypeMask |= UNIT_MASK_SUMMON;
+    m_overrideLevel = overrideLevel;
 }
 
 Unit* TempSummon::GetSummoner() const
@@ -172,7 +173,7 @@ void TempSummon::InitStats(uint32 duration)
         if (IsTrigger() && m_spells[0])
         {
             setFaction(owner->getFaction());
-            SetLevel(owner->getLevel());
+            SetLevel(m_overrideLevel ? m_overrideLevel : owner->getLevel());
             if (owner->GetTypeId() == TYPEID_PLAYER)
                 m_ControlledByPlayer = true;
         }
@@ -279,7 +280,7 @@ void TempSummon::RemoveFromWorld()
     Creature::RemoveFromWorld();
 }
 
-Minion::Minion(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject) : TempSummon(properties, owner, isWorldObject)
+Minion::Minion(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint8 overrideLevel) : TempSummon(properties, owner, isWorldObject, 0, overrideLevel)
 , m_owner(owner)
 {
     ASSERT(m_owner);
@@ -336,7 +337,7 @@ void Minion::setDeathState(DeathState s, bool despawn)
                     }
 }
 
-Guardian::Guardian(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject) : Minion(properties, owner, isWorldObject)
+Guardian::Guardian(SummonPropertiesEntry const* properties, uint64 owner, bool isWorldObject, uint8 overrideLevel) : Minion(properties, owner, isWorldObject, overrideLevel)
 {
     m_unitTypeMask |= UNIT_MASK_GUARDIAN;
     if (properties && properties->Type == SUMMON_TYPE_PET)
@@ -351,7 +352,7 @@ void Guardian::InitStats(uint32 duration)
     Minion::InitStats(duration);
 
     Unit *m_owner = GetOwner();
-    InitStatsForLevel(m_owner->getLevel());
+    InitStatsForLevel(m_overrideLevel ? m_overrideLevel : m_owner->getLevel());
 
     if (m_owner->GetTypeId() == TYPEID_PLAYER && HasUnitTypeMask(UNIT_MASK_CONTROLABLE_GUARDIAN))
         m_charmInfo->InitCharmCreateSpells();
@@ -370,7 +371,7 @@ void Guardian::InitSummon()
         m_owner->ToPlayer()->CharmSpellInitialize();
 }
 
-Puppet::Puppet(SummonPropertiesEntry const* properties, uint64 owner) : Minion(properties, owner, false), m_owner(owner) //maybe true?
+Puppet::Puppet(SummonPropertiesEntry const* properties, uint64 owner, uint8 overrideLevel) : Minion(properties, owner, false, overrideLevel), m_owner(owner) //maybe true?
 {
     ASSERT(IS_PLAYER_GUID(owner));
     m_unitTypeMask |= UNIT_MASK_PUPPET;
@@ -379,7 +380,7 @@ Puppet::Puppet(SummonPropertiesEntry const* properties, uint64 owner) : Minion(p
 void Puppet::InitStats(uint32 duration)
 { 
     Minion::InitStats(duration);
-    SetLevel(GetOwner()->getLevel());
+    SetLevel(m_overrideLevel ? m_overrideLevel : GetOwner()->getLevel());
     SetReactState(REACT_PASSIVE);
 }
 
