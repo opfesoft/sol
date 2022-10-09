@@ -218,7 +218,7 @@ Map::Map(uint32 id, uint32 InstanceId, uint8 SpawnMode, Map* _parent) :
 i_mapEntry(sMapStore.LookupEntry(id)), i_spawnMode(SpawnMode), i_InstanceId(InstanceId),
 m_unloadTimer(0), m_VisibleDistance(DEFAULT_VISIBILITY_DISTANCE),
 _instanceResetPeriod(0), m_activeNonPlayersIter(m_activeNonPlayers.end()),
-_transportsUpdateIter(_transports.end()), i_scriptLock(false), _defaultLight(GetDefaultMapLight(id))
+_transportsUpdateIter(_transports.end()), i_scriptLock(false), _defaultLight(GetDefaultMapLight(id)), m_preloadGrids(false)
 {
     m_parentMap = (_parent ? _parent : this);
     for (unsigned int idx=0; idx < MAX_NUMBER_OF_GRIDS; ++idx)
@@ -705,6 +705,14 @@ void Map::Update(const uint32 t_diff, const uint32 s_diff, bool  /*thread*/)
 {
     uint32 mapId = GetId(); // pussywizard: for crashlogs
     sLog->outDebug(LOG_FILTER_POOLSYS, "%u", mapId); // pussywizard: for crashlogs
+
+    if (m_preloadGrids)
+    {
+        ACORE_GUARD(ACE_Thread_Mutex, m_preloadLock);
+        m_preloadGrids = false;
+        sLog->outString("Loading all grids for map %u", mapId);
+        LoadAllCells();
+    }
 
     if (t_diff)
         _dynamicTree.update(t_diff);

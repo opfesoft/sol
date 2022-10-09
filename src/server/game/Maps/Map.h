@@ -526,6 +526,8 @@ class Map : public GridRefManager<NGridType>
 
         DataMap CustomData;
 
+        void SetPreloadGrids(bool preloadGrids) { m_preloadGrids = preloadGrids; }
+
     private:
         void LoadMapAndVMap(int gx, int gy);
         void LoadVMap(int gx, int gy);
@@ -651,6 +653,9 @@ class Map : public GridRefManager<NGridType>
 
         ZoneDynamicInfoMap _zoneDynamicInfo;
         uint32 _defaultLight;
+
+        inline static ACE_Thread_Mutex m_preloadLock;
+        bool m_preloadGrids;
 };
 
 

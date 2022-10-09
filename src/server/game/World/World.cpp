@@ -2000,23 +2000,10 @@ void World::SetInitialWorldSettings()
     if (sWorld->getBoolConfig(CONFIG_PRELOAD_ALL_NON_INSTANCED_MAP_GRIDS))
     {
         sLog->outString();
-        sLog->outString("Loading all grids for all non-instanced maps...");
-
+        sLog->outString("Enable loading of all grids for all non-instanced maps");
         for (uint32 i = 0; i < sMapStore.GetNumRows(); ++i)
-        {
-            MapEntry const* mapEntry = sMapStore.LookupEntry(i);
-
-            if (mapEntry && !mapEntry->Instanceable())
-            {
-                Map* map = sMapMgr->CreateBaseMap(mapEntry->MapID);
-
-                if (map)
-                {
-                    sLog->outString(">> Loading all grids for map %u", map->GetId());
-                    map->LoadAllCells();
-                }
-            }
-        }
+            if (MapEntry const* mapEntry = sMapStore.LookupEntry(i); mapEntry && !mapEntry->Instanceable())
+                sMapMgr->CreateBaseMap(mapEntry->MapID);
     }
 
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);

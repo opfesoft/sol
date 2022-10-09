@@ -74,6 +74,7 @@ Map* MapManager::CreateBaseMap(uint32 id)
             else
             {
                 map = new Map(id, 0, REGULAR_DIFFICULTY);
+                map->SetPreloadGrids(sWorld->getBoolConfig(CONFIG_PRELOAD_ALL_NON_INSTANCED_MAP_GRIDS));
                 map->LoadRespawnTimes();
             }
 
