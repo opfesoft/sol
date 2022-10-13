@@ -1464,12 +1464,13 @@ BeepAtStart = 1
 
 #
 #    Motd
-#        Description: Message of the Day, displayed at login.
-#                     Use '@' for a newline and be sure to escape special characters.
-#        Example:     "Welcome to John\'s Server@"
-#        Default:     "Welcome to an AzerothCore server."
+#        Description: Message of the Day, displayed at login. Use '@' for a newline.
+#                     The message includes everything between the first and last double quote.
+#                     It is not necessary to escape any characters.
+#        Example:     "Welcome to John's Server@"
+#        Default:     "Welcome to Project "Sol""
 
-Motd = "Welcome to an AzerothCore server."
+Motd = "Welcome to Project "Sol""
 
 #
 #    Server.LoginInfo
