@@ -31,7 +31,7 @@
 #define SPELL_SEARCHER_COMPENSATION 30.0f // increase searchers size in case we have large npc near cell border
 #define VISIBILITY_DIST_WINTERGRASP 175.0f
 #define SIGHT_RANGE_UNIT            50.0f
-#define DEFAULT_VISIBILITY_DISTANCE 90.0f // default visible distance, 90 yards on continents
+#define DEFAULT_VISIBILITY_DISTANCE 100.0f // default visible distance, 100 yards on continents
 #define DEFAULT_VISIBILITY_INSTANCE 120.0f // default visible distance in instances, 120 yards
 #define DEFAULT_VISIBILITY_BGARENAS 150.0f // default visible distance in BG/Arenas, 150 yards
 
