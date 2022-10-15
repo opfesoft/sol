@@ -165,7 +165,7 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
 
 Creature::Creature(bool isWorldObject): Unit(isWorldObject), MovableMapObject(), m_groupLootTimer(0), lootingGroupLowGUID(0), m_lootRecipient(0), m_lootRecipientGroup(0),
 m_corpseRemoveTime(0), m_respawnTime(0), m_respawnDelay(300), m_corpseDelay(60), m_wanderDistance(0.0f),
-m_transportCheckTimer(1000), lootPickPocketRestoreTime(0),  m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
+m_transportCheckTimer(1000), lootPickPocketRestoreTime(0), m_wpActiveTimer(0), m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
 m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0), m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false)
@@ -251,6 +251,15 @@ void Creature::DisappearAndDie()
     if (IsAlive())
         setDeathState(JUST_DIED, true);
     RemoveCorpse(false, true);
+}
+
+void Creature::LoadPath(uint32 pathid)
+{
+    m_path_id = pathid;
+    if (m_path_id)
+        GetMap()->AddToCreaturesWP(this);
+    else
+        GetMap()->RemoveFromCreaturesWP(this);
 }
 
 void Creature::SearchFormation()
@@ -684,6 +693,11 @@ void Creature::Update(uint32 diff)
             else
                 m_transportCheckTimer -= diff;
         }
+
+        if (m_wpActiveTimer <= diff)
+            m_wpActiveTimer = 0;
+        else
+            m_wpActiveTimer -= diff;
 
         sScriptMgr->OnCreatureUpdate(this, diff);
     }
@@ -2357,11 +2371,7 @@ bool Creature::LoadCreaturesAddon(bool reload)
 
     //Load Path
     if (cainfo->path_id != 0)
-    {
-        if (sWorld->getBoolConfig(CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE))
-            setActive(true);
-        m_path_id = cainfo->path_id;
-    }
+        LoadPath(cainfo->path_id);
 
     if (!cainfo->auras.empty())
     {

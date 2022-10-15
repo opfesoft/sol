@@ -433,6 +433,9 @@ class Map : public GridRefManager<NGridType>
         template<class T>
         void RemoveFromActive(T* obj);
 
+        void AddToCreaturesWP(Creature* creature);
+        void RemoveFromCreaturesWP(Creature* creature);
+
         template<class T> void SwitchGridContainers(T* obj, bool on);
         template<class NOTIFIER> void VisitAll(const float &x, const float &y, float radius, NOTIFIER &notifier);
         template<class NOTIFIER> void VisitFirstFound(const float &x, const float &y, float radius, NOTIFIER &notifier);
@@ -588,6 +591,9 @@ class Map : public GridRefManager<NGridType>
         typedef std::set<WorldObject*> ActiveNonPlayers;
         ActiveNonPlayers m_activeNonPlayers;
         ActiveNonPlayers::iterator m_activeNonPlayersIter;
+        typedef std::set<Creature*> CreaturesWP;
+        CreaturesWP m_creaturesWP;
+        CreaturesWP::iterator m_creaturesWPIter;
 
         // Objects that must update even in inactive grids without activating them
         TransportsContainer _transports;
@@ -646,6 +652,26 @@ class Map : public GridRefManager<NGridType>
             }
             else
                 m_activeNonPlayers.erase(obj);
+        }
+
+        void AddToCreaturesWPHelper(Creature* creature)
+        {
+            m_creaturesWP.insert(creature);
+        }
+
+        void RemoveFromCreaturesWPHelper(Creature* creature)
+        {
+            if (m_creaturesWPIter != m_creaturesWP.end())
+            {
+                CreaturesWP::iterator itr = m_creaturesWP.find(creature);
+                if (itr == m_creaturesWP.end())
+                    return;
+                if (itr == m_creaturesWPIter)
+                    ++m_creaturesWPIter;
+                m_creaturesWP.erase(itr);
+            }
+            else
+                m_creaturesWP.erase(creature);
         }
 
         std::unordered_map<uint32 /*dbGUID*/, time_t> _creatureRespawnTimes;

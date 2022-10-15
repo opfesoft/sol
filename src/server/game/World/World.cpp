@@ -1334,7 +1334,8 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_ICC_BUFF_HORDE] = sConfigMgr->GetIntDefault("ICC.Buff.Horde", 73822);
     m_int_configs[CONFIG_ICC_BUFF_ALLIANCE] = sConfigMgr->GetIntDefault("ICC.Buff.Alliance", 73828);
 
-    m_bool_configs[CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE] = sConfigMgr->GetBoolDefault("SetAllCreaturesWithWaypointMovementActive", false);
+    m_int_configs[CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE] = sConfigMgr->GetIntDefault("SetAllCreaturesWithWaypointMovementActive", 0);
+    m_int_configs[CONFIG_WAYPOINT_MOVEMENT_ACTIVE_TIMER] = sConfigMgr->GetIntDefault("WaypointMovementActiveTimer", 0);
 
     // DoS protection (if enabled uses the packet spoof parameters)
     m_bool_configs[CONFIG_DOS_PROTECTION] = sConfigMgr->GetBoolDefault("DoSProtection", true);

@@ -765,6 +765,28 @@ void Map::Update(const uint32 t_diff, const uint32 s_diff, bool  /*thread*/)
     // pussywizard: container for far creatures in combat with players
     std::vector<Creature*> updateList; updateList.reserve(10);
 
+    for (m_creaturesWPIter = m_creaturesWP.begin(); m_creaturesWPIter != m_creaturesWP.end();)
+    {
+        Creature* creature = *m_creaturesWPIter;
+        ++m_creaturesWPIter;
+
+        if (!creature || !creature->IsInWorld() || creature->isActiveObject())
+            continue;
+
+        uint32 movActive = sWorld->getIntConfig(CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE);
+
+        if (movActive == 1)
+        {
+            VisitNearbyCellsOf(creature, grid_object_update, world_object_update, grid_large_object_update, world_large_object_update);
+            continue;
+        }
+        else if (!creature->GetWPActiveTimer() && !urand(0, movActive - 1))
+            creature->SetWPActiveTimer(sWorld->getIntConfig(CONFIG_WAYPOINT_MOVEMENT_ACTIVE_TIMER));
+
+        if (creature->GetWPActiveTimer())
+            VisitNearbyCellsOf(creature, grid_object_update, world_object_update, grid_large_object_update, world_large_object_update);
+    }
+
     // non-player active objects, increasing iterator in the loop in case of object removal
     for (m_activeNonPlayersIter = m_activeNonPlayers.begin(); m_activeNonPlayersIter != m_activeNonPlayers.end();)
     {
@@ -898,6 +920,9 @@ void Map::RemoveFromMap(T *obj, bool remove)
 
     if (obj->isActiveObject())
         RemoveFromActive(obj);
+
+    if (Creature* creature = obj->ToCreature(); creature && creature->GetWaypointPath())
+        RemoveFromCreaturesWP(creature);
 
     if (!inWorld) // pussywizard: if was in world, RemoveFromWorld() called DestroyForNearbyPlayers()
         obj->DestroyForNearbyPlayers(); // pussywizard: previous player->UpdateObjectVisibility()
@@ -2530,6 +2555,18 @@ template<>
 void Map::RemoveFromActive(GameObject* obj)
 { 
     RemoveFromActiveHelper(obj);
+}
+
+void Map::AddToCreaturesWP(Creature* creature)
+{
+    if (sWorld->getIntConfig(CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE))
+        AddToCreaturesWPHelper(creature);
+}
+
+void Map::RemoveFromCreaturesWP(Creature* creature)
+{
+    if (sWorld->getIntConfig(CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE))
+        RemoveFromCreaturesWPHelper(creature);
 }
 
 template bool Map::AddToMap(Corpse*, bool);
