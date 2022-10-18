@@ -979,7 +979,7 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
         if (at)
             pCurrChar->TeleportTo(at->target_mapId, at->target_X, at->target_Y, at->target_Z, pCurrChar->GetOrientation());
         else
-            pCurrChar->TeleportTo(pCurrChar->m_homebindMapId, pCurrChar->m_homebindX, pCurrChar->m_homebindY, pCurrChar->m_homebindZ, pCurrChar->GetOrientation());
+            pCurrChar->TeleportTo(pCurrChar->m_homebindMapId, pCurrChar->m_homebindX, pCurrChar->m_homebindY, pCurrChar->m_homebindZ, pCurrChar->m_homebindO);
     }
 
     //sLog->outDebug("Player %s added to Map.", pCurrChar->GetName().c_str());
@@ -2449,19 +2449,21 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recvData)
             {
                 stmt->setUInt16(1, 0);
                 stmt->setUInt16(2, 1519);
-                stmt->setFloat (3, -8867.68f);
-                stmt->setFloat (4, 673.373f);
+                stmt->setFloat (3, -8866.8f);
+                stmt->setFloat (4, 672.057f);
                 stmt->setFloat (5, 97.9034f);
-                Player::SavePositionInDB(0, -8867.68f, 673.373f, 97.9034f, 0.0f, 1519, lowGuid);
+                stmt->setFloat (6, 2.12068f);
+                Player::SavePositionInDB(0, -8866.8f, 672.057f, 97.9034f, 2.12068f, 1519, lowGuid);
             }
             else
             {
                 stmt->setUInt16(1, 1);
                 stmt->setUInt16(2, 1637);
-                stmt->setFloat (3, 1633.33f);
-                stmt->setFloat (4, -4439.11f);
-                stmt->setFloat (5, 15.7588f);
-                Player::SavePositionInDB(1, 1633.33f, -4439.11f, 15.7588f, 0.0f, 1637, lowGuid);
+                stmt->setFloat (3, 1631.79f);
+                stmt->setFloat (4, -4439.32f);
+                stmt->setFloat (5, 15.7802f);
+                stmt->setFloat (6, 6.26254f);
+                Player::SavePositionInDB(1, 1631.79f, -4439.32f, 15.7802f, 6.26254f, 1637, lowGuid);
             }
             trans->Append(stmt);
 

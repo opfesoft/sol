@@ -119,26 +119,7 @@ public:
         if (strcmp(teleStr, "$home") == 0)    // References target's homebind
         {
             if (target)
-                target->TeleportTo(target->m_homebindMapId, target->m_homebindX, target->m_homebindY, target->m_homebindZ, target->GetOrientation());
-            /* xinef: optimization, not needed function
-            else
-            {
-                PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHAR_HOMEBIND);
-                stmt->setUInt32(0, target_guid);
-                PreparedQueryResult resultDB = CharacterDatabase.Query(stmt);
-
-                if (resultDB)
-                {
-                    Field* fieldsDB = resultDB->Fetch();
-                    uint32 mapId = fieldsDB[0].GetUInt16();
-                    uint32 zoneId = fieldsDB[1].GetUInt16();
-                    float posX = fieldsDB[2].GetFloat();
-                    float posY = fieldsDB[3].GetFloat();
-                    float posZ = fieldsDB[4].GetFloat();
-
-                    Player::SavePositionInDB(mapId, posX, posY, posZ, 0, zoneId, target_guid);
-                }
-            }*/
+                target->TeleportTo(target->m_homebindMapId, target->m_homebindX, target->m_homebindY, target->m_homebindZ, target->m_homebindO);
 
             return true;
         }

@@ -889,6 +889,7 @@ Player::Player(WorldSession* session): Unit(true), m_mover(this)
     m_homebindX = 0;
     m_homebindY = 0;
     m_homebindZ = 0;
+    m_homebindO = 0;
 
     m_contestedPvPTimer = 0;
 
@@ -2452,7 +2453,7 @@ bool Player::TeleportToEntryPoint()
     ScheduleDelayedOperation(DELAYED_BG_GROUP_RESTORE);
 
     if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID)
-        return TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, GetOrientation());
+        return TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, m_homebindO);
     return TeleportTo(m_entryPointData.joinPos);
 }
 
@@ -5690,7 +5691,7 @@ void Player::RepopAtGraveyard()
         }
     }
     else if (GetPositionZ() < GetMap()->GetMinHeight(GetPositionX(), GetPositionY()))
-        TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, GetOrientation());
+        TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, m_homebindO);
 
     RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_IS_OUT_OF_BOUNDS);
 }
@@ -17815,7 +17816,7 @@ bool Player::LoadPositionFromDB(uint32& mapid, float& x, float& y, float& z, flo
 
 void Player::SetHomebind(WorldLocation const& loc, uint32 areaId)
 { 
-    loc.GetPosition(m_homebindX, m_homebindY, m_homebindZ);
+    loc.GetPosition(m_homebindX, m_homebindY, m_homebindZ, m_homebindO);
     m_homebindMapId = loc.GetMapId();
     m_homebindAreaId = areaId;
 
@@ -17826,7 +17827,8 @@ void Player::SetHomebind(WorldLocation const& loc, uint32 areaId)
     stmt->setFloat (2, m_homebindX);
     stmt->setFloat (3, m_homebindY);
     stmt->setFloat (4, m_homebindZ);
-    stmt->setUInt32(5, GetGUIDLow());
+    stmt->setFloat (5, m_homebindO);
+    stmt->setUInt32(6, GetGUIDLow());
     CharacterDatabase.Execute(stmt);
 }
 
@@ -18008,7 +18010,7 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
 
     std::string taxi_nodes = fields[42].GetString();
 
-#define RelocateToHomebind(){ mapId = m_homebindMapId; instanceId = 0; Relocate(m_homebindX, m_homebindY, m_homebindZ); }
+#define RelocateToHomebind(){ mapId = m_homebindMapId; instanceId = 0; Relocate(m_homebindX, m_homebindY, m_homebindZ, m_homebindO); }
 
     _LoadGroup();
 
@@ -19714,7 +19716,7 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
     }
 
     bool ok = false;
-    // SELECT mapId, zoneId, posX, posY, posZ FROM character_homebind WHERE guid = ?
+    // SELECT mapId, zoneId, posX, posY, posZ, posO FROM character_homebind WHERE guid = ?
     if (result)
     {
         Field* fields = result->Fetch();
@@ -19724,6 +19726,7 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
         m_homebindX = fields[2].GetFloat();
         m_homebindY = fields[3].GetFloat();
         m_homebindZ = fields[4].GetFloat();
+        m_homebindO = fields[5].GetFloat();
 
         MapEntry const* bindMapEntry = sMapStore.LookupEntry(m_homebindMapId);
 
@@ -19746,6 +19749,7 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
         m_homebindX = info->positionX;
         m_homebindY = info->positionY;
         m_homebindZ = info->positionZ;
+        m_homebindO = info->orientation;
 
         PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_PLAYER_HOMEBIND);
         stmt->setUInt32(0, GetGUIDLow());
@@ -19754,12 +19758,13 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
         stmt->setFloat (3, m_homebindX);
         stmt->setFloat (4, m_homebindY);
         stmt->setFloat (5, m_homebindZ);
+        stmt->setFloat (6, m_homebindO);
         CharacterDatabase.Execute(stmt);
     }
 
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-    sLog->outStaticDebug("Setting player home position - mapid: %u, areaid: %u, X: %f, Y: %f, Z: %f",
-        m_homebindMapId, m_homebindAreaId, m_homebindX, m_homebindY, m_homebindZ);
+    sLog->outStaticDebug("Setting player home position - mapid: %u, areaid: %u, X: %f, Y: %f, Z: %f, O: %f",
+        m_homebindMapId, m_homebindAreaId, m_homebindX, m_homebindY, m_homebindZ, m_homebindO);
 #endif
     return true;
 }
@@ -22934,7 +22939,7 @@ void Player::SetEntryPoint()
     }
 
     if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID)
-        m_entryPointData.joinPos = WorldLocation(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, 0.0f);
+        m_entryPointData.joinPos = WorldLocation(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, m_homebindO);
 }
 
 void Player::LeaveBattleground(Battleground* bg)

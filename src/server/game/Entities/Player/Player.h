@@ -2373,6 +2373,7 @@ class Player : public Unit, public GridObject<Player>
         float m_homebindX;
         float m_homebindY;
         float m_homebindZ;
+        float m_homebindO;
 
         WorldLocation GetStartPosition() const;
 
