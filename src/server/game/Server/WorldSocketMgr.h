@@ -35,9 +35,6 @@ public:
     /// Stops all network threads, It will wait for all running threads .
     void StopNetwork();
 
-    /// Wait untill all network threads have "joined" .
-    void Wait();
-
 private:
     int OnSocketOpen(WorldSocket* sock);
 

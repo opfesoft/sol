@@ -70,9 +70,6 @@ class ReactorRunnable : protected ACE_Task_Base
 
         virtual ~ReactorRunnable()
         {
-            Stop();
-            Wait();
-
             delete m_Reactor;
         }
 
@@ -90,6 +87,11 @@ class ReactorRunnable : protected ACE_Task_Base
         }
 
         void Wait() { ACE_Task_Base::wait(); }
+
+        void Close()
+        {
+            m_Reactor->close();
+        }
 
         long Connections()
         {
@@ -292,21 +294,15 @@ WorldSocketMgr::StopNetwork()
     {
         for (size_t i = 0; i < m_NetThreadsCount; ++i)
             m_NetThreads[i].Stop();
-    }
 
-    Wait();
+        for (size_t i = 0; i < m_NetThreadsCount; ++i)
+        {
+            m_NetThreads[i].Wait();
+            m_NetThreads[i].Close();
+        }
+    }
 
     sScriptMgr->OnNetworkStop();
-}
-
-void
-WorldSocketMgr::Wait()
-{
-    if (m_NetThreadsCount != 0)
-    {
-        for (size_t i = 0; i < m_NetThreadsCount; ++i)
-            m_NetThreads[i].Wait();
-    }
 }
 
 int
