@@ -6422,6 +6422,8 @@ void SpellMgr::LoadDbcDataCorrections()
         properties->Category = SUMMON_CATEGORY_PET;
         properties->Type = SUMMON_TYPE_PET;
     }
+    properties = const_cast<SummonPropertiesEntry*>(sSummonPropertiesStore.LookupEntry(2081)); // Dragonlings (Engineering)
+    properties->Type = SUMMON_TYPE_GUARDIAN;
 
     // Correct Pet Size
     CreatureDisplayInfoEntry* displayEntry = const_cast<CreatureDisplayInfoEntry*>(sCreatureDisplayInfoStore.LookupEntry(17028)); // Kurken

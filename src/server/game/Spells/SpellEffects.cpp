@@ -5953,6 +5953,7 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
             switch (m_spellInfo->Id)
             {
                 case 13049: // Dragon's Call
+                case 13166: // Gnomish Battle Chicken
                     summonLevel = 55;
                     break;
 
@@ -5972,11 +5973,20 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
                 case 18307: // Death by Peasant (Barov Peasant Caller)
                 case 18308: // Death by Peasant (Barov Peasant Caller)
                 case 22792: // Plant Thornling (Thornling Seed)
+                case 19804: // Arcanite Dragonling
                     summonLevel = 60;
                     break;
 
                 case  6251: // Summon Crimson Cannon (Cannonball Runner)
                     summonLevel = 61;
+                    break;
+
+                case  4073: // Mechanical Dragonling
+                    summonLevel = 40;
+                    break;
+
+                case 12749: // Mithril Mechanical Dragonling
+                    summonLevel = 50;
                     break;
             }
         }
