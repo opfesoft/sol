@@ -2407,7 +2407,7 @@ void GameObject::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* t
                         if (ActivateToQuest(target))
                         {
                             dynFlags |= GO_DYNFLAG_LO_ACTIVATE;
-                            if (sWorld->getBoolConfig(CONFIG_OBJECT_SPARKLES))
+                            if (sWorld->getBoolConfig(CONFIG_OBJECT_SPARKLES) && !IsHostileTo(target))
                                 dynFlags |= GO_DYNFLAG_LO_SPARKLE;
                         }
                         else if (targetIsGM)
@@ -2525,6 +2525,13 @@ void GameObject::UpdateModelPosition()
         m_model->UpdatePosition();
         GetMap()->InsertGameObjectModel(*m_model);
     }
+}
+
+bool GameObject::IsHostileTo(Unit const* unit) const
+{
+    FactionTemplateEntry const* unitFaction = unit->GetFactionTemplateEntry();
+    FactionTemplateEntry const* faction = sFactionTemplateStore.LookupEntry(GetUInt32Value(GAMEOBJECT_FACTION));
+    return unitFaction && faction && unitFaction->IsHostileTo(*faction);
 }
 
 std::unordered_map<int, goEventFlag> GameObject::gameObjectToEventFlag = {};

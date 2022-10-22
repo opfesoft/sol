@@ -886,6 +886,8 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
   
         void UpdateModelPosition();
 
+        bool IsHostileTo(Unit const* unit) const;
+
         static std::unordered_map<int, goEventFlag> gameObjectToEventFlag; // Gameobject -> event flag
 
     protected:
