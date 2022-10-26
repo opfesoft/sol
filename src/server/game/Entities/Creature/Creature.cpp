@@ -165,7 +165,8 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
 
 Creature::Creature(bool isWorldObject): Unit(isWorldObject), MovableMapObject(), m_groupLootTimer(0), lootingGroupLowGUID(0), m_lootRecipient(0), m_lootRecipientGroup(0),
 m_corpseRemoveTime(0), m_respawnTime(0), m_respawnDelay(300), m_corpseDelay(60), m_wanderDistance(0.0f),
-m_transportCheckTimer(1000), lootPickPocketRestoreTime(0), m_wpActiveTimer(0), m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
+m_transportCheckTimer(1000), lootPickPocketRestoreTime(0), m_wpActiveTimer(0), m_wpActiveTimerInit(0), m_wpInactiveTimer(0), m_wpInactiveTimerInit(0),
+m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
 m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0), m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false)
@@ -255,11 +256,31 @@ void Creature::DisappearAndDie()
 
 void Creature::LoadPath(uint32 pathid)
 {
+    if (pathid == m_path_id)
+        return;
+
     m_path_id = pathid;
-    if (m_path_id)
+    uint32 movActive = sWorld->getIntConfig(CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE);
+    uint32 movActiveTimer = sWorld->getIntConfig(CONFIG_WAYPOINT_MOVEMENT_ACTIVE_TIMER);
+    if (!movActive || !movActiveTimer)
+        return; // never active
+
+    if (pathid)
+    {
+        movActive *= 1000;
+        m_wpInactiveTimerInit = urand(movActive - movActive / 4, movActive + movActive / 4);
+        m_wpInactiveTimer = m_wpInactiveTimerInit;
+
+        movActiveTimer *= 1000;
+        m_wpActiveTimerInit = urand(movActiveTimer - movActiveTimer / 4, movActiveTimer + movActiveTimer / 4);
         GetMap()->AddToCreaturesWP(this);
+    }
     else
+    {
+        m_wpInactiveTimerInit = 0;
+        m_wpActiveTimerInit = 0;
         GetMap()->RemoveFromCreaturesWP(this);
+    }
 }
 
 void Creature::SearchFormation()
@@ -694,10 +715,16 @@ void Creature::Update(uint32 diff)
                 m_transportCheckTimer -= diff;
         }
 
-        if (m_wpActiveTimer <= diff)
-            m_wpActiveTimer = 0;
-        else
-            m_wpActiveTimer -= diff;
+        if (m_wpInactiveTimerInit > 0)
+        {
+            if (m_wpActiveTimer <= diff)
+                m_wpActiveTimer = 0;
+            else
+                m_wpActiveTimer -= diff;
+
+            if (!m_wpActiveTimer)
+                m_wpInactiveTimer = m_wpInactiveTimerInit;
+        }
 
         sScriptMgr->OnCreatureUpdate(this, diff);
     }
@@ -3220,4 +3247,16 @@ void Creature::ResetPlayerDamageReq()
 uint32 Creature::GetPlayerDamageReq() const
 {
     return m_playerDamageReq;
+}
+
+uint32 Creature::UpdateWPInactiveTimer(uint32 diff)
+{
+    uint32 oldValue = m_wpInactiveTimer;
+
+    if (m_wpInactiveTimer <= diff)
+        m_wpInactiveTimer = 0;
+    else
+        m_wpInactiveTimer -= diff;
+
+    return oldValue;
 }

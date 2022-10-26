@@ -773,18 +773,15 @@ void Map::Update(const uint32 t_diff, const uint32 s_diff, bool  /*thread*/)
         if (!creature || !creature->IsInWorld() || creature->isActiveObject())
             continue;
 
-        uint32 movActive = sWorld->getIntConfig(CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE);
-
-        if (movActive == 1)
+        if (creature->GetWPInactiveTimerInit() > 0)
         {
-            VisitNearbyCellsOf(creature, grid_object_update, world_object_update, grid_large_object_update, world_large_object_update);
-            continue;
-        }
-        else if (!creature->GetWPActiveTimer() && !urand(0, movActive - 1))
-            creature->SetWPActiveTimer(sWorld->getIntConfig(CONFIG_WAYPOINT_MOVEMENT_ACTIVE_TIMER));
+            if (!creature->GetWPActiveTimer())
+                if (!creature->UpdateWPInactiveTimer(t_diff))
+                    creature->InitWPActiveTimer();
 
-        if (creature->GetWPActiveTimer())
-            VisitNearbyCellsOf(creature, grid_object_update, world_object_update, grid_large_object_update, world_large_object_update);
+            if (creature->GetWPActiveTimer())
+                VisitNearbyCellsOf(creature, grid_object_update, world_object_update, grid_large_object_update, world_large_object_update);
+        }
     }
 
     // non-player active objects, increasing iterator in the loop in case of object removal

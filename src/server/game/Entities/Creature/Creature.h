@@ -757,8 +757,10 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         uint64 GetDespawnTime() const { return m_despawnTime; }
         void SetAssistanceTimer(uint32 value) { m_assistanceTimer = value; }
-        uint16 GetWPActiveTimer() const { return m_wpActiveTimer; }
-        void SetWPActiveTimer(uint16 wpActiveTimer) { m_wpActiveTimer = wpActiveTimer; }
+        uint32 GetWPActiveTimer() const { return m_wpActiveTimer; }
+        uint32 UpdateWPInactiveTimer(uint32 diff);
+        uint32 GetWPInactiveTimerInit() const { return m_wpInactiveTimerInit; }
+        void InitWPActiveTimer() { m_wpActiveTimer = m_wpActiveTimerInit; }
 
     protected:
         bool CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data = NULL);
@@ -780,7 +782,10 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         float m_wanderDistance;
         uint16 m_transportCheckTimer;
         uint32 lootPickPocketRestoreTime;
-        uint16 m_wpActiveTimer;
+        uint32 m_wpActiveTimer;
+        uint32 m_wpActiveTimerInit;
+        uint32 m_wpInactiveTimer;
+        uint32 m_wpInactiveTimerInit;
 
         ReactStates m_reactState;                           // for AI, not charmInfo
         void RegenerateHealth();

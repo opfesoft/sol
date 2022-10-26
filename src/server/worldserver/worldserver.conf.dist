@@ -426,22 +426,20 @@ PreloadAllNonInstancedMapGrids = 0
 #                     when no player is near. This will increase CPU usage significantly and can be
 #                     used with enabled "PreloadAllNonInstancedMapGrids" to start waypoint movement on
 #                     server startup.
-#        Default:     3000 - (Enabled; will move the creatures once ca. every 5 minutes using default
-#                             MapUpdateInterval, see below)
-#                        0 - (Disabled)
-#                      >=1 - (Enabled; chance is 1/x for each map update cycle, specified by
-#                             MapUpdateInterval, to activate the creature for some time, see
-#                             WaypointMovementActiveTimer below)
+#        Default:     300 - (Enabled; move the creatures once about every 225 to 375 seconds
+#                       0 - (Disabled)
+#                      >0 - (Enabled; move the creatures once about every x-x/4 to x+x/4 seconds, also
+#                            see WaypointMovementActiveTimer below)
 
-SetAllCreaturesWithWaypointMovementActive = 3000
+SetAllCreaturesWithWaypointMovementActive = 300
 
 #
 #    WaypointMovementActiveTimer
-#        Description: Timer (in ms) for keeping creatures with waypoint movement active if using
+#        Description: Timer (in seconds) for keeping creatures with waypoint movement active if using
 #                     SetAllCreaturesWithWaypointMovementActive above.
-#        Default:     5000
+#        Default:     5 - (keep active for 4-6 seconds, calculation same as above)
 
-WaypointMovementActiveTimer = 5000
+WaypointMovementActiveTimer = 5
 
 #
 ###################################################################################################
