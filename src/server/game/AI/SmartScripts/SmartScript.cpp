@@ -3388,7 +3388,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
                 if (Creature* creature = (*itr)->ToCreature())
                     if (creature->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
+                    {
                         static_cast<WaypointMovementGenerator<Creature>*>(creature->GetMotionMaster()->top())->Stop(e.action.stopWPPath.duration);
+                        if (e.action.stopWPPath.resetLastPlayerInteraction)
+                            creature->SetLastPlayerInteraction(0);
+                    }
 
             delete targets;
         }
