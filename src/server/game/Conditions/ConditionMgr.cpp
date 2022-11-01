@@ -425,6 +425,26 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo)
             }
             break;
         }
+        case CONDITION_UNIT_HAS_FLAG:
+        {
+            if (Unit* unit = object->ToUnit())
+                switch(ConditionValue1)
+                {
+                    case 0:
+                        condMeets = unit->HasFlag(UNIT_FIELD_FLAGS, ConditionValue2);
+                        break;
+                    case 1:
+                        condMeets = unit->HasFlag(UNIT_FIELD_FLAGS_2, ConditionValue2);
+                        break;
+                    case 2:
+                        condMeets = unit->HasFlag(UNIT_NPC_FLAGS, ConditionValue2);
+                        break;
+                    default:
+                        condMeets = false;
+                        break;
+                }
+            break;
+        }
         default:
             condMeets = false;
             break;
@@ -610,6 +630,9 @@ uint32 Condition::GetSearcherTypeMaskForCondition()
             mask |= GRID_MAP_TYPE_MASK_CREATURE;
             break;
         case CONDITION_HAS_MINION:
+            mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_UNIT_HAS_FLAG:
             mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
             break;
         default:
