@@ -44,7 +44,7 @@ public:
             { "disband",        SEC_GAMEMASTER,             false,  &HandleGroupDisbandCommand,         "" },
             { "remove",         SEC_GAMEMASTER,             false,  &HandleGroupRemoveCommand,          "" },
             { "join",           SEC_GAMEMASTER,             false,  &HandleGroupJoinCommand,            "" },
-            { "list",           SEC_GAMEMASTER,             false,  &HandleGroupListCommand,            "" }
+            { "list",           SEC_GAMEMASTER,             true,   &HandleGroupListCommand,            "" }
         };
         static std::vector<ChatCommand> petCommandTable =
         {
@@ -3194,6 +3194,9 @@ public:
 
     static bool HandleGroupListCommand(ChatHandler* handler, char const* args)
     {
+        if (!*args)
+            return false;
+
         Player* playerTarget;
         uint64 guidTarget = 0;
         std::string nameTarget;
@@ -3218,7 +3221,7 @@ public:
 
         if (groupTarget)
         {
-            handler->PSendSysMessage(LANG_GROUP_TYPE, (groupTarget->isRaidGroup() ? "raid" : "party"));
+            handler->PSendSysMessage(LANG_GROUP_TYPE, (groupTarget->isRaidGroup() ? "raid" : "party"), groupTarget->GetMembersCount());
             Group::MemberSlotList const& members = groupTarget->GetMemberSlots();
             for (Group::MemberSlotList::const_iterator itr = members.begin(); itr != members.end(); ++itr)
             {
@@ -3245,11 +3248,22 @@ public:
                 if (flags.empty())
                     flags = "None";
 
-                /*Player* p = ObjectAccessor::FindPlayerInOrOutOfWorld((*itr).guid);
+                Player* p = ObjectAccessor::FindPlayerInOrOutOfWorld((*itr).guid);
                 const char* onlineState = p ? "online" : "offline";
+                std::string zone = "<unknown>";
+                uint8 phaseMask = 0;
+                uint8 locale = handler->GetSession() ? handler->GetSession()->GetSessionDbcLocale() : sWorld->GetDefaultDbcLocale();
 
-                handler->PSendSysMessage(LANG_GROUP_PLAYER_NAME_GUID, slot.name.c_str(), onlineState,
-                    GUID_LOPART(slot.guid), flags.c_str(), lfg::GetRolesString(slot.roles).c_str());*/
+                if (p)
+                {
+                    phaseMask = p->GetPhaseMask();
+                    uint32 zoneId = p->GetZoneId();
+                    AreaTableEntry const* zoneEntry = sAreaTableStore.LookupEntry(zoneId);
+                    zone = (zoneEntry ? zoneEntry->area_name[locale] : "<unknown>");
+                }
+
+                handler->PSendSysMessage(LANG_GROUP_PLAYER_NAME_GUID, slot.name.c_str(), onlineState, zone.c_str(), phaseMask,
+                    GUID_LOPART(slot.guid), flags.c_str(), lfg::GetRolesString(slot.roles).c_str());
             }
         }
         else
