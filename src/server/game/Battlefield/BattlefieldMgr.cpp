@@ -25,6 +25,13 @@ BattlefieldMgr::~BattlefieldMgr()
 
 void BattlefieldMgr::InitBattlefield()
 {
+    if (sWorld->getIntConfig(CONFIG_WINTERGRASP_ENABLE) == 2)
+    {
+        sLog->outString("Battlefield : Wintergrasp is disabled.");
+        sLog->outString();
+        return;
+    }
+
     Battlefield* pBf = new BattlefieldWG;
     // respawn, init variables
     if (!pBf->SetupBattlefield())

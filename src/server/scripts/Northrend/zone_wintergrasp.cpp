@@ -274,7 +274,7 @@ class npc_wg_queue : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            if (!sWorld->getBoolConfig(CONFIG_WINTERGRASP_ENABLE))
+            if (sWorld->getIntConfig(CONFIG_WINTERGRASP_ENABLE) != 1)
             {
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
                 return true;
@@ -342,7 +342,7 @@ class npc_wg_queue : public CreatureScript
 
             void UpdateAI(uint32 diff) override
             {
-                if (!sWorld->getBoolConfig(CONFIG_WINTERGRASP_ENABLE))
+                if (sWorld->getIntConfig(CONFIG_WINTERGRASP_ENABLE) != 1)
                     return;
 
                 ScriptedAI::UpdateAI(diff);
