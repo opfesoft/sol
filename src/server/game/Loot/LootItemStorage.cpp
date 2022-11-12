@@ -143,6 +143,7 @@ bool LootItemStorage::LoadStoredLoot(Item* item)
         li.randomPropertyId = it2->randomPropertyId;
         li.randomSuffix = it2->randomSuffix;
         li.rollWinnerGUID = 0;
+        li.groupid = 0;
 
         loot->items.push_back(li);
         loot->unlootedCount++;
