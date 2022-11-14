@@ -1740,7 +1740,7 @@ void Player::Update(uint32 p_time)
                 _restTime = currTime;
 
                 float bubble = 0.125f * sWorld->getRate(RATE_REST_INGAME);
-                float extraPerSec = ((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 72000.0f) * bubble;
+                float extraPerSec = ((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 144000.0f) * bubble;
 
                 // speed collect rest bonus (section/in hour)
                 SetRestBonus(GetRestBonus() + timeDiff * extraPerSec);
@@ -18318,7 +18318,7 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
             ? bubble1*sWorld->getRate(RATE_REST_OFFLINE_IN_TAVERN_OR_CITY)
             : bubble0*sWorld->getRate(RATE_REST_OFFLINE_IN_WILDERNESS);
 
-        SetRestBonus(GetRestBonus() + time_diff*((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 72000)*bubble);
+        SetRestBonus(GetRestBonus() + time_diff*((float)GetUInt32Value(PLAYER_NEXT_LEVEL_XP) / 144000.0f)*bubble);
     }
 
     // load skills after InitStatsForLevel because it triggering aura apply also
