@@ -5280,6 +5280,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_bg_preparation();
     new spell_gen_disabled_above_level("spell_gen_disabled_above_73", 73);
     new spell_gen_disabled_above_level("spell_gen_disabled_above_70", 70);
+    new spell_gen_disabled_above_level("spell_gen_disabled_above_51", 51);
     new spell_pet_hit_expertise_scalling();
     new spell_gen_grow_flower_patch();
     new spell_gen_rallying_cry_of_the_dragonslayer();
