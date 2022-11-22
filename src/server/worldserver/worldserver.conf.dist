@@ -2525,30 +2525,6 @@ DurabilityLoss.OnDeath = 10
 DurabilityLossChance.Damage = 0.5
 
 #
-#    DurabilityLossChance.Absorb
-#        Description: Chance to lose durability on one equipped armor item when absorbing damage.
-#        Default:     0.5 - (100/0.5 = 200, Each 200 absorbed damage one equipped item will lose
-#                           durability)
-
-DurabilityLossChance.Absorb = 0.5
-
-#
-#    DurabilityLossChance.Parry
-#        Description: Chance to lose durability on main weapon when parrying attacks.
-#        Default:     0.05 - (100/0.05 = 2000, Each 2000 parried damage the main weapon will lose
-#                            durability)
-
-DurabilityLossChance.Parry = 0.05
-
-#
-#    DurabilityLossChance.Block
-#        Description: Chance to lose durability on shield when blocking attacks.
-#        Default:     0.05 - (100/0.05 = 2000, Each 2000 blocked damage the shield will lose
-#                            durability)
-
-DurabilityLossChance.Block = 0.05
-
-#
 #    Death.SicknessLevel
 #        Description: Starting level for resurrection sickness.
 #        Example:     11 - (Level 1-10 characters will not be affected,
