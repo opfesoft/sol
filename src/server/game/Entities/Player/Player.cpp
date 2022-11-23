@@ -14940,7 +14940,11 @@ void Player::PrepareGossipMenu(WorldObject* source, uint32 menuId /*= 0*/, bool 
                     {
                         sLog->outErrorDb("Creature %u (Entry: %u) have UNIT_NPC_FLAG_VENDOR but have empty trading item list.", creature->GetGUIDLow(), creature->GetEntry());
                         canTalk = false;
+                        break;
                     }
+                    ConditionList conditions = sConditionMgr->GetConditionsForNpcVendorEvent(creature->GetEntry(), 0);
+                    if (!sConditionMgr->IsObjectMeetToConditions(this, creature, conditions))
+                        canTalk = false;
                     break;
                 }
                 case GOSSIP_OPTION_LEARNDUALSPEC:
@@ -23955,7 +23959,15 @@ void Player::UpdateForQuestWorldObjects()
 
             // check if this unit requires quest specific flags
             if (!obj->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK))
+            {
+                if (obj->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR))
+                {
+                    ConditionList conditions = sConditionMgr->GetConditionsForNpcVendorEvent(obj->GetEntry(), 0);
+                    if (!conditions.empty())
+                        obj->BuildValuesUpdateBlockForPlayer(&udata, this);
+                }
                 continue;
+            }
 
             SpellClickInfoMapBounds clickPair = sObjectMgr->GetSpellClickInfoMapBounds(obj->GetEntry());
             for (SpellClickInfoContainer::const_iterator _itr = clickPair.first; _itr != clickPair.second; ++_itr)

@@ -1656,11 +1656,15 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond)
                 sLog->outError("SourceEntry %u in `condition` table, does not exist in `creature_template`, ignoring.", cond->SourceGroup);
                 return false;
             }
-            ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(cond->SourceEntry);
-            if (!itemTemplate)
+
+            if (cond->SourceEntry)
             {
-                sLog->outError("SourceEntry %u in `condition` table, does not exist in `item_template`, ignoring.", cond->SourceEntry);
-                return false;
+                ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(cond->SourceEntry);
+                if (!itemTemplate)
+                {
+                    sLog->outError("SourceEntry %u in `condition` table, does not exist in `item_template`, ignoring.", cond->SourceEntry);
+                    return false;
+                }
             }
             break;
         }

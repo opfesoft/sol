@@ -19558,6 +19558,10 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
                     if (!creature->IsValidTrainerForPlayer(target, &appendValue))
                         appendValue &= ~UNIT_NPC_FLAG_TRAINER;
 
+                    ConditionList conditions = sConditionMgr->GetConditionsForNpcVendorEvent(creature->GetEntry(), 0);
+                    if (!sConditionMgr->IsObjectMeetToConditions(target, (WorldObject*)creature, conditions))
+                        appendValue &= ~UNIT_NPC_FLAG_VENDOR;
+
                     sScriptMgr->OnBuildValuesUpdateNpcFlags(target, creature, appendValue);
                 }
 
