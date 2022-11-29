@@ -77,6 +77,9 @@ class SmartAI : public CreatureAI
         // Called when the creature is killed
         void JustDied(Unit* killer);
 
+        // Called when the kill delay has been started
+        void KillDelayStarted();
+
         // Called when the creature kills a unit
         void KilledUnit(Unit* victim);
 

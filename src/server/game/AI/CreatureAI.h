@@ -92,6 +92,9 @@ class CreatureAI : public UnitAI
         // Called when the creature is killed
         virtual void JustDied(Unit* /*killer*/) {}
 
+        // Called when the kill delay has been started
+        virtual void KillDelayStarted() {}
+
         // Called when the creature kills a unit
         virtual void KilledUnit(Unit* /*victim*/) {}
 

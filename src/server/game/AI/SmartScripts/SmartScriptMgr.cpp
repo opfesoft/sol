@@ -808,6 +808,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             case SMART_EVENT_FOLLOW_COMPLETED:
             case SMART_EVENT_ON_SPELLCLICK:
             case SMART_EVENT_FOLLOW_TARGET_LOST:
+            case SMART_EVENT_KILL_DELAY_STARTED:
                 break;
             default:
                 sLog->outErrorDb("SmartAIMgr: Not handled event_type %u, entryorguid %d source_type %u id %u action_type %u, skipped.", e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
@@ -1359,6 +1360,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_CREATURE_FORMATION:
         case SMART_ACTION_STOP_WP_PATH:
         case SMART_ACTION_SET_CORPSE_DELAY:
+        case SMART_ACTION_SET_KILL_DELAY:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type %u, event_type %u, entryorguid %d source_type %u id %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);

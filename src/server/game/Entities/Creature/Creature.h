@@ -761,6 +761,11 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         uint32 UpdateWPInactiveTimer(uint32 diff);
         uint32 GetWPInactiveTimerInit() const { return m_wpInactiveTimerInit; }
         void InitWPActiveTimer() { m_wpActiveTimer = m_wpActiveTimerInit; }
+        uint32 GetKillDelay() const { return m_killDelay; }
+        void SetKillDelay(uint32 killDelay) { m_killDelay = killDelay; }
+        void DelayKill(Unit* killer, bool durabilityLoss, WeaponAttackType attackType, SpellInfo const* spellProto);
+        uint64 GetKillTime() const { return m_killTime; }
+        void SetKillTime(uint64 killTime) { m_killTime = killTime; }
 
     protected:
         bool CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data = NULL);
@@ -820,6 +825,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool CanAlwaysSee(WorldObject const* obj) const override;
 
         uint64 m_despawnTime;
+        uint32 m_killDelay;
+        uint64 m_killTime;
 
     private:
         void ForcedDespawn(uint32 timeMSToDespawn = 0);
@@ -881,6 +888,21 @@ class ForcedDespawnDelayEvent : public BasicEvent
 
     private:
         Creature& m_owner;
+};
+
+class KillDelayEvent : public BasicEvent
+{
+    public:
+        KillDelayEvent(uint64 killer, Unit& owner, bool durabilityLoss, WeaponAttackType attackType, SpellInfo const* spellProto) : BasicEvent(),
+            m_killer(killer), m_owner(owner), m_durabilityLoss(durabilityLoss), m_attackType(attackType), m_spellProto(spellProto) { }
+        bool Execute(uint64 e_time, uint32 p_time);
+
+    private:
+        uint64           m_killer;
+        Unit&            m_owner;
+        bool             m_durabilityLoss;
+        WeaponAttackType m_attackType;
+        SpellInfo const* m_spellProto;
 };
 
 #endif

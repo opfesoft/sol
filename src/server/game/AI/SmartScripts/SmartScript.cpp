@@ -3422,6 +3422,18 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         }
         break;
     }
+    case SMART_ACTION_SET_KILL_DELAY:
+    {
+        ObjectList* targets = GetTargets(e, unit, gob);
+        if (targets)
+        {
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+                if (Creature* creature = (*itr)->ToCreature())
+                    creature->SetKillDelay(e.action.setKillDelay.delay);
+            delete targets;
+        }
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;
@@ -4202,6 +4214,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
     case SMART_EVENT_JUST_CREATED:
     case SMART_EVENT_FOLLOW_COMPLETED:
     case SMART_EVENT_ON_SPELLCLICK:
+    case SMART_EVENT_KILL_DELAY_STARTED:
         ProcessAction(e, unit, var0, var1, bvar, spell, gob);
         break;
 

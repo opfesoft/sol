@@ -816,6 +816,11 @@ void SmartAI::JustDied(Unit* killer)
         EndPath(true);
 }
 
+void SmartAI::KillDelayStarted()
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_KILL_DELAY_STARTED);
+}
+
 void SmartAI::KilledUnit(Unit* victim)
 {
     GetScript()->ProcessEventsFor(SMART_EVENT_KILL, victim);

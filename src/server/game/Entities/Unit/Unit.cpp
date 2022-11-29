@@ -16515,6 +16515,20 @@ bool Unit::HandleAuraRaidProcFromCharge(AuraEffect* triggeredByAura)
 
 void Unit::Kill(Unit* killer, Unit* victim, bool durabilityLoss, WeaponAttackType attackType, SpellInfo const *spellProto)
 {
+    Creature* creature = victim->ToCreature();
+    if (creature)
+    {
+        if (creature->GetKillTime())
+            return;
+        else if (creature->GetKillDelay())
+        {
+            creature->DelayKill(killer, durabilityLoss, attackType, spellProto);
+            if (creature->IsAIEnabled)
+                creature->AI()->KillDelayStarted();
+            return;
+        }
+    }
+
     // Prevent killing unit twice (and giving reward from kill twice)
     if (!victim->GetHealth())
         return;
@@ -16524,7 +16538,6 @@ void Unit::Kill(Unit* killer, Unit* victim, bool durabilityLoss, WeaponAttackTyp
 
     // find player: owner of controlled `this` or `this` itself maybe
     Player* player = killer ? killer->GetCharmerOrOwnerPlayerOrPlayerItself() : NULL;
-    Creature* creature = victim->ToCreature();
 
     bool isRewardAllowed = true;
     if (creature)

@@ -175,8 +175,9 @@ enum SMART_EVENT
     SMART_EVENT_SOL_START                = 230,     // placeholder
 
     SMART_EVENT_FOLLOW_TARGET_LOST       = 231,     // range (0: unlimited, just check if target exists on the map), heartbeat in ms (if 0 use 5000)
+    SMART_EVENT_KILL_DELAY_STARTED       = 232,     // none
 
-    SMART_EVENT_SOL_END                  = 232      // placeholder
+    SMART_EVENT_SOL_END                  = 233      // placeholder
 };
 
 struct SmartEvent
@@ -632,8 +633,9 @@ enum SMART_ACTION
     SMART_ACTION_LOAD_WP_PATH                       = 238,    // path id (see table "waypoint_data"), unload path (0/1)
     SMART_ACTION_STOP_WP_PATH                       = 239,    // duration in ms, resetLastPlayerInteraction (0/1)
     SMART_ACTION_SET_OWNER_DEATH_DESPAWN            = 240,    // disable (0/1), summonType, duration in ms
+    SMART_ACTION_SET_KILL_DELAY                     = 241,    // kill delay in ms
 
-    SMART_ACTION_SOL_END                            = 241     // placeholder
+    SMART_ACTION_SOL_END                            = 242     // placeholder
 };
 
 struct SmartAction
@@ -1315,6 +1317,11 @@ struct SmartAction
             uint32 duration;
         } setOwnerDeathDespawn;
 
+        struct
+        {
+            uint32 delay;
+        } setKillDelay;
+
         //! Note for any new future actions
         //! All parameters must have type uint32
 
@@ -1660,7 +1667,8 @@ const std::unordered_map<uint32, uint32> SmartAIEventMask =
     {SMART_EVENT_DISTANCE_CREATURE,         SMART_SCRIPT_TYPE_MASK_CREATURE },
     {SMART_EVENT_DISTANCE_GAMEOBJECT,       SMART_SCRIPT_TYPE_MASK_CREATURE },
     {SMART_EVENT_COUNTER_SET,               SMART_SCRIPT_TYPE_MASK_CREATURE + SMART_SCRIPT_TYPE_MASK_GAMEOBJECT },
-    {SMART_EVENT_FOLLOW_TARGET_LOST,        SMART_SCRIPT_TYPE_MASK_CREATURE }
+    {SMART_EVENT_FOLLOW_TARGET_LOST,        SMART_SCRIPT_TYPE_MASK_CREATURE },
+    {SMART_EVENT_KILL_DELAY_STARTED,        SMART_SCRIPT_TYPE_MASK_CREATURE }
 };
 
 enum SmartEventFlags
