@@ -3432,6 +3432,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 11371: // Gift of Arthas
             spellInfo->SpellFamilyName = SPELLFAMILY_POTION;
             break;
+        case 34303: // Nether Charge
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
+            spellInfo->EffectRadiusIndex[EFFECT_0] = EFFECT_RADIUS_20_YARDS;
+            spellInfo->EffectRadiusIndex[EFFECT_1] = EFFECT_RADIUS_20_YARDS;
+            break;
 
 
         /////////////////////////////////////////////
