@@ -657,7 +657,7 @@ void GameObject::Update(uint32 diff)
                     if (World::GetGameTimeMS() >= m_cooldownTime)
                     {
                         RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
-
+                        m_cooldownTime = 0;
                         SetLootState(GO_JUST_DEACTIVATED);
                     }
                     break;
@@ -793,6 +793,11 @@ void GameObject::Despawn(uint32 respawnTime, bool playDespawnAnim)
     SetRespawnTime(delay);
     if (GetMap()->IsDungeon())
         SaveRespawnTime();
+
+    if (GetGoType() == GAMEOBJECT_TYPE_GOOBER)
+        RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
+
+    m_cooldownTime = 0;
 
     DestroyForNearbyPlayers();
 }
