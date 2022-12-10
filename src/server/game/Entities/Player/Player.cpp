@@ -19659,14 +19659,33 @@ bool Player::Satisfy(AccessRequirement const* ar, uint32 target_map, bool report
         {
             if (report)
             {
-                if (missingQuest && !ar->questFailedText.empty())
-                    ChatHandler(GetSession()).PSendSysMessage("%s", ar->questFailedText.c_str());
-                else if (mapDiff->hasErrorMessage) // if (missingAchievement) covered by this case
-                    SendTransferAborted(target_map, TRANSFER_ABORT_DIFFICULTY, target_difficulty);
+                int loc_idx = GetSession()->GetSessionDbLocaleIndex();
+                if (missingQuest)
+                {
+                    if (!ar->questFailedText.empty())
+                        ChatHandler(GetSession()).PSendSysMessage("%s", ar->questFailedText.c_str());
+                    else if (Quest const* q = sObjectMgr->GetQuestTemplate(missingQuest))
+                    {
+                        std::string Title = q->GetTitle();
+                        if (QuestLocale const* ql = sObjectMgr->GetQuestLocale(missingQuest); ql && loc_idx >= 0)
+                            ObjectMgr::GetLocaleString(ql->Title, loc_idx, Title);
+                        GetSession()->SendAreaTriggerMessage(GetSession()->GetAcoreString(LANG_QUEST_REQUIRED), Title.c_str());
+                    }
+                }
                 else if (missingItem)
-                    GetSession()->SendAreaTriggerMessage(GetSession()->GetAcoreString(LANG_LEVEL_MINREQUIRED_AND_ITEM), LevelMin, sObjectMgr->GetItemTemplate(missingItem)->Name1.c_str());
+                {
+                    if (ItemTemplate const* it = sObjectMgr->GetItemTemplate(missingItem))
+                    {
+                        std::string Name = it->Name1;
+                        if (ItemLocale const* il = sObjectMgr->GetItemLocale(it->ItemId); il && loc_idx >= 0)
+                            ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
+                        GetSession()->SendAreaTriggerMessage(GetSession()->GetAcoreString(LANG_LEVEL_MINREQUIRED_AND_ITEM), LevelMin, Name.c_str());
+                    }
+                }
                 else if (LevelMin)
                     GetSession()->SendAreaTriggerMessage(GetSession()->GetAcoreString(LANG_LEVEL_MINREQUIRED), LevelMin);
+                else if (mapDiff->hasErrorMessage) // if (missingAchievement) covered by this case
+                    SendTransferAborted(target_map, TRANSFER_ABORT_DIFFICULTY, target_difficulty);
             }
             return false;
         }

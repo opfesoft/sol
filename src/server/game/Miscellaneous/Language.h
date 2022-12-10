@@ -1339,5 +1339,7 @@ enum AcoreStrings
 
     LANG_COMMAND_INST_SET_DATA                    = 31078,
     LANG_COMMAND_INST_GET_DATA                    = 31079,
+
+    LANG_QUEST_REQUIRED                           = 31080,
 };
 #endif
