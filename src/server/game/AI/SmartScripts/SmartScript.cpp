@@ -3434,6 +3434,29 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         }
         break;
     }
+    case SMART_ACTION_SCALE:
+    {
+        ObjectList* targets = GetTargets(e, unit, gob);
+        if (targets)
+        {
+            for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            {
+                if (!e.action.scale.percent)
+                {
+                    if (Creature* creature = (*itr)->ToCreature())
+                        creature->SetObjectScale(creature->GetCreatureTemplate()->scale);
+                    else if (GameObject* go = (*itr)->ToGameObject())
+                        go->SetObjectScale(go->GetGOInfo()->size);
+                    else
+                        (*itr)->SetObjectScale(1.f);
+                }
+                else
+                    (*itr)->SetObjectScale((float)e.action.scale.percent / 100.f);
+            }
+            delete targets;
+        }
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;

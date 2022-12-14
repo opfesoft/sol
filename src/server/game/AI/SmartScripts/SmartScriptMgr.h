@@ -634,8 +634,9 @@ enum SMART_ACTION
     SMART_ACTION_STOP_WP_PATH                       = 239,    // duration in ms, resetLastPlayerInteraction (0/1)
     SMART_ACTION_SET_OWNER_DEATH_DESPAWN            = 240,    // disable (0/1), summonType, duration in ms
     SMART_ACTION_SET_KILL_DELAY                     = 241,    // kill delay in ms
+    SMART_ACTION_SCALE                              = 242,    // percent
 
-    SMART_ACTION_SOL_END                            = 242     // placeholder
+    SMART_ACTION_SOL_END                            = 243     // placeholder
 };
 
 struct SmartAction
@@ -1321,6 +1322,11 @@ struct SmartAction
         {
             uint32 delay;
         } setKillDelay;
+
+        struct
+        {
+            uint32 percent;
+        } scale;
 
         //! Note for any new future actions
         //! All parameters must have type uint32

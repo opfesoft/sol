@@ -1361,6 +1361,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_STOP_WP_PATH:
         case SMART_ACTION_SET_CORPSE_DELAY:
         case SMART_ACTION_SET_KILL_DELAY:
+        case SMART_ACTION_SCALE:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type %u, event_type %u, entryorguid %d source_type %u id %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);
