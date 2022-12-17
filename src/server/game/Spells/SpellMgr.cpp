@@ -3437,6 +3437,12 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectRadiusIndex[EFFECT_0] = EFFECT_RADIUS_20_YARDS;
             spellInfo->EffectRadiusIndex[EFFECT_1] = EFFECT_RADIUS_20_YARDS;
             break;
+        case 35475: // Drums of War
+        case 35476: // Drums of Battle
+        case 35477: // Drums of Speed
+        case 35478: // Drums of Restoration
+            spellInfo->excludeTargetAuraSpell = 51120; // Tinnitus
+            break;
 
 
         /////////////////////////////////////////////
