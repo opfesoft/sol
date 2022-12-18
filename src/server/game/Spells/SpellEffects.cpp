@@ -5974,6 +5974,7 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const* 
                 case 18308: // Death by Peasant (Barov Peasant Caller)
                 case 22792: // Plant Thornling (Thornling Seed)
                 case 19804: // Arcanite Dragonling
+                case 26391: // Tentacle Call
                     summonLevel = 60;
                     break;
 
