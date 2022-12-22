@@ -2385,8 +2385,8 @@ class Player : public Unit, public GridObject<Player>
         ClientGUIDs m_clientGUIDs;
         std::vector<Unit*> m_newVisible; // pussywizard
 
-        bool HaveAtClient(WorldObject const* u) const { return u == this || m_clientGUIDs.find(u->GetGUID()) != m_clientGUIDs.end(); }
-        bool HaveAtClient(uint64 guid) const { return guid == GetGUID() || m_clientGUIDs.find(guid) != m_clientGUIDs.end(); }
+        bool HaveAtClient(WorldObject const* u) const { return u == this || GUID_HIPART(u->GetGUID()) == HIGHGUID_MO_TRANSPORT || m_clientGUIDs.find(u->GetGUID()) != m_clientGUIDs.end(); }
+        bool HaveAtClient(uint64 guid) const { return guid == GetGUID() || GUID_HIPART(guid) == HIGHGUID_MO_TRANSPORT || m_clientGUIDs.find(guid) != m_clientGUIDs.end(); }
 
         bool IsNeverVisible() const override;
 
