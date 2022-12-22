@@ -945,10 +945,17 @@ void Map::ScriptsProcess()
                 break;
 
             case SCRIPT_COMMAND_DESPAWN_CREATURE:
-                // Source must be Unit.
-                if (Unit* sourceUnit = _GetScriptUnit(source, true, step.script))
-                    if (Creature* targetCreature = GetClosestCreatureWithEntry(sourceUnit, step.script->DespawnCreature.CreatureEntry, step.script->DespawnCreature.SearchRadius))
+                // Source must be WorldObject.
+                if (WorldObject* object = _GetScriptWorldObject(source, true, step.script))
+                    if (Creature* targetCreature = GetClosestCreatureWithEntry(object, step.script->DespawnCreature.CreatureEntry, step.script->DespawnCreature.SearchRadius))
                         targetCreature->DespawnOrUnsummon(step.script->DespawnCreature.DespawnDelay);
+                break;
+
+            case SCRIPT_COMMAND_SET_DATA_CREATURE:
+                // Source must be WorldObject.
+                if (WorldObject* object = _GetScriptWorldObject(source, true, step.script))
+                    if (Creature* targetCreature = GetClosestCreatureWithEntry(object, step.script->SetDataCreature.CreatureEntry, step.script->SetDataCreature.SearchRadius))
+                        targetCreature->AI()->SetData(step.script->SetDataCreature.ID, step.script->SetDataCreature.Value);
                 break;
 
             default:

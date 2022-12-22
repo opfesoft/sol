@@ -101,6 +101,10 @@ std::string GetScriptCommandName(ScriptCommands command)
         case SCRIPT_COMMAND_MODEL: res = "SCRIPT_COMMAND_MODEL"; break;
         case SCRIPT_COMMAND_CLOSE_GOSSIP: res = "SCRIPT_COMMAND_CLOSE_GOSSIP"; break;
         case SCRIPT_COMMAND_PLAYMOVIE: res = "SCRIPT_COMMAND_PLAYMOVIE"; break;
+        case SCRIPT_COMMAND_MOVEMENT: res = "SCRIPT_COMMAND_MOVEMENT"; break;
+        // Sol only
+        case SCRIPT_COMMAND_DESPAWN_CREATURE: res = "SCRIPT_COMMAND_DESPAWN_CREATURE"; break;
+        case SCRIPT_COMMAND_SET_DATA_CREATURE: res = "SCRIPT_COMMAND_SET_DATA_CREATURE"; break;
         default:
         {
             char sz[32];
@@ -5065,7 +5069,7 @@ void ObjectMgr::LoadScripts(ScriptsType type)
                         tableName.c_str(), tmp.CastSpell.CreatureEntry, tmp.id);
                     continue;
                 }
-                else if (tmp.CastSpell.Flags == 4 && !GetCreatureTemplate(tmp.CastSpell.CreatureEntry))
+                else if (tmp.CastSpell.Flags == 4 && (tmp.CastSpell.CreatureEntry <= 0 || !GetCreatureTemplate(tmp.CastSpell.CreatureEntry)))
                 {
                     sLog->outErrorDb("Table `%s` using invalid creature entry in dataint (%u) in SCRIPT_COMMAND_CAST_SPELL for script id %u",
                         tableName.c_str(), tmp.CastSpell.CreatureEntry, tmp.id);
@@ -5090,6 +5094,29 @@ void ObjectMgr::LoadScripts(ScriptsType type)
                 }
                 break;
             }
+
+            case SCRIPT_COMMAND_DESPAWN_CREATURE:
+            {
+                if (!GetCreatureTemplate(tmp.DespawnCreature.CreatureEntry))
+                {
+                    sLog->outErrorDb("Table `%s` using invalid creature entry in datalong (%u) in SCRIPT_COMMAND_DESPAWN_CREATURE for script id %u",
+                        tableName.c_str(), tmp.DespawnCreature.CreatureEntry, tmp.id);
+                    continue;
+                }
+                break;
+            }
+
+            case SCRIPT_COMMAND_SET_DATA_CREATURE:
+            {
+                if (tmp.SetDataCreature.CreatureEntry <= 0 || !GetCreatureTemplate(tmp.SetDataCreature.CreatureEntry))
+                {
+                    sLog->outErrorDb("Table `%s` using invalid creature entry in dataint (%u) in SCRIPT_COMMAND_SET_DATA_CREATURE for script id %u",
+                        tableName.c_str(), tmp.SetDataCreature.CreatureEntry, tmp.id);
+                    continue;
+                }
+                break;
+            }
+
             default:
                 break;
         }
