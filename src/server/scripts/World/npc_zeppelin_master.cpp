@@ -62,14 +62,9 @@ enum ZeppelinNpcTexts
 
     GOSSIP_ACTION_1_ENGINEER    =   101,
     GOSSIP_ACTION_2_ENGINEER    =   102,
-    GOSSIP_ACTION_1_MASTER      =   103
-};
+    GOSSIP_ACTION_1_MASTER      =   103,
 
-enum ZeppelinEvents
-{
-    EVENT_CHECK_ZEPPELIN                     =    1,
-    EVENT_CHECK_ZEPPELIN_INTERVAL_MS         = 5000,
-    ZEPPELIN_ANNOUNCE_CREATURE_TEXT_GROUP_ID =    0
+    ZEPPELIN_ANNOUNCE           =     0,
 };
 
 class npc_zeppelin_master : public CreatureScript
@@ -233,50 +228,11 @@ public:
 
     struct npc_zeppelin_masterAI : public ScriptedAI
     {
-        npc_zeppelin_masterAI(Creature* creature) : ScriptedAI(creature), zeppelinArrived(false) { }
+        npc_zeppelin_masterAI(Creature* creature) : ScriptedAI(creature) { }
 
-        EventMap events;
-        bool zeppelinArrived;
-
-        void Reset() override
+        void SetData(uint32 /*id*/, uint32 /*value*/) override
         {
-            events.Reset();
-
-            if (me->GetEntry() != NPC_KRIXX && me->GetEntry() != NPC_KRAXX)
-                events.ScheduleEvent(EVENT_CHECK_ZEPPELIN, EVENT_CHECK_ZEPPELIN_INTERVAL_MS);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (UpdateVictim())
-            {
-                DoMeleeAttackIfReady();
-                return;
-            }
-
-            events.Update(diff);
-
-            switch (events.ExecuteEvent())
-            {
-                case EVENT_CHECK_ZEPPELIN:
-                    bool arrived = false;
-                    uint32 lastArea = 0;
-                    CheckZeppelinMaster(me, arrived, lastArea);
-
-                    if (arrived && me->GetAreaId() == lastArea)
-                    {
-                        if (!zeppelinArrived)
-                        {
-                            zeppelinArrived = true;
-                            Talk(ZEPPELIN_ANNOUNCE_CREATURE_TEXT_GROUP_ID);
-                        }
-                    }
-                    else
-                        zeppelinArrived = false;
-
-                    events.ScheduleEvent(EVENT_CHECK_ZEPPELIN, EVENT_CHECK_ZEPPELIN_INTERVAL_MS);
-                    break;
-            }
+            Talk(ZEPPELIN_ANNOUNCE);
         }
     };
 

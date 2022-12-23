@@ -643,7 +643,25 @@ void MotionTransport::UpdatePassengerPositions(PassengerSet& passengers)
 
 void MotionTransport::DoEventIfAny(KeyFrame const& node, bool departure)
 { 
-    if (uint32 eventid = departure ? node.Node->departureEventID : node.Node->arrivalEventID)
+    uint32 eventid = departure ? node.Node->departureEventID : node.Node->arrivalEventID;
+    if (!departure) // Apply fixes for arrival events
+        switch (node.Node->path)
+        {
+            case 285: // "The Iron Eagle", arrival in Durotar
+                if (node.Node->index == 12)
+                    eventid = 0;
+                else if (node.Node->index == 14)
+                    eventid = 15322;
+                break;
+            case 301: // "The Purple Princess", arrival in Tirisfal Glades
+                if (node.Node->index == 16)
+                    eventid = 0;
+                else if (node.Node->index == 19)
+                    eventid = 15312;
+                break;
+        }
+
+    if (eventid)
     {
         //TC_LOG_DEBUG("maps.script", "Taxi %s event %u of node %u of %s path", departure ? "departure" : "arrival", eventid, node.Node->index, GetName().c_str());
         GetMap()->ScriptsStart(sEventScripts, eventid, this, this);
