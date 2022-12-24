@@ -294,6 +294,9 @@ struct ScriptInfo
         {
             uint32 SoundID;         // datalong
             uint32 Flags;           // datalong2
+            int32  CreatureEntry;   // dataint
+
+            float SearchRadius;     // x
         } PlaySound;
 
         struct                      // SCRIPT_COMMAND_CREATE_ITEM (17)

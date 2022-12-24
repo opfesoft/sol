@@ -5078,6 +5078,17 @@ void ObjectMgr::LoadScripts(ScriptsType type)
                 break;
             }
 
+            case SCRIPT_COMMAND_PLAY_SOUND:
+            {
+                if (tmp.PlaySound.CreatureEntry > 0 && !GetCreatureTemplate(tmp.PlaySound.CreatureEntry))
+                {
+                    sLog->outErrorDb("Table `%s` using invalid creature entry in dataint (%u) in SCRIPT_COMMAND_PLAY_SOUND for script id %u",
+                        tableName.c_str(), tmp.PlaySound.CreatureEntry, tmp.id);
+                    continue;
+                }
+                break;
+            }
+
             case SCRIPT_COMMAND_CREATE_ITEM:
             {
                 if (!GetItemTemplate(tmp.CreateItem.ItemEntry))

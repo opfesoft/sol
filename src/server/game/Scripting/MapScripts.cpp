@@ -761,6 +761,10 @@ void Map::ScriptsProcess()
                 // Source must be WorldObject.
                 if (WorldObject* object = _GetScriptWorldObject(source, true, step.script))
                 {
+                    if (step.script->PlaySound.CreatureEntry > 0)
+                        object = GetClosestCreatureWithEntry(object, step.script->PlaySound.CreatureEntry, step.script->PlaySound.SearchRadius);
+                    if (!object)
+                        break;
                     // PlaySound.Flags bitmask: 0/1=anyone/target
                     Player* player = NULL;
                     if (step.script->PlaySound.Flags & SF_PLAYSOUND_TARGET_PLAYER)
