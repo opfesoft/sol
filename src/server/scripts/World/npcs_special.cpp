@@ -427,6 +427,48 @@ public:
     }
 };
 
+class npc_frostbite_invisible_stalker : public CreatureScript
+{
+public:
+    npc_frostbite_invisible_stalker() : CreatureScript("npc_frostbite_invisible_stalker") { }
+
+    struct npc_frostbite_invisible_stalkerAI: public NullCreatureAI
+    {
+        npc_frostbite_invisible_stalkerAI(Creature* creature) : NullCreatureAI(creature)
+        {
+            timer = 3500;
+            me->CastSpell(me, 34872, true);
+            for (uint8 i = 0; i<3; ++i)
+            {
+                me->SetOrientation(i*M_PI/3);
+                me->CastSpell(me, 34740, true);
+                me->CastSpell(me, 34746, true);
+            }
+        }
+
+        uint16 timer;
+
+        void UpdateAI(uint32 diff)
+        {
+            if (timer)
+            {
+                if (timer <= diff)
+                {
+                    me->CastSpell(me, 34779, true);
+                    timer = 0;
+                }
+                else
+                    timer -= diff;
+            }
+        }
+    };
+
+    CreatureAI *GetAI(Creature* creature) const
+    {
+        return new npc_frostbite_invisible_stalkerAI(creature);
+    }
+};
+
 
 // Theirs
 /*########
@@ -2542,6 +2584,7 @@ void AddSC_npcs_special()
     new npc_riggle_bassbait();
     new npc_target_dummy();
     new npc_training_dummy();
+    new npc_frostbite_invisible_stalker();
 
     // Theirs
     new npc_air_force_bots();

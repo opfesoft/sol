@@ -1612,6 +1612,58 @@ class spell_gen_seal_of_blood : public SpellScriptLoader
         }
 };
 
+// 34779 - Freezing Circle
+
+enum FreezingCircleSpells
+{
+    SPELL_FREEZING_CIRCLE_PIT_OF_SARON_NORMAL = 69574,
+    SPELL_FREEZING_CIRCLE_PIT_OF_SARON_HEROIC = 70276,
+    SPELL_FREEZING_CIRCLE                     = 34787,
+};
+
+class spell_gen_freezing_circle : public SpellScriptLoader
+{
+    public:
+        spell_gen_freezing_circle() : SpellScriptLoader("spell_gen_freezing_circle") { }
+
+        class spell_gen_freezing_circle_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_gen_freezing_circle_SpellScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_FREEZING_CIRCLE_PIT_OF_SARON_NORMAL) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_FREEZING_CIRCLE_PIT_OF_SARON_HEROIC) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_FREEZING_CIRCLE))
+                    return false;
+                return true;
+            }
+
+            void HandleDamage(SpellEffIndex /*effIndex*/)
+            {
+                Unit* caster = GetCaster();
+                uint32 spellId = 0;
+                Map* map = caster->GetMap();
+                if (map->IsDungeon())
+                    spellId = map->IsHeroic() ? SPELL_FREEZING_CIRCLE_PIT_OF_SARON_HEROIC : SPELL_FREEZING_CIRCLE_PIT_OF_SARON_NORMAL;
+                else
+                    spellId = SPELL_FREEZING_CIRCLE;
+                if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId))
+                    SetHitDamage(spellInfo->Effects[EFFECT_0].CalcValue());
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_gen_freezing_circle_SpellScript::HandleDamage, EFFECT_1, SPELL_EFFECT_SCHOOL_DAMAGE);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_gen_freezing_circle_SpellScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5319,6 +5371,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_barleybrew_scalder();
     new spell_gen_soul_deflection();
     new spell_gen_seal_of_blood();
+    new spell_gen_freezing_circle();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();
