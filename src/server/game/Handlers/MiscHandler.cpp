@@ -998,7 +998,7 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
     sLog->outDebug(LOG_FILTER_NETWORKIO, "UAD: type %u, time %u, decompressedSize %u", type, timestamp, decompressedSize);
 #endif
 
-    if (type > NUM_ACCOUNT_DATA_TYPES)
+    if (type >= NUM_ACCOUNT_DATA_TYPES)
         return;
 
     if (decompressedSize == 0)                               // erase
