@@ -78,7 +78,12 @@ void Totem::InitStats(uint32 duration)
 void Totem::InitSummon()
 { 
     if (m_type == TOTEM_PASSIVE && GetSpell())
-        CastSpell(this, GetSpell(), true);
+    {
+        if (GetUInt32Value(UNIT_CREATED_BY_SPELL) == FIRE_TOTEM_SPELLID)
+            m_Events.AddEvent(new CastSpellDelayEvent(*this, GetSpell()), m_Events.CalculateTime(4000));
+        else
+            CastSpell(this, GetSpell(), true);
+    }
 
     // Some totems can have both instant effect and passive spell
     if(GetSpell(1))

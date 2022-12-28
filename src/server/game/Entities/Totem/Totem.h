@@ -22,6 +22,8 @@ enum TotemType
 #define SENTRY_TOTEM_ENTRY    3968
 #define EARTHBIND_TOTEM_ENTRY 2630
 
+#define FIRE_TOTEM_SPELLID    32062
+
 constexpr uint32 SPELL_CYCLONE = 33786;
 
 class Totem : public Minion

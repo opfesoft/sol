@@ -120,4 +120,15 @@ public:
 private:
     TempSummon& m_owner;
 };
+
+class CastSpellDelayEvent : public BasicEvent
+{
+public:
+    CastSpellDelayEvent(TempSummon& owner, uint32 spellid) : BasicEvent(), m_owner(owner), m_spellid(spellid) { }
+    bool Execute(uint64 e_time, uint32 p_time);
+
+private:
+    TempSummon& m_owner;
+    uint32 m_spellid;
+};
 #endif

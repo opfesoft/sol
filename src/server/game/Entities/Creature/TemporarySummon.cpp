@@ -263,6 +263,12 @@ bool ForcedUnsummonDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
     return true;
 }
 
+bool CastSpellDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
+{
+    m_owner.CastSpell(&m_owner, m_spellid, true);
+    return true;
+}
+
 void TempSummon::RemoveFromWorld()
 { 
     if (!IsInWorld())
