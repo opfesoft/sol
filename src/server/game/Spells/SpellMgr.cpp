@@ -3443,6 +3443,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 35478: // Drums of Restoration
             spellInfo->excludeTargetAuraSpell = 51120; // Tinnitus
             break;
+        case 39907: // Summon Rizzle's Depth Charge
+            spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_DEST_CASTER;
+            break;
 
 
         /////////////////////////////////////////////

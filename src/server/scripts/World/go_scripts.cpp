@@ -460,7 +460,6 @@ enum Southfury
 {
     NPC_RIZZLE                  = 23002,
     SPELL_BLACKJACK             = 39865, //stuns player
-    SPELL_SUMMON_RIZZLE         = 39866
 };
 
 class go_southfury_moonstone : public GameObjectScript
@@ -468,13 +467,13 @@ class go_southfury_moonstone : public GameObjectScript
 public:
     go_southfury_moonstone() : GameObjectScript("go_southfury_moonstone") { }
 
-    bool OnGossipHello(Player* player, GameObject* /*go*/) override
+    bool OnGossipHello(Player* player, GameObject* go) override
     {
-        //implicitTarget=48 not implemented as of writing this code, and manual summon may be just ok for our purpose
-        //player->CastSpell(player, SPELL_SUMMON_RIZZLE, false);
+        if (go->FindNearestCreature(NPC_RIZZLE, 500.f))
+            return false;
 
-        if (Creature* creature = player->SummonCreature(NPC_RIZZLE, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_DEAD_DESPAWN, 0))
-            creature->CastSpell(player, SPELL_BLACKJACK, false);
+        if (Creature* creature = player->SummonCreature(NPC_RIZZLE, 3724.26f, -3994.12f, 95.8262f, 6.09513f, TEMPSUMMON_MANUAL_DESPAWN, 0))
+            creature->CastSpell(player, SPELL_BLACKJACK, true);
 
         return false;
     }
