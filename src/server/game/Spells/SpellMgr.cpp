@@ -3449,6 +3449,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 39907: // Summon Rizzle's Depth Charge
             spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_DEST_CASTER;
             break;
+        case 29297: // Item - Cleansing Vial DND
+            spellInfo->CastingTimeIndex = 0;
+            break;
 
 
         /////////////////////////////////////////////
