@@ -2424,6 +2424,8 @@ class Player : public Unit, public GridObject<Player>
         void SendCinematicStart(uint32 CinematicSequenceId);
         void SendMovieStart(uint32 MovieId);
 
+        uint32 DoRandomRoll(uint32 minimum, uint32 maximum, bool inRange);
+
         /*********************************************************/
         /***                 INSTANCE SYSTEM                   ***/
         /*********************************************************/

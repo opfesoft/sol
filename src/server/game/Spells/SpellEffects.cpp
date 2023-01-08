@@ -3921,23 +3921,26 @@ void Spell::EffectScriptEffect(SpellEffIndex effIndex)
                 // Roll Dice - Decahedral Dwarven Dice
                 case 47770:
                 {
-                    char buf[128];
-                    const char *gender = "his";
-                    if (m_caster->getGender() > 0)
-                        gender = "her";
-                    sprintf(buf, "%s rubs %s [Decahedral Dwarven Dice] between %s hands and rolls. One %u and one %u.", m_caster->GetName().c_str(), gender, gender, urand(1, 10), urand(1, 10));
-                    m_caster->MonsterTextEmote(buf, NULL);
+                    if (Player* player = m_caster->ToPlayer())
+                        if (BroadcastText const* bct = sObjectMgr->GetBroadcastText(26147))
+                        {
+                            LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+                            player->TextEmote(bct->GetText(loc_idx, player->getGender()));
+                            player->DoRandomRoll(1, 100, true);
+                        }
                     break;
                 }
                 // Roll 'dem Bones - Worn Troll Dice
                 case 47776:
                 {
-                    char buf[128];
-                    const char *gender = "his";
-                    if (m_caster->getGender() > 0)
-                        gender = "her";
-                    sprintf(buf, "%s causually tosses %s [Worn Troll Dice]. One %u and one %u.", m_caster->GetName().c_str(), gender, urand(1, 6), urand(1, 6));
-                    m_caster->MonsterTextEmote(buf, NULL);
+                    if (Player* player = m_caster->ToPlayer())
+                        if (BroadcastText const* bct = sObjectMgr->GetBroadcastText(26152))
+                        {
+                            LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+                            player->TextEmote(bct->GetText(loc_idx, player->getGender()));
+                            player->DoRandomRoll(1, 6, true);
+                            player->DoRandomRoll(1, 6, true);
+                        }
                     break;
                 }
                 // Death Knight Initiate Visual

@@ -6972,6 +6972,27 @@ void Player::SendMovieStart(uint32 MovieId)
     SendDirectMessage(&data);
 }
 
+uint32 Player::DoRandomRoll(uint32 minimum, uint32 maximum, bool inRange)
+{
+    ASSERT(minimum <= maximum);
+
+    uint32 roll = urand(minimum, maximum);
+
+    WorldPacket data(MSG_RANDOM_ROLL, 4+4+4+8);
+    data << uint32(minimum);
+    data << uint32(maximum);
+    data << uint32(roll);
+    data << uint64(GetGUID());
+    if (inRange)
+        SendMessageToSet(&data, true);
+    else if (Group* group = GetGroup())
+        group->BroadcastPacket(&data, false);
+    else
+        SendDirectMessage(&data);
+
+    return roll;
+}
+
 void Player::CheckAreaExploreAndOutdoor()
 { 
     if (!IsAlive())
