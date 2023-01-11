@@ -127,7 +127,6 @@ class Log
         void outChar(const char * str, ...)                     ATTR_PRINTF(2, 3);
         void outCommand(uint32 account, const char * str, ...)  ATTR_PRINTF(3, 4);
         void outChat(const char * str, ...)                     ATTR_PRINTF(2, 3);
-        void outRemote(const char * str, ...)                   ATTR_PRINTF(2, 3);
         void outSQLDriver(const char* str, ...)                 ATTR_PRINTF(2, 3);
         void outMisc(const char * str, ...)                     ATTR_PRINTF(2, 3); // pussywizard
         void outCharDump(const char * str, uint32 account_id, uint32 guid, const char * name);
@@ -185,7 +184,6 @@ class Log
         uint8 m_logLevel;
         uint8 m_logFileLevel;
         bool m_dbChar;
-        bool m_dbRA;
         bool m_dbGM;
         bool m_dbChat;
         bool m_charLog_Dump;

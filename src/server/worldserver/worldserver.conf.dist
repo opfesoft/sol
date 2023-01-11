@@ -623,14 +623,6 @@ GmLogTimestamp = 0
 GmLogPerAccount = 0
 
 #
-#    RaLogFile
-#        Description: Log file for Remote Access commands.
-#        Default:     "RA.log" - (Enabled)
-#                     ""       - (Disabled)
-
-RaLogFile = "RA.log"
-
-#
 #    ArenaLogFile
 #        Description: Log file for arena fights and arena team creations.
 #        Example:     "Arena.log" - (Enabled)
@@ -727,22 +719,6 @@ LogDB.Char = 0
 #                     1 - (Enabled)
 
 LogDB.GM = 0
-
-#
-#    LogDB.RA
-#        Description: Log remote access events to database.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-LogDB.RA = 0
-
-#
-#    LogDB.World
-#        Description: Log world server packets to database.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled, May have performance impact)
-
-LogDB.World = 0
 
 #
 #    LogDB.Chat

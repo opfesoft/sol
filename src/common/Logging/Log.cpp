@@ -21,7 +21,7 @@ extern LoginDatabaseWorkerPool LoginDatabase;
 #include <iomanip>
 
 Log::Log() :
-    raLogfile(NULL), logfile(NULL), gmLogfile(NULL), charLogfile(NULL),
+    logfile(NULL), gmLogfile(NULL), charLogfile(NULL),
     dberLogfile(NULL), chatLogfile(NULL), sqlLogFile(NULL), sqlDevLogFile(NULL), miscLogFile(NULL),
     m_gmlog_per_account(false), m_enableLogDB(false), m_colored(false)
 {
@@ -45,10 +45,6 @@ Log::~Log()
     if (dberLogfile != NULL)
         fclose(dberLogfile);
     dberLogfile = NULL;
-
-    if (raLogfile != NULL)
-        fclose(raLogfile);
-    raLogfile = NULL;
 
     if (chatLogfile != NULL)
         fclose(chatLogfile);
@@ -91,7 +87,6 @@ void Log::Initialize()
 {
     /// Check whether we'll log GM commands/RA events/character outputs/chat stuffs
     m_dbChar = sConfigMgr->GetBoolDefault("LogDB.Char", false, false);
-    m_dbRA = sConfigMgr->GetBoolDefault("LogDB.RA", false, false);
     m_dbGM = sConfigMgr->GetBoolDefault("LogDB.GM", false, false);
     m_dbChat = sConfigMgr->GetBoolDefault("LogDB.Chat", false, false);
 
@@ -143,7 +138,6 @@ void Log::Initialize()
 
     charLogfile = openLogFile("CharLogFile", "CharLogTimestamp", "a");
     dberLogfile = openLogFile("DBErrorLogFile", NULL, "a");
-    raLogfile = openLogFile("RaLogFile", NULL, "a");
     chatLogfile = openLogFile("ChatLogFile", "ChatLogTimestamp", "a");
     sqlLogFile = openLogFile("SQLDriverLogFile", NULL, "a");
     sqlDevLogFile = openLogFile("SQLDeveloperLogFile", NULL, "a");
@@ -919,33 +913,6 @@ void Log::outChat(const char * str, ...)
         fprintf(chatLogfile, "\n");
         fflush(chatLogfile);
         va_end(ap);
-    }
-}
-
-void Log::outRemote(const char * str, ...)
-{
-    if (!str)
-        return;
-
-    if (m_enableLogDB && m_dbRA)
-    {
-        va_list ap2;
-        va_start(ap2, str);
-        char nnew_str[MAX_QUERY_LEN];
-        vsnprintf(nnew_str, MAX_QUERY_LEN, str, ap2);
-        outDB(LOG_TYPE_RA, nnew_str);
-        va_end(ap2);
-    }
-
-    if (raLogfile)
-    {
-        outTimestamp(raLogfile);
-        va_list ap;
-        va_start(ap, str);
-        vfprintf(raLogfile, str, ap);
-        fprintf(raLogfile, "\n" );
-        va_end(ap);
-        fflush(raLogfile);
     }
 }
 
