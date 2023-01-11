@@ -177,6 +177,7 @@ enum WorldBoolConfigs
     CONFIG_OBJECT_SPARKLES,
     CONFIG_OBJECT_QUEST_MARKERS,
     CONFIG_START_PLAYER_MONEY_OVERRIDE_HERO_CLASS,
+    CONFIG_PACKET_OUTPUT,
     BOOL_CONFIG_VALUE_COUNT
 };
 
@@ -363,6 +364,7 @@ enum WorldIntConfigs
     CONFIG_FFA_PVP_TIMER,
     CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE,
     CONFIG_WAYPOINT_MOVEMENT_ACTIVE_TIMER,
+    CONFIG_PACKET_OUTPUT_LIMIT,
     INT_CONFIG_VALUE_COUNT
 };
 
@@ -807,6 +809,8 @@ class World
         std::string const& GetRealmName() const { return _realmName; } // pussywizard
         void SetRealmName(std::string name) { _realmName = name; } // pussywizard
 
+        bool IsPacketOutputAllowed(uint16 opcode) const;
+
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters
@@ -897,6 +901,9 @@ class World
 
         // used versions
         std::string m_DBVersion;
+
+        std::unordered_set<uint16> m_packetOutputBlacklist;
+        std::unordered_set<uint16> m_packetOutputWhitelist;
 
         typedef std::map<uint8, std::string> AutobroadcastsMap;
         AutobroadcastsMap m_Autobroadcasts;

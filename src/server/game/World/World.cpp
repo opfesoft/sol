@@ -1339,6 +1339,23 @@ void World::LoadConfigSettings(bool reload)
 
     m_int_configs[CONFIG_GM_LEVEL_CHANNEL_MODERATION] = sConfigMgr->GetIntDefault("Channel.ModerationGMLevel", 1);
 
+    m_bool_configs[CONFIG_PACKET_OUTPUT] = sConfigMgr->GetBoolDefault("PacketOutput", false);
+    m_int_configs[CONFIG_PACKET_OUTPUT_LIMIT] = sConfigMgr->GetIntDefault("PacketOutputLimit", 16);
+
+    std::string delimitedValue;
+    std::stringstream valueStream;
+    valueStream.str(sConfigMgr->GetStringDefault("PacketOutputBlacklist", ""));
+    while (std::getline(valueStream, delimitedValue, ','))
+        m_packetOutputBlacklist.emplace(atoi(delimitedValue.c_str()));
+
+    if (m_packetOutputBlacklist.empty())
+    {
+        valueStream.str(sConfigMgr->GetStringDefault("PacketOutputWhitelist", ""));
+        valueStream.clear();
+        while (std::getline(valueStream, delimitedValue, ','))
+            m_packetOutputWhitelist.emplace(atoi(delimitedValue.c_str()));
+    }
+
     // call ScriptMgr if we're reloading the configuration
     sScriptMgr->OnAfterConfigLoad(reload);
 }
@@ -3361,4 +3378,14 @@ uint32 World::GetGlobalPlayerGUID(std::string const& name) const
 
     // Player not found
     return 0;
+}
+
+bool World::IsPacketOutputAllowed(uint16 opcode) const
+{
+    if (!m_packetOutputBlacklist.empty())
+        return m_packetOutputBlacklist.count(opcode) ? false : true;
+    else if (!m_packetOutputWhitelist.empty())
+        return m_packetOutputWhitelist.count(opcode) ? true : false;
+    else
+        return true;
 }

@@ -9,6 +9,9 @@
 #include "Config.h"
 #include "ByteBuffer.h"
 #include "WorldPacket.h"
+#include "Log.h"
+#include "Opcodes.h"
+#include <iomanip>
 
 PacketLog::PacketLog() : _file(NULL)
 {
@@ -49,4 +52,22 @@ void PacketLog::LogPacket(WorldPacket const& packet, Direction direction)
 
     fwrite(data.contents(), 1, data.size(), _file);
     fflush(_file);
+}
+
+void PacketLog::PacketToLog(WorldPacket const& packet, Direction direction, uint32 limit)
+{
+    std::ostringstream strm;
+
+    for (uint32 i = 0; i < packet.size(); i++)
+    {
+        if (limit && i >= limit)
+            break;
+        strm << " " << std::right << std::hex << std::setw(2) << std::setfill('0') << (int)packet[i];
+    }
+
+    std::string content = strm.str();
+    if (direction == CLIENT_TO_SERVER)
+        sLog->outString("in  %s (%u)%s", LookupOpcodeName(packet.GetOpcode()), packet.GetOpcode(), content.c_str());
+    else
+        sLog->outString("out %s (%u)%s", LookupOpcodeName(packet.GetOpcode()), packet.GetOpcode(), content.c_str());
 }

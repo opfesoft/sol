@@ -544,6 +544,40 @@ DebugLogMask = 0
 PacketLogFile = ""
 
 #
+#    PacketOutput
+#        Description: If enabled write packets to the main server log
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+PacketOutput = 0
+
+#
+#    PacketOutputBlacklist
+#        Description: Comma-separated list with opcodes. If set all packets will be written
+#                     except the ones listed here.
+#        Default:     ""
+#        Example:     "476,477" (CMSG_PING & SMSG_PONG)
+
+PacketOutputBlacklist = ""
+
+#
+#    PacketOutputWhitelist
+#        Description: Comma-separated list with opcodes. If set no packets will be written
+#                     except the ones listed here. Ignored if PacketOutputBlacklist is used.
+#        Default:     ""
+#        Example:     "1195,253" (SMSG_CLIENTCACHE_VERSION & SMSG_TUTORIAL_FLAGS)
+
+PacketOutputWhitelist = ""
+
+#
+#    PacketOutputLimit
+#        Description: Limit the packet content to the specified number of bytes.
+#        Default:     16
+#                      0 - (No limit)
+
+PacketOutputLimit = 16
+
+#
 #    DBErrorLogFile
 #        Description: Log file for database errors.
 #        Default:     "DBErrors.log" - (Enabled)

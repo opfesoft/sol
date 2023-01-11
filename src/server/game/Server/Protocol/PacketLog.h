@@ -31,6 +31,7 @@ class PacketLog
         void Initialize();
         bool CanLogPacket() const { return (_file != NULL); }
         void LogPacket(WorldPacket const& packet, Direction direction);
+        void PacketToLog(WorldPacket const& packet, Direction direction, uint32 limit);
 
     private:
         FILE* _file;

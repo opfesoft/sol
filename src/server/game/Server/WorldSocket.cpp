@@ -147,6 +147,9 @@ int WorldSocket::SendPacket(WorldPacket const& pct)
     if (sPacketLog->CanLogPacket())
         sPacketLog->LogPacket(pct, SERVER_TO_CLIENT);
 
+    if (sWorld->getBoolConfig(CONFIG_PACKET_OUTPUT) && sWorld->IsPacketOutputAllowed(pct.GetOpcode()))
+        sPacketLog->PacketToLog(pct, SERVER_TO_CLIENT, sWorld->getIntConfig(CONFIG_PACKET_OUTPUT_LIMIT));
+
     ServerPktHeader header(pct.size()+2, pct.GetOpcode());
     m_Crypt.EncryptSend ((uint8*)header.header, header.getHeaderLength());
 
@@ -660,6 +663,9 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
     // Dump received packet.
     if (sPacketLog->CanLogPacket())
         sPacketLog->LogPacket(*new_pct, CLIENT_TO_SERVER);
+
+    if (sWorld->getBoolConfig(CONFIG_PACKET_OUTPUT) && sWorld->IsPacketOutputAllowed(new_pct->GetOpcode()))
+        sPacketLog->PacketToLog(*new_pct, CLIENT_TO_SERVER, sWorld->getIntConfig(CONFIG_PACKET_OUTPUT_LIMIT));
 
     try
     {
