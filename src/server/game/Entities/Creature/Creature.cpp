@@ -1252,7 +1252,7 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask, uint32 phaseMask)
     WorldDatabase.CommitTransaction(trans);
 }
 
-void Creature::SelectLevel(bool changelevel)
+uint8 Creature::SelectLevel(bool changelevel)
 { 
     CreatureTemplate const* cInfo = GetCreatureTemplate();
 
@@ -1310,6 +1310,8 @@ void Creature::SelectLevel(bool changelevel)
     SetModifierValue(UNIT_MOD_ATTACK_POWER_RANGED, BASE_VALUE, stats->RangedAttackPower);
 
     sScriptMgr->Creature_SelectLevel(cInfo, this);
+
+    return getLevel();
 }
 
 float Creature::_GetHealthMod(int32 Rank)
@@ -1757,6 +1759,7 @@ void Creature::Respawn(bool force)
     }
 
     RemoveCorpse(false, false);
+    bool levelChanged = false;
 
     if (getDeathState() == DEAD)
     {
@@ -1806,7 +1809,8 @@ void Creature::Respawn(bool force)
                 UpdateEntry(m_originalEntry);
         }
 
-        SelectLevel();
+        uint8 oldLevel = getLevel();
+        levelChanged = oldLevel != SelectLevel();
 
         setDeathState(JUST_RESPAWNED);
 
@@ -1839,7 +1843,15 @@ void Creature::Respawn(bool force)
 
     // xinef: relocate notifier, fixes npc appearing in corpse position after forced respawn (instead of spawn)
     m_last_notify_position.Relocate(-5000.0f, -5000.0f, -5000.0f, 0.0f);
-    UpdateObjectVisibility(false);
+
+    if (!levelChanged || !IsVisible())
+        UpdateObjectVisibility(false);
+    else
+    {
+        UpdateObjectVisibility(true);
+        SetVisible(false);
+        SetVisible(true);
+    }
 }
 
 void Creature::ForcedDespawn(uint32 timeMSToDespawn)

@@ -479,7 +479,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         bool Create(uint32 guidlow, Map* map, uint32 phaseMask, uint32 Entry, uint32 vehId, float x, float y, float z, float ang, const CreatureData* data = NULL);
         bool LoadCreaturesAddon(bool reload = false);
-        void SelectLevel(bool changelevel = true);
+        uint8 SelectLevel(bool changelevel = true);
         void LoadEquipment(int8 id = 1, bool force = false);
 
         uint32 GetDBTableGUIDLow() const { return m_DBTableGuid; }
