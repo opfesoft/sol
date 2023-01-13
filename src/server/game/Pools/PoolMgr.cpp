@@ -948,9 +948,7 @@ void PoolMgr::LoadQuestPools()
 
 void PoolMgr::SaveQuestsToDB(bool daily, bool weekly, bool other)
 {
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
-
-    // pussywizard: mysql thread races, change only what is meant to be changed
+    ACORE_GUARD(ACE_Thread_Mutex, mSaveQuestsToDBMutex);
     std::set<uint32> deletedPools;
     for (PoolGroupQuestMap::iterator itr = mPoolQuestGroups.begin(); itr != mPoolQuestGroups.end(); ++itr)
     {
@@ -967,7 +965,7 @@ void PoolMgr::SaveQuestsToDB(bool daily, bool weekly, bool other)
         }
         PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_QUEST_POOL_SAVE);
         stmt->setUInt32(0, itr->second.GetPoolId());
-        trans->Append(stmt);
+        CharacterDatabase.DirectExecute(stmt);
         deletedPools.insert(itr->second.GetPoolId());
     }
 
@@ -978,10 +976,8 @@ void PoolMgr::SaveQuestsToDB(bool daily, bool weekly, bool other)
                 PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_QUEST_POOL_SAVE);
                 stmt->setUInt32(0, itr->second);
                 stmt->setUInt32(1, itr->first);
-                trans->Append(stmt);
+                CharacterDatabase.DirectExecute(stmt);
             }
-
-    CharacterDatabase.CommitTransaction(trans);
 }
 
 void PoolMgr::ChangeDailyQuests()

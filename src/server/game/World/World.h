@@ -816,12 +816,12 @@ class World
         // callback for UpdateRealmCharacters
         void _UpdateRealmCharCount(PreparedQueryResult resultCharCount);
 
-        void InitDailyQuestResetTime();
-        void InitWeeklyQuestResetTime();
-        void InitMonthlyQuestResetTime();
-        void InitRandomBGResetTime();
-        void InitCalendarOldEventsDeletionTime();
-        void InitGuildResetTime();
+        time_t InitDailyQuestResetTime();
+        time_t InitWeeklyQuestResetTime();
+        time_t InitMonthlyQuestResetTime();
+        time_t InitRandomBGResetTime();
+        time_t InitCalendarOldEventsDeletionTime();
+        time_t InitGuildResetTime();
         void ResetDailyQuests();
         void ResetWeeklyQuests();
         void ResetMonthlyQuests();
@@ -913,6 +913,8 @@ class World
 
         void ProcessQueryCallbacks();
         ACE_Future_Set<PreparedQueryResult> m_realmCharCallbacks;
+
+        std::string GetTimeAsString(time_t t);
 };
  
 #define sWorld ACE_Singleton<World, ACE_Null_Mutex>::instance()

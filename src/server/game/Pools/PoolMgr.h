@@ -150,6 +150,8 @@ class PoolMgr
 
         // dynamic data
         ActivePoolData mSpawnedData;
+
+        ACE_Thread_Mutex mSaveQuestsToDBMutex;
 };
 
 #define sPoolMgr ACE_Singleton<PoolMgr, ACE_Null_Mutex>::instance()

@@ -1848,6 +1848,7 @@ void Creature::Respawn(bool force)
         UpdateObjectVisibility(false);
     else
     {
+        // Prevent levelup animation if old and new level differ
         UpdateObjectVisibility(true);
         SetVisible(false);
         SetVisible(true);

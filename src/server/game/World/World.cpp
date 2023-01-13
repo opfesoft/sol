@@ -1960,24 +1960,18 @@ void World::SetInitialWorldSettings()
     sLog->outString("Deleting expired bans...");
     LoginDatabase.Execute("DELETE FROM ip_banned WHERE unbandate <= UNIX_TIMESTAMP() AND unbandate<>bandate");      // One-time query
 
-    sLog->outString("Calculate next daily quest reset time...");
-    InitDailyQuestResetTime();
+    sLog->outString("Calculate next daily quest reset time: %s", GetTimeAsString(InitDailyQuestResetTime()).c_str());
 
-    sLog->outString("Calculate next weekly quest reset time..." );
-    InitWeeklyQuestResetTime();
+    sLog->outString("Calculate next weekly quest reset time: %s", GetTimeAsString(InitWeeklyQuestResetTime()).c_str());
 
-    sLog->outString("Calculate next monthly quest reset time...");
-    InitMonthlyQuestResetTime();
+    sLog->outString("Calculate next monthly quest reset time: %s", GetTimeAsString(InitMonthlyQuestResetTime()).c_str());
 
-    sLog->outString("Calculate random battleground reset time..." );
-    InitRandomBGResetTime();
+    sLog->outString("Calculate random battleground reset time: %s", GetTimeAsString(InitRandomBGResetTime()).c_str());
 
-    sLog->outString("Calculate deletion of old calendar events time...");
-    InitCalendarOldEventsDeletionTime();
+    sLog->outString("Calculate deletion of old calendar events time: %s", GetTimeAsString(InitCalendarOldEventsDeletionTime()).c_str());
 
-    sLog->outString("Calculate Guild cap reset time...");
+    sLog->outString("Calculate Guild cap reset time: %s", GetTimeAsString(InitGuildResetTime()).c_str());
     sLog->outString();
-    InitGuildResetTime();
 
     sLog->outString("Load Petitions...");
     sPetitionMgr->LoadPetitions();
@@ -2842,39 +2836,43 @@ time_t World::GetNextTimeWithMonthAndHour(int8 month, int8 hour)
     return mktime(&localTm);
 }
 
-void World::InitWeeklyQuestResetTime()
+time_t World::InitWeeklyQuestResetTime()
 {
     time_t wstime = time_t(sWorld->getWorldState(WS_WEEKLY_QUEST_RESET_TIME));
     m_NextWeeklyQuestReset = wstime ? wstime : GetNextTimeWithDayAndHour(4, 6);
     if (!wstime)
         sWorld->setWorldState(WS_WEEKLY_QUEST_RESET_TIME, uint64(m_NextWeeklyQuestReset));
+    return m_NextWeeklyQuestReset;
 }
 
-void World::InitDailyQuestResetTime()
+time_t World::InitDailyQuestResetTime()
 {
     time_t wstime = time_t(sWorld->getWorldState(WS_DAILY_QUEST_RESET_TIME));
     m_NextDailyQuestReset = wstime ? wstime : GetNextTimeWithDayAndHour(-1, 6);
     if (!wstime)
         sWorld->setWorldState(WS_DAILY_QUEST_RESET_TIME, uint64(m_NextDailyQuestReset));
+    return m_NextDailyQuestReset;
 }
 
-void World::InitMonthlyQuestResetTime()
+time_t World::InitMonthlyQuestResetTime()
 {
     time_t wstime = time_t(sWorld->getWorldState(WS_MONTHLY_QUEST_RESET_TIME));
     m_NextMonthlyQuestReset = wstime ? wstime : GetNextTimeWithMonthAndHour(-1, 6);
     if (!wstime)
         sWorld->setWorldState(WS_MONTHLY_QUEST_RESET_TIME, uint64(m_NextMonthlyQuestReset));
+    return m_NextMonthlyQuestReset;
 }
 
-void World::InitRandomBGResetTime()
+time_t World::InitRandomBGResetTime()
 {
     time_t wstime = time_t(sWorld->getWorldState(WS_BG_DAILY_RESET_TIME));
     m_NextRandomBGReset = wstime ? wstime : GetNextTimeWithDayAndHour(-1, 6);
     if (!wstime)
         sWorld->setWorldState(WS_BG_DAILY_RESET_TIME, uint64(m_NextRandomBGReset));
+    return m_NextRandomBGReset;
 }
 
-void World::InitCalendarOldEventsDeletionTime()
+time_t World::InitCalendarOldEventsDeletionTime()
 {
     time_t now = time(nullptr);
     time_t currentDeletionTime = getWorldState(WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME);
@@ -2889,18 +2887,23 @@ void World::InitCalendarOldEventsDeletionTime()
 
     if (!currentDeletionTime)
         sWorld->setWorldState(WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME, uint64(m_NextCalendarOldEventsDeletionTime));
+
+    return m_NextCalendarOldEventsDeletionTime;
 }
 
-void World::InitGuildResetTime()
+time_t World::InitGuildResetTime()
 {
     time_t wstime = time_t(getWorldState(WS_GUILD_DAILY_RESET_TIME));
     m_NextGuildReset = wstime ? wstime : GetNextTimeWithDayAndHour(-1, 6);
     if (!wstime)
         sWorld->setWorldState(WS_GUILD_DAILY_RESET_TIME, uint64(m_NextGuildReset));
+    return m_NextGuildReset;
 }
 
 void World::ResetDailyQuests()
 {
+    sLog->outString("Daily quests reset for all characters.");
+
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_QUEST_STATUS_DAILY);
     CharacterDatabase.Execute(stmt);
 
@@ -2936,6 +2939,8 @@ void World::SetPlayerSecurityLimit(AccountTypes _sec)
 
 void World::ResetWeeklyQuests()
 {
+    sLog->outString("Weekly quests reset for all characters.");
+
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_QUEST_STATUS_WEEKLY);
     CharacterDatabase.Execute(stmt);
 
@@ -3388,4 +3393,13 @@ bool World::IsPacketOutputAllowed(uint16 opcode) const
         return m_packetOutputWhitelist.count(opcode) ? true : false;
     else
         return true;
+}
+
+std::string World::GetTimeAsString(time_t t)
+{
+    char createdDateStr[20];
+    tm localTm;
+    ACE_OS::localtime_r(&t, &localTm);
+    strftime(createdDateStr, 20, "%Y-%m-%d %H:%M:%S", &localTm);
+    return std::string(createdDateStr);
 }
