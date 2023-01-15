@@ -31,7 +31,7 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
         _currDestPosition.Relocate(_initialPosition);
         creature->AddUnitState(UNIT_STATE_ROAMING_MOVE);
         Movement::MoveSplineInit init(creature);
-        init.MoveTo(_currDestPosition.GetPositionX(), _currDestPosition.GetPositionY(), _currDestPosition.GetPositionZ());
+        init.MoveTo(_currDestPosition.GetPositionX(), _currDestPosition.GetPositionY(), _currDestPosition.GetPositionZ(), true);
         bool walk = true;
         if (creature->GetAIName() == "SmartAI" && !creature->GetScriptId())
         {
@@ -60,226 +60,193 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
     Movement::PointsArray& finalPath = _preComputedPaths[pathIdx];
     if (finalPath.empty())
     {
-        Map* map = creature->GetMap();
-        float x = _destinationPoints[newPoint].x, y = _destinationPoints[newPoint].y, z = _destinationPoints[newPoint].z;
-        // invalid coordinates
-        if (!acore::IsValidMapCoord(x, y))
+        bool erase = true;
+
+        for (float i = 4.f; i > 0.f; i -= 1.f)
+        {
+            Map* map = creature->GetMap();
+            float x = _destinationPoints[newPoint].x, y = _destinationPoints[newPoint].y, z = _destinationPoints[newPoint].z;
+            // invalid coordinates
+            if (!acore::IsValidMapCoord(x, y))
+            {
+                _validPointsVector[_currentPoint].erase(randomIter);
+                _preComputedPaths.erase(pathIdx);
+                return;
+            }
+
+            float ground = INVALID_HEIGHT;
+            float levelZ = map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x, y, z+i, &ground);
+            float currentGround = INVALID_HEIGHT;
+            float currentLevelZ = map->GetWaterOrGroundLevel(creature->GetPhaseMask(), creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()+i, &currentGround);
+            float newZ = INVALID_HEIGHT;
+
+            // flying creature
+            if (creature->CanFly())
+                newZ = std::max<float>(levelZ, z + rand_norm()*_wanderDistance/2.0f);
+            // point underwater
+            else if (ground < levelZ)
+            {
+                if (!creature->CanSwim())
+                {
+                    if (ground < levelZ - 1.5f)
+                    {
+                        _validPointsVector[_currentPoint].erase(randomIter);
+                        _preComputedPaths.erase(pathIdx);
+                        return;
+                    }
+                    levelZ = ground;
+                }
+                else if (creature->isSwimming())
+                {
+                    if (levelZ > INVALID_HEIGHT)
+                        newZ = std::min<float>(levelZ-2.0f, z + rand_norm()*_wanderDistance/2.0f);
+                    newZ = std::max<float>(ground, newZ);
+                }
+                else
+                    levelZ = ground;
+            }
+            // point on ground
+            else
+            {
+                // prevent direct transition from deep water to land
+                if (currentGround < currentLevelZ - 1.5f)
+                {
+                    _validPointsVector[_currentPoint].erase(randomIter);
+                    _preComputedPaths.erase(pathIdx);
+                    return;
+                }
+                if (levelZ <= INVALID_HEIGHT || !creature->CanWalk())
+                {
+                    _validPointsVector[_currentPoint].erase(randomIter);
+                    _preComputedPaths.erase(pathIdx);
+                    return;
+                }
+            }
+
+            if (newZ > INVALID_HEIGHT)
+            {
+                // flying / swiming creature - dest not in los
+                if (!creature->IsWithinLOS(x, y, newZ))
+                    continue;
+
+                finalPath.push_back(G3D::Vector3(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()));
+                finalPath.push_back(G3D::Vector3(x, y, newZ));
+            }
+            else // ground
+            {
+                if (!map->isInLineOfSight(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()+0.3f, x, y, levelZ+0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                    continue;
+                else
+                {
+                    float x1, y1, z1, x2, y2, z2;
+                    Position::GetNearPoint2D(creature->GetPositionX(), creature->GetPositionY(), x1, y1, 0.5f, creature->GetAngle(x, y) + M_PI / 2.f);
+                    x2 = x - creature->GetPositionX() + x1;
+                    y2 = y - creature->GetPositionY() + y1;
+                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, creature->GetPositionZ() + i, &z1);
+                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, levelZ + i, &z2);
+
+                    if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                        continue;
+                    else
+                    {
+                        Position::GetNearPoint2D(creature->GetPositionX(), creature->GetPositionY(), x1, y1, 0.5f, creature->GetAngle(x, y) - M_PI / 2.f);
+                        x2 = x - creature->GetPositionX() + x1;
+                        y2 = y - creature->GetPositionY() + y1;
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, creature->GetPositionZ() + i, &z1);
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, levelZ + i, &z2);
+
+                        if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                            continue;
+                    }
+                }
+
+                bool result = _pathGenerator->CalculatePath(x, y, levelZ, false);
+                if (result && !(_pathGenerator->GetPathType() & PATHFIND_NOPATH))
+                {
+                    // generated path is too long
+                    float pathLen = _pathGenerator->getPathLength();
+                    if (pathLen*pathLen > creature->GetExactDistSq(x, y, levelZ) * MAX_PATH_LENGHT_FACTOR*MAX_PATH_LENGHT_FACTOR)
+                        continue;
+
+                    finalPath = _pathGenerator->GetPath();
+                    Movement::PointsArray::iterator itr = finalPath.begin();
+                    Movement::PointsArray::iterator itrNext = finalPath.begin()+1;
+                    float zDiff, zDiffPre, distDiff, distX, distY, zCurrent, zNext, zNextPre, zNextPost, xNextPost, yNextPost;
+
+                    for (; itrNext != finalPath.end(); ++itr, ++itrNext)
+                    {
+                        zCurrent = zNext = zNextPre = zNextPost = INVALID_HEIGHT;
+                        distX = (*itrNext).x - (*itr).x;
+                        distY = (*itrNext).y - (*itr).y;
+                        if (distX == 0.f && distY == 0.f)
+                            continue;
+
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itr).x, (*itr).y, (*itr).z + i, &zCurrent);
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x, (*itrNext).y, (*itrNext).z + i, &zNext);
+                        distDiff = sqrt(distX * distX + distY * distY);
+                        xNextPost = (*itrNext).x - distX / -distDiff;
+                        yNextPost = (*itrNext).y - distY / -distDiff;
+                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), xNextPost, yNextPost, (*itrNext).z + i, &zNextPost);
+                        if (distDiff > 1.0f)
+                        {
+                            map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x - distX / distDiff, (*itrNext).y - distY / distDiff, (*itrNext).z + i, &zNextPre);
+                            zDiffPre = fabs(zNext - zNextPre);
+                        }
+                        else
+                            zDiffPre = 0.f;
+
+                        zDiff = fabs(zCurrent - zNext);
+
+                        // Xinef: tree climbing, cut as much as we can
+                        if (zDiff > 2.0f || zDiffPre > 0.5f ||
+                            (G3D::fuzzyNe(zDiff, 0.0f) && distDiff / zDiff < 2.15f)) // ~25˚
+                            continue;
+
+                        if (zCurrent <= INVALID_HEIGHT || zNextPost <= INVALID_HEIGHT || !map->isInLineOfSight((*itr).x, (*itr).y, zCurrent + 0.3f, xNextPost, yNextPost, zNextPost + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                            continue;
+                        else
+                        {
+                            float x1, y1, z1, x2, y2, z2;
+                            Position p = { (*itr).x, (*itr).y, 0.f, 0.f };
+                            Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x1, y1, 0.5f, p.GetAngle(xNextPost, yNextPost) + M_PI / 2.f);
+                            x2 = xNextPost - p.GetPositionX() + x1;
+                            y2 = yNextPost - p.GetPositionY() + y1;
+                            map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, zCurrent + i, &z1);
+                            map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + i, &z2);
+
+                            if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                                continue;
+                            else
+                            {
+                                Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x1, y1, 0.5f, p.GetAngle(xNextPost, yNextPost) - M_PI / 2.f);
+                                x2 = xNextPost - p.GetPositionX() + x1;
+                                y2 = yNextPost - p.GetPositionY() + y1;
+                                map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, zCurrent + i, &z1);
+                                map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + i, &z2);
+
+                                if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
+                                    continue;
+                            }
+                        }
+                    }
+
+                    // no valid path
+                    if (finalPath.size() < 2)
+                        continue;
+                }
+                else
+                    continue;
+            }
+
+            erase = false;
+            break;
+        }
+
+        if (erase)
         {
             _validPointsVector[_currentPoint].erase(randomIter);
             _preComputedPaths.erase(pathIdx);
             return;
-        }
-
-        float ground = INVALID_HEIGHT;
-        float levelZ = map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x, y, z+4.0f, &ground);
-        float currentGround = INVALID_HEIGHT;
-        float currentLevelZ = map->GetWaterOrGroundLevel(creature->GetPhaseMask(), creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()+4.0f, &currentGround);
-        float newZ = INVALID_HEIGHT;
-
-        // flying creature
-        if (creature->CanFly())
-            newZ = std::max<float>(levelZ, z + rand_norm()*_wanderDistance/2.0f);
-        // point underwater
-        else if (ground < levelZ)
-        {
-            if (!creature->CanSwim())
-            {
-                if (ground < levelZ - 1.5f)
-                {
-                    _validPointsVector[_currentPoint].erase(randomIter);
-                    _preComputedPaths.erase(pathIdx);
-                    return;
-                }
-                levelZ = ground;
-            }
-            else if (creature->isSwimming())
-            {
-                if (levelZ > INVALID_HEIGHT)
-                    newZ = std::min<float>(levelZ-2.0f, z + rand_norm()*_wanderDistance/2.0f);
-                newZ = std::max<float>(ground, newZ);
-            }
-            else
-                levelZ = ground;
-        }
-        // point on ground
-        else
-        {
-            // prevent direct transition from deep water to land
-            if (currentGround < currentLevelZ - 1.5f)
-            {
-                _validPointsVector[_currentPoint].erase(randomIter);
-                _preComputedPaths.erase(pathIdx);
-                return;
-            }
-            if (levelZ <= INVALID_HEIGHT || !creature->CanWalk())
-            {
-                _validPointsVector[_currentPoint].erase(randomIter);
-                _preComputedPaths.erase(pathIdx);
-                return;
-            }
-        }
-
-        if (newZ > INVALID_HEIGHT)
-        {
-            // flying / swiming creature - dest not in los
-            if (!creature->IsWithinLOS(x, y, newZ))
-            {
-                _validPointsVector[_currentPoint].erase(randomIter);
-                _preComputedPaths.erase(pathIdx);
-                return;
-            }
-
-            finalPath.push_back(G3D::Vector3(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()));
-            finalPath.push_back(G3D::Vector3(x, y, newZ));
-        }
-        else // ground
-        {
-            if (!map->isInLineOfSight(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()+0.3f, x, y, levelZ+0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-            {
-                _validPointsVector[_currentPoint].erase(randomIter);
-                _preComputedPaths.erase(pathIdx);
-                return;
-            }
-            else
-            {
-                float x1, y1, z1, x2, y2, z2;
-                Position::GetNearPoint2D(creature->GetPositionX(), creature->GetPositionY(), x1, y1, 0.5f, creature->GetAngle(x, y) + M_PI / 2.f);
-                x2 = x - creature->GetPositionX() + x1;
-                y2 = y - creature->GetPositionY() + y1;
-                map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, creature->GetPositionZ() + 4.0f, &z1);
-                map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, levelZ + 4.0f, &z2);
-
-                if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                {
-                    _validPointsVector[_currentPoint].erase(randomIter);
-                    _preComputedPaths.erase(pathIdx);
-                    return;
-                }
-                else
-                {
-                    Position::GetNearPoint2D(creature->GetPositionX(), creature->GetPositionY(), x1, y1, 0.5f, creature->GetAngle(x, y) - M_PI / 2.f);
-                    x2 = x - creature->GetPositionX() + x1;
-                    y2 = y - creature->GetPositionY() + y1;
-                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, creature->GetPositionZ() + 4.0f, &z1);
-                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, levelZ + 4.0f, &z2);
-
-                    if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                    {
-                        _validPointsVector[_currentPoint].erase(randomIter);
-                        _preComputedPaths.erase(pathIdx);
-                        return;
-                    }
-                }
-            }
-
-            bool result = _pathGenerator->CalculatePath(x, y, levelZ, false);
-            if (result && !(_pathGenerator->GetPathType() & PATHFIND_NOPATH))
-            {
-                // generated path is too long
-                float pathLen = _pathGenerator->getPathLength();
-                if (pathLen*pathLen > creature->GetExactDistSq(x, y, levelZ) * MAX_PATH_LENGHT_FACTOR*MAX_PATH_LENGHT_FACTOR)
-                {
-                    _validPointsVector[_currentPoint].erase(randomIter);
-                    _preComputedPaths.erase(pathIdx);
-                    return;
-                }
-
-                finalPath = _pathGenerator->GetPath();
-                Movement::PointsArray::iterator itr = finalPath.begin();
-                Movement::PointsArray::iterator itrNext = finalPath.begin()+1;
-                float zDiff, zDiffPre, distDiff, distX, distY, zCurrent, zNext, zNextPre, zNextPost, xNextPost, yNextPost;
-
-                for (; itrNext != finalPath.end(); ++itr, ++itrNext)
-                {
-                    zCurrent = zNext = zNextPre = zNextPost = INVALID_HEIGHT;
-                    distX = (*itrNext).x - (*itr).x;
-                    distY = (*itrNext).y - (*itr).y;
-                    if (distX == 0.f && distY == 0.f)
-                    {
-                        _validPointsVector[_currentPoint].erase(randomIter);
-                        _preComputedPaths.erase(pathIdx);
-                        return;
-                    }
-
-                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itr).x, (*itr).y, (*itr).z + 4.0f, &zCurrent);
-                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x, (*itrNext).y, (*itrNext).z + 4.0f, &zNext);
-                    distDiff = sqrt(distX * distX + distY * distY);
-                    xNextPost = (*itrNext).x - distX / -distDiff;
-                    yNextPost = (*itrNext).y - distY / -distDiff;
-                    map->GetWaterOrGroundLevel(creature->GetPhaseMask(), xNextPost, yNextPost, (*itrNext).z + 4.0f, &zNextPost);
-                    if (distDiff > 1.0f)
-                    {
-                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x - distX / distDiff, (*itrNext).y - distY / distDiff, (*itrNext).z + 4.0f, &zNextPre);
-                        zDiffPre = fabs(zNext - zNextPre);
-                    }
-                    else
-                        zDiffPre = 0.f;
-
-                    zDiff = fabs(zCurrent - zNext);
-
-                    // Xinef: tree climbing, cut as much as we can
-                    if (zDiff > 2.0f || zDiffPre > 0.5f ||
-                        (G3D::fuzzyNe(zDiff, 0.0f) && distDiff / zDiff < 2.15f)) // ~25˚
-                    {
-                        _validPointsVector[_currentPoint].erase(randomIter);
-                        _preComputedPaths.erase(pathIdx);
-                        return;
-                    }
-
-                    if (zCurrent <= INVALID_HEIGHT || zNextPost <= INVALID_HEIGHT || !map->isInLineOfSight((*itr).x, (*itr).y, zCurrent + 0.3f, xNextPost, yNextPost, zNextPost + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                    {
-                        _validPointsVector[_currentPoint].erase(randomIter);
-                        _preComputedPaths.erase(pathIdx);
-                        return;
-                    }
-                    else
-                    {
-                        float x1, y1, z1, x2, y2, z2;
-                        Position p = { (*itr).x, (*itr).y, 0.f, 0.f };
-                        Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x1, y1, 0.5f, p.GetAngle(xNextPost, yNextPost) + M_PI / 2.f);
-                        x2 = xNextPost - p.GetPositionX() + x1;
-                        y2 = yNextPost - p.GetPositionY() + y1;
-                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, zCurrent + 4.0f, &z1);
-                        map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + 4.0f, &z2);
-
-                        if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                        {
-                            _validPointsVector[_currentPoint].erase(randomIter);
-                            _preComputedPaths.erase(pathIdx);
-                            return;
-                        }
-                        else
-                        {
-                            Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x1, y1, 0.5f, p.GetAngle(xNextPost, yNextPost) - M_PI / 2.f);
-                            x2 = xNextPost - p.GetPositionX() + x1;
-                            y2 = yNextPost - p.GetPositionY() + y1;
-                            map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x1, y1, zCurrent + 4.0f, &z1);
-                            map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + 4.0f, &z2);
-
-                            if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                            {
-                                _validPointsVector[_currentPoint].erase(randomIter);
-                                _preComputedPaths.erase(pathIdx);
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                // no valid path
-                if (finalPath.size() < 2)
-                {
-                    _validPointsVector[_currentPoint].erase(randomIter);
-                    _preComputedPaths.erase(pathIdx);
-                    return;
-                }
-            }
-            else
-            {
-                _validPointsVector[_currentPoint].erase(randomIter);
-                _preComputedPaths.erase(pathIdx);
-                return;
-            }
         }
     }
 
