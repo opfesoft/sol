@@ -142,6 +142,18 @@ void FormationMgr::LoadCreatureFormations()
     sLog->outString();
 }
 
+void FormationMgr::UpdateFormationInfo(Creature* member, float dist, float angle, uint32 groupAI)
+{
+    uint32 guid = member->GetDBTableGUIDLow() ? member->GetDBTableGUIDLow() : member->GetGUIDLow();
+    CreatureGroupInfoType::iterator itr = sFormationMgr->CreatureGroupMap.find(guid);
+    if (itr != sFormationMgr->CreatureGroupMap.end())
+    {
+         itr->second->follow_dist = dist;
+         itr->second->follow_angle = angle;
+         itr->second->groupAI = groupAI;
+    }
+}
+
 void CreatureGroup::AddMember(Creature* member, float dist, float angle, uint32 groupAI)
 {
     if (m_members.find(member) != m_members.end())

@@ -37,6 +37,7 @@ class FormationMgr
         void AddCreatureToGroup(Creature* leader, Creature* creature, float dist = 0.f, float angle = 0.f, uint32 groupAI = 0);
         void RemoveCreatureFromGroup(CreatureGroup* group, Creature* creature);
         void LoadCreatureFormations();
+        void UpdateFormationInfo(Creature* member, float dist, float angle, uint32 groupAI);
         CreatureGroupInfoType CreatureGroupMap;
 };
 

@@ -3307,10 +3307,16 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!me)
             break;
 
-        if (e.action.creatureFormation.leaveFormation)
+        if (e.action.creatureFormation.updateFormation == 1)
         {
             if (me->GetFormation())
                 sFormationMgr->RemoveCreatureFromGroup(me->GetFormation(), me);
+            break;
+        }
+        else if (e.action.creatureFormation.updateFormation == 2)
+        {
+            if (me->GetFormation())
+                sFormationMgr->UpdateFormationInfo(me, e.target.z, e.target.o * M_PI / 180.0f, e.action.creatureFormation.groupAI);
             break;
         }
 

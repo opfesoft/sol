@@ -1291,7 +1291,7 @@ struct SmartAction
         struct
         {
             uint32 groupAI;
-            uint32 leaveFormation;
+            uint32 updateFormation;
         } creatureFormation;
 
         struct
