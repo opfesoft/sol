@@ -23181,6 +23181,21 @@ void Player::UpdateVisibilityOf(WorldObject* target)
         if (CanSeeOrDetect(target, false, true))
         {
             target->SendUpdateToPlayer(this);
+            if (Creature* creature = target->ToCreature(); creature && creature->HasLevelRange())
+            {
+                if (auto it = creatureLevels.find(creature->GetGUIDLow()); it != creatureLevels.end())
+                {
+                    if (it->second != creature->getLevel())
+                    {
+                        // Prevent levelup animation if old and new level differ
+                        creature->DestroyForPlayer(this);
+                        creature->SendUpdateToPlayer(this);
+                        it->second = creature->getLevel();
+                    }
+                }
+                else
+                    creatureLevels.emplace(creature->GetGUIDLow(), creature->getLevel());
+            }
             m_clientGUIDs.insert(target->GetGUID());
 
             // target aura duration for caster show only if target exist at caster client
@@ -23261,6 +23276,21 @@ void Player::UpdateVisibilityOf(T* target, UpdateData& data, std::vector<Unit*>&
         if (CanSeeOrDetect(target, false, true))
         {
             target->BuildCreateUpdateBlockForPlayer(&data, this);
+            if (Creature* creature = target->ToCreature(); creature && creature->HasLevelRange())
+            {
+                if (auto it = creatureLevels.find(creature->GetGUIDLow()); it != creatureLevels.end())
+                {
+                    if (it->second != creature->getLevel())
+                    {
+                        // Prevent levelup animation if old and new level differ
+                        creature->BuildOutOfRangeUpdateBlock(&data);
+                        creature->BuildCreateUpdateBlockForPlayer(&data, this);
+                        it->second = creature->getLevel();
+                    }
+                }
+                else
+                    creatureLevels.emplace(creature->GetGUIDLow(), creature->getLevel());
+            }
             UpdateVisibilityOf_helper(m_clientGUIDs, target, visibleNow);
         }
     }

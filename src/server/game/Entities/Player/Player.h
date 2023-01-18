@@ -2972,6 +2972,8 @@ class Player : public Unit, public GridObject<Player>
         bool m_isInstantFlightOn;
 
         uint32 m_flightSpellActivated;
+
+        std::unordered_map<uint32, uint8> creatureLevels;
 };
 
 void AddItemsSetItem(Player* player, Item* item);
