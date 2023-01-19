@@ -728,7 +728,6 @@ public:
         std::string curRespawnDelayStr = secsToTimeString(uint64(curRespawnDelay), true);
         std::string defRespawnDelayStr = secsToTimeString(target->GetRespawnDelay(), true);
 
-        handler->PSendSysMessage(LANG_NPCINFO_CHAR,  target->GetDBTableGUIDLow(), target->GetGUIDLow(), target->isActiveObject(), faction, npcflags, Entry, displayid, nativeid);
         handler->PSendSysMessage(LANG_NPCINFO_LEVEL, target->getLevel());
         handler->PSendSysMessage(LANG_NPCINFO_EQUIPMENT, target->GetCurrentEquipmentId(), target->GetOriginalEquipmentId());
         handler->PSendSysMessage(LANG_NPCINFO_HEALTH, target->GetCreateHealth(), target->GetMaxHealth(), target->GetHealth());
@@ -750,6 +749,8 @@ public:
         for (uint8 i = 1; i < MAX_MECHANIC; ++i)
             if (mechanicImmuneMask & (1 << (mechanicImmunes[i].flag - 1)))
                 handler->PSendSysMessage(mechanicImmunes[i].text, mechanicImmunes[i].flag);
+
+        handler->PSendSysMessage(LANG_NPCINFO_CHAR,  target->GetDBTableGUIDLow(), target->GetGUIDLow(), target->isActiveObject(), faction, npcflags, Entry, displayid, nativeid);
 
         return true;
     }
