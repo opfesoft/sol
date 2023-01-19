@@ -1579,7 +1579,7 @@ class Player : public Unit, public GridObject<Player>
         static void Customize(uint64 guid, uint8 gender, uint8 skin, uint8 face, uint8 hairStyle, uint8 hairColor, uint8 facialHair);
         static void SavePositionInDB(uint32 mapid, float x, float y, float z, float o, uint32 zone, uint64 guid);
 
-        static void DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmChars, bool deleteFinally);
+        static void DeleteFromDB(uint64 playerguid, bool deleteFinally);
         static void DeleteOldCharacters();
         static void DeleteOldCharacters(uint32 keepDays);
 

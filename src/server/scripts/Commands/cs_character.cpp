@@ -624,7 +624,7 @@ public:
 
         // Call the appropriate function to delete them (current account for deleted characters is 0)
         for (DeletedInfoList::const_iterator itr = foundList.begin(); itr != foundList.end(); ++itr)
-            Player::DeleteFromDB(itr->lowGuid, 0, false, true);
+            Player::DeleteFromDB(itr->lowGuid, true);
 
         return true;
     }
@@ -708,7 +708,7 @@ public:
         std::string accountName;
         AccountMgr::GetName(accountId, accountName);
 
-        Player::DeleteFromDB(characterGuid, accountId, true, true);
+        Player::DeleteFromDB(characterGuid, true);
         handler->PSendSysMessage(LANG_CHARACTER_DELETED, characterName.c_str(), characterGuid, accountName.c_str(), accountId);
 
         return true;

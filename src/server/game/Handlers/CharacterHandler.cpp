@@ -242,6 +242,8 @@ void WorldSession::HandleCharEnumOpcode(WorldPacket & /*recvData*/)
     stmt->setUInt32(1, GetAccountId());
 
     _charEnumCallback = CharacterDatabase.AsyncQuery(stmt);
+
+    sWorld->UpdateRealmCharCount(GetAccountId());
 }
 
 void WorldSession::HandleCharCreateOpcode(WorldPacket& recvData)
@@ -743,7 +745,7 @@ void WorldSession::HandleCharDeleteOpcode(WorldPacket& recvData)
     }
 
     sCalendarMgr->RemoveAllPlayerEventsAndInvites(guid);
-    Player::DeleteFromDB(guid, GetAccountId(), true, false);
+    Player::DeleteFromDB(guid, false);
 
     sWorld->DeleteGlobalPlayerData(GUID_LOPART(guid), name);
     WorldPacket data(SMSG_CHAR_DELETE, 1);

@@ -80,7 +80,7 @@ namespace AccountMgr
                     s->LogoutPlayer(false);                     // logout player without waiting next session list update
                 }
 
-                Player::DeleteFromDB(guid, accountId, false, true);       // no need to update realm characters
+                Player::DeleteFromDB(guid, true);
             } while (result->NextRow());
         }
 

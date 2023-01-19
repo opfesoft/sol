@@ -4773,16 +4773,10 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
  * The way, how the characters will be deleted is decided based on the config option.
  *
  * @param playerguid       the low-GUID from the player which should be deleted
- * @param accountId        the account id from the player
- * @param updateRealmChars when this flag is set, the amount of characters on that realm will be updated in the realmlist
  * @param deleteFinally    if this flag is set, the config option will be ignored and the character will be permanently removed from the database
  */
-void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmChars, bool deleteFinally)
+void Player::DeleteFromDB(uint64 playerguid, bool deleteFinally)
 {
-    // for not existed account avoid update realm
-    if (accountId == 0)
-        updateRealmChars = false;
-
     uint32 charDelete_method = sWorld->getIntConfig(CONFIG_CHARDELETE_METHOD);
     uint32 charDelete_minLvl = sWorld->getIntConfig(CONFIG_CHARDELETE_MIN_LEVEL);
 
@@ -5114,9 +5108,6 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
             sLog->outError("Player::DeleteFromDB: Unsupported delete method: %u.", charDelete_method);
             return;
     }
-
-    if (updateRealmChars)
-        sWorld->UpdateRealmCharCount(accountId);
 }
 
 /**
@@ -5149,7 +5140,7 @@ void Player::DeleteOldCharacters(uint32 keepDays)
          do
          {
             Field* fields = result->Fetch();
-            Player::DeleteFromDB(fields[0].GetUInt32(), fields[1].GetUInt32(), true, true);
+            Player::DeleteFromDB(fields[0].GetUInt32(), true);
          }
          while (result->NextRow());
     }
