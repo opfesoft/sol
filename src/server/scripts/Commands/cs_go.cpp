@@ -532,9 +532,13 @@ public:
         if (!*args)
             return false;
 
+        std::string s(args);
+        std::replace(s.begin(), s.end(), ',', ' ');
+        std::replace(s.begin(), s.end(), '|', ' ');
+
         Player* player = handler->GetSession()->GetPlayer();
 
-        char* goX = strtok((char*)args, " ");
+        char* goX = strtok((char*)s.c_str(), " ");
         char* goY = strtok(nullptr, " ");
         char* goZ = strtok(nullptr, " ");
         char* id = strtok(nullptr, " ");
