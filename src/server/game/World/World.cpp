@@ -2874,20 +2874,10 @@ time_t World::InitRandomBGResetTime()
 
 time_t World::InitCalendarOldEventsDeletionTime()
 {
-    time_t now = time(nullptr);
-    time_t currentDeletionTime = getWorldState(WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME);
-    time_t nextDeletionTime = currentDeletionTime ? currentDeletionTime : GetNextTimeWithDayAndHour(-1, getIntConfig(CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR));
-
-    // If the reset time saved in the worldstate is before now it means the server was offline when the reset was supposed to occur.
-    // In this case we set the reset time in the past and next world update will do the reset and schedule next one in the future.
-    if (currentDeletionTime < now)
-        m_NextCalendarOldEventsDeletionTime = nextDeletionTime - DAY;
-    else
-        m_NextCalendarOldEventsDeletionTime = nextDeletionTime;
-
-    if (!currentDeletionTime)
+    time_t wstime = time_t(sWorld->getWorldState(WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME));
+    m_NextCalendarOldEventsDeletionTime = wstime ? wstime : GetNextTimeWithDayAndHour(-1, getIntConfig(CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR));
+    if (!wstime)
         sWorld->setWorldState(WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME, uint64(m_NextCalendarOldEventsDeletionTime));
-
     return m_NextCalendarOldEventsDeletionTime;
 }
 
@@ -3002,7 +2992,7 @@ void World::CalendarDeleteOldEvents()
 {
     sLog->outString("Calendar deletion of old events.");
 
-    m_NextCalendarOldEventsDeletionTime = time_t(m_NextCalendarOldEventsDeletionTime + DAY);
+    m_NextCalendarOldEventsDeletionTime = GetNextTimeWithDayAndHour(-1, getIntConfig(CONFIG_CALENDAR_DELETE_OLD_EVENTS_HOUR));
     sWorld->setWorldState(WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME, uint64(m_NextCalendarOldEventsDeletionTime));
     sCalendarMgr->DeleteOldEvents();
 }
