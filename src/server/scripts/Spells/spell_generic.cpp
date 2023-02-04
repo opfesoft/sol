@@ -1664,6 +1664,47 @@ class spell_gen_freezing_circle : public SpellScriptLoader
         }
 };
 
+// 33810 - Rock Shell
+
+enum RockShell
+{
+    SPELL_BROKEN_RAGE = 33811,
+};
+
+class spell_gen_rock_shell : public SpellScriptLoader
+{
+public:
+    spell_gen_rock_shell() : SpellScriptLoader("spell_gen_rock_shell") { }
+
+    class spell_gen_rock_shell_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_gen_rock_shell_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/)
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_BROKEN_RAGE))
+                return false;
+            return true;
+        }
+
+        void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_ENEMY_SPELL)
+                GetTarget()->CastSpell(GetTarget(), SPELL_BROKEN_RAGE, true);
+        }
+
+        void Register()
+        {
+            AfterEffectRemove += AuraEffectRemoveFn(spell_gen_rock_shell_AuraScript::AfterRemove, EFFECT_ALL, SPELL_AURA_ANY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_gen_rock_shell_AuraScript();
+    }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5372,6 +5413,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_soul_deflection();
     new spell_gen_seal_of_blood();
     new spell_gen_freezing_circle();
+    new spell_gen_rock_shell();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();
