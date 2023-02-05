@@ -5000,6 +5000,15 @@ void SmartScript::OnInitialize(WorldObject* obj, AreaTrigger const* at)
     uint32 minEnableDist = 0;
     for (SmartAIEventList::iterator i = mEvents.begin(); i != mEvents.end(); ++i)
     {
+        if (obj)
+        {
+            ConditionList const conds = sConditionMgr->GetConditionsForSmartEvent((*i).entryOrGuid, (*i).event_id, (*i).source_type);
+            ConditionSourceInfo info = ConditionSourceInfo(NULL, obj, NULL);
+
+            if (!sConditionMgr->IsObjectMeetToConditions(info, conds))
+                continue;
+        }
+
         InitTimer((*i));//calculate timers for first time use
         if (i->GetEventType() == SMART_EVENT_RANGE && i->GetActionType() == SMART_ACTION_ALLOW_COMBAT_MOVEMENT)
         {
