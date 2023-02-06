@@ -564,7 +564,7 @@ void Creature::Update(uint32 diff)
                 if (!allowed)                                               // Will be rechecked on next Update call
                     break;
 
-                uint64 dbtableHighGuid = MAKE_NEW_GUID(m_DBTableGuid, GetEntry(), HIGHGUID_UNIT);
+                uint64 dbtableHighGuid = MAKE_NEW_GUID(m_DBTableGuid, m_creatureData ? m_creatureData->id : GetEntry(), HIGHGUID_UNIT);
                 time_t linkedRespawntime = GetMap()->GetLinkedRespawnTime(dbtableHighGuid);
                 if (!linkedRespawntime)             // Can respawn
                     Respawn();
@@ -1399,7 +1399,7 @@ bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const
 
     SetOriginalEntry(Entry);
 
-    Object::_Create(guidlow, Entry, (vehId || normalInfo->VehicleId) ? HIGHGUID_VEHICLE : HIGHGUID_UNIT);
+    Object::_Create(guidlow, data ? data->id : Entry, (vehId || normalInfo->VehicleId) ? HIGHGUID_VEHICLE : HIGHGUID_UNIT);
 
     // Xinef: select proper vehicle id
     if (!vehId)
@@ -1464,7 +1464,7 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap)
             if (uint32 rolledGuid = SetRolledGuidForMap(rolledCreatureId, map); rolledGuid && rolledGuid == m_DBTableGuid)
                 creatureId = rolledCreatureId;
 
-        if (map->GetCreature(MAKE_NEW_GUID(guid, creatureId, HIGHGUID_UNIT)))
+        if (map->GetCreature(MAKE_NEW_GUID(guid, data->id, HIGHGUID_UNIT)))
             return false;
     }
     else
