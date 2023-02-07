@@ -1793,7 +1793,13 @@ void Creature::Respawn(bool force)
 
             if (m_originalEntry != GetEntry())
             {
-                UpdateEntry(m_originalEntry, m_originalEntry == m_creatureData->id ? m_creatureData : nullptr);
+                bool useCreatureData = m_originalEntry == m_creatureData->id;
+                UpdateEntry(m_originalEntry, useCreatureData ? m_creatureData : nullptr);
+                int8 equipId = useCreatureData ? m_creatureData->equipmentId : -1;
+                if (!sObjectMgr->GetEquipmentInfo(m_originalEntry, equipId))
+                    LoadEquipment(0, true);
+                else
+                    LoadEquipment(equipId);
                 m_defaultMovementType = MovementGeneratorType(m_creatureData->movementType);
                 if (!m_wanderDistance && m_defaultMovementType == RANDOM_MOTION_TYPE)
                     m_defaultMovementType = IDLE_MOTION_TYPE;
