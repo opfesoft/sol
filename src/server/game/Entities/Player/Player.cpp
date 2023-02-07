@@ -23172,20 +23172,10 @@ void Player::UpdateVisibilityOf(WorldObject* target)
         if (CanSeeOrDetect(target, false, true))
         {
             target->SendUpdateToPlayer(this);
-            if (Creature* creature = target->ToCreature(); creature && creature->HasLevelRange())
+            if (CheckLevelChanged(target->ToCreature()))
             {
-                if (auto it = creatureLevels.find(creature->GetGUIDLow()); it != creatureLevels.end())
-                {
-                    if (it->second != creature->getLevel())
-                    {
-                        // Prevent levelup animation if old and new level differ
-                        creature->DestroyForPlayer(this);
-                        creature->SendUpdateToPlayer(this);
-                        it->second = creature->getLevel();
-                    }
-                }
-                else
-                    creatureLevels.emplace(creature->GetGUIDLow(), creature->getLevel());
+                // Prevent levelup animation if old and new level differ
+                target->SendUpdateToPlayerPreventLevelUp(this);
             }
             m_clientGUIDs.insert(target->GetGUID());
 
@@ -23267,20 +23257,11 @@ void Player::UpdateVisibilityOf(T* target, UpdateData& data, std::vector<Unit*>&
         if (CanSeeOrDetect(target, false, true))
         {
             target->BuildCreateUpdateBlockForPlayer(&data, this);
-            if (Creature* creature = target->ToCreature(); creature && creature->HasLevelRange())
+            if (CheckLevelChanged(target->ToCreature()))
             {
-                if (auto it = creatureLevels.find(creature->GetGUIDLow()); it != creatureLevels.end())
-                {
-                    if (it->second != creature->getLevel())
-                    {
-                        // Prevent levelup animation if old and new level differ
-                        creature->BuildOutOfRangeUpdateBlock(&data);
-                        creature->BuildCreateUpdateBlockForPlayer(&data, this);
-                        it->second = creature->getLevel();
-                    }
-                }
-                else
-                    creatureLevels.emplace(creature->GetGUIDLow(), creature->getLevel());
+                // Prevent levelup animation if old and new level differ
+                target->BuildOutOfRangeUpdateBlock(&data);
+                target->BuildCreateUpdateBlockForPlayer(&data, this);
             }
             UpdateVisibilityOf_helper(m_clientGUIDs, target, visibleNow);
         }
@@ -27816,6 +27797,25 @@ bool Player::IsPetDismissed()
 
     if (PreparedQueryResult result = CharacterDatabase.AsyncQuery(stmt))
         return true;
+
+    return false;
+}
+
+bool Player::CheckLevelChanged(Creature const* creature)
+{
+    if (creature)
+    {
+        if (auto it = m_creatureLevels.find(creature->GetGUIDLow()); it != m_creatureLevels.end())
+        {
+            if (it->second != creature->getLevel())
+            {
+                it->second = creature->getLevel();
+                return true;
+            }
+        }
+        else
+            m_creatureLevels.emplace(creature->GetGUIDLow(), creature->getLevel());
+    }
 
     return false;
 }

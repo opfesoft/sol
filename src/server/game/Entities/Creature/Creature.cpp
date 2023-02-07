@@ -170,7 +170,7 @@ m_reactState(REACT_AGGRESSIVE), m_defaultMovementType(IDLE_MOTION_TYPE),
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
 m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_despawnTime(0), m_killDelay(0), m_killTime(0), m_waypointID(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0),
-m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false), m_hasLevelRange(false)
+m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
     m_idleLosCheckTimer = CREATURE_IDLE_LOS_CHECK_INTERVAL;
@@ -1261,18 +1261,7 @@ void Creature::SelectLevel(bool changelevel)
     // level
     uint8 minlevel = std::min(cInfo->maxlevel, cInfo->minlevel);
     uint8 maxlevel = std::max(cInfo->maxlevel, cInfo->minlevel);
-    uint8 level = 0;
-    if (minlevel == maxlevel)
-    {
-        level = minlevel;
-        m_hasLevelRange = false;
-    }
-    else
-    {
-        level = urand(minlevel, maxlevel);
-        m_hasLevelRange = true;
-    }
-
+    uint8 level = minlevel == maxlevel ? minlevel : urand(minlevel, maxlevel);
     if (changelevel)
         SetLevel(level);
 

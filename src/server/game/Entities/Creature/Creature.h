@@ -734,7 +734,6 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         void LowerPlayerDamageReq(uint32 unDamage, bool damagedByPlayer = true);
         void ResetPlayerDamageReq();
         uint32 GetPlayerDamageReq() const;
-        bool HasLevelRange() const { return m_hasLevelRange; }
 
         uint32 GetOriginalEntry() const { return m_originalEntry; }
         void SetOriginalEntry(uint32 entry) { m_originalEntry = entry; }
@@ -859,7 +858,6 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool m_spawnedByDefault;
         uint32 m_playerDamageReq;
         bool m_damagedByPlayer;
-        bool m_hasLevelRange;
 
         inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
         inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;

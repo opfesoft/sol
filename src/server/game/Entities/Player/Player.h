@@ -2634,6 +2634,8 @@ class Player : public Unit, public GridObject<Player>
 
         WorldObject* GetMover() const { return m_mover; }
 
+        bool CheckLevelChanged(Creature const* creature);
+
     protected:
         // Gamemaster whisper whitelist
         WhisperListContainer WhisperList;
@@ -2973,7 +2975,7 @@ class Player : public Unit, public GridObject<Player>
 
         uint32 m_flightSpellActivated;
 
-        std::unordered_map<uint32, uint8> creatureLevels;
+        std::unordered_map<uint32, uint8> m_creatureLevels;
 };
 
 void AddItemsSetItem(Player* player, Item* item);
