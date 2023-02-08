@@ -27803,7 +27803,7 @@ bool Player::IsPetDismissed()
 
 bool Player::CheckLevelChanged(Creature const* creature)
 {
-    if (creature)
+    if (creature && creature->HasLevelRange())
     {
         if (auto it = m_creatureLevels.find(creature->GetGUIDLow()); it != m_creatureLevels.end())
         {
