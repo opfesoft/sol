@@ -573,7 +573,7 @@ void ObjectMgr::LoadCreatureTemplateAddons()
                 continue;
             }
             if (AdditionalSpellInfo->GetDuration() > 0)
-                sLog->outString("WARNING: Creature (Entry: %u) has temporary aura (spell %u) in `auras` field in `creature_template_addon`.", entry, uint32(atol(*itr)));
+                sLog->outWarn("Creature (Entry: %u) has temporary aura (spell %u) in `auras` field in `creature_template_addon`.", entry, uint32(atol(*itr)));
             creatureAddon.auras[i++] = uint32(atol(*itr));
         }
 
@@ -995,7 +995,7 @@ void ObjectMgr::LoadCreatureAddons()
                 continue;
             }
             if (AdditionalSpellInfo->GetDuration() > 0)
-                sLog->outString("WARNING: Creature (GUID: %u, entry: %u) has temporary aura (spell %u) in `auras` field in `creature_addon`.", guid, creData->id, uint32(atol(*itr)));
+                sLog->outWarn("Creature (GUID: %u, entry: %u) has temporary aura (spell %u) in `auras` field in `creature_addon`.", guid, creData->id, uint32(atol(*itr)));
             creatureAddon.auras[i++] = uint32(atol(*itr));
         }
 
