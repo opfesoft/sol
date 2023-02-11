@@ -802,8 +802,9 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
     PetLevelInfo const* pInfo = sObjectMgr->GetPetLevelInfo(creature_ID, petlevel);
     if (pInfo)                                      // exist in DB
     {
-        SetCreateHealth(pInfo->health);
-        SetModifierValue(UNIT_MOD_HEALTH, BASE_VALUE, (float)pInfo->health);
+        float factorHealth = owner->GetTypeId() == TYPEID_PLAYER ? 1.0f : _GetHealthMod(cinfo->rank);
+        SetCreateHealth(std::max<uint32>(1, pInfo->health * factorHealth));
+        SetModifierValue(UNIT_MOD_HEALTH, BASE_VALUE, (float)pInfo->health * factorHealth);
         if (petType != HUNTER_PET) //hunter pet use focus
         {
             SetCreateMana(pInfo->mana);
@@ -821,7 +822,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
         // remove elite bonuses included in DB values
         CreatureBaseStats const* stats = sObjectMgr->GetCreatureBaseStats(petlevel, cinfo->unit_class);
         // xinef: multiply base values by creature_template factors!
-        float factorHealth = owner->GetTypeId() == TYPEID_PLAYER ? std::min(1.0f, cinfo->ModHealth) : cinfo->ModHealth;
+        float factorHealth = owner->GetTypeId() == TYPEID_PLAYER ? std::min(1.0f, cinfo->ModHealth) : cinfo->ModHealth * _GetHealthMod(cinfo->rank);
         float factorMana = owner->GetTypeId() == TYPEID_PLAYER ? std::min(1.0f, cinfo->ModMana) : cinfo->ModMana;
 
         switch(creature_ID)
