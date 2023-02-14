@@ -572,8 +572,6 @@ void ObjectMgr::LoadCreatureTemplateAddons()
                 sLog->outErrorDb("Creature (Entry: %u) has wrong spell %u defined in `auras` field in `creature_template_addon`.", entry, uint32(atol(*itr)));
                 continue;
             }
-            if (AdditionalSpellInfo->GetDuration() > 0)
-                sLog->outWarn("Creature (Entry: %u) has temporary aura (spell %u) in `auras` field in `creature_template_addon`.", entry, uint32(atol(*itr)));
             creatureAddon.auras[i++] = uint32(atol(*itr));
         }
 
@@ -588,7 +586,7 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 
         if (!sEmotesStore.LookupEntry(creatureAddon.emote))
         {
-            sLog->outErrorDb("Creature (Entry: %u) has invalid emote (%u) defined in `creature_addon`.", entry, creatureAddon.emote);
+            sLog->outErrorDb("Creature (Entry: %u) has invalid emote (%u) defined in `creature_template_addon`.", entry, creatureAddon.emote);
             creatureAddon.emote = 0;
         }
 
@@ -1950,6 +1948,11 @@ void ObjectMgr::LoadCreatures()
             sLog->outErrorDb("Table `creature` have creature (GUID: %u Entry: %u) with `phaseMask`=0 (not visible for anyone), set to 1.", guid, data.id);
             data.phaseMask = 1;
         }
+
+        if (CreatureAddon const* cta = GetCreatureTemplateAddon(data.id); cta && !cta->auras.empty())
+            for (std::vector<uint32>::const_iterator itr = cta->auras.begin(); itr != cta->auras.end(); ++itr)
+                if (SpellInfo const* si = sSpellMgr->GetSpellInfo(*itr); si && si->GetDuration() > 0)
+                    sLog->outWarn("Creature (GUID: %u, entry: %u) has temporary aura (spell %u) in `auras` field in `creature_template_addon`.", guid, data.id, *itr);
 
         if (sWorld->getBoolConfig(CONFIG_CALCULATE_CREATURE_ZONE_AREA_DATA))
         {
