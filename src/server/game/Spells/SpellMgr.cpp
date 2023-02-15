@@ -3452,6 +3452,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 29297: // Item - Cleansing Vial DND
             spellInfo->CastingTimeIndex = 0;
             break;
+        case 35470: // Explosion (Gan'arg Sapper - Set Charge)
+            spellInfo->Effect[EFFECT_1] = 0;
+            spellInfo->EffectImplicitTargetA[EFFECT_1] = 0;
+            break;
 
 
         /////////////////////////////////////////////
