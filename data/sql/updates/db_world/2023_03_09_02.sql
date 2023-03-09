@@ -1,0 +1,3 @@
+UPDATE `creature` SET `modelid` = 0 WHERE `id` = 23842 AND `modelid` IN (21806,21807,21808,21809);
+UPDATE `creature` SET `equipment_id` = 0 WHERE `guid` IN (203332,203333,203334,203335,203336,203337,203338);
+UPDATE `creature` SET `modelid` = 0 WHERE `id` IN (28157,23844,23911,23839,23840);
