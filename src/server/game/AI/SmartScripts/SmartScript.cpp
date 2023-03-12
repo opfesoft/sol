@@ -3818,7 +3818,7 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
     case SMART_TARGET_CREATURE_GUID:
     {
         Creature* target = NULL;
-        if (!scriptTrigger && !baseObject)
+        if (!scriptTrigger && !scriptTriggerGO && !baseObject)
         {
             sLog->outError("SMART_TARGET_CREATURE_GUID can not be used without invoker");
             break;
@@ -3827,7 +3827,16 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         // xinef: my addition
         if (e.target.unitGUID.getFromHashMap)
         {
-            if ((target = ObjectAccessor::GetCreature(scriptTrigger ? *scriptTrigger : *GetBaseObject(), MAKE_NEW_GUID(e.target.unitGUID.dbGuid, e.target.unitGUID.entry, HIGHGUID_UNIT))))
+            if (baseObject)
+                target = ObjectAccessor::GetCreature(*baseObject, MAKE_NEW_GUID(e.target.unitGUID.dbGuid, e.target.unitGUID.entry, HIGHGUID_UNIT));
+            if (!target)
+            {
+                if (scriptTrigger)
+                    target = ObjectAccessor::GetCreature(*scriptTrigger, MAKE_NEW_GUID(e.target.unitGUID.dbGuid, e.target.unitGUID.entry, HIGHGUID_UNIT));
+                else if (scriptTriggerGO)
+                    target = ObjectAccessor::GetCreature(*scriptTriggerGO, MAKE_NEW_GUID(e.target.unitGUID.dbGuid, e.target.unitGUID.entry, HIGHGUID_UNIT));
+            }
+            if (target)
             {
                 // check alive state - 1 alive, 2 dead, 0 both
                 if (uint32 state = e.target.unitGUID.livingState)
@@ -3842,7 +3851,15 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         }
         else
         {
-            target = FindCreatureNear(scriptTrigger ? scriptTrigger : GetBaseObject(), e.target.unitGUID.dbGuid);
+            if (baseObject)
+                target = FindCreatureNear(baseObject, e.target.unitGUID.dbGuid);
+            if (!target)
+            {
+                if (scriptTrigger)
+                    target = FindCreatureNear(scriptTrigger, e.target.unitGUID.dbGuid);
+                else if (scriptTriggerGO)
+                    target = FindCreatureNear(scriptTriggerGO, e.target.unitGUID.dbGuid);
+            }
             if (target && (!e.target.unitGUID.entry || target->GetEntry() == e.target.unitGUID.entry))
             {
                 // check alive state - 1 alive, 2 dead, 0 both
@@ -3861,7 +3878,7 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
     case SMART_TARGET_GAMEOBJECT_GUID:
     {
         GameObject* target = NULL;
-        if (!scriptTrigger && !GetBaseObject())
+        if (!scriptTrigger && !scriptTriggerGO && !baseObject)
         {
             sLog->outError("SMART_TARGET_GAMEOBJECT_GUID can not be used without invoker");
             break;
@@ -3870,12 +3887,29 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         // xinef: my addition
         if (e.target.goGUID.getFromHashMap)
         {
-            if ((target = ObjectAccessor::GetGameObject(scriptTrigger ? *scriptTrigger : *GetBaseObject(), MAKE_NEW_GUID(e.target.goGUID.dbGuid, e.target.goGUID.entry, HIGHGUID_GAMEOBJECT))))
+            if (baseObject)
+                target = ObjectAccessor::GetGameObject(*baseObject, MAKE_NEW_GUID(e.target.goGUID.dbGuid, e.target.goGUID.entry, HIGHGUID_GAMEOBJECT));
+            if (!target)
+            {
+                if (scriptTrigger)
+                    target = ObjectAccessor::GetGameObject(*scriptTrigger, MAKE_NEW_GUID(e.target.goGUID.dbGuid, e.target.goGUID.entry, HIGHGUID_GAMEOBJECT));
+                else if (scriptTriggerGO)
+                    target = ObjectAccessor::GetGameObject(*scriptTriggerGO, MAKE_NEW_GUID(e.target.goGUID.dbGuid, e.target.goGUID.entry, HIGHGUID_GAMEOBJECT));
+            }
+            if (target)
                 l->push_back(target);
         }
         else
         {
-            target = FindGameObjectNear(scriptTrigger ? scriptTrigger : GetBaseObject(), e.target.goGUID.dbGuid);
+            if (baseObject)
+                target = FindGameObjectNear(baseObject, e.target.goGUID.dbGuid);
+            if (!target)
+            {
+                if (scriptTrigger)
+                    target = FindGameObjectNear(scriptTrigger, e.target.goGUID.dbGuid);
+                else if (scriptTriggerGO)
+                    target = FindGameObjectNear(scriptTriggerGO, e.target.goGUID.dbGuid);
+            }
             if (target && (!e.target.goGUID.entry || target->GetEntry() == e.target.goGUID.entry))
                 l->push_back(target);
         }
