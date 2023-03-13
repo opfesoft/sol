@@ -25163,7 +25163,7 @@ void Player::UpdateCharmedAI()
     if (!target || !IsValidAttackTarget(target))
     {
         target = SelectNearbyTarget(NULL, 30);
-        if (!target)
+        if (!target || target->IsCritter())
         {
             if (!HasUnitState(UNIT_STATE_FOLLOW))
                 GetMotionMaster()->MoveFollow(charmer, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
