@@ -2992,6 +2992,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 38065: // Death Coil (Nexus Terror)
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEGATIVE_EFF1;
                 break;
+            case 69489: // Chocolate Sample
+                spellInfo->AttributesCu &= ~(SPELL_ATTR0_CU_NEGATIVE_EFF0|SPELL_ATTR0_CU_NEGATIVE_EFF1);
+                break;
         }
 
         if (spellInfo->Speed > 0.0f)
