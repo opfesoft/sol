@@ -2042,7 +2042,14 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
         {
             if (Creature* creature = (*itr)->ToCreature())
-                creature->Respawn(e.action.RespawnTarget.goRespawnTime);
+            {
+                if (e.action.RespawnTarget.saveRespawnTime == 0)
+                    creature->Respawn(e.action.RespawnTarget.goRespawnTime);
+                else if (e.action.RespawnTarget.saveRespawnTime == 1)
+                    creature->SetSaveRespawnTime(true);
+                else if (e.action.RespawnTarget.saveRespawnTime == 2)
+                    creature->SetSaveRespawnTime(false);
+            }
             else if (GameObject* gameobject = (*itr)->ToGameObject())
             {
                 // Xinef: do not modify respawndelay of already spawned gameobjects QQ
