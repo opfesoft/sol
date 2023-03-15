@@ -2406,20 +2406,6 @@ Rate.Talent = 1
 Rate.Reputation.Gain = 1
 
 #
-#    Rate.Reputation.LowLevel.Kill
-#        Description: Reputation gain from killing low level (grey) creatures.
-#        Default:     1
-
-Rate.Reputation.LowLevel.Kill = 1
-
-#
-#    Rate.Reputation.LowLevel.Quest
-#        Description: Reputation gain rate.
-#        Default:     1
-
-Rate.Reputation.LowLevel.Quest = 1
-
-#
 #    Rate.Reputation.RecruitAFriendBonus
 #        Description: Reputation bonus rate for recruit-a-friend.
 #        Default:     0.1
