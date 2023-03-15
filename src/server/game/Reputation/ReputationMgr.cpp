@@ -351,6 +351,7 @@ bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, in
     if (itr != _factions.end())
     {
         int32 BaseRep = GetBaseReputation(factionEntry);
+        int32 oldStanding = itr->second.Standing + BaseRep;
         int8 fractionBonus = 0;
         if (fraction)
         {
@@ -367,14 +368,19 @@ bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, in
         }
 
         if (incremental)
-            standing = int32(floor((float)standing * sWorld->getRate(RATE_REPUTATION_GAIN) + 0.5f)) + itr->second.Standing + BaseRep + fractionBonus;
+        {
+            float rate = 1.f;
+            if (Reputation_Bottom + (int32)sWorld->getIntConfig(CONFIG_RATE_REPUTATION_GAIN_THRESHOLD) <= oldStanding)
+                rate = sWorld->getRate(RATE_REPUTATION_GAIN);
+            standing = int32(floor((float)standing * rate + 0.5f)) + itr->second.Standing + BaseRep + fractionBonus;
+        }
 
         if (standing > Reputation_Cap)
             standing = Reputation_Cap;
         else if (standing < Reputation_Bottom)
             standing = Reputation_Bottom;
 
-        ReputationRank old_rank = ReputationToRank(itr->second.Standing + BaseRep);
+        ReputationRank old_rank = ReputationToRank(oldStanding);
         ReputationRank new_rank = ReputationToRank(standing);
 
         itr->second.Standing = standing - BaseRep;

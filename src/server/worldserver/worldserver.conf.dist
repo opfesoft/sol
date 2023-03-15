@@ -2406,6 +2406,15 @@ Rate.Talent = 1
 Rate.Reputation.Gain = 1
 
 #
+#    Rate.Reputation.Gain.Threshold
+#        Description: The player needs to have at least the reputation specified here for the
+#                     reputation gain rate to be applied. 63000 (Revered) is a good value which
+#                     causes less interference with quests. Values between 0 and 84999 are allowed.
+#        Default:     63000
+
+Rate.Reputation.Gain.Threshold = 63000
+
+#
 #    Rate.Reputation.RecruitAFriendBonus
 #        Description: Reputation bonus rate for recruit-a-friend.
 #        Default:     0.1
