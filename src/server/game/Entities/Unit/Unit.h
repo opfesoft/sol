@@ -800,6 +800,13 @@ enum UnitTypeMask
     UNIT_MASK_ACCESSORY             = 0x00000200,
 };
 
+enum CorpseDecay
+{
+    CORPSE_DECAY_NORMAL             = 60,
+    CORPSE_DECAY_ELITE              = 300,
+    CORPSE_DECAY_WORLDBOSS          = 3600,
+};
+
 namespace Movement{
     class MoveSpline;
 }

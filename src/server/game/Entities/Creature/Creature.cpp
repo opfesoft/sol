@@ -949,23 +949,19 @@ bool Creature::Create(uint32 guidlow, Map* map, uint32 phaseMask, uint32 Entry, 
     switch (GetCreatureTemplate()->rank)
     {
         case CREATURE_ELITE_RARE:
-            m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_RARE);
-            break;
         case CREATURE_ELITE_ELITE:
-            m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_ELITE);
-            break;
         case CREATURE_ELITE_RAREELITE:
-            m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_RAREELITE);
+            m_corpseDelay = CORPSE_DECAY_ELITE;
             break;
         case CREATURE_ELITE_WORLDBOSS:
             // Xinef: Reduce corpse delay for bossess outside of instance
             if (!GetInstanceId())
-                m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_ELITE)*2;
+                m_corpseDelay = CORPSE_DECAY_ELITE * 2;
             else
-                m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_WORLDBOSS);
+                m_corpseDelay = CORPSE_DECAY_WORLDBOSS;
             break;
         default:
-            m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_NORMAL);
+            m_corpseDelay = CORPSE_DECAY_NORMAL;
             break;
     }
 
@@ -2641,19 +2637,11 @@ void Creature::AllLootRemovedFromCorpse()
         if (m_corpseRemoveTime <= now)
             return;
 
-        float decayRate;
         CreatureTemplate const* cinfo = GetCreatureTemplate();
-
-        decayRate = sWorld->getRate(RATE_CORPSE_DECAY_LOOTED);
-        uint32 diff = uint32((m_corpseRemoveTime - now) * decayRate);
-
-        m_respawnTime -= diff;
 
         // corpse skinnable, but without skinning flag, and then skinned, corpse will despawn next update
         if (cinfo && cinfo->SkinLootId)
             m_corpseRemoveTime = time(NULL);
-        else
-            m_corpseRemoveTime -= diff;
     }
 }
 
