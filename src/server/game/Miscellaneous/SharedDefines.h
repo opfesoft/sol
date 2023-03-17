@@ -332,7 +332,7 @@ enum SpellAttr1
     SPELL_ATTR1_REQ_COMBO_POINTS2                = 0x00400000, // 22 Req combo points on target
     SPELL_ATTR1_UNK23                            = 0x00800000, // 23
     SPELL_ATTR1_IS_FISHING                       = 0x01000000, // 24 only fishing spells
-    SPELL_ATTR1_UNK25                            = 0x02000000, // 25
+    SPELL_ATTR1_AURA_STAYS_AFTER_COMBAT          = 0x02000000, // 25
     SPELL_ATTR1_UNK26                            = 0x04000000, // 26 works correctly with [target=focus] and [target=mouseover] macros?
     SPELL_ATTR1_UNK27                            = 0x08000000, // 27 melee spell?
     SPELL_ATTR1_DONT_DISPLAY_IN_AURA_BAR         = 0x10000000, // 28 client doesn't display these spells in aura bar
