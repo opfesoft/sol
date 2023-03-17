@@ -677,19 +677,23 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
                     return HandlePing(*new_pct);
                 }
                 catch (ByteBufferPositionException const&) {}
-                sLog->outError("WorldSocket::ReadDataHandler(): client sent malformed CMSG_PING");
+                sLog->outError("WorldSocket::ProcessIncoming(): client sent malformed CMSG_PING");
                 return -1;
             case CMSG_AUTH_SESSION:
                 if (m_Session)
                 {
-                    sLog->outError("WorldSocket::ProcessIncoming: Player send CMSG_AUTH_SESSION again");
+                    sLog->outError("WorldSocket::ProcessIncoming(): Player send CMSG_AUTH_SESSION again");
                     return -1;
                 }
                 return HandleAuthSession (*new_pct);
             case CMSG_KEEP_ALIVE:           
                 if (m_Session)
+                {
                     m_Session->ResetTimeOutTime(true);
-                return 0;
+                    return 0;
+                }
+                sLog->outError("WorldSocket::ProcessIncoming(): client %s sent CMSG_KEEP_ALIVE without being authenticated", GetRemoteAddress().c_str());
+                return -1;
             case CMSG_TIME_SYNC_RESP:
             {
                 WorldPacket* p = new WorldPacket(std::move(*new_pct), ACE_OS::gettimeofday());
@@ -703,7 +707,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
     }
     catch (ByteBufferException const&)
     {
-        sLog->outError("WorldSocket::ProcessIncoming ByteBufferException occured while parsing an instant handled packet (opcode: %u) from client %s, accountid=%i. Disconnected client.", opcode, GetRemoteAddress().c_str(), m_Session?m_Session->GetAccountId():-1);
+        sLog->outError("WorldSocket::ProcessIncoming(): ByteBufferException occured while parsing an instant handled packet (opcode: %u) from client %s, accountid=%i. Disconnected client.", opcode, GetRemoteAddress().c_str(), m_Session?m_Session->GetAccountId():-1);
         if (sLog->IsOutDebug())
         {
             sLog->outDebug(LOG_FILTER_NETWORKIO, "Dumping error causing packet:");
@@ -728,7 +732,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
         return 0;
     }
 
-    sLog->outError("WorldSocket::ProcessIncoming: Client not authed opcode = %u", uint32(opcode));
+    sLog->outError("WorldSocket::ProcessIncoming(): Client not authed opcode = %u", uint32(opcode));
     return -1;
 }
 
