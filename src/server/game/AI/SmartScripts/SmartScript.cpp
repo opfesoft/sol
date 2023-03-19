@@ -106,8 +106,13 @@ void SmartScript::ProcessEventsFor(SMART_EVENT e, Unit* unit, uint32 var0, uint3
 
         if (eventType == e/* && (!(*i).event.event_phase_mask || IsInPhase((*i).event.event_phase_mask)) && !((*i).event.event_flags & SMART_EVENT_FLAG_NOT_REPEATABLE && (*i).runOnce)*/)
         {
+            WorldObject* obj = NULL;
+            if (unit)
+                obj = unit;
+            else if (gob)
+                obj = gob;
             ConditionList conds = sConditionMgr->GetConditionsForSmartEvent((*i).entryOrGuid, (*i).event_id, (*i).source_type);
-            ConditionSourceInfo info = ConditionSourceInfo(unit, GetBaseObject(), me ? me->GetVictim() : NULL);
+            ConditionSourceInfo info = ConditionSourceInfo(obj, GetBaseObject(), me ? me->GetVictim() : NULL);
 
             if (sConditionMgr->IsObjectMeetToConditions(info, conds))
                 ProcessEvent(*i, unit, var0, var1, bvar, spell, gob);
@@ -3488,9 +3493,15 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
 void SmartScript::ProcessTimedAction(SmartScriptHolder& e, uint32 const& min, uint32 const& max, Unit* unit, uint32 var0, uint32 var1, bool bvar, const SpellInfo* spell, GameObject* gob)
 {
+    WorldObject* obj = NULL;
+    if (unit)
+        obj = unit;
+    else if (gob)
+        obj = gob;
+
     // xinef: extended by selfs victim
     ConditionList const conds = sConditionMgr->GetConditionsForSmartEvent(e.entryOrGuid, e.event_id, e.source_type);
-    ConditionSourceInfo info = ConditionSourceInfo(unit, GetBaseObject(), me ? me->GetVictim() : NULL);
+    ConditionSourceInfo info = ConditionSourceInfo(obj, GetBaseObject(), me ? me->GetVictim() : NULL);
 
     if (sConditionMgr->IsObjectMeetToConditions(info, conds))
     {
@@ -5047,7 +5058,7 @@ void SmartScript::OnInitialize(WorldObject* obj, AreaTrigger const* at)
             ConditionList const conds = sConditionMgr->GetConditionsForSmartEvent((*i).entryOrGuid, (*i).event_id, (*i).source_type);
             ConditionSourceInfo info = ConditionSourceInfo(NULL, obj, NULL);
 
-            if (!sConditionMgr->IsObjectMeetToConditions(info, conds))
+            if (!sConditionMgr->IsObjectMeetToConditions(info, conds, true))
                 continue;
         }
 

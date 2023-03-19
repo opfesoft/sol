@@ -217,7 +217,7 @@ struct Condition
         NegativeCondition  = false;
     }
 
-    bool Meets(ConditionSourceInfo& sourceInfo);
+    bool Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullResult = false);
     uint32 GetSearcherTypeMaskForCondition();
     bool isLoaded() const { return ConditionType > CONDITION_NONE || ReferenceId; }
     uint32 GetMaxAvailableConditionTargets();
@@ -246,9 +246,9 @@ class ConditionMgr
         ConditionList GetConditionReferences(uint32 refId);
 
         uint32 GetSearcherTypeMaskForConditionList(ConditionList const& conditions);
-        bool IsObjectMeetToConditions(WorldObject* object, ConditionList const& conditions);
-        bool IsObjectMeetToConditions(WorldObject* object1, WorldObject* object2, ConditionList const& conditions);
-        bool IsObjectMeetToConditions(ConditionSourceInfo& sourceInfo, ConditionList const& conditions);
+        bool IsObjectMeetToConditions(WorldObject* object, ConditionList const& conditions, bool conditionTargetNullResult = false);
+        bool IsObjectMeetToConditions(WorldObject* object1, WorldObject* object2, ConditionList const& conditions, bool conditionTargetNullResult = false);
+        bool IsObjectMeetToConditions(ConditionSourceInfo& sourceInfo, ConditionList const& conditions, bool conditionTargetNullResult = false);
         bool CanHaveSourceGroupSet(ConditionSourceType sourceType) const;
         bool CanHaveSourceIdSet(ConditionSourceType sourceType) const;
         ConditionList GetConditionsForNotGroupedEntry(ConditionSourceType sourceType, uint32 entry);
@@ -263,7 +263,7 @@ class ConditionMgr
         bool addToGossipMenus(Condition* cond);
         bool addToGossipMenuItems(Condition* cond);
         bool addToSpellImplicitTargetConditions(Condition* cond);
-        bool IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, ConditionList const& conditions);
+        bool IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, ConditionList const& conditions, bool conditionTargetNullResult = false);
 
         void Clean(); // free up resources
         std::list<Condition*> AllocatedMemoryStore; // some garbage collection :)

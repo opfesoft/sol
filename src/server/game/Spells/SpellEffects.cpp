@@ -3731,6 +3731,9 @@ void Spell::EffectSummonObjectWild(SpellEffIndex effIndex)
     // Wild object not have owner and check clickable by players
     map->AddToMap(pGameObj, true);
 
+    if (pGameObj->AI())
+        pGameObj->AI()->IsSummonedBy(m_caster);
+
     if (pGameObj->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)
         if (Player* player = m_caster->ToPlayer())
             if (Battleground* bg = player->GetBattleground())
@@ -4687,6 +4690,9 @@ void Spell::EffectSummonObject(SpellEffIndex effIndex)
 
     map->AddToMap(pGameObj, true);
 
+    if (pGameObj->AI())
+        pGameObj->AI()->IsSummonedBy(m_caster);
+
     m_caster->m_ObjectSlot[slot] = pGameObj->GetGUID();
 }
 
@@ -5457,6 +5463,9 @@ void Spell::EffectTransmitted(SpellEffIndex effIndex)
     //m_ObjToDel.push_back(pGameObj);
 
     cMap->AddToMap(pGameObj, true);
+
+    if (pGameObj->AI())
+        pGameObj->AI()->IsSummonedBy(m_caster);
 
     if (uint32 linkedEntry = pGameObj->GetGOInfo()->GetLinkedGameObjectEntry())
     {

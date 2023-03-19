@@ -52,6 +52,7 @@ class GameObjectAI
         virtual void EventInform(uint32 /*eventId*/) {}
         virtual void SpellHit(Unit* /*unit*/, const SpellInfo* /*spellInfo*/) {}
         virtual void JustSummoned(Creature* /*summon*/) {}
+        virtual void IsSummonedBy(Unit* /*summoner*/) {}
 };
 
 class NullGameObjectAI : public GameObjectAI

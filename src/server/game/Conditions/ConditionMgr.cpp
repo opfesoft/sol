@@ -21,7 +21,7 @@
 
 // Checks if object meets the condition
 // Can have CONDITION_SOURCE_TYPE_NONE && !mReferenceId if called from a special event (ie: eventAI)
-bool Condition::Meets(ConditionSourceInfo& sourceInfo)
+bool Condition::Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullResult /*= false*/)
 {
     ASSERT(ConditionTarget < MAX_CONDITION_TARGETS);
     WorldObject* object = sourceInfo.mConditionTargets[ConditionTarget];
@@ -31,7 +31,7 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo)
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
         sLog->outDebug(LOG_FILTER_CONDITIONSYS, "Condition object not found for condition (Entry: %u Type: %u Group: %u)", SourceEntry, SourceType, SourceGroup);
 #endif
-        return false;
+        return conditionTargetNullResult;
     }
     bool condMeets = false;
     switch (ConditionType)
@@ -722,7 +722,7 @@ uint32 ConditionMgr::GetSearcherTypeMaskForConditionList(ConditionList const& co
     return mask;
 }
 
-bool ConditionMgr::IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, ConditionList const& conditions)
+bool ConditionMgr::IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, ConditionList const& conditions, bool conditionTargetNullResult /*= false*/)
 {
     //     groupId, groupCheckPassed
     std::map<uint32, bool> ElseGroupStore;
@@ -746,7 +746,7 @@ bool ConditionMgr::IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, 
                 ConditionReferenceContainer::const_iterator ref = ConditionReferenceStore.find((*i)->ReferenceId);
                 if (ref != ConditionReferenceStore.end())
                 {
-                    if (!IsObjectMeetToConditionList(sourceInfo, (*ref).second))
+                    if (!IsObjectMeetToConditionList(sourceInfo, (*ref).second, conditionTargetNullResult))
                         ElseGroupStore[(*i)->ElseGroup] = false;
                 }
                 else
@@ -759,7 +759,7 @@ bool ConditionMgr::IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, 
             }
             else //handle normal condition
             {
-                if (!(*i)->Meets(sourceInfo))
+                if (!(*i)->Meets(sourceInfo, conditionTargetNullResult))
                     ElseGroupStore[(*i)->ElseGroup] = false;
             }
         }
@@ -771,19 +771,19 @@ bool ConditionMgr::IsObjectMeetToConditionList(ConditionSourceInfo& sourceInfo, 
     return false;
 }
 
-bool ConditionMgr::IsObjectMeetToConditions(WorldObject* object, ConditionList const& conditions)
+bool ConditionMgr::IsObjectMeetToConditions(WorldObject* object, ConditionList const& conditions, bool conditionTargetNullResult /*= false*/)
 {
     ConditionSourceInfo srcInfo = ConditionSourceInfo(object);
-    return IsObjectMeetToConditions(srcInfo, conditions);
+    return IsObjectMeetToConditions(srcInfo, conditions, conditionTargetNullResult);
 }
 
-bool ConditionMgr::IsObjectMeetToConditions(WorldObject* object1, WorldObject* object2, ConditionList const& conditions)
+bool ConditionMgr::IsObjectMeetToConditions(WorldObject* object1, WorldObject* object2, ConditionList const& conditions, bool conditionTargetNullResult /*= false*/)
 {
     ConditionSourceInfo srcInfo = ConditionSourceInfo(object1, object2);
-    return IsObjectMeetToConditions(srcInfo, conditions);
+    return IsObjectMeetToConditions(srcInfo, conditions, conditionTargetNullResult);
 }
 
-bool ConditionMgr::IsObjectMeetToConditions(ConditionSourceInfo& sourceInfo, ConditionList const& conditions)
+bool ConditionMgr::IsObjectMeetToConditions(ConditionSourceInfo& sourceInfo, ConditionList const& conditions, bool conditionTargetNullResult /*= false*/)
 {
     if (conditions.empty())
         return true;
@@ -791,7 +791,7 @@ bool ConditionMgr::IsObjectMeetToConditions(ConditionSourceInfo& sourceInfo, Con
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_CONDITIONSYS, "ConditionMgr::IsObjectMeetToConditions");
 #endif
-    return IsObjectMeetToConditionList(sourceInfo, conditions);
+    return IsObjectMeetToConditionList(sourceInfo, conditions, conditionTargetNullResult);
 }
 
 bool ConditionMgr::CanHaveSourceGroupSet(ConditionSourceType sourceType) const

@@ -42,6 +42,7 @@
 #include "Chat.h"
 #include "DynamicVisibility.h"
 #include "ScriptMgr.h"
+#include "GameObjectAI.h"
 
 uint32 GuidHigh2TypeId(uint32 guid_hi)
 {
@@ -2308,12 +2309,20 @@ GameObject* WorldObject::SummonGameObject(uint32 entry, float x, float y, float 
     if (respawnTime)
         go->SetSpellId(1);
 
+    Unit* u = NULL;
     if (GetTypeId() == TYPEID_PLAYER || GetTypeId() == TYPEID_UNIT) //not sure how to handle this
-        ToUnit()->AddGameObject(go);
+    {
+        u = ToUnit();
+        u->AddGameObject(go);
+    }
     else
         go->SetSpawnedByDefault(false);
 
     map->AddToMap(go, checkTransport);
+
+    if (u && go->AI())
+        go->AI()->IsSummonedBy(ToUnit());
+
     return go;
 }
 

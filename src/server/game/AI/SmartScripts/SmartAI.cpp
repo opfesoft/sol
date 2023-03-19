@@ -1231,6 +1231,11 @@ void SmartGameObjectAI::JustSummoned(Creature* creature)
     GetScript()->ProcessEventsFor(SMART_EVENT_SUMMONED_UNIT, creature);
 }
 
+void SmartGameObjectAI::IsSummonedBy(Unit* summoner)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_JUST_SUMMONED, summoner);
+}
+
 class SmartTrigger : public AreaTriggerScript
 {
     public:
