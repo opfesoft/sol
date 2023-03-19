@@ -3460,6 +3460,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->Effect[EFFECT_1] = 0;
             spellInfo->EffectImplicitTargetA[EFFECT_1] = 0;
             break;
+        case 35596: // Power of the Legion (Socrethar - Deathblow to the Legion)
+            spellInfo->AttributesEx |= SPELL_ATTR1_AURA_STAYS_AFTER_COMBAT;
+            break;
 
 
         /////////////////////////////////////////////
