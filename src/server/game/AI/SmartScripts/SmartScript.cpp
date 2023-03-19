@@ -3375,14 +3375,14 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 creature->LoadPath(0);
                 creature->SetDefaultMovementType(IDLE_MOTION_TYPE);
                 creature->SetHomePosition(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), creature->GetOrientation());
-                creature->GetMotionMaster()->Initialize();
+                creature->GetMotionMaster()->InitDefault();
             }
         }
         else
         {
             creature->LoadPath(e.action.loadWPPath.pathID);
             creature->SetDefaultMovementType(WAYPOINT_MOTION_TYPE);
-            creature->GetMotionMaster()->Initialize();
+            creature->GetMotionMaster()->InitDefault();
             creature->SetLastPlayerInteraction(0);
         }
         break;
