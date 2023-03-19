@@ -719,9 +719,6 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         uint32 GetWaypointPath() const { return m_path_id; }
         void LoadPath(uint32 pathid);
 
-        uint32 GetCurrentWaypointID() const { return m_waypointID; }
-        void UpdateWaypointID(uint32 wpID){ m_waypointID = wpID; }
-
         void SearchFormation();
         CreatureGroup* GetFormation() const { return m_formation; }
         void SetFormation(CreatureGroup* formation) { m_formation = formation; }
@@ -840,8 +837,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         uint32 SetRolledGuidForMap(uint32 rolledCreatureId, Map* map);
         void RemoveRolledGuidFromMap();
 
-        //WaypointMovementGenerator vars
-        uint32 m_waypointID;
+        // WaypointMovementGenerator
         uint32 m_path_id;
 
         //Formation var

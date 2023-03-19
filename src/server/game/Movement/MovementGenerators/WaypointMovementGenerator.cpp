@@ -80,7 +80,6 @@ void WaypointMovementGenerator<Creature>::OnArrived(Creature* creature)
 
     // Inform script
     MovementInform(creature);
-    creature->UpdateWaypointID(i_currentNode);
 
     if (i_path->at(i_currentNode)->delay)
     {
