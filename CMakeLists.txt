@@ -11,11 +11,11 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
 
-# Set projectname (must be done AFTER setting configurationtypes)
-project(AzerothCore)
-
 # Require a min version Cmake
 cmake_minimum_required(VERSION 3.8)
+
+# Set projectname (must be done AFTER setting configurationtypes)
+project(AzerothCore)
 
 # CMake policies (can not be handled elsewhere)
 cmake_policy(SET CMP0005 NEW)
