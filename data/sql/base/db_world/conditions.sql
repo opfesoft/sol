@@ -14646,7 +14646,7 @@ VALUES
 (22,3,31333,0,0,8,0,12499,0,0,0,0,0,'Alexstrasza the Life-Binder - Run AI only if player is rewarded for Return To Angrathar'),
 (22,3,31333,0,1,8,0,12500,0,0,0,0,0,'Alexstrasza the Life-Binder - Run AI only if player is rewarded for Return To Angrathar'),
 (22,3,31412,0,0,28,0,13257,0,0,0,0,0,'Quest \'Herald of War\' complete, but not yet rewarded - Enable Thrall Event Script (Horde)'),
-(22,3,31649,0,0,29,1,32518,30,0,1,0,0,'Do Not Run Vol\'\'jin Text announce if Thrall is in range'),
+(22,3,31649,0,0,29,1,32518,30,0,1,0,0,'Do Not Run Vol\'jin Text announce if Thrall is in range'),
 (22,3,31692,0,0,31,0,3,31205,0,0,0,0,'Only execute SAI if invoker has entry 31205'),
 (22,3,34320,0,0,2,0,47196,11,1,0,0,0,'Venomhide Hatchling - Group 0: Execute SAI ID 2 only if the player does have 11 \'Venomhide Baby Tooth\' in the inventory or in the bank'),
 (22,3,34320,0,0,2,0,47196,16,1,1,0,0,'Venomhide Hatchling - Group 0: Execute SAI ID 2 only if the player does not have 16 \'Venomhide Baby Tooth\' in the inventory or in the bank'),
