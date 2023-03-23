@@ -348,6 +348,7 @@ void FlightPathMovementGenerator::DoFinalize(Player* player)
     // remove flag to prevent send object build movement packets for flight state and crash (movement generator already not at top of stack)
     player->ClearUnitState(UNIT_STATE_IN_FLIGHT);
 
+    player->RemoveFlightSpell();
     player->m_taxi.ClearTaxiDestinations();
     player->Dismount();
     player->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_TAXI_FLIGHT);

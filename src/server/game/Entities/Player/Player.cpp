@@ -21963,16 +21963,21 @@ bool Player::ActivateTaxiPathTo(uint32 taxi_path_id, uint32 spellid /*= 1*/)
 
 void Player::CleanupAfterTaxiFlight()
 { 
+    RemoveFlightSpell();
+    m_taxi.ClearTaxiDestinations();        // not destinations, clear source node
+    Dismount();
+    RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_TAXI_FLIGHT);
+    getHostileRefManager().setOnlineOfflineState(true);
+}
+
+void Player::RemoveFlightSpell()
+{
     // For spells that trigger flying paths remove them at arrival
     if (m_flightSpellActivated)
     {
         this->RemoveAurasDueToSpell(m_flightSpellActivated);
         m_flightSpellActivated = 0;
     }
-    m_taxi.ClearTaxiDestinations();        // not destinations, clear source node
-    Dismount();
-    RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_TAXI_FLIGHT);
-    getHostileRefManager().setOnlineOfflineState(true);
 }
 
 void Player::ContinueTaxiFlight()

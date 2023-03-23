@@ -1179,6 +1179,7 @@ class Player : public Unit, public GridObject<Player>
         bool ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc = NULL, uint32 spellid = 1);
         bool ActivateTaxiPathTo(uint32 taxi_path_id, uint32 spellid = 1);
         void CleanupAfterTaxiFlight();
+        void RemoveFlightSpell();
         void ContinueTaxiFlight();
         void SendTaxiNodeStatusMultiple();
                                                             // mount_id can be used in scripting calls
