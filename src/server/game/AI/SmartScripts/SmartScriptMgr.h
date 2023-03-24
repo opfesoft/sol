@@ -168,16 +168,13 @@ enum SMART_EVENT
     SMART_EVENT_DISTANCE_GAMEOBJECT      = 76,      // guid, entry, distance, repeat, GO state
     SMART_EVENT_COUNTER_SET              = 77,      // id, value, cooldownMin, cooldownMax
 
-    SMART_EVENT_TC_END                   = 78,      // placeholder
-
-    // Sol-only SmartEvents:
-
-    SMART_EVENT_SOL_START                = 230,     // placeholder
+    SMART_EVENT_RANGE1_END               = 78,      // placeholder
+    SMART_EVENT_RANGE2_START             = 230,     // placeholder
 
     SMART_EVENT_FOLLOW_TARGET_LOST       = 231,     // range (0: unlimited, just check if target exists on the map), heartbeat in ms (if 0 use 5000)
     SMART_EVENT_KILL_DELAY_STARTED       = 232,     // none
 
-    SMART_EVENT_SOL_END                  = 233      // placeholder
+    SMART_EVENT_RANGE2_END               = 233      // placeholder
 };
 
 struct SmartEvent
@@ -473,7 +470,7 @@ enum SMART_ACTION
     SMART_ACTION_THREAT_SINGLE_PCT                  = 13,     // Threat%
     SMART_ACTION_THREAT_ALL_PCT                     = 14,     // Threat%
     SMART_ACTION_CALL_AREAEXPLOREDOREVENTHAPPENS    = 15,     // QuestID
-    SMART_ACTION_RESERVED_16                        = 16,     // used on 4.3.4 and higher scripts
+    SMART_ACTION_RESERVED_16                        = 16,
     SMART_ACTION_SET_EMOTE_STATE                    = 17,     // emoteID
     SMART_ACTION_SET_UNIT_FLAG                      = 18,     // Flags (may be more than one field OR'd together), Target
     SMART_ACTION_REMOVE_UNIT_FLAG                   = 19,     // Flags (may be more than one field OR'd together), Target
@@ -502,7 +499,7 @@ enum SMART_ACTION
     SMART_ACTION_SET_INVINCIBILITY_HP_LEVEL         = 42,     // MinHpValue(+pct, -flat)
     SMART_ACTION_MOUNT_TO_ENTRY_OR_MODEL            = 43,     // Creature_template entry(param1) OR ModelId (param2) (or 0 for both to dismount)
     SMART_ACTION_SET_INGAME_PHASE_MASK              = 44,     // mask
-    SMART_ACTION_SET_DATA                           = 45,     // Field, Data (only creature TODO)
+    SMART_ACTION_SET_DATA                           = 45,     // Field, Data
     SMART_ACTION_MOVE_FORWARD                       = 46,     // distance
     SMART_ACTION_SET_VISIBILITY                     = 47,     // on/off
     SMART_ACTION_SET_ACTIVE                         = 48,     // on/off
@@ -575,29 +572,26 @@ enum SMART_ACTION
     SMART_ACTION_RANDOM_SOUND                       = 115,    // SoundId1, SoundId2, SoundId3, SoundId4, onlySelf, distance
     SMART_ACTION_SET_CORPSE_DELAY                   = 116,    // delay
     SMART_ACTION_DISABLE_EVADE                      = 117,    // 0/1 (1 = disabled, 0 = enabled)
-    SMART_ACTION_GO_SET_GO_STATE                    = 118,    // TODO: NOT SUPPORTED YET
-    SMART_ACTION_SET_CAN_FLY                        = 119,    // TODO: NOT SUPPORTED YET
-    SMART_ACTION_REMOVE_AURAS_BY_TYPE               = 120,    // TODO: NOT SUPPORTED YET
+    SMART_ACTION_RESERVED_118                       = 118,
+    SMART_ACTION_RESERVED_119                       = 119,
+    SMART_ACTION_RESERVED_120                       = 120,
     SMART_ACTION_SET_SIGHT_DIST                     = 121,    // sightDistance
     SMART_ACTION_FLEE                               = 122,    // fleeTime
     SMART_ACTION_ADD_THREAT                         = 123,    // +threat, -threat
     SMART_ACTION_LOAD_EQUIPMENT                     = 124,    // id, force, maxId
     SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT         = 125,    // id min range, id max range
     SMART_ACTION_REMOVE_ALL_GAMEOBJECTS             = 126,
-    SMART_ACTION_REMOVE_MOVEMENT                    = 127,    // TODO: NOT SUPPORTED YET
-    SMART_ACTION_PLAY_ANIMKIT                       = 128,    // don't use on 3.3.5a
-    SMART_ACTION_SCENE_PLAY                         = 129,    // don't use on 3.3.5a
-    SMART_ACTION_SCENE_CANCEL                       = 130,    // don't use on 3.3.5a
-    SMART_ACTION_SPAWN_SPAWNGROUP                   = 131,    // TODO: NOT SUPPORTED YET
-    SMART_ACTION_DESPAWN_SPAWNGROUP                 = 132,    // TODO: NOT SUPPORTED YET
-    SMART_ACTION_RESPAWN_BY_SPAWNID                 = 133,    // TODO: NOT SUPPORTED YET
-    // SMART_ACTION_INVOKER_CAST                    = 134,    // TODO: solve name conflicts
+    SMART_ACTION_RESERVED_127                       = 127,
+    SMART_ACTION_RESERVED_128                       = 128,
+    SMART_ACTION_RESERVED_129                       = 129,
+    SMART_ACTION_RESERVED_130                       = 130,
+    SMART_ACTION_RESERVED_131                       = 131,
+    SMART_ACTION_RESERVED_132                       = 132,
+    SMART_ACTION_RESERVED_133                       = 133,
+    SMART_ACTION_RESERVED_134                       = 134,
 
-    SMART_ACTION_TC_END                             = 135,    // placeholder
-
-    // AC-only SmartActions:
-
-    SMART_ACTION_AC_START                           = 200,    // placeholder
+    SMART_ACTION_RANGE1_END                         = 135,    // placeholder
+    SMART_ACTION_RANGE2_START                       = 200,    // placeholder
 
     SMART_ACTION_MOVE_TO_POS_TARGET                 = 201,    // pointId
     SMART_ACTION_SET_GO_STATE                       = 202,    // state
@@ -617,11 +611,8 @@ enum SMART_ACTION
     SMART_ACTION_MUSIC                              = 216,    // SoundId, onlySelf, type
     SMART_ACTION_RANDOM_MUSIC                       = 217,    // SoundId1, SoundId2, SoundId3, SoundId4, onlySelf, type
 
-    SMART_ACTION_AC_END                             = 218,    // placeholder
-
-    // Sol-only SmartActions:
-
-    SMART_ACTION_SOL_START                          = 230,    // placeholder
+    SMART_ACTION_RANGE2_END                         = 218,    // placeholder
+    SMART_ACTION_RANGE3_START                       = 230,    // placeholder
 
     SMART_ACTION_CIRCLE_MOVE                        = 231,    // radius, clockwise (0/1), stepCount, centerSelf, speed
     SMART_ACTION_SET_HEALTH                         = 232,    // use percentage (0/1), copy from target (0/1), health
@@ -636,7 +627,7 @@ enum SMART_ACTION
     SMART_ACTION_SET_KILL_DELAY                     = 241,    // kill delay in ms
     SMART_ACTION_SCALE                              = 242,    // percent
 
-    SMART_ACTION_SOL_END                            = 243     // placeholder
+    SMART_ACTION_RANGE3_END                         = 243     // placeholder
 };
 
 struct SmartAction
@@ -1384,19 +1375,16 @@ enum SMARTAI_TARGETS
     SMART_TARGET_THREAT_LIST                    = 24,   // All units on creature's threat list, maxdist, playerOnly
     SMART_TARGET_CLOSEST_ENEMY                  = 25,   // maxDist, playerOnly
     SMART_TARGET_CLOSEST_FRIENDLY               = 26,   // maxDist, playerOnly
-    SMART_TARGET_LOOT_RECIPIENTS                = 27,   // TODO: NOT SUPPORTED YET
+    SMART_TARGET_RESERVED_27                    = 27,
     SMART_TARGET_FARTHEST                       = 28,   // maxDist, playerOnly, isInLos
     SMART_TARGET_VEHICLE_PASSENGER              = 29,   // seatMask (0 - all seats)
 
-    SMART_TARGET_TC_END                         = 30,   // placeholder
-
-    // Sol-only SmartTargets:
-
-    SMART_TARGET_SOL_START                      = 230,  // placeholder
+    SMART_TARGET_RANGE1_END                     = 30,   // placeholder
+    SMART_TARGET_RANGE2_START                   = 230,  // placeholder
 
     SMART_TARGET_CREATURE_FORMATION             = 231,  // memberType (0 - members only, 1 - leader only, 2 - leader and members)
 
-    SMART_TARGET_SOL_END                        = 232   // placeholder
+    SMART_TARGET_RANGE2_END                     = 232   // placeholder
 };
 
 struct SmartTarget

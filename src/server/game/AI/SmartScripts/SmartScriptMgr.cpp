@@ -402,8 +402,8 @@ bool SmartAIMgr::IsTargetValid(SmartScriptHolder const& e)
 
 bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
 {
-    if ((e.event.type >= SMART_EVENT_TC_END && e.event.type <= SMART_EVENT_SOL_START)
-        || e.event.type >= SMART_EVENT_SOL_END)
+    if ((e.event.type >= SMART_EVENT_RANGE1_END && e.event.type <= SMART_EVENT_RANGE2_START)
+        || e.event.type >= SMART_EVENT_RANGE2_END)
     {
         sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has an invalid event_type %u, skipped.", e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetEventType());
         return false;
@@ -415,9 +415,9 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         return false;
     }
     if (e.action.type <= 0
-        || (e.action.type >= SMART_ACTION_TC_END && e.action.type <= SMART_ACTION_AC_START)
-        || (e.action.type >= SMART_ACTION_AC_END && e.action.type <= SMART_ACTION_SOL_START)
-        || e.action.type >= SMART_ACTION_SOL_END)
+        || (e.action.type >= SMART_ACTION_RANGE1_END && e.action.type <= SMART_ACTION_RANGE2_START)
+        || (e.action.type >= SMART_ACTION_RANGE2_END && e.action.type <= SMART_ACTION_RANGE3_START)
+        || e.action.type >= SMART_ACTION_RANGE3_END)
     {
         sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has an invalid action_type %u, skipped.", e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetActionType());
         return false;
@@ -425,36 +425,34 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
     switch (e.action.type)
     {
         case SMART_ACTION_RESERVED_16:
-        case SMART_ACTION_PLAY_ANIMKIT:
-        case SMART_ACTION_SCENE_PLAY:
-        case SMART_ACTION_SCENE_CANCEL:
-            sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has action_type %u which is not supported on 3.3.5a, skipped.",
-                             e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetActionType());
-            return false;
-        case SMART_ACTION_GO_SET_GO_STATE:
-        case SMART_ACTION_SET_CAN_FLY:
-        case SMART_ACTION_REMOVE_AURAS_BY_TYPE:
-        case SMART_ACTION_REMOVE_MOVEMENT:
-        case SMART_ACTION_SPAWN_SPAWNGROUP:
-        case SMART_ACTION_DESPAWN_SPAWNGROUP:
-        case SMART_ACTION_RESPAWN_BY_SPAWNID:
-            sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has action_type %u which is not yet supported, skipped.",
+        case SMART_ACTION_RESERVED_118:
+        case SMART_ACTION_RESERVED_119:
+        case SMART_ACTION_RESERVED_120:
+        case SMART_ACTION_RESERVED_127:
+        case SMART_ACTION_RESERVED_128:
+        case SMART_ACTION_RESERVED_129:
+        case SMART_ACTION_RESERVED_130:
+        case SMART_ACTION_RESERVED_131:
+        case SMART_ACTION_RESERVED_132:
+        case SMART_ACTION_RESERVED_133:
+        case SMART_ACTION_RESERVED_134:
+            sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has reserved action_type %u, skipped.",
                              e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetActionType());
             return false;
         default:
             break;
     }
     if (e.target.type < 0
-        || (e.target.type >= SMART_TARGET_TC_END && e.target.type <= SMART_TARGET_SOL_START)
-        || e.target.type >= SMART_TARGET_SOL_END)
+        || (e.target.type >= SMART_TARGET_RANGE1_END && e.target.type <= SMART_TARGET_RANGE2_START)
+        || e.target.type >= SMART_TARGET_RANGE2_END)
     {
         sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has an invalid target_type %u, skipped.",
                 e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetTargetType());
         return false;
     }
-    if (e.target.type == SMART_TARGET_LOOT_RECIPIENTS)
+    if (e.target.type == SMART_TARGET_RESERVED_27)
     {
-        sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has target_type %u which is not yet supported, skipped.",
+        sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has reserved target_type %u, skipped.",
                 e.entryOrGuid, e.event_id, e.GetScriptType(), e.GetTargetType());
         return false;
     }
