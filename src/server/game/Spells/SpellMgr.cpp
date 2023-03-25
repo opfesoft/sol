@@ -4059,6 +4059,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 2585: // Eye of Kilrogg Passive (DND)
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_HITBYSPELL | AURA_INTERRUPT_FLAG_TAKE_DAMAGE;
             break;
+        case 27285: // Seed of Corruption (Rank 1)
+        case 47833: // Seed of Corruption (Rank 2)
+        case 47834: // Seed of Corruption (Rank 3)
+            spellInfo->AttributesEx |= SPELL_ATTR1_CANT_BE_REFLECTED;
+            break;
 
 
         /////////////////////////////////
