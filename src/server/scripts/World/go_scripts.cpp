@@ -20,7 +20,6 @@ go_tele_to_violet_stand
 go_scourge_cage
 go_jotunheim_cage
 go_table_theka
-go_soulwell
 go_bashir_crystalforge
 go_soulwell
 go_dragonflayer_cage
@@ -844,42 +843,7 @@ class go_soulwell : public GameObjectScript
 
         struct go_soulwellAI : public GameObjectAI
         {
-            go_soulwellAI(GameObject* go) : GameObjectAI(go)
-            {
-                _stoneSpell = 0;
-                _stoneId = 0;
-                switch (go->GetEntry())
-                {
-                    case GO_SOUL_WELL_R1:
-                        _stoneSpell = SPELL_CREATE_MASTER_HEALTH_STONE_R0;
-                        if (Unit* owner = go->GetOwner())
-                        {
-                            if (owner->HasAura(SPELL_IMPROVED_HEALTH_STONE_R1))
-                                _stoneSpell = SPELL_CREATE_MASTER_HEALTH_STONE_R1;
-                            else if (owner->HasAura(SPELL_CREATE_MASTER_HEALTH_STONE_R2))
-                                _stoneSpell = SPELL_CREATE_MASTER_HEALTH_STONE_R2;
-                        }
-                        break;
-                    case GO_SOUL_WELL_R2:
-                        _stoneSpell = SPELL_CREATE_FEL_HEALTH_STONE_R0;
-                        if (Unit* owner = go->GetOwner())
-                        {
-                            if (owner->HasAura(SPELL_IMPROVED_HEALTH_STONE_R1))
-                                _stoneSpell = SPELL_CREATE_FEL_HEALTH_STONE_R1;
-                            else if (owner->HasAura(SPELL_CREATE_MASTER_HEALTH_STONE_R2))
-                                _stoneSpell = SPELL_CREATE_FEL_HEALTH_STONE_R2;
-                        }
-                        break;
-                }
-                if (_stoneSpell == 0) // Should never happen
-                    return;
-
-                SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(_stoneSpell);
-                if (!spellInfo)
-                    return;
-
-                _stoneId = spellInfo->Effects[EFFECT_0].ItemType;
-            }
+            go_soulwellAI(GameObject* go) : GameObjectAI(go) { }
 
             /// Due to the fact that this GameObject triggers CMSG_GAMEOBJECT_USE
             /// _and_ CMSG_GAMEOBJECT_REPORT_USE, this GossipHello hook is called
@@ -891,40 +855,73 @@ class go_soulwell : public GameObjectScript
                     return false;
 
                 Unit* owner = go->GetOwner();
-                if (_stoneSpell == 0 || _stoneId == 0)
+                if (!owner)
+                    return true;
+
+                uint32 stoneId = 0;
+                uint32 stoneSpell = 0;
+                switch (go->GetEntry())
                 {
-                    if (SpellInfo const* spell = sSpellMgr->GetSpellInfo(_stoneSpell))
+                    case GO_SOUL_WELL_R1:
+                        stoneSpell = SPELL_CREATE_MASTER_HEALTH_STONE_R0;
+                        if (Unit* owner = go->GetOwner())
+                        {
+                            if (owner->HasAura(SPELL_IMPROVED_HEALTH_STONE_R1))
+                                stoneSpell = SPELL_CREATE_MASTER_HEALTH_STONE_R1;
+                            else if (owner->HasAura(SPELL_IMPROVED_HEALTH_STONE_R2))
+                                stoneSpell = SPELL_CREATE_MASTER_HEALTH_STONE_R2;
+                        }
+                        break;
+                    case GO_SOUL_WELL_R2:
+                        stoneSpell = SPELL_CREATE_FEL_HEALTH_STONE_R0;
+                        if (Unit* owner = go->GetOwner())
+                        {
+                            if (owner->HasAura(SPELL_IMPROVED_HEALTH_STONE_R1))
+                                stoneSpell = SPELL_CREATE_FEL_HEALTH_STONE_R1;
+                            else if (owner->HasAura(SPELL_IMPROVED_HEALTH_STONE_R2))
+                                stoneSpell = SPELL_CREATE_FEL_HEALTH_STONE_R2;
+                        }
+                        break;
+                }
+
+                if (!stoneSpell)
+                    return true;
+
+                SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(stoneSpell);
+                if (!spellInfo)
+                    return true;
+
+                stoneId = spellInfo->Effects[EFFECT_0].ItemType;
+                if (!stoneId)
+                {
+                    if (SpellInfo const* spell = sSpellMgr->GetSpellInfo(stoneSpell))
                         Spell::SendCastResult(player, spell, 0, SPELL_FAILED_ERROR);
                     return true;
                 }
 
-                if (!owner || owner->GetTypeId() != TYPEID_PLAYER || !player->IsInSameRaidWith(owner->ToPlayer()))
+                if (owner->GetTypeId() != TYPEID_PLAYER || !player->IsInSameRaidWith(owner->ToPlayer()))
                 {
-                    if (SpellInfo const* spell = sSpellMgr->GetSpellInfo(_stoneSpell))
+                    if (SpellInfo const* spell = sSpellMgr->GetSpellInfo(stoneSpell))
                         Spell::SendCastResult(player, spell, 0, SPELL_FAILED_TARGET_NOT_IN_RAID);
                     return true;
                 }
 
                 // Don't try to add a stone if we already have one.
-                if (player->HasItemCount(_stoneId))
+                if (player->HasItemCount(stoneId))
                 {
-                    if (SpellInfo const* spell = sSpellMgr->GetSpellInfo(_stoneSpell))
+                    if (SpellInfo const* spell = sSpellMgr->GetSpellInfo(stoneSpell))
                         Spell::SendCastResult(player, spell, 0, SPELL_FAILED_TOO_MANY_OF_ITEM);
                     return true;
                 }
 
-                player->CastSpell(player, _stoneSpell, false);
+                player->CastSpell(player, stoneSpell, false);
 
                 // Item has to actually be created to remove a charge on the well.
-                if (player->HasItemCount(_stoneId))
+                if (player->HasItemCount(stoneId))
                     go->AddUse();
 
                 return true;
             }
-
-        private:
-            uint32 _stoneSpell;
-            uint32 _stoneId;
         };
 
         GameObjectAI* GetAI(GameObject* go) const
