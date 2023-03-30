@@ -3749,6 +3749,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 57842:
             spellInfo->rangeIndex = 2; // melee range
             break;
+        case 51627: // Turn the Tables (Rank 1)
+        case 51628: // Turn the Tables (Rank 2)
+        case 51629: // Turn the Tables (Rank 3)
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
+            break;
 
 
         /////////////////////////////////
