@@ -924,6 +924,9 @@ class spell_pri_shadow_word_death : public SpellScriptLoader
 
             void HandleDamage()
             {
+                if (Unit* target = GetHitUnit(); target && target->IsCritter())
+                    return;
+
                 int32 damage = GetHitDamage();
 
                 // Pain and Suffering reduces damage
