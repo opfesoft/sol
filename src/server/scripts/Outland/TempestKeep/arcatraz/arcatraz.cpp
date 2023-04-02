@@ -336,7 +336,8 @@ class npc_warden_mellichar : public CreatureScript
                     instance->SetBossState(DATA_WARDEN_MELLICHAR, DONE);
                     if (Creature* creature = summons.GetCreatureWithEntry(NPC_MILLHOUSE))
                     {
-                        instance->DoCastSpellOnPlayers(SPELL_QID10886);
+                        if (IsHeroic())
+                            instance->DoCastSpellOnPlayers(SPELL_QID10886);
                         creature->AI()->Talk(SAY_COMPLETE);
                         creature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     }
