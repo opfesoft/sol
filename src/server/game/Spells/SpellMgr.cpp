@@ -2941,6 +2941,7 @@ void SpellMgr::LoadSpellCustomAttr()
             case 63978: // Ulduar(Rubble): Stone Nova 
             case 15502: // Sunder Armor
             case 14517: // Crusader Strike
+            case 42976: // Executioner
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SINGLE_AURA_STACK;
                 break;
             case 43138: // North Fleet Reservist Kill Credit
