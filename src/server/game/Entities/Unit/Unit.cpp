@@ -7753,31 +7753,25 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, int32 effectiveValue
                 if(!procSpell || GetTypeId() != TYPEID_PLAYER || !victim)
                     return false;
 
+                if (!spellProc || (spellProc && spellProc->GetFirstUniqueTargetGUID() != victim->GetGUID()))
+                    return false;
+
                 if (procEx & PROC_EX_CRITICAL_HIT)
                     damage /= 2;
 
-                do
-                {
-                    uint32 spell = 0;
+                uint32 spell = 0;
 
-                    if (procSpell->SpellFamilyFlags[0] & 0x2)
-                    {
-                        // 1/3 of 33% if 11%
-                        if (!roll_chance_i(33))
-                            return false;
+                if (procSpell->SpellFamilyFlags[0] & 0x2)
+                    spell = 45297;
+                else
+                    spell = 45284;
 
-                        spell = 45297;
-                    }
-                    else
-                        spell = 45284;
+                // do not reduce damage-spells have correct basepoints
+                damage /= 2;
+                int32 dmg = damage;
 
-                    // do not reduce damage-spells have correct basepoints
-                    damage /= 2;
-                    int32 dmg = damage;
-
-                    // Cast
-                    CastCustomSpell(victim, spell, &dmg, 0, 0, true, castItem, triggeredByAura);
-                } while (roll_chance_i(33));
+                // Cast
+                CastCustomSpell(victim, spell, &dmg, 0, 0, true, castItem, triggeredByAura);
                 return true;
             }
             // Static Shock

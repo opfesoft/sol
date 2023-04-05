@@ -543,6 +543,7 @@ class Spell
         };
         std::list<TargetInfo>* GetUniqueTargetInfo() { return &m_UniqueTargetInfo; }
         uint32 GetTriggeredByAuraTickNumber() const { return m_triggeredByAuraTickNumber; }
+        uint64 GetFirstUniqueTargetGUID() const { return m_UniqueTargetInfo.empty() ? 0 : m_UniqueTargetInfo.front().targetGUID; }
     protected:
         bool HasGlobalCooldown() const;
         void TriggerGlobalCooldown();
