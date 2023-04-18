@@ -207,9 +207,12 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullR
                 condMeets = (uint32)Player::GetDrunkenstateByValue(player->GetDrunkValue()) >= ConditionValue1;
             break;
         }
-        case CONDITION_NEAR_CREATURE:
+        case CONDITION_NEAR_UNIT:
         {
-            condMeets = GetClosestCreatureWithEntry(object, ConditionValue1, (float)ConditionValue2, !ConditionValue3) ? true : false;
+            if (ConditionValue1 > 0)
+                condMeets = GetClosestCreatureWithEntry(object, ConditionValue1, (float)ConditionValue2, !ConditionValue3) ? true : false;
+            else
+                condMeets = object->SelectNearestPlayer((float)ConditionValue2, !ConditionValue3, false) ? true : false;
             break;
         }
         case CONDITION_NEAR_GAMEOBJECT:
@@ -537,7 +540,7 @@ uint32 Condition::GetSearcherTypeMaskForCondition()
         case CONDITION_DRUNKENSTATE:
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
-        case CONDITION_NEAR_CREATURE:
+        case CONDITION_NEAR_UNIT:
             mask |= GRID_MAP_TYPE_MASK_ALL;
             break;
         case CONDITION_NEAR_GAMEOBJECT:
@@ -1979,9 +1982,9 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
                 sLog->outErrorDb("DrunkState condition has useless data in value3 (%u)!", cond->ConditionValue3);
             break;
         }
-        case CONDITION_NEAR_CREATURE:
+        case CONDITION_NEAR_UNIT:
         {
-            if (!sObjectMgr->GetCreatureTemplate(cond->ConditionValue1))
+            if (cond->ConditionValue1 && !sObjectMgr->GetCreatureTemplate(cond->ConditionValue1))
             {
                 sLog->outErrorDb("NearCreature condition has non existing creature template entry (%u), skipped", cond->ConditionValue1);
                 return false;

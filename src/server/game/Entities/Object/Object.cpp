@@ -2410,11 +2410,11 @@ GameObject* WorldObject::FindNearestGameObjectOfType(GameobjectTypes type, float
     return go;
 }
 
-Player* WorldObject::SelectNearestPlayer(float distance) const
+Player* WorldObject::SelectNearestPlayer(float distance /*= 0*/, bool alive /*= true*/, bool allowGM /*= true*/) const
 { 
     Player* target = NULL;
 
-    acore::NearestPlayerInObjectRangeCheck checker(this, distance);
+    acore::NearestPlayerInObjectRangeCheck checker(this, distance, alive, allowGM);
     acore::PlayerLastSearcher<acore::NearestPlayerInObjectRangeCheck> searcher(this, target, checker);
     VisitNearbyObject(distance, searcher);
 

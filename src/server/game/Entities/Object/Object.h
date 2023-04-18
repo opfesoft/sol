@@ -964,7 +964,7 @@ class WorldObject : public Object, public WorldLocation
         GameObject* FindNearestGameObject(uint32 entry, float range, bool spawnedOnly = false) const;
         GameObject* FindNearestGameObjectOfType(GameobjectTypes type, float range) const;
 
-        Player* SelectNearestPlayer(float distance = 0) const;
+        Player* SelectNearestPlayer(float distance = 0, bool alive = true, bool allowGM = true) const;
         void GetGameObjectListWithEntryInGrid(std::list<GameObject*>& lList, uint32 uiEntry, float fMaxSearchRange) const;
         GameObject* GetGameObjectInRange(uint32 entry, float x, float y, float z, float range) const;
         void GetCreatureListWithEntryInGrid(std::list<Creature*>& lList, uint32 uiEntry, float fMaxSearchRange) const;

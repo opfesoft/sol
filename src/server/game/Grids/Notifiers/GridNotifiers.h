@@ -1288,13 +1288,19 @@ namespace acore
     class NearestPlayerInObjectRangeCheck
     {
         public:
-            NearestPlayerInObjectRangeCheck(WorldObject const* obj, float range) : i_obj(obj), i_range(range)
+            NearestPlayerInObjectRangeCheck(WorldObject const* obj, float range, bool alive = true, bool allowGM = true) : i_obj(obj), i_range(range), i_alive(alive), i_allowGM(allowGM)
             {
             }
 
             bool operator()(Player* u)
             {
-                if (u->IsAlive() && i_obj->IsWithinDistInMap(u, i_range))
+                if (i_alive != u->IsAlive())
+                    return false;
+
+                if (!i_allowGM && (u->IsGameMaster() || u->IsSpectator()))
+                    return false;
+
+                if (i_obj->IsWithinDistInMap(u, i_range))
                 {
                     i_range = i_obj->GetDistance(u);
                     return true;
@@ -1305,6 +1311,8 @@ namespace acore
         private:
             WorldObject const* i_obj;
             float i_range;
+            bool i_alive;
+            bool i_allowGM;
 
             NearestPlayerInObjectRangeCheck(NearestPlayerInObjectRangeCheck const&);
     };
