@@ -2886,6 +2886,7 @@ void SpellMgr::LoadSpellCustomAttr()
                 break;
             case 72293: // Mark of the Fallen Champion (Deathbringer Saurfang)
             case 72347: // Lock Players and Tap Chest (Gunship Battle)
+            case 33684: // Incite Chaos (Blackheart the Inciter)
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEGATIVE_EFF0;
                 break;
             default:
@@ -4469,7 +4470,7 @@ void SpellMgr::LoadDbcDataCorrections()
         ////////// TBC Instances
         //////////////////////////////////////////
 
-        // Shadow Labirynth
+        // Shadow Labyrinth
         // Murmur's Touch
         case 38794:
         case 33711:
