@@ -2826,6 +2826,10 @@ void Player::RegenerateHealth()
     else if (!IsInCombat() || HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT))
     {
         addvalue = OCTRegenHPPerSpirit() * HealthIncreaseRate;
+
+        if (!IsStandState())
+            addvalue *= 1.5f;
+
         if (!IsInCombat())
         {
             AuraEffectList const& mModHealthRegenPct = GetAuraEffectsByType(SPELL_AURA_MOD_HEALTH_REGEN_PERCENT);
@@ -2836,9 +2840,6 @@ void Player::RegenerateHealth()
         }
         else if (HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT))
             ApplyPct(addvalue, GetTotalAuraModifier(SPELL_AURA_MOD_REGEN_DURING_COMBAT));
-
-        if (!IsStandState())
-            addvalue *= 1.5f;
     }
 
     // always regeneration bonus (including combat)
