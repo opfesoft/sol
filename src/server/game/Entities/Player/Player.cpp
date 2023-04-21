@@ -2828,7 +2828,7 @@ void Player::RegenerateHealth()
         addvalue = OCTRegenHPPerSpirit() * HealthIncreaseRate;
 
         if (!IsStandState())
-            addvalue *= 1.5f;
+            addvalue *= 1.33f;
 
         if (!IsInCombat())
         {
