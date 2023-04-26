@@ -626,8 +626,9 @@ enum SMART_ACTION
     SMART_ACTION_SET_OWNER_DEATH_DESPAWN            = 240,    // disable (0/1), summonType, duration in ms
     SMART_ACTION_SET_KILL_DELAY                     = 241,    // kill delay in ms
     SMART_ACTION_SCALE                              = 242,    // percent
+    SMART_ACTION_SET_LOOT_DISABLED                  = 243,    // 0/1
 
-    SMART_ACTION_RANGE3_END                         = 243     // placeholder
+    SMART_ACTION_RANGE3_END                         = 244     // placeholder
 };
 
 struct SmartAction
@@ -1319,6 +1320,11 @@ struct SmartAction
         {
             uint32 percent;
         } scale;
+
+        struct
+        {
+            uint32 disabled;
+        } lootDisabled;
 
         //! Note for any new future actions
         //! All parameters must have type uint32

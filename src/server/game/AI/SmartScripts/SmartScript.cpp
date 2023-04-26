@@ -3476,6 +3476,19 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         }
         break;
     }
+    case SMART_ACTION_SET_LOOT_DISABLED:
+    {
+        ObjectList* targets = GetTargets(e, unit, gob);
+        if (!targets)
+            break;
+
+        for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
+            if (IsGameObject(*itr))
+                (*itr)->ToGameObject()->SetLootDisabled(e.action.lootDisabled.disabled > 0);
+
+        delete targets;
+        break;
+    }
     default:
         sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
         break;

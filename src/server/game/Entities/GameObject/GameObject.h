@@ -890,6 +890,9 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
 
         static std::unordered_map<int, goEventFlag> gameObjectToEventFlag; // Gameobject -> event flag
 
+        void SetLootDisabled(bool lootDisabled) { m_lootDisabled = lootDisabled; }
+        bool IsLootDisabled() const { return m_lootDisabled; }
+
     protected:
         bool AIM_Initialize();
         void UpdateModel();                                 // updates model in case displayId were changed
@@ -923,6 +926,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
         uint32 m_lootRecipientGroup;
         uint16 m_LootMode;                                  // bitmask, default LOOT_MODE_DEFAULT, determines what loot will be lootable
         uint32 m_lootGenerationTime;
+        bool m_lootDisabled;
     private:
         void CheckRitualList();
         void ClearRitualList();

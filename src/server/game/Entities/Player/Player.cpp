@@ -9072,7 +9072,12 @@ void Player::SendLoot(uint64 guid, LootType loot_type)
         if (go->isSpawnedByDefault() && go->getLootState() == GO_ACTIVATED && !go->loot.isLooted() && go->GetLootGenerationTime()+go->GetRespawnDelay() < time(NULL))
             go->SetLootState(GO_READY);
 
-        if (go->getLootState() == GO_READY)
+        if (go->getLootState() == GO_READY && go->IsLootDisabled())
+        {
+            loot->clear();
+            go->SetLootState(GO_ACTIVATED, this);
+        }
+        else if (go->getLootState() == GO_READY)
         {
             uint32 lootid = go->GetGOInfo()->GetLootId();
 

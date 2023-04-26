@@ -55,6 +55,7 @@ GameObject::GameObject() : WorldObject(false), MovableMapObject(),
     m_groupLootTimer = 0;
     lootingGroupLowGUID = 0;
     m_lootGenerationTime = 0;
+    m_lootDisabled = false;
 
     ResetLootMode(); // restore default loot mode
     loot.sourceGameObject = this;
