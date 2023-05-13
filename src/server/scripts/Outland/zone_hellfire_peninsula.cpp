@@ -16,7 +16,6 @@ EndScriptData */
 npc_aeranas
 npc_ancestral_wolf
 npc_wounded_blood_elf
-npc_fel_guard_hound
 EndContentData */
 
 #include "ScriptMgr.h"
@@ -313,79 +312,6 @@ public:
     }
 };
 
-/*######
-## npc_fel_guard_hound
-######*/
-
-enum FelGuard
-{
-    SPELL_SUMMON_POO            = 37688,
-    NPC_DERANGED_HELBOAR        = 16863
-};
-
-class npc_fel_guard_hound : public CreatureScript
-{
-public:
-    npc_fel_guard_hound() : CreatureScript("npc_fel_guard_hound") { }
-
-    struct npc_fel_guard_houndAI : public ScriptedAI
-    {
-        npc_fel_guard_houndAI(Creature* creature) : ScriptedAI(creature) { }
-
-        void Reset()
-        {
-            checkTimer = 5000; //check for creature every 5 sec
-            helboarGUID = 0;
-        }
-
-        void MovementInform(uint32 type, uint32 id)
-        {
-            if (type != POINT_MOTION_TYPE || id != 1)
-                return;
-
-            if (Creature* helboar = ObjectAccessor::GetCreature(*me, helboarGUID))
-            {
-                helboar->RemoveCorpse();
-                DoCast(SPELL_SUMMON_POO);
-
-                if (Player* owner = me->GetCharmerOrOwnerPlayerOrPlayerItself())
-                    me->GetMotionMaster()->MoveFollow(owner, 0.0f, 0.0f);
-            }
-        }
-
-        void UpdateAI(uint32 diff)
-        {
-            if (checkTimer <= diff)
-            {
-                if (Creature* helboar = me->FindNearestCreature(NPC_DERANGED_HELBOAR, 10.0f, false))
-                {
-                    if (helboar->GetGUID() != helboarGUID && me->GetMotionMaster()->GetCurrentMovementGeneratorType() != POINT_MOTION_TYPE && !me->FindCurrentSpellBySpellId(SPELL_SUMMON_POO))
-                    {
-                        helboarGUID = helboar->GetGUID();
-                        me->GetMotionMaster()->MovePoint(1, helboar->GetPositionX(), helboar->GetPositionY(), helboar->GetPositionZ());
-                    }
-                }
-                checkTimer = 5000;
-            }
-            else checkTimer -= diff;
-
-            if (!UpdateVictim())
-                return;
-
-            DoMeleeAttackIfReady();
-        }
-
-    private:
-        uint32 checkTimer;
-        uint64 helboarGUID;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_fel_guard_houndAI(creature);
-    }
-};
-
 void AddSC_hellfire_peninsula()
 {
     // Ours
@@ -395,5 +321,4 @@ void AddSC_hellfire_peninsula()
     new npc_aeranas();
     new npc_ancestral_wolf();
     new npc_wounded_blood_elf();
-    new npc_fel_guard_hound();
 }
