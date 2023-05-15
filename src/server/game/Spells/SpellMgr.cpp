@@ -3465,6 +3465,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 35596: // Power of the Legion (Socrethar - Deathblow to the Legion)
             spellInfo->AttributesEx |= SPELL_ATTR1_AURA_STAYS_AFTER_COMBAT;
             break;
+        case 37608: // Hit Rating (Wastewalker Armor 2P Bonus)
+        case 37610: // Hit Rating (Doomplate Battlegear 2P Bonus)
+            spellInfo->DurationIndex = 0;
+            spellInfo->EffectMiscValue[EFFECT_0] = 224;
+            break;
 
 
         /////////////////////////////////////////////
