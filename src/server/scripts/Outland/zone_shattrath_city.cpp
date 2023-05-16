@@ -13,8 +13,6 @@ SDCategory: Shattrath City
 EndScriptData */
 
 /* ContentData
-npc_raliq_the_drunk
-npc_salsalabim
 npc_shattrathflaskvendors
 npc_zephyr
 npc_kservant
@@ -26,167 +24,6 @@ EndContentData */
 #include "ScriptedEscortAI.h"
 #include "Player.h"
 #include "WorldSession.h"
-
-/*######
-## npc_raliq_the_drunk
-######*/
-
-#define GOSSIP_RALIQ            "You owe Sim'salabim money. Hand them over or die!"
-
-enum Raliq
-{
-    SPELL_UPPERCUT          = 10966,
-    QUEST_CRACK_SKULLS      = 10009,
-    FACTION_HOSTILE_RD      = 45
-};
-
-class npc_raliq_the_drunk : public CreatureScript
-{
-public:
-    npc_raliq_the_drunk() : CreatureScript("npc_raliq_the_drunk") { }
-
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-    {
-        ClearGossipMenuFor(player);
-        if (action == GOSSIP_ACTION_INFO_DEF+1)
-        {
-            CloseGossipMenuFor(player);
-            creature->setFaction(FACTION_HOSTILE_RD);
-            creature->AI()->AttackStart(player);
-        }
-        return true;
-    }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (player->GetQuestStatus(QUEST_CRACK_SKULLS) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, GOSSIP_RALIQ, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-
-        SendGossipMenuFor(player, 9440, creature->GetGUID());
-        return true;
-    }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_raliq_the_drunkAI(creature);
-    }
-
-    struct npc_raliq_the_drunkAI : public ScriptedAI
-    {
-        npc_raliq_the_drunkAI(Creature* creature) : ScriptedAI(creature)
-        {
-            m_uiNormFaction = creature->getFaction();
-        }
-
-        uint32 m_uiNormFaction;
-        uint32 Uppercut_Timer;
-
-        void Reset() override
-        {
-            Uppercut_Timer = 5000;
-            me->RestoreFaction();
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (Uppercut_Timer <= diff)
-            {
-                DoCastVictim(SPELL_UPPERCUT);
-                Uppercut_Timer = 15000;
-            } else Uppercut_Timer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-};
-
-/*######
-# npc_salsalabim
-######*/
-
-enum Salsalabim
-{
-    // Factions
-    FACTION_HOSTILE_SA             = 90,
-    FACTION_FRIENDLY_SA            = 35,
-
-    // Quests
-    QUEST_10004                    = 10004,
-
-    // Spells
-    SPELL_MAGNETIC_PULL            = 31705
-
-};
-
-class npc_salsalabim : public CreatureScript
-{
-public:
-    npc_salsalabim() : CreatureScript("npc_salsalabim") { }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (player->GetQuestStatus(QUEST_10004) == QUEST_STATUS_INCOMPLETE)
-        {
-            creature->setFaction(FACTION_HOSTILE_SA);
-            creature->AI()->AttackStart(player);
-        }
-        else
-        {
-            if (creature->IsQuestGiver())
-                player->PrepareQuestMenu(creature->GetGUID());
-            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
-        }
-        return true;
-    }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_salsalabimAI(creature);
-    }
-
-    struct npc_salsalabimAI : public ScriptedAI
-    {
-        npc_salsalabimAI(Creature* creature) : ScriptedAI(creature) { }
-
-        uint32 MagneticPull_Timer;
-
-        void Reset() override
-        {
-            MagneticPull_Timer = 15000;
-            me->RestoreFaction();
-        }
-
-        void DamageTaken(Unit* done_by, uint32 &damage, DamageEffectType, SpellSchoolMask) override
-        {
-            // xinef: some corrections
-            if (done_by)
-                if (Player* player = done_by->GetCharmerOrOwnerPlayerOrPlayerItself())
-                    if (me->HealthBelowPctDamaged(20, damage))
-                    {
-                        player->GroupEventHappens(QUEST_10004, me);
-                        damage = 0;
-                        EnterEvadeMode();
-                    }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (MagneticPull_Timer <= diff)
-            {
-                DoCastVictim(SPELL_MAGNETIC_PULL);
-                MagneticPull_Timer = 15000;
-            } else MagneticPull_Timer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-};
 
 /*
 ##################################################
@@ -417,8 +254,6 @@ public:
 
 void AddSC_shattrath_city()
 {
-    new npc_raliq_the_drunk();
-    new npc_salsalabim();
     new npc_shattrathflaskvendors();
     new npc_zephyr();
     new npc_kservant();

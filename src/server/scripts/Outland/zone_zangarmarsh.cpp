@@ -14,7 +14,6 @@ EndScriptData */
 
 /* ContentData
 npcs_ashyen_and_keleth
-npc_cooshcoosh
 npc_elder_kuruti
 npc_mortog_steamhead
 npc_kayra_longmane
@@ -226,85 +225,6 @@ public:
             }
             CloseGossipMenuFor(player);
             player->TalkedToCreature(creature->GetEntry(), creature->GetGUID());
-        }
-        return true;
-    }
-};
-
-/*######
-## npc_cooshcoosh
-######*/
-
-#define GOSSIP_COOSH            "You owe Sim'salabim money. Hand them over or die!"
-
-enum Cooshhooosh
-{
-    SPELL_LIGHTNING_BOLT    = 9532,
-    QUEST_CRACK_SKULLS      = 10009,
-    FACTION_HOSTILE_CO      = 45
-};
-
-class npc_cooshcoosh : public CreatureScript
-{
-public:
-    npc_cooshcoosh() : CreatureScript("npc_cooshcoosh") { }
-
-    struct npc_cooshcooshAI : public ScriptedAI
-    {
-        npc_cooshcooshAI(Creature* creature) : ScriptedAI(creature)
-        {
-            m_uiNormFaction = creature->getFaction();
-        }
-
-        uint32 m_uiNormFaction;
-        uint32 LightningBolt_Timer;
-
-        void Reset() override
-        {
-            LightningBolt_Timer = 2000;
-            if (me->getFaction() != m_uiNormFaction)
-                me->setFaction(m_uiNormFaction);
-        }
-
-        void EnterCombat(Unit* /*who*/) override { }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (LightningBolt_Timer <= diff)
-            {
-                DoCastVictim(SPELL_LIGHTNING_BOLT);
-                LightningBolt_Timer = 5000;
-            } else LightningBolt_Timer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_cooshcooshAI(creature);
-    }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (player->GetQuestStatus(QUEST_CRACK_SKULLS) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_COOSH, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-
-        SendGossipMenuFor(player, 9441, creature->GetGUID());
-        return true;
-    }
-
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-    {
-        ClearGossipMenuFor(player);
-        if (action == GOSSIP_ACTION_INFO_DEF)
-        {
-            CloseGossipMenuFor(player);
-            creature->setFaction(FACTION_HOSTILE_CO);
-            creature->AI()->AttackStart(player);
         }
         return true;
     }
@@ -531,7 +451,6 @@ void AddSC_zangarmarsh()
 
     // Theris
     new npcs_ashyen_and_keleth();
-    new npc_cooshcoosh();
     new npc_elder_kuruti();
     new npc_mortog_steamhead();
     new npc_kayra_longmane();
