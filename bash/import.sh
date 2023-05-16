@@ -24,23 +24,21 @@ function import() {
         counter=$(printf "$oldCnt" | awk '{print $0 + 1}')
     fi;
 
-    for entry in "$pendingPath"/*.sql
+    for entry in $(ls "$pendingPath"/*.sql 2>/dev/null)
     do
-        if [[ -e $entry ]]; then
-            cnt=$(printf -v counter "%02d" $counter ; echo $counter)
+        cnt=$(printf -v counter "%02d" $counter ; echo $counter)
 
-            newFile="$updPath/"$dateToday"_"$cnt".sql"
-            cat $entry >> "$newFile";
+        newFile="$updPath/$dateToday"_"$cnt".sql
+        cat "$entry" | tr -d '\r' >> "$newFile";
 
-            if [ "$(tail -c 1 "$newFile"; echo x)" != $'\nx' ]
-            then
-                echo "" >> "$newFile";
-            fi
-
-            rm $entry;
-
-            ((counter+=1))
+        if [ "$(tail -c 1 "$newFile"; echo x)" != $'\nx' ]
+        then
+            echo "" >> "$newFile";
         fi
+
+        rm $entry;
+
+        ((counter+=1))
     done
 
 }
