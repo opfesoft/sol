@@ -5,18 +5,6 @@
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  */
 
-/* ScriptData
-SDName: Zangarmarsh
-SD%Complete: 100
-SDComment: Quest support: 9752, 9785, 9803, 10009. Mark Of ... buffs.
-SDCategory: Zangarmarsh
-EndScriptData */
-
-/* ContentData
-npcs_ashyen_and_keleth
-npc_kayra_longmane
-EndContentData */
-
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
@@ -228,84 +216,6 @@ public:
 };
 
 /*######
-## npc_kayra_longmane
-######*/
-
-enum Kayra
-{
-    SAY_START           = 0,
-    SAY_AMBUSH1         = 1,
-    SAY_PROGRESS        = 2,
-    SAY_AMBUSH2         = 3,
-    SAY_END             = 4,
-
-    QUEST_ESCAPE_FROM   = 9752,
-    NPC_SLAVEBINDER     = 18042
-};
-
-class npc_kayra_longmane : public CreatureScript
-{
-public:
-    npc_kayra_longmane() : CreatureScript("npc_kayra_longmane") { }
-
-    struct npc_kayra_longmaneAI : public npc_escortAI
-    {
-        npc_kayra_longmaneAI(Creature* creature) : npc_escortAI(creature) { }
-
-        void Reset() { }
-
-        void WaypointReached(uint32 waypointId)
-        {
-            Player* player = GetPlayerForEscort();
-            if (!player)
-                return;
-
-            switch (waypointId)
-            {
-                case 4:
-                    Talk(SAY_AMBUSH1, player);
-                    DoSpawnCreature(NPC_SLAVEBINDER, -10.0f, -5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                    DoSpawnCreature(NPC_SLAVEBINDER, -8.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                    break;
-                case 5:
-                    Talk(SAY_PROGRESS, player);
-                    SetRun();
-                    break;
-                case 16:
-                    Talk(SAY_AMBUSH2, player);
-                    DoSpawnCreature(NPC_SLAVEBINDER, -10.0f, -5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                    DoSpawnCreature(NPC_SLAVEBINDER, -8.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                    break;
-                case 17:
-                    SetRun(false);
-                    break;
-                case 25:
-                    Talk(SAY_END, player);
-                    player->GroupEventHappens(QUEST_ESCAPE_FROM, me);
-                    break;
-            }
-        }
-    };
-
-    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
-    {
-        if (quest->GetQuestId() == QUEST_ESCAPE_FROM)
-        {
-            creature->AI()->Talk(SAY_START, player);
-
-            if (npc_escortAI* pEscortAI = CAST_AI(npc_kayra_longmane::npc_kayra_longmaneAI, creature->AI()))
-                pEscortAI->Start(false, false, player->GetGUID());
-        }
-        return true;
-    }
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_kayra_longmaneAI(creature);
-    }
-};
-
-/*######
 ## AddSC
 ######*/
 
@@ -316,5 +226,4 @@ void AddSC_zangarmarsh()
 
     // Theris
     new npcs_ashyen_and_keleth();
-    new npc_kayra_longmane();
 }
