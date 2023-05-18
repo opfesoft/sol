@@ -37,15 +37,15 @@ VALUES
 (17969,0,8,0,40,0,100,0,5,1796902,0,0,0,80,1796904,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On WP 5 Reached - Call Timed Action List'),
 (17969,0,9,0,58,0,100,0,0,1796902,0,0,0,80,1796905,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On WP Path Ended - Call Timed Action List'),
 (17969,0,10,0,6,0,100,0,0,0,0,0,0,6,9752,0,0,0,0,0,16,0,0,0,0,0,0,0,0,'Kayra Longmane - On Death - Fail Quest ''Escape from Umbrafen'''),
-(17969,0,11,0,17,0,100,0,18042,5000,5000,0,0,1,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,'Umbrafen Slavebinder - On Summoned Unit ''Umbrafen Slavebinder'' - Say Line 0 (Invoker)'),
+(17969,0,11,0,17,0,100,0,18042,5000,5000,0,0,1,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,'Kayra Longmane - On Summoned Unit ''Umbrafen Slavebinder'' - Say Line 0 (Invoker)'),
 
-(1796900,9,1,0,0,0,100,0,0,0,0,0,0,48,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Set Active On'),
-(1796900,9,2,0,0,0,100,0,0,0,0,0,0,64,1,0,0,0,0,0,7,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Store Targetlist 1 (Invoker)'),
-(1796900,9,3,0,0,0,100,0,0,0,0,0,0,1,0,0,1,0,0,0,12,1,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Say Line 0'),
-(1796900,9,4,0,0,0,100,0,0,0,0,0,0,2,495,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Set Faction ''Escortee'''),
-(1796900,9,5,0,0,0,100,0,0,0,0,0,0,83,2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Remove ''GOSSIP_OPTION_QUESTGIVER'''),
-(1796900,9,6,0,0,0,100,0,3000,3000,0,0,0,91,8,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Remove ''UNIT_STAND_STATE_KNEEL'''),
-(1796900,9,7,0,0,0,100,0,0,0,0,0,0,53,0,1796900,0,0,0,2,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Start WP Movement'),
+(1796900,9,0,0,0,0,100,0,0,0,0,0,0,48,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Set Active On'),
+(1796900,9,1,0,0,0,100,0,0,0,0,0,0,64,1,0,0,0,0,0,7,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Store Targetlist 1 (Invoker)'),
+(1796900,9,2,0,0,0,100,0,0,0,0,0,0,1,0,0,1,0,0,0,12,1,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Say Line 0'),
+(1796900,9,3,0,0,0,100,0,0,0,0,0,0,2,495,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Set Faction ''Escortee'''),
+(1796900,9,4,0,0,0,100,0,0,0,0,0,0,83,2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Remove ''GOSSIP_OPTION_QUESTGIVER'''),
+(1796900,9,5,0,0,0,100,0,3000,3000,0,0,0,91,8,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Remove ''UNIT_STAND_STATE_KNEEL'''),
+(1796900,9,6,0,0,0,100,0,0,0,0,0,0,53,0,1796900,0,0,0,2,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Start WP Movement'),
 
 (1796901,9,0,0,0,0,100,0,0,0,0,0,0,1,1,0,1,0,0,0,12,1,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Say Line 1'),
 (1796901,9,1,0,0,0,100,0,2000,2000,0,0,0,107,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Summon Group 0'),
@@ -69,7 +69,7 @@ VALUES
 
 (18042,0,0,0,54,0,100,0,0,0,0,0,0,80,1804200,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Umbrafen Slavebinder - On Just Summoned - Call Timed Action List'),
 
-(1804200,9,0,0,0,0,100,0,0,0,0,0,0,48,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Kayra Longmane - On Script - Set Active On'),
+(1804200,9,0,0,0,0,100,0,0,0,0,0,0,48,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Umbrafen Slavebinder - On Script - Set Active On'),
 (1804200,9,1,0,0,0,100,0,0,0,0,0,0,18,768,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Umbrafen Slavebinder - On Script - Set ''UNIT_FLAG_IMMUNE_TO_PC'' & ''UNIT_FLAG_IMMUNE_TO_NPC'''),
 (1804200,9,2,0,0,0,100,0,2000,2000,0,0,0,19,768,0,0,0,0,0,1,0,0,0,0,0,0,0,0,'Umbrafen Slavebinder - On Script - Remove ''UNIT_FLAG_IMMUNE_TO_PC'' & ''UNIT_FLAG_IMMUNE_TO_NPC'''),
 (1804200,9,3,0,0,0,100,0,0,0,0,0,0,49,0,0,0,0,0,0,19,17969,0,0,0,0,0,0,0,'Umbrafen Slavebinder - On Script - Start Attack (Kayra Longmane)');
