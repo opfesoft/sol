@@ -3470,6 +3470,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->DurationIndex = 0;
             spellInfo->EffectMiscValue[EFFECT_0] = 224;
             break;
+        case 18097: // The Green Tower
+            spellInfo->DurationIndex = 0;
+            break;
 
 
         /////////////////////////////////////////////
