@@ -32,7 +32,7 @@ if ( OPENSSL_LIBRARY )
     message( STATUS "Found OpenSSL headers: ${OPENSSL_INCLUDE_DIR}")
   else ( OPENSSL_INCLUDE_DIR )
     message(FATAL_ERROR "Could not find OpenSSL headers! Please install OpenSSL libraries and headers")
-  endif (  OPENSSL_INCLUDE_DIR)
+  endif ( OPENSSL_INCLUDE_DIR)
 endif ( OPENSSL_LIBRARY )
 
 mark_as_advanced( OPENSSL_LIBRARY OPENSSL_INCLUDE_DIR )

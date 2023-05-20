@@ -7,7 +7,7 @@
 # An interface library to make the target com available to other targets
 add_library(acore-compile-option-interface INTERFACE)
 
-# Use -std=c++11 instead of -std=gnu++11
+# Use -std=c++17 instead of -std=gnu++17
 set(CXX_EXTENSIONS OFF)
 
 # Enable support С++17

@@ -93,6 +93,7 @@ find_package(OpenSSL REQUIRED)
 find_package(Jemalloc REQUIRED)
 find_package(ACE REQUIRED)
 find_package(MySQL REQUIRED)
+find_package(Fmt REQUIRED)
 
 if(UNIX AND WITH_PERFTOOLS)
   find_package(Gperftools)
