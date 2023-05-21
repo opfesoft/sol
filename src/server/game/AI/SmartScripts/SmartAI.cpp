@@ -874,7 +874,11 @@ void SmartAI::DamageTaken(Unit* doneBy, uint32& damage, DamageEffectType damaget
 
     // Xinef: skip nodamage type (eg. instakill effect)
     if (damagetype != NODAMAGE && mInvincibilityHpLevel && (damage >= me->GetHealth() - mInvincibilityHpLevel))
+    {
         damage = me->GetHealth() - mInvincibilityHpLevel; // damage should not be nullified, because of player damage req.
+        if (mInvincibilityHpLevel > 1)
+            me->SetUpdateHealth(true); // send health update to client (the client will continue to decrease the health, so it needs the correct value)
+    }
 }
 
 void SmartAI::HealReceived(Unit* doneBy, uint32& addhealth)

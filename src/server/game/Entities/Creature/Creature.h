@@ -765,6 +765,9 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         void DelayKill(Unit* killer, bool durabilityLoss, WeaponAttackType attackType, SpellInfo const* spellProto);
         uint64 GetKillTime() const { return m_killTime; }
         void SetKillTime(uint64 killTime) { m_killTime = killTime; }
+        void SetUpdateHealth(bool updateHealth) { m_updateHealth = updateHealth; }
+        bool IsUpdateHealth() const { return m_updateHealth; }
+        void SendHealthUpdate();
 
     protected:
         bool CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data = NULL);
@@ -858,6 +861,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool m_damagedByPlayer;
         bool m_hasLevelRange;
         bool m_saveRespawnTime;
+        bool m_updateHealth;
 
         inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
         inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;
