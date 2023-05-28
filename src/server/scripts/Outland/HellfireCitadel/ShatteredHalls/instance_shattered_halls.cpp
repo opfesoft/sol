@@ -277,7 +277,8 @@ class at_shattered_halls_execution : public AreaTriggerScript
         bool OnTrigger(Player* player, AreaTrigger const* /*areaTrigger*/)
         {
             if (InstanceScript* instanceScript = player->GetInstanceScript())
-                instanceScript->SetData(DATA_ENTERED_ROOM, DATA_ENTERED_ROOM);
+                if (player->GetMap()->IsHeroic())
+                    instanceScript->SetData(DATA_ENTERED_ROOM, DATA_ENTERED_ROOM);
 
             return true;
         }
