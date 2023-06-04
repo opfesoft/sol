@@ -4453,7 +4453,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
     case SMART_EVENT_DAMAGED:
     case SMART_EVENT_DAMAGED_TARGET:
     {
-        if (var0 > e.event.minMaxRepeat.max || var0 < e.event.minMaxRepeat.min)
+        if ((e.event.minMaxRepeat.max && var0 > e.event.minMaxRepeat.max) || var0 < e.event.minMaxRepeat.min)
             return;
         RecalcTimer(e, e.event.minMaxRepeat.repeatMin, e.event.minMaxRepeat.repeatMax);
         ProcessAction(e, unit);
