@@ -173,8 +173,12 @@ enum SMART_EVENT
 
     SMART_EVENT_FOLLOW_TARGET_LOST       = 231,     // range (0: unlimited, just check if target exists on the map), heartbeat in ms (if 0 use 5000)
     SMART_EVENT_KILL_DELAY_STARTED       = 232,     // none
+    SMART_EVENT_SPELL_CAST               = 233,     // SpellID, School, CooldownMin, CooldownMax
+    SMART_EVENT_SPELL_FAILED             = 234,     // SpellID, School, CooldownMin, CooldownMax
+    SMART_EVENT_SPELL_START              = 235,     // SpellID, School, CooldownMin, CooldownMax
+    SMART_EVENT_CHANNEL_FINISHED         = 236,     // SpellID, School, CooldownMin, CooldownMax
 
-    SMART_EVENT_RANGE2_END               = 233      // placeholder
+    SMART_EVENT_RANGE2_END               = 237      // placeholder
 };
 
 struct SmartEvent
@@ -1669,7 +1673,11 @@ const std::unordered_map<uint32, uint32> SmartAIEventMask =
     {SMART_EVENT_DISTANCE_GAMEOBJECT,       SMART_SCRIPT_TYPE_MASK_CREATURE },
     {SMART_EVENT_COUNTER_SET,               SMART_SCRIPT_TYPE_MASK_CREATURE + SMART_SCRIPT_TYPE_MASK_GAMEOBJECT },
     {SMART_EVENT_FOLLOW_TARGET_LOST,        SMART_SCRIPT_TYPE_MASK_CREATURE },
-    {SMART_EVENT_KILL_DELAY_STARTED,        SMART_SCRIPT_TYPE_MASK_CREATURE }
+    {SMART_EVENT_KILL_DELAY_STARTED,        SMART_SCRIPT_TYPE_MASK_CREATURE },
+    {SMART_EVENT_SPELL_CAST,                SMART_SCRIPT_TYPE_MASK_CREATURE },
+    {SMART_EVENT_SPELL_FAILED,              SMART_SCRIPT_TYPE_MASK_CREATURE },
+    {SMART_EVENT_SPELL_START,               SMART_SCRIPT_TYPE_MASK_CREATURE },
+    {SMART_EVENT_CHANNEL_FINISHED,          SMART_SCRIPT_TYPE_MASK_CREATURE }
 };
 
 enum SmartEventFlags

@@ -3494,6 +3494,10 @@ SpellCastResult Spell::prepare(SpellCastTargets const* targets, AuraEffect const
             }
         }
 
+        if (m_originalCaster)
+            if (Creature* caster = m_originalCaster->ToCreature(); caster && caster->IsAIEnabled)
+                caster->AI()->SpellStart(m_spellInfo);
+
         //item: first cast may destroy item and second cast causes crash
         // xinef: removed !m_spellInfo->StartRecoveryTime because of TC retardiness
         // second los check failed in events
@@ -3835,6 +3839,10 @@ void Spell::_cast(bool skipCheck)
             m_caster->ToPlayer()->RemoveSpellCooldown(m_spellInfo->Id, true);
 
     SetExecutedCurrently(false);
+
+    if (m_originalCaster)
+        if (Creature* caster = m_originalCaster->ToCreature(); caster && caster->IsAIEnabled)
+            caster->AI()->SpellCast(m_spellInfo);
 }
 
 void Spell::handle_immediate()
@@ -4138,6 +4146,10 @@ void Spell::update(uint32 difftime)
                 SendChannelUpdate(0);
 
                 finish();
+
+                if (m_originalCaster)
+                    if (Creature* caster = m_originalCaster->ToCreature(); caster && caster->IsAIEnabled)
+                        caster->AI()->ChannelFinished(m_spellInfo);
             }
             // Xinef: Dont update channeled target list on last tick, allow auras to update duration properly
             // Xinef: Added this strange check because of diffrent update routines for players / creatures

@@ -499,6 +499,10 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 break;
             case SMART_EVENT_SPELLHIT:
             case SMART_EVENT_SPELLHIT_TARGET:
+            case SMART_EVENT_SPELL_CAST:
+            case SMART_EVENT_SPELL_FAILED:
+            case SMART_EVENT_SPELL_START:
+            case SMART_EVENT_CHANNEL_FINISHED:
                 if (e.event.spellHit.spell)
                 {
                     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(e.event.spellHit.spell);

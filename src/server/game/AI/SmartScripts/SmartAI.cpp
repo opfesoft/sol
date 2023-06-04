@@ -867,6 +867,26 @@ void SmartAI::SpellHitTarget(Unit* target, const SpellInfo* spellInfo)
     GetScript()->ProcessEventsFor(SMART_EVENT_SPELLHIT_TARGET, target, 0, 0, false, spellInfo);
 }
 
+void SmartAI::SpellCast(SpellInfo const* spellInfo)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_SPELL_CAST, NULL, 0, 0, false, spellInfo);
+}
+
+void SmartAI::SpellFailed(SpellInfo const* spellInfo)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_SPELL_FAILED, NULL, 0, 0, false, spellInfo);
+}
+
+void SmartAI::SpellStart(SpellInfo const* spellInfo)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_SPELL_START, NULL, 0, 0, false, spellInfo);
+}
+
+void SmartAI::ChannelFinished(SpellInfo const* spellInfo)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_CHANNEL_FINISHED, NULL, 0, 0, false, spellInfo);
+}
+
 void SmartAI::DamageTaken(Unit* doneBy, uint32& damage, DamageEffectType damagetype, SpellSchoolMask /*damageSchoolMask*/)
 {
     if (doneBy)

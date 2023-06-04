@@ -3391,6 +3391,9 @@ void Unit::InterruptSpell(CurrentSpellTypes spellType, bool withDelayed, bool wi
 
         m_currentSpells[spellType] = NULL;
         spell->SetReferencedFromCurrent(false);
+
+        if (Creature* caster = ToCreature(); caster && caster->IsAIEnabled)
+            caster->AI()->SpellFailed(spell->GetSpellInfo());
     }
 }
 
