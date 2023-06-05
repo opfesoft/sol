@@ -1347,7 +1347,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_FLEE:
         case SMART_ACTION_ADD_THREAT:
         case SMART_ACTION_LOAD_EQUIPMENT:
-        case SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT:
+        case SMART_ACTION_TRIGGER_RANDOM_RANGE_TIMED_EVENT:
         case SMART_ACTION_SET_HOVER:
         case SMART_ACTION_ADD_IMMUNITY:
         case SMART_ACTION_REMOVE_IMMUNITY:
@@ -1369,6 +1369,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_SET_KILL_DELAY:
         case SMART_ACTION_SCALE:
         case SMART_ACTION_SET_LOOT_DISABLED:
+        case SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT:
             break;
         default:
             sLog->outErrorDb("SmartAIMgr: Not handled action_type %u, event_type %u, entryorguid %d source_type %u id %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);

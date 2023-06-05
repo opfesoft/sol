@@ -583,7 +583,7 @@ enum SMART_ACTION
     SMART_ACTION_FLEE                               = 122,    // fleeTime
     SMART_ACTION_ADD_THREAT                         = 123,    // +threat, -threat
     SMART_ACTION_LOAD_EQUIPMENT                     = 124,    // id, force, maxId
-    SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT         = 125,    // id min range, id max range
+    SMART_ACTION_TRIGGER_RANDOM_RANGE_TIMED_EVENT   = 125,    // id min range, id max range
     SMART_ACTION_REMOVE_ALL_GAMEOBJECTS             = 126,
     SMART_ACTION_RESERVED_127                       = 127,
     SMART_ACTION_RESERVED_128                       = 128,
@@ -631,8 +631,9 @@ enum SMART_ACTION
     SMART_ACTION_SET_KILL_DELAY                     = 241,    // kill delay in ms
     SMART_ACTION_SCALE                              = 242,    // percent
     SMART_ACTION_SET_LOOT_DISABLED                  = 243,    // 0/1
+    SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT         = 244,    // id1, id2, id3, id4, id5, id6
 
-    SMART_ACTION_RANGE3_END                         = 244     // placeholder
+    SMART_ACTION_RANGE3_END                         = 245     // placeholder
 };
 
 struct SmartAction
@@ -1215,7 +1216,7 @@ struct SmartAction
         {
             uint32 minId;
             uint32 maxId;
-        } randomTimedEvent;
+        } randomRangeTimedEvent;
 
         struct
         {
@@ -1329,6 +1330,16 @@ struct SmartAction
         {
             uint32 disabled;
         } lootDisabled;
+
+        struct
+        {
+            uint32 id1;
+            uint32 id2;
+            uint32 id3;
+            uint32 id4;
+            uint32 id5;
+            uint32 id6;
+        } randomTimedEvent;
 
         //! Note for any new future actions
         //! All parameters must have type uint32

@@ -3022,9 +3022,9 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         delete targets;
         break;
     }
-    case SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT:
+    case SMART_ACTION_TRIGGER_RANDOM_RANGE_TIMED_EVENT:
     {
-        uint32 eventId = urand(e.action.randomTimedEvent.minId, e.action.randomTimedEvent.maxId);
+        uint32 eventId = urand(e.action.randomRangeTimedEvent.minId, e.action.randomRangeTimedEvent.maxId);
         ProcessEventsFor((SMART_EVENT)SMART_EVENT_TIMED_EVENT_TRIGGERED, NULL, eventId);
         break;
     }
@@ -3487,6 +3487,33 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 (*itr)->ToGameObject()->SetLootDisabled(e.action.lootDisabled.disabled > 0);
 
         delete targets;
+        break;
+    }
+    case SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT:
+    {
+        uint32 eventIds[SMART_ACTION_PARAM_COUNT];
+        eventIds[0] = e.action.randomTimedEvent.id1;
+        eventIds[1] = e.action.randomTimedEvent.id2;
+        eventIds[2] = e.action.randomTimedEvent.id3;
+        eventIds[3] = e.action.randomTimedEvent.id4;
+        eventIds[4] = e.action.randomTimedEvent.id5;
+        eventIds[5] = e.action.randomTimedEvent.id6;
+        uint32 temp[SMART_ACTION_PARAM_COUNT];
+        uint32 count = 0;
+        for (uint8 i = 0; i < SMART_ACTION_PARAM_COUNT; i++)
+        {
+            if (eventIds[i] > 0)
+            {
+                temp[count] = eventIds[i];
+                ++count;
+            }
+        }
+
+        if (count == 0)
+            break;
+
+        uint32 eventId = temp[urand(0, count - 1)];
+        ProcessEventsFor((SMART_EVENT)SMART_EVENT_TIMED_EVENT_TRIGGERED, NULL, eventId);
         break;
     }
     default:
