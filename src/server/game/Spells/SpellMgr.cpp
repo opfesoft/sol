@@ -4571,6 +4571,11 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->AttributesEx5 |= SPELL_ATTR5_USABLE_WHILE_STUNNED;
             break;
 
+        // Underbog
+        case 34290: // Acid Spit (Ghaz'an)
+            spellInfo->MaxAffectedTargets = 1;
+            break;
+
         // Karazhan
         // Amplify Damage
         case 39095:
