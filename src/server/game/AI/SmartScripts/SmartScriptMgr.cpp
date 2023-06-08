@@ -332,8 +332,6 @@ void SmartAIMgr::LoadSmartAIFromDB()
 
 bool SmartAIMgr::IsTargetValid(SmartScriptHolder const& e)
 {
-    if (e.GetActionType() == SMART_ACTION_INSTALL_AI_TEMPLATE)
-        return true; // AI template has special handling
     switch (e.GetTargetType())
     {
         case SMART_TARGET_CREATURE_DISTANCE:
@@ -425,6 +423,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
     switch (e.action.type)
     {
         case SMART_ACTION_RESERVED_16:
+        case SMART_ACTION_RESERVED_58:
         case SMART_ACTION_RESERVED_118:
         case SMART_ACTION_RESERVED_119:
         case SMART_ACTION_RESERVED_120:
@@ -1072,13 +1071,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             if (!sMapStore.LookupEntry(e.action.teleport.mapID))
             {
                 sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses non-existent Map entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.teleport.mapID);
-                return false;
-            }
-            break;
-        case SMART_ACTION_INSTALL_AI_TEMPLATE:
-            if (e.action.installTtemplate.id >= SMARTAI_TEMPLATE_END)
-            {
-                sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses non-existent AI template id %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.installTtemplate.id);
                 return false;
             }
             break;

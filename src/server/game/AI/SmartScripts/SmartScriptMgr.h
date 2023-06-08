@@ -516,7 +516,7 @@ enum SMART_ACTION
     SMART_ACTION_WP_STOP                            = 55,     // despawnTime, quest, fail?
     SMART_ACTION_ADD_ITEM                           = 56,     // itemID, count
     SMART_ACTION_REMOVE_ITEM                        = 57,     // itemID, count
-    SMART_ACTION_INSTALL_AI_TEMPLATE                = 58,     // AITemplateID
+    SMART_ACTION_RESERVED_58                        = 58,
     SMART_ACTION_SET_RUN                            = 59,     // 0/1
     SMART_ACTION_SET_FLY                            = 60,     // 0/1
     SMART_ACTION_SET_SWIM                           = 61,     // 0/1
@@ -960,16 +960,6 @@ struct SmartAction
 
         struct
         {
-            uint32 id;
-            uint32 param1;
-            uint32 param2;
-            uint32 param3;
-            uint32 param4;
-            uint32 param5;
-        } installTtemplate;
-
-        struct
-        {
             uint32 run;
         } setRun;
 
@@ -1354,17 +1344,6 @@ struct SmartAction
             uint32 param6;
         } raw;
     };
-};
-
-enum SMARTAI_TEMPLATE
-{
-    SMARTAI_TEMPLATE_BASIC          = 0, //nothing is preset
-    SMARTAI_TEMPLATE_CASTER         = 1, //spellid, repeatMin, repeatMax, range, manaPCT +JOIN: target_param1 as castFlag
-    SMARTAI_TEMPLATE_TURRET         = 2, //spellid, repeatMin, repeatMax +JOIN: target_param1 as castFlag
-    SMARTAI_TEMPLATE_PASSIVE        = 3,
-    SMARTAI_TEMPLATE_CAGED_GO_PART  = 4, //creatureID, give credit at point end?,
-    SMARTAI_TEMPLATE_CAGED_NPC_PART = 5, //gameObjectID, despawntime, run?, dist, TextGroupID
-    SMARTAI_TEMPLATE_END            = 6,
 };
 
 enum SMARTAI_TARGETS
