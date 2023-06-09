@@ -4248,7 +4248,6 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
     case SMART_EVENT_QUEST_FAIL:
     case SMART_EVENT_JUST_SUMMONED:
     case SMART_EVENT_RESET:
-    case SMART_EVENT_JUST_CREATED:
     case SMART_EVENT_FOLLOW_COMPLETED:
     case SMART_EVENT_ON_SPELLCLICK:
     case SMART_EVENT_KILL_DELAY_STARTED:
@@ -5037,7 +5036,6 @@ void SmartScript::OnInitialize(WorldObject* obj, AreaTrigger const* at)
         mMaxCombatDist = uint32(maxDisableDist + ((minEnableDist - maxDisableDist) / 2));
 
     ProcessEventsFor(SMART_EVENT_AI_INIT);
-    ProcessEventsFor(SMART_EVENT_JUST_CREATED);
 }
 
 void SmartScript::OnMoveInLineOfSight(Unit* who)
