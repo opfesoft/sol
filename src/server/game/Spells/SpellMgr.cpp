@@ -3473,6 +3473,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 18097: // The Green Tower
             spellInfo->DurationIndex = 0;
             break;
+        case 13139: // Net-o-Matic
+            spellInfo->DurationIndex = 36; // 1s
+            break;
 
 
         /////////////////////////////////////////////
