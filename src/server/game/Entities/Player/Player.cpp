@@ -21825,7 +21825,8 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
     }
 
     // check node starting pos data set case if provided
-    if (node->x != 0.0f || node->y != 0.0f || node->z != 0.0f)
+    if (node->ID != 154 // exception for "On Nethery Wings"
+        && (node->x != 0.0f || node->y != 0.0f || node->z != 0.0f))
     {
         if (node->map_id != GetMapId() ||
             (node->x - GetPositionX())*(node->x - GetPositionX())+
