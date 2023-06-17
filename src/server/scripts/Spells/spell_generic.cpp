@@ -2475,7 +2475,7 @@ class spell_gen_creature_permanent_feign_death : public SpellScriptLoader
                 Unit* target = GetTarget();
                 target->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
                 target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
-                target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC);
+                target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC|UNIT_FLAG_SUPPRESS_CHAT_EMOTES);
 
                 if (target->GetTypeId() == TYPEID_UNIT)
                     target->ToCreature()->SetReactState(REACT_PASSIVE);
@@ -2486,7 +2486,7 @@ class spell_gen_creature_permanent_feign_death : public SpellScriptLoader
                 Unit* target = GetTarget();
                 target->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
                 target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
-                target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC);
+                target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC|UNIT_FLAG_SUPPRESS_CHAT_EMOTES);
 
                 if (target->GetTypeId() == TYPEID_UNIT)
                     target->ToCreature()->SetReactState(REACT_AGGRESSIVE);

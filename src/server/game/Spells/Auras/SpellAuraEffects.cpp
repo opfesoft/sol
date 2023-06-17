@@ -2453,7 +2453,7 @@ void AuraEffect::HandleFeignDeath(AuraApplication const* aurApp, uint8 mode, boo
         if (aurApp->GetRemoveMode())
             return;
                                                             // blizz like 2.0.x
-        target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_29);
+        target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SUPPRESS_CHAT_EMOTES);
                                                             // blizz like 2.0.x
         target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
                                                             // blizz like 2.0.x
@@ -2470,7 +2470,7 @@ void AuraEffect::HandleFeignDeath(AuraApplication const* aurApp, uint8 mode, boo
         target->SendMessageToSet(&data, true);
         */
                                                             // blizz like 2.0.x
-        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_29);
+        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SUPPRESS_CHAT_EMOTES);
                                                             // blizz like 2.0.x
         target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
                                                             // blizz like 2.0.x
