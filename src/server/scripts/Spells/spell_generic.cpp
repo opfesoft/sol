@@ -1705,6 +1705,54 @@ public:
     }
 };
 
+class spell_gen_creature_feign_death : public SpellScriptLoader
+{
+    public:
+        spell_gen_creature_feign_death() : SpellScriptLoader("spell_gen_creature_feign_death") { }
+
+        class spell_gen_creature_feign_death_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_creature_feign_death_AuraScript);
+
+            void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                Unit* target = GetTarget();
+                target->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
+                target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SUPPRESS_CHAT_EMOTES);
+                target->AttackStop();
+
+                if (Creature* c = target->ToCreature())
+                {
+                    c->StoreReactState();
+                    c->SetReactState(REACT_PASSIVE);
+                }
+            }
+
+            void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                Unit* target = GetTarget();
+                target->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
+                target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+                target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SUPPRESS_CHAT_EMOTES);
+
+                if (Creature* c = target->ToCreature())
+                    c->RestoreReactState();
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_gen_creature_feign_death_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+                OnEffectRemove += AuraEffectApplyFn(spell_gen_creature_feign_death_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_creature_feign_death_AuraScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5414,6 +5462,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_seal_of_blood();
     new spell_gen_freezing_circle();
     new spell_gen_rock_shell();
+    new spell_gen_creature_feign_death();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();

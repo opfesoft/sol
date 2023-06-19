@@ -501,6 +501,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         ReactStates GetReactState() const { return m_reactState; }
         bool HasReactState(ReactStates state) const { return (m_reactState == state); }
         void InitializeReactState();
+        void StoreReactState() { m_storedReactState = m_reactState; }
+        void RestoreReactState() { m_reactState = m_storedReactState; }
 
         ///// TODO RENAME THIS!!!!!
         bool isCanInteractWithBattleMaster(Player* player, bool msg) const;
@@ -795,6 +797,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         uint32 m_wpInactiveTimerInit;
 
         ReactStates m_reactState;                           // for AI, not charmInfo
+        ReactStates m_storedReactState;
         void RegenerateHealth();
         void Regenerate(Powers power);
         MovementGeneratorType m_defaultMovementType;
