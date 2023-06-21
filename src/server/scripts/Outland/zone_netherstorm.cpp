@@ -583,56 +583,6 @@ public:
 };
 
 /*######
-## npc_professor_dabiri
-######*/
-enum ProfessorDabiriData
-{
-    SPELL_PHASE_DISTRUPTOR  = 35780,
-
-  //WHISPER_DABIRI          = 0, not existing in database
-
-    QUEST_DIMENSIUS         = 10439,
-    QUEST_ON_NETHERY_WINGS  = 10438,
-};
-
-#define GOSSIP_ITEM "I need a new phase distruptor, Professor"
-
-class npc_professor_dabiri : public CreatureScript
-{
-public:
-    npc_professor_dabiri() : CreatureScript("npc_professor_dabiri") { }
-
-    //OnQuestAccept:
-    //if (quest->GetQuestId() == QUEST_DIMENSIUS)
-        //creature->AI()->Talk(WHISPER_DABIRI, player);
-
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-    {
-        ClearGossipMenuFor(player);
-        if (action == GOSSIP_ACTION_INFO_DEF+1)
-        {
-            creature->CastSpell(player, SPELL_PHASE_DISTRUPTOR, false);
-            CloseGossipMenuFor(player);
-        }
-
-        return true;
-    }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (creature->IsQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
-
-        if (player->GetQuestStatus(QUEST_ON_NETHERY_WINGS) == QUEST_STATUS_INCOMPLETE && !player->HasItemCount(29778))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
-
-        return true;
-    }
-};
-
-/*######
 ## npc_phase_hunter
 ######*/
 
@@ -973,7 +923,6 @@ void AddSC_netherstorm()
     // Theirs
     new npc_commander_dawnforge();
     new at_commander_dawnforge();
-    new npc_professor_dabiri();
     new npc_phase_hunter();
     new npc_bessy();
     new npc_maxx_a_million_escort();
