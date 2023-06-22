@@ -2723,8 +2723,12 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
 
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
-            if (IsCreature(*itr))
-                (*itr)->ToCreature()->SetControlled(e.action.setRoot.root, UNIT_STATE_ROOT);
+            if (Creature* c = (*itr)->ToCreature())
+            {
+                if (IsSmart(c))
+                    CAST_AI(SmartAI, c->AI())->SetForceRoot(e.action.setRoot.root);
+                c->SetControlled(e.action.setRoot.root, UNIT_STATE_ROOT);
+            }
 
         delete targets;
         break;

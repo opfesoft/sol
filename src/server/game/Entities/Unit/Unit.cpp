@@ -55,6 +55,8 @@
 #include "AccountMgr.h"
 #include "TargetedMovementGenerator.h"
 #include "MovementPacketBuilder.h"
+#include "ScriptedCreature.h"
+#include "SmartAI.h"
 
 #include <math.h>
 
@@ -16903,6 +16905,9 @@ void Unit::SetControlled(bool apply, UnitState state)
                 SetStunned(false);
                 break;
             case UNIT_STATE_ROOT:
+                if (Creature* c = ToCreature(); c && c->GetAIName() == "SmartAI" && !c->GetScriptId())
+                    if (SmartAI* sai = CAST_AI(SmartAI, c->AI()); sai && sai->IsForceRoot())
+                        return;
                 if (HasAuraType(SPELL_AURA_MOD_ROOT) || GetVehicle())
                     return;
                 ClearUnitState(state);

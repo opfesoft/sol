@@ -211,6 +211,9 @@ class SmartAI : public CreatureAI
         void SetWPPauseTimer(uint32 time) { mWPPauseTimer = time; }
         void SetForcedCombatMove(float dist);
 
+        void SetForceRoot(bool forceRoot) { mForceRoot = forceRoot; }
+        bool IsForceRoot() const { return mForceRoot; }
+
     private:
         uint32 mFollowCreditType;
         uint32 mFollowArrivedTimer;
@@ -257,6 +260,8 @@ class SmartAI : public CreatureAI
         void CheckConditions(const uint32 diff);
         ConditionList conditions;
         uint32 m_ConditionsTimer;
+
+        bool mForceRoot;
 };
 
 class SmartGameObjectAI : public GameObjectAI

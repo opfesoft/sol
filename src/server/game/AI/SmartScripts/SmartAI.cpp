@@ -71,6 +71,8 @@ SmartAI::SmartAI(Creature* c) : CreatureAI(c)
     m_ConditionsTimer = 0;
     if (me->GetVehicleKit())
         conditions = sConditionMgr->GetConditionsForNotGroupedEntry(CONDITION_SOURCE_TYPE_CREATURE_TEMPLATE_VEHICLE, me->GetEntry());
+
+    mForceRoot = false;
 }
 
 void SmartAI::UpdateDespawn(const uint32 diff)
