@@ -3476,6 +3476,13 @@ void SpellMgr::LoadDbcDataCorrections()
         case 13139: // Net-o-Matic
             spellInfo->DurationIndex = 36; // 1s
             break;
+        case 37395: // Shadow Rain (Dimensius the All-Devouring)
+        case 37398: // Shadow Rain (Dimensius the All-Devouring)
+        case 37400: // Shadow Rain (Dimensius the All-Devouring)
+        case 37404: // Shadow Rain (Dimensius the All-Devouring)
+        case 37410: // Shadow Rain (Dimensius the All-Devouring)
+            spellInfo->PreventionType = SPELL_PREVENTION_TYPE_NONE;
+            break;
 
 
         /////////////////////////////////////////////

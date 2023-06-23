@@ -32,25 +32,29 @@ enum saeed
 {
     NPC_PROTECTORATE_AVENGER        = 21805,
     NPC_PROTECTORATE_DEFENDER       = 20984,
+    NPC_PROTECTORATE_REGENERATOR    = 21783,
     NPC_DIMENSIUS                   = 19554,
 
     EVENT_START_WALK                = 1,
     EVENT_START_FIGHT1              = 2,
     EVENT_START_FIGHT2              = 3,
-    EVENT_SUMMONS_ACTION            = 4,
+    EVENT_START_FIGHT3              = 4,
+    EVENT_START_FIGHT4              = 5,
+    EVENT_SUMMONS_ACTION            = 6,
+    EVENT_WAIT                      = 7,
 
     DATA_START_ENCOUNTER            = 1,
     DATA_START_FIGHT                = 2,
 
-    SAY_SAEED_0                     = 0,
-    SAY_SAEED_1                     = 1,
-    SAY_SAEED_2                     = 2,
-    SAY_SAEED_3                     = 3,
-    SAY_DIMENSISIUS_1               = 1,
-
     QUEST_DIMENSIUS_DEVOURING       = 10439,
 
-    SPELL_DIMENSIUS_TRANSFORM       = 35939
+    SPELL_DIMENSIUS_TRANSFORM       = 35939,
+    SPELL_ETHEREAL_TELEPORT         = 34427,
+    SPELL_CLEAVE                    = 15496,
+
+    GOSSIP_MENU_SAEED               = 8228,
+    TEXT_NPC_SAEED_DEFAULT          = 10229,
+    TEXT_NPC_SAEED_START_FIGHT      = 10232,
 };
 
 class npc_captain_saeed : public CreatureScript
@@ -65,24 +69,17 @@ class npc_captain_saeed : public CreatureScript
             SummonList summons;
             EventMap events;
             bool started, fight;
+            uint32 cleaveTimer;
 
             void Reset() override
             {
-                if (!summons.empty())
-                {
-                    for (std::list<uint64>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
-                    if (Creature* cr = ObjectAccessor::GetCreature(*me, *itr))
-                    {
-                        float x, y, z, o;
-                        cr->GetRespawnPosition(x, y, z, &o);
-                        cr->SetHomePosition(x, y, z, o);
-                    }
-                }
                 events.Reset();
                 summons.clear();
                 started = false;
                 fight = false;
+                cleaveTimer = 5000;
                 me->RestoreFaction();
+                me->SetCorpseDelay(5);
             }
 
             void MoveInLineOfSight(Unit* who) override
@@ -102,7 +99,10 @@ class npc_captain_saeed : public CreatureScript
             {
                 if (type == DATA_START_ENCOUNTER)
                 {
+                    me->setActive(true);
                     Start(true, true, playerGUID);
+                    SetDespawnAtFar(false);
+                    SetDespawnAtEnd(false);
                     SetEscortPaused(true);
                     started = true;
 
@@ -113,6 +113,18 @@ class npc_captain_saeed : public CreatureScript
                         summons.Summon(*itr);
                         (*itr)->HandleEmoteCommand(EMOTE_ONESHOT_ROAR);
                         (*itr)->setFaction(250);
+                        (*itr)->setActive(true);
+                        (*itr)->SetCorpseDelay(5);
+                    }
+                    cl.clear();
+                    me->GetCreaturesWithEntryInRange(cl, 20.0f, NPC_PROTECTORATE_REGENERATOR);
+                    for (std::list<Creature*>::iterator itr = cl.begin(); itr != cl.end(); ++itr)
+                    {
+                        summons.Summon(*itr);
+                        (*itr)->HandleEmoteCommand(EMOTE_ONESHOT_ROAR);
+                        (*itr)->setFaction(250);
+                        (*itr)->setActive(true);
+                        (*itr)->SetCorpseDelay(5);
                     }
                     cl.clear();
                     me->GetCreaturesWithEntryInRange(cl, 20.0f, NPC_PROTECTORATE_DEFENDER);
@@ -121,15 +133,18 @@ class npc_captain_saeed : public CreatureScript
                         summons.Summon(*itr);
                         (*itr)->HandleEmoteCommand(EMOTE_ONESHOT_ROAR);
                         (*itr)->setFaction(250);
+                        (*itr)->setActive(true);
+                        (*itr)->SetCorpseDelay(5);
                     }
 
                     me->setFaction(250);
-                    Talk(SAY_SAEED_0);
+                    Talk(0);
                     events.ScheduleEvent(EVENT_START_WALK, 3000);
                 }
                 else if (type == DATA_START_FIGHT)
                 {
-                    Talk(SAY_SAEED_2);
+                    events.CancelEvent(EVENT_WAIT);
+                    Talk(2);
                     SetEscortPaused(false);
                     me->SetUInt32Value(UNIT_NPC_FLAGS, 0);
                 }
@@ -140,6 +155,7 @@ class npc_captain_saeed : public CreatureScript
                 if (fight)
                     SetEscortPaused(false);
 
+                cleaveTimer = 5000;
                 npc_escortAI::EnterEvadeMode();
             }
 
@@ -147,21 +163,21 @@ class npc_captain_saeed : public CreatureScript
             {
                 float i = 0;
                 for (std::list<uint64>::iterator itr = summons.begin(); itr != summons.end(); ++itr, i += 1.0f)
-                    if (Creature* cr = ObjectAccessor::GetCreature(*me, *itr))
+                    if (Creature* cr = ObjectAccessor::GetCreature(*me, *itr); cr && cr->IsAlive())
                     {
+                        cr->SetHomePosition(cr->GetPositionX(), cr->GetPositionY(), cr->GetPositionZ(), cr->GetOrientation());
+
                         if (who == NULL)
                         {
                             if (cr->GetMotionMaster()->GetCurrentMovementGeneratorType() != FOLLOW_MOTION_TYPE)
                             {
+                                cr->CombatStop(true);
                                 cr->GetMotionMaster()->Clear(false);
                                 cr->GetMotionMaster()->MoveFollow(me, 2.0f, M_PI/2.0f + (i / summons.size() * M_PI));
                             }
                         }
-                        else if (!cr->IsInCombat())
-                        {
-                            cr->SetHomePosition(cr->GetPositionX(), cr->GetPositionY(), cr->GetPositionZ(), cr->GetOrientation());
+                        else if (!cr->GetVictim())
                             cr->AI()->AttackStart(who);
-                        }
                     }
             }
 
@@ -173,33 +189,37 @@ class npc_captain_saeed : public CreatureScript
 
                 switch (i)
                 {
-                    case 16:
-                        Talk(SAY_SAEED_1);
+                    case 73:
+                        Talk(1, player);
                         me->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                         SetEscortPaused(true);
+                        events.ScheduleEvent(EVENT_WAIT, 300000);
                         break;
-                    case 18:
+                    case 85:
                         events.ScheduleEvent(EVENT_START_FIGHT1, 0);
                         SetEscortPaused(true);
                         break;
-                    case 19:
-                        summons.DespawnAll();
+                    case 87:
+                        for (std::list<uint64>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+                            if (Creature* cr = ObjectAccessor::GetCreature(*me, *itr); cr && cr->IsAlive())
+                            {
+                                cr->DespawnOrUnsummon(1000);
+                                cr->CastSpell(cr, SPELL_ETHEREAL_TELEPORT, true);
+                            }
+
+                        me->DespawnOrUnsummon(1000);
+                        me->CastSpell(me, SPELL_ETHEREAL_TELEPORT, true);
+                        summons.clear();
                         break;
                 }
             }
 
             void JustDied(Unit* /*killer*/) override
             {
-                Player* player = GetPlayerForEscort();
-                if (player)
-                    player->FailQuest(QUEST_DIMENSIUS_DEVOURING);
-
-                summons.DespawnAll();
-            }
-
-            void CorpseRemoved(uint32&) override
-            {
-                summons.DespawnAll();
+                for (std::list<uint64>::iterator itr = summons.begin(); itr != summons.end(); ++itr)
+                    if (Creature* cr = ObjectAccessor::GetCreature(*me, *itr); cr && cr->IsAlive())
+                        cr->AI()->SetData(1,1);
+                summons.clear();
             }
 
             uint32 GetData(uint32 data) const override
@@ -215,6 +235,7 @@ class npc_captain_saeed : public CreatureScript
                 npc_escortAI::UpdateAI(diff);
 
                 events.Update(diff);
+                bool updateVictim = UpdateVictim();
                 switch (events.ExecuteEvent())
                 {
                     case EVENT_START_WALK:
@@ -222,26 +243,51 @@ class npc_captain_saeed : public CreatureScript
                         SetEscortPaused(false);
                         break;
                     case EVENT_START_FIGHT1:
-                        Talk(SAY_SAEED_3);
-                        events.ScheduleEvent(EVENT_START_FIGHT2, 3000);
+                        Talk(3);
+                        events.ScheduleEvent(EVENT_START_FIGHT2, 4000);
                         break;
                     case EVENT_START_FIGHT2:
                         if (Creature* dimensius = me->FindNearestCreature(NPC_DIMENSIUS, 50.0f))
                         {
                             dimensius->RemoveAurasDueToSpell(SPELL_DIMENSIUS_TRANSFORM);
-                            dimensius->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+                            dimensius->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            dimensius->AI()->Talk(1);
+                        }
+                        events.ScheduleEvent(EVENT_START_FIGHT3, 2000);
+                        break;
+                    case EVENT_START_FIGHT3:
+                        if (Creature* dimensius = me->FindNearestCreature(NPC_DIMENSIUS, 50.0f))
+                            dimensius->AI()->Talk(2);
+                        events.ScheduleEvent(EVENT_START_FIGHT4, 4000);
+                        break;
+                    case EVENT_START_FIGHT4:
+                        if (Creature* dimensius = me->FindNearestCreature(NPC_DIMENSIUS, 50.0f))
+                        {
+                            dimensius->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
                             AttackStart(dimensius);
                             fight = true;
                         }
                         break;
                     case EVENT_SUMMONS_ACTION:
-                        SummonsAction(UpdateVictim() ? me->GetVictim() : NULL);
+                        SummonsAction(updateVictim ? me->GetVictim() : NULL);
                         events.ScheduleEvent(EVENT_SUMMONS_ACTION, 3000);
+                        break;
+                    case EVENT_WAIT:
+                        summons.DespawnAll();
+                        me->DespawnOrUnsummon(1);
                         break;
                 }
 
-                if (!UpdateVictim())
+                if (!updateVictim)
                     return;
+
+                if (cleaveTimer <= diff)
+                {
+                    DoCastVictim(SPELL_CLEAVE);
+                    cleaveTimer = urand(7000,11000);
+                }
+                else
+                    cleaveTimer -= diff;
 
                 DoMeleeAttackIfReady();
             }
@@ -272,12 +318,12 @@ class npc_captain_saeed : public CreatureScript
             if (player->GetQuestStatus(QUEST_DIMENSIUS_DEVOURING) == QUEST_STATUS_INCOMPLETE)
             {
                 if (!creature->AI()->GetData(1))
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Let's move out.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                    AddGossipItemFor(player, GOSSIP_MENU_SAEED, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
                 else
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Let's start the battle.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                    AddGossipItemFor(player, GOSSIP_MENU_SAEED, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
             }
 
-            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, creature->AI()->GetData(1) ? TEXT_NPC_SAEED_START_FIGHT : TEXT_NPC_SAEED_DEFAULT, creature->GetGUID());
 
             return true;
         }
