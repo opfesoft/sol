@@ -1166,7 +1166,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
 
         ObjectList* targets = GetTargets(e, unit, gob);
-        if (!targets)
+        if (e.target.type == SMART_TARGET_NONE || e.target.type == SMART_TARGET_SELF || !targets)
         {
             CAST_AI(SmartAI, me->AI())->StopFollow(false);
             break;
