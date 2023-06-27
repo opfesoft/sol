@@ -430,22 +430,8 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullR
         }
         case CONDITION_UNIT_HAS_FLAG:
         {
-            if (Unit* unit = object->ToUnit())
-                switch(ConditionValue1)
-                {
-                    case 0:
-                        condMeets = unit->HasFlag(UNIT_FIELD_FLAGS, ConditionValue2);
-                        break;
-                    case 1:
-                        condMeets = unit->HasFlag(UNIT_FIELD_FLAGS_2, ConditionValue2);
-                        break;
-                    case 2:
-                        condMeets = unit->HasFlag(UNIT_NPC_FLAGS, ConditionValue2);
-                        break;
-                    default:
-                        condMeets = false;
-                        break;
-                }
+            if (Unit* unit = object->ToUnit(); unit && ConditionValue1 < unit->GetValuesCount())
+                condMeets = (unit->GetUInt32Value(ConditionValue1) & ConditionValue2) == ConditionValue2;
             break;
         }
         default:
