@@ -1888,6 +1888,14 @@ void Creature::DespawnOrUnsummon(uint32 msTimeToDespawn /*= 0*/)
         ForcedDespawn(msTimeToDespawn);
 }
 
+bool Creature::CanFly() const
+{
+    bool forceToGround = false;
+    if (CreatureAI* ai = AI(); ai && ai->IsForceToGround())
+        forceToGround = true;
+    return (GetCreatureTemplate()->InhabitType & INHABIT_AIR) && !forceToGround;
+}
+
 void Creature::InitializeReactState()
 {
     if ((IsTotem() || IsTrigger() || IsCritter() || IsSpiritService()) && GetAIName() != "SmartAI" && !GetScriptId())
@@ -2345,7 +2353,7 @@ bool Creature::CanCreatureAttack(Unit const* victim, bool skipDistCheck) const
     else
     {
         // to prevent creatures in air ignore attacks because distance is already too high...
-        if (GetCreatureTemplate()->InhabitType & INHABIT_AIR)
+        if (CanFly())
             return victim->IsInDist2d(&m_homePosition, dist);
         else
             return victim->IsInDist(&m_homePosition, dist);

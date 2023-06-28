@@ -175,9 +175,8 @@ class SmartAI : public CreatureAI
         void MovepointReached(uint32 id);
 
         // Makes the creature run/walk
-        void SetRun(bool run = true, bool runOverride = false);
+        void SetRun(bool run = true, bool overrideRandomRun = false);
         bool IsRun() { return mRun; }
-        bool IsRunOverridden() { return mRunOverridden; }
 
         void SetFly(bool fly = true);
 
@@ -211,8 +210,12 @@ class SmartAI : public CreatureAI
         void SetWPPauseTimer(uint32 time) { mWPPauseTimer = time; }
         void SetForcedCombatMove(float dist);
 
+        void SetOverrideRandomRun(bool overrideRandomRun) { mOverrideRandomRun = overrideRandomRun; }
+        bool IsOverrideRandomRun() const { return mRun && mOverrideRandomRun; }
         void SetForceRoot(bool forceRoot) { mForceRoot = forceRoot; }
         bool IsForceRoot() const { return mForceRoot; }
+        void SetForceToGround(bool forceToGround) { mForceToGround = forceToGround; }
+        bool IsForceToGround() const { return mForceToGround; }
 
     private:
         uint32 mFollowCreditType;
@@ -241,7 +244,6 @@ class SmartAI : public CreatureAI
         bool HasWayPointPause(uint32 pointId);
         bool mCanRepeatPath;
         bool mRun;
-        bool mRunOverridden;
         bool mEvadeDisabled;
         bool mCanAutoAttack;
         bool mCanCombatMove;
@@ -261,7 +263,9 @@ class SmartAI : public CreatureAI
         ConditionList conditions;
         uint32 m_ConditionsTimer;
 
+        bool mOverrideRandomRun;
         bool mForceRoot;
+        bool mForceToGround;
 };
 
 class SmartGameObjectAI : public GameObjectAI

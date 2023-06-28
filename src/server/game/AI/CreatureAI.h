@@ -179,6 +179,13 @@ class CreatureAI : public UnitAI
 
         virtual bool CanBeSeen(Player const* /*seer*/) { return true; }
 
+        virtual void SetOverrideRandomRun(bool /*overrideRandomRun*/) {}
+        virtual bool IsOverrideRandomRun() const { return false; }
+        virtual void SetForceRoot(bool /*forceRoot*/) {}
+        virtual bool IsForceRoot() const { return false; }
+        virtual void SetForceToGround(bool /*forceToGround*/) {}
+        virtual bool IsForceToGround() const { return false; }
+
     protected:
         virtual void MoveInLineOfSight(Unit* /*who*/);
 

@@ -13,8 +13,7 @@
 #include "MoveSplineInit.h"
 #include "MoveSpline.h"
 #include "Spell.h"
-#include "ScriptedCreature.h"
-#include "SmartAI.h"
+#include "CreatureAI.h"
 
 template<>
 void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
@@ -33,11 +32,8 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
         Movement::MoveSplineInit init(creature);
         init.MoveTo(_currDestPosition.GetPositionX(), _currDestPosition.GetPositionY(), _currDestPosition.GetPositionZ(), true);
         bool walk = true;
-        if (creature->GetAIName() == "SmartAI" && !creature->GetScriptId())
-        {
-            SmartAI* sai = CAST_AI(SmartAI, creature->AI());
-            walk = !(sai->IsRun() && sai->IsRunOverridden());
-        }
+        if (CreatureAI* ai = creature->AI())
+            walk = !ai->IsOverrideRandomRun();
         init.SetWalk(walk);
         init.Launch();
         if (creature->GetFormation() && creature->GetFormation()->getLeader() == creature)
@@ -265,11 +261,8 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
     Movement::MoveSplineInit init(creature);
     init.MovebyPath(finalPath);
     bool walk = true;
-    if (creature->GetAIName() == "SmartAI" && !creature->GetScriptId())
-    {
-        SmartAI* sai = CAST_AI(SmartAI, creature->AI());
-        walk = !(sai->IsRun() && sai->IsRunOverridden());
-    }
+    if (CreatureAI* ai = creature->AI())
+        walk = !ai->IsOverrideRandomRun();
     init.SetWalk(walk);
     init.Launch();
 

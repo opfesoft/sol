@@ -495,7 +495,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool IsGuard() const { return GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_GUARD; }
         bool CanWalk() const { return GetCreatureTemplate()->InhabitType & INHABIT_GROUND; }
         bool CanSwim() const override { return (GetCreatureTemplate()->InhabitType & INHABIT_WATER) || IS_PLAYER_GUID(GetOwnerGUID()); }
-        bool CanFly()  const override { return GetCreatureTemplate()->InhabitType & INHABIT_AIR; }
+        bool CanFly()  const override;
 
         void SetReactState(ReactStates st) { m_reactState = st; }
         ReactStates GetReactState() const { return m_reactState; }
