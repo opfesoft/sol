@@ -3000,6 +3000,10 @@ void SpellMgr::LoadSpellCustomAttr()
             case 31994: // Shoulder Charge
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEGATIVE_EFF2;
                 break;
+            case 52791: // Birthing Flame
+            case 52793: // Flames of Birth
+                spellInfo->AttributesCu &= ~SPELL_ATTR0_CU_NEGATIVE_EFF0;
+                break;
         }
 
         if (spellInfo->Speed > 0.0f)
