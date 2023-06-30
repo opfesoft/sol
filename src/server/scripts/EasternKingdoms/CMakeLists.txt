@@ -118,7 +118,6 @@ set(scripts_STAT_SRCS
   ${AC_SCRIPTS_DIR}/EasternKingdoms/SunwellPlateau/boss_kalecgos.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/SunwellPlateau/boss_brutallus.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/SunwellPlateau/boss_felmyst.cpp
-  ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_stranglethorn_vale.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/Deadmines/boss_mr_smite.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/Deadmines/instance_deadmines.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/Deadmines/deadmines.h
