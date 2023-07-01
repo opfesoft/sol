@@ -1765,6 +1765,10 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                         }
                     }
                     break;
+                case 34026: // Kill Command
+                    if (caster->HasAura(37483) && apply) // Improved Kill Command (Beast Lord Armor 4P Bonus)
+                        caster->CastSpell(caster, 37482, true); // Exploited Weakness
+                    break;
             }
             break;
         case SPELLFAMILY_PALADIN:
