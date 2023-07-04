@@ -432,8 +432,7 @@ void TradeData::SetAccepted(bool state, bool crosssend /*= false*/)
 // 2.3. _maxLevel - maximum level of alive group member within reward distance;
 // 2.4. _maxNotGrayMember - maximum level of alive group member within reward distance,
 //      for whom victim is not gray;
-// 2.5. _sumLevel - sum of levels of group members within reward distance;
-// 2.6. _isFullXP - flag identifying that for all group members victim is not gray,
+// 2.5. _isFullXP - flag identifying that for all group members victim is not gray,
 //      so 100% XP will be rewarded (50% otherwise).
 // 3. Reward killer (and group, if necessary).
 // 3.1. If killer is in group, reward group.
@@ -459,7 +458,7 @@ void TradeData::SetAccepted(bool state, bool crosssend /*= false*/)
 KillRewarder::KillRewarder(Player* killer, Unit* victim, bool isBattleGround) :
     // 1. Initialize internal variables to default values.
     _killer(killer), _victim(victim), _group(killer->GetGroup()),
-    _groupRate(1.0f), _maxNotGrayMember(NULL), _count(0), _aliveSumLevel(0), _sumLevel(0), _xp(0),
+    _groupRate(1.0f), _maxNotGrayMember(NULL), _count(0), _aliveSumLevel(0), _xp(0),
     _isFullXP(false), _maxLevel(0), _isBattleGround(isBattleGround), _isPvP(false)
 {
     // mark the credit as pvp if victim is player
@@ -497,10 +496,8 @@ inline void KillRewarder::_InitGroupData()
                         if (_victim->getLevel() > grayLevel && (!_maxNotGrayMember || _maxNotGrayMember->getLevel() < lvl))
                             _maxNotGrayMember = member;
                     }
-                    // 2.5. _sumLevel - sum of levels of group members within reward distance;
-                    _sumLevel += lvl;
                 }
-        // 2.6. _isFullXP - flag identifying that for all group members victim is not gray,
+        // 2.5. _isFullXP - flag identifying that for all group members victim is not gray,
         //      so 100% XP will be rewarded (50% otherwise).
         _isFullXP = _maxNotGrayMember && (_maxLevel == _maxNotGrayMember->getLevel());
     }
@@ -563,11 +560,11 @@ inline void KillRewarder::_RewardXP(Player* player, float rate)
     }
 }
 
-inline void KillRewarder::_RewardReputation(Player* player, float rate)
+inline void KillRewarder::_RewardReputation(Player* player)
 {
     // 4.3. Give reputation (player must not be on BG).
     // Even dead players and corpses are rewarded.
-    player->RewardReputation(_victim, rate);
+    player->RewardReputation(_victim);
 }
 
 inline void KillRewarder::_RewardKillCredit(Player* player)
@@ -581,7 +578,7 @@ inline void KillRewarder::_RewardKillCredit(Player* player)
         }
 }
 
-void KillRewarder::_RewardPlayer(Player* player, bool isDungeon)
+void KillRewarder::_RewardPlayer(Player* player)
 {
     // 4. Reward player.
     if (!_isBattleGround)
@@ -599,9 +596,6 @@ void KillRewarder::_RewardPlayer(Player* player, bool isDungeon)
         float xpRate = _group ?
             _groupRate * float(player->getLevel()) / _aliveSumLevel : // Group rate depends on the sum of levels of alive group members.
             1.0f;                                                     // Personal rate is 100%.
-        float reputationRate = _group ?
-            _groupRate * float(player->getLevel()) / _sumLevel :      // Group rate depends on the sum of levels.
-            1.0f;                                                     // Personal rate is 100%.
 
         if (_xp)
         {
@@ -610,8 +604,7 @@ void KillRewarder::_RewardPlayer(Player* player, bool isDungeon)
         }
         if (!_isBattleGround)
         {
-            // If killer is in dungeon then all members receive full reputation at kill.
-            _RewardReputation(player, isDungeon ? 1.0f : reputationRate);
+            _RewardReputation(player);
             _RewardKillCredit(player);
         }
     }
@@ -630,7 +623,6 @@ void KillRewarder::_RewardGroup()
         // (battleground rewards only XP, that's why).
         if (!_isBattleGround || _xp)
         {
-            const bool isDungeon = !_isPvP && sMapStore.LookupEntry(_killer->GetMapId())->IsDungeon();
             if (!_isBattleGround)
             {
                 // 3.1.2. Alter group rate if group is in raid (not for battlegrounds).
@@ -645,7 +637,7 @@ void KillRewarder::_RewardGroup()
                 {
                     if (_killer == member || member->IsAtGroupRewardDistance(_victim))
                     {
-                        _RewardPlayer(member, isDungeon);
+                        _RewardPlayer(member);
                         // Xinef: only count players
                         //if (_victim->GetTypeId() == TYPEID_PLAYER)
                         //    member->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_SPECIAL_PVP_KILL, 1, 0, _victim);
@@ -673,7 +665,7 @@ void KillRewarder::Reward()
         if (!_isBattleGround || _xp)
             // 3.2.2. Reward killer.
             if (_killer->IsInMap(_victim)) // pussywizard: killer may be on other map (crashfix), when killing in a group same map is required, so its not a problem
-                _RewardPlayer(_killer, false);
+                _RewardPlayer(_killer);
     }
 
     // 5. Credit instance encounter.
@@ -7165,7 +7157,7 @@ int32 Player::CalculateReputationGain(ReputationSource source, int32 rep, int32 
 }
 
 // Calculates how many reputation points player gains in victim's enemy factions
-void Player::RewardReputation(Unit* victim, float rate)
+void Player::RewardReputation(Unit* victim)
 { 
     if (!victim || victim->GetTypeId() == TYPEID_PLAYER)
         return;
@@ -7194,7 +7186,6 @@ void Player::RewardReputation(Unit* victim, float rate)
     if (Rep->RepFaction1 && (!Rep->TeamDependent || teamId == TEAM_ALLIANCE))
     {
         int32 donerep1 = CalculateReputationGain(REPUTATION_SOURCE_KILL, Rep->RepValue1, ChampioningFaction ? ChampioningFaction : Rep->RepFaction1);
-        donerep1 = int32(donerep1 * rate);
 
         FactionEntry const* factionEntry1 = sFactionStore.LookupEntry(ChampioningFaction ? ChampioningFaction : Rep->RepFaction1);
         uint32 current_reputation_rank1 = GetReputationMgr().GetRank(factionEntry1);
@@ -7205,7 +7196,6 @@ void Player::RewardReputation(Unit* victim, float rate)
     if (Rep->RepFaction2 && (!Rep->TeamDependent || teamId == TEAM_HORDE))
     {
         int32 donerep2 = CalculateReputationGain(REPUTATION_SOURCE_KILL, Rep->RepValue2, ChampioningFaction ? ChampioningFaction : Rep->RepFaction2);
-        donerep2 = int32(donerep2 * rate);
 
         FactionEntry const* factionEntry2 = sFactionStore.LookupEntry(ChampioningFaction ? ChampioningFaction : Rep->RepFaction2);
         uint32 current_reputation_rank2 = GetReputationMgr().GetRank(factionEntry2);

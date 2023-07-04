@@ -1079,9 +1079,9 @@ private:
 
     void _RewardHonor(Player* player);
     void _RewardXP(Player* player, float rate);
-    void _RewardReputation(Player* player, float rate);
+    void _RewardReputation(Player* player);
     void _RewardKillCredit(Player* player);
-    void _RewardPlayer(Player* player, bool isDungeon);
+    void _RewardPlayer(Player* player);
     void _RewardGroup();
 
     Player* _killer;
@@ -1091,7 +1091,6 @@ private:
     Player* _maxNotGrayMember;
     uint32 _count;
     uint32 _aliveSumLevel;
-    uint32 _sumLevel;
     uint32 _xp;
     bool _isFullXP;
     uint8 _maxLevel;
@@ -2117,7 +2116,7 @@ class Player : public Unit, public GridObject<Player>
         ReputationMgr&       GetReputationMgr()       { return *m_reputationMgr; }
         ReputationMgr const& GetReputationMgr() const { return *m_reputationMgr; }
         ReputationRank GetReputationRank(uint32 faction_id) const;
-        void RewardReputation(Unit* victim, float rate);
+        void RewardReputation(Unit* victim);
         void RewardReputation(Quest const* quest);
 
         int32 CalculateReputationGain(ReputationSource source, int32 rep, int32 faction);
