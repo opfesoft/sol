@@ -618,7 +618,7 @@ enum SMART_ACTION
     SMART_ACTION_RANGE2_END                         = 218,    // placeholder
     SMART_ACTION_RANGE3_START                       = 230,    // placeholder
 
-    SMART_ACTION_CIRCLE_MOVE                        = 231,    // radius, clockwise (0/1), stepCount, centerSelf, speed
+    SMART_ACTION_CYCLIC_MOVE                        = 231,    // type (0: stop cyclic movement, 1: circle clockwise, 2: circle counter-clockwise, >2: WP path), stepCount (only circle), centerSelf (only circle), speed, o (radius; only circle)
     SMART_ACTION_SET_HEALTH                         = 232,    // use percentage (0/1), copy from target (0/1), health
     SMART_ACTION_DESPAWN_GO                         = 233,    // respawnTime in s, playDespawnAnim
     SMART_ACTION_CUSTOM_TALK                        = 234,    // broadcastTextId, talkType (0: say, 1: yell, 2: text emote, 3: boss emote, 4: whisper, 5: boss whisper), talker (0: action target, 1: self, 2: invoker), talkTarget (0: action target, 1: self, 2: invoker)
@@ -1233,12 +1233,11 @@ struct SmartAction
 
         struct
         {
-            uint32 radius;
-            uint32 clockwise;
+            uint32 type;
             uint32 stepCount;
             uint32 centerSelf;
             uint32 speed;
-        } circleMove;
+        } cyclicMove;
 
         struct
         {

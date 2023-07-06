@@ -512,7 +512,7 @@ void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float spee
     Mutate(new EffectMovementGenerator(id), MOTION_SLOT_CONTROLLED);
 }
 
-void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount, bool walk, float speed)
+void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount, bool walk /*= true*/, float speed /*= 0.f*/)
 {
     float step = 2 * float(M_PI) / stepCount * (clockwise ? -1.0f : 1.0f);
     Position const& pos = { x, y, z, 0.0f };
@@ -521,7 +521,7 @@ void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool 
     Movement::MoveSplineInit init(_owner);
 
     // add the owner's current position as starting point as it gets removed after entering the cycle
-    init.Path().push_back(G3D::Vector3(_owner->GetPositionX(), _owner->GetPositionY(), _owner->GetPositionZ() - (_owner->IsHovering() ? _owner->GetHoverHeight() : 0.0f)));
+    init.Path().push_back(G3D::Vector3(_owner->GetPositionX(), _owner->GetPositionY(), _owner->GetPositionZ()));
 
     for (uint8 i = 0; i < stepCount; angle += step, ++i)
     {
@@ -536,6 +536,32 @@ void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool 
 
         init.Path().push_back(point);
     }
+
+    if (_owner->IsFlying())
+    {
+        init.SetFly();
+        init.SetCyclic();
+        init.SetAnimation(Movement::ToFly);
+    }
+    else
+    {
+        init.SetWalk(walk);
+        init.SetCyclic();
+    }
+
+    if (speed)
+        init.SetVelocity(speed);
+
+    init.Launch();
+    Mutate(new EffectMovementGenerator(0), MOTION_SLOT_ACTIVE);
+}
+
+void MotionMaster::MoveCyclicPath(Movement::PointsArray* path, bool walk /*= true*/, float speed /*= 0.f*/)
+{
+    Movement::MoveSplineInit init(_owner);
+    if (_owner->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && _owner->GetTransport())
+        init.DisableTransportPathTransformations(); // Waypoints have to be specified in transport offset coordinates, don't transform them again
+    init.MovebyPath(*path);
 
     if (_owner->IsFlying())
     {

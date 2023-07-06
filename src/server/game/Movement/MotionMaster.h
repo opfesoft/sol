@@ -186,6 +186,7 @@ class MotionMaster //: private std::stack<MovementGenerator *>
             { MoveJump(pos.m_positionX, pos.m_positionY, pos.m_positionZ, speedXY, speedZ, id); };
         void MoveJump(float x, float y, float z, float speedXY, float speedZ, uint32 id = 0, Unit const* target = NULL);
         void MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount, bool walk = true, float speed = 0.f);
+        void MoveCyclicPath(Movement::PointsArray* path, bool walk = true, float speed = 0.f);
         void MoveFall(uint32 id = 0, bool addFlagForNPC = false);
 
         void MoveSeekAssistance(float x, float y, float z, float speed, const Movement::PointsArray* path);

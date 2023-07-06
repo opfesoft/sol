@@ -3160,22 +3160,63 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             me->FindMap()->LoadGrid(e.target.x, e.target.y);
         break;
     }
-    case SMART_ACTION_CIRCLE_MOVE:
+    case SMART_ACTION_CYCLIC_MOVE:
     {
+        if (e.action.cyclicMove.type == 0)
+        {
+            if (me && me->GetMotionMaster()->GetMotionSlotType(MOTION_SLOT_ACTIVE) == EFFECT_MOTION_TYPE)
+            {
+                me->GetMotionMaster()->MovementExpired();
+                me->StopMoving();
+                me->GetMotionMaster()->MoveIdle();
+            }
+            break;
+        }
+        else if (e.action.cyclicMove.type > 2)
+        {
+            if (!me)
+                break;
+
+            WPPath* path = sSmartWaypointMgr->GetPath(e.action.cyclicMove.type);
+            if (!path || path->empty())
+            {
+                sLog->outErrorDb("SmartScript::ProcessAction: Entry %d SourceType %u, Event %u, Action type %u, path %u does not exist", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.cyclicMove.type);
+                break;
+            }
+
+            Movement::PointsArray pathPoints;
+            if (me->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && me->GetTransport())
+                pathPoints.push_back(G3D::Vector3(me->GetTransOffsetX(), me->GetTransOffsetY(), me->GetTransOffsetZ()));
+            else
+                pathPoints.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+
+            uint32 wpCounter = 1;
+            WPPath::const_iterator itr;
+            while ((itr = path->find(wpCounter++)) != path->end())
+            {
+                WayPoint* wp = itr->second;
+                pathPoints.push_back(G3D::Vector3(wp->x, wp->y, wp->z));
+            }
+
+            me->GetMotionMaster()->MoveCyclicPath(&pathPoints, !CAST_AI(SmartAI, me->AI())->IsRun(), (float)e.action.cyclicMove.speed);
+            break;
+        }
+
         ObjectList* targets = GetTargets(e, unit, gob);
         if (!targets)
         {
             if (me && e.GetTargetType() == SMART_TARGET_POSITION)
                 me->GetMotionMaster()->MoveCirclePath(
                     e.target.x, e.target.y, e.target.z,
-                    (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                    (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun(), (float)e.action.circleMove.speed);
+                    e.target.o, e.action.cyclicMove.type == 1,
+                    (uint8)e.action.cyclicMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun(), (float)e.action.cyclicMove.speed);
+            break;
         }
         else
         {
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             {
-                if (e.action.circleMove.centerSelf)
+                if (e.action.cyclicMove.centerSelf)
                 {
                     if (IsCreature((*itr)))
                     {
@@ -3188,21 +3229,21 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                         if (me)
                             (*itr)->ToCreature()->GetMotionMaster()->MoveCirclePath(
                                 me->GetPositionX() + e.target.x, me->GetPositionY() + e.target.y, me->GetPositionZ() + e.target.z,
-                                (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                                (uint8)e.action.circleMove.stepCount, walk, (float)e.action.circleMove.speed);
+                                e.target.o, e.action.cyclicMove.type == 1,
+                                (uint8)e.action.cyclicMove.stepCount, walk, (float)e.action.cyclicMove.speed);
                         else if (go)
                             (*itr)->ToCreature()->GetMotionMaster()->MoveCirclePath(
                                 go->GetPositionX() + e.target.x, go->GetPositionY() + e.target.y, go->GetPositionZ() + e.target.z,
-                                (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                                (uint8)e.action.circleMove.stepCount, walk, (float)e.action.circleMove.speed);
+                                e.target.o, e.action.cyclicMove.type == 1,
+                                (uint8)e.action.cyclicMove.stepCount, walk, (float)e.action.cyclicMove.speed);
                     }
                 }
                 else if (me)
                 {
                     me->GetMotionMaster()->MoveCirclePath(
                         (*itr)->GetPositionX() + e.target.x, (*itr)->GetPositionY() + e.target.y, (*itr)->GetPositionZ() + e.target.z,
-                        (float)e.action.circleMove.radius, (bool)e.action.circleMove.clockwise,
-                        (uint8)e.action.circleMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun(), (float)e.action.circleMove.speed);
+                        e.target.o, e.action.cyclicMove.type == 1,
+                        (uint8)e.action.cyclicMove.stepCount, !CAST_AI(SmartAI, me->AI())->IsRun(), (float)e.action.cyclicMove.speed);
                     break;
                 }
             }

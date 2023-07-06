@@ -1349,7 +1349,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_STOP_MOTION:
         case SMART_ACTION_NO_ENVIRONMENT_UPDATE:
         case SMART_ACTION_ZONE_UNDER_ATTACK:
-        case SMART_ACTION_CIRCLE_MOVE:
+        case SMART_ACTION_CYCLIC_MOVE:
         case SMART_ACTION_SET_HEALTH:
         case SMART_ACTION_DESPAWN_GO:
         case SMART_ACTION_SET_COUNTER_RESET:

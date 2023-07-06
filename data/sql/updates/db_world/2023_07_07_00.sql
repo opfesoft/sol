@@ -1,0 +1,2 @@
+UPDATE `smart_scripts` SET `action_param1` = 2, `action_param2` = 16, `action_param3` = 0, `action_param4` = 5, `action_param5` = 0, `target_o` = 20 WHERE `entryorguid` = -132984 AND `source_type` = 0 AND `id` IN (3,4);
+UPDATE `smart_scripts` SET `action_param1` = 2, `action_param2` = 16, `action_param3` = 0, `action_param4` = 0, `action_param5` = 0, `target_o` = 4 WHERE `entryorguid` = 2980200 AND `source_type` = 9 AND `id` = 1;
