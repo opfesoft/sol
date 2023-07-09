@@ -1753,6 +1753,39 @@ class spell_gen_creature_feign_death : public SpellScriptLoader
         }
 };
 
+class spell_gen_shriveling_gaze : public SpellScriptLoader
+{
+    public:
+        spell_gen_shriveling_gaze() : SpellScriptLoader("spell_gen_shriveling_gaze") { }
+
+        class spell_gen_shriveling_gaze_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_shriveling_gaze_AuraScript);
+
+            void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                ModStackAmount(20);
+            }
+
+            void HandlePeriodic(AuraEffect const* /*aurEff*/)
+            {
+                PreventDefaultAction();
+                ModStackAmount(-1);
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_gen_shriveling_gaze_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_gen_shriveling_gaze_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_shriveling_gaze_AuraScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5463,6 +5496,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_freezing_circle();
     new spell_gen_rock_shell();
     new spell_gen_creature_feign_death();
+    new spell_gen_shriveling_gaze();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();
