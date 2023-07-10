@@ -147,7 +147,9 @@ enum EthereumPrison
     SPELL_REP_CE        = 39460,
     SPELL_REP_CON       = 39474,
     SPELL_REP_KT        = 39475,
-    SPELL_REP_SPOR      = 39476
+    SPELL_REP_SPOR      = 39476,
+
+    NPC_ETHEREUM_PRISONER = 20520,
 };
 
 const uint32 NpcPrisonEntry[] =
@@ -163,11 +165,15 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
+        if (Creature* creature = go->FindNearestCreature(NPC_ETHEREUM_PRISONER, 5.f))
+            creature->DespawnOrUnsummon(1);
+
         int Random = rand() % (sizeof(NpcPrisonEntry) / sizeof(uint32));
 
         if (Creature* creature = player->SummonCreature(NpcPrisonEntry[Random], go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), go->GetAngle(player),
             TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
         {
+            creature->setActive(true);
             if (!creature->IsHostileTo(player))
             {
                 uint32 Spell = 0;
@@ -195,6 +201,11 @@ public:
 ## go_ethereum_stasis
 ######*/
 
+enum EthereumStasis
+{
+    NPC_ETHEREUM_PRISONER_GROUP = 20889,
+};
+
 const uint32 NpcStasisEntry[] =
 {
     22825, 20888, 22827, 22826, 22828
@@ -207,10 +218,14 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
+        if (Creature* creature = go->FindNearestCreature(NPC_ETHEREUM_PRISONER_GROUP, 5.f))
+            creature->DespawnOrUnsummon(1);
+
         int Random = rand() % (sizeof(NpcStasisEntry) / sizeof(uint32));
 
-        player->SummonCreature(NpcStasisEntry[Random], go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), go->GetAngle(player),
-            TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+        if (Creature* creature = player->SummonCreature(NpcStasisEntry[Random], go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), go->GetAngle(player),
+            TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+            creature->setActive(true);
 
         return false;
     }
