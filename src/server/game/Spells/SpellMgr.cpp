@@ -3470,6 +3470,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[EFFECT_1] = 0;
             break;
         case 35596: // Power of the Legion (Socrethar - Deathblow to the Legion)
+        case 35556: // Eco-Contamination (Congealed Void Horror)
             spellInfo->AttributesEx |= SPELL_ATTR1_AURA_STAYS_AFTER_COMBAT;
             break;
         case 37608: // Hit Rating (Wastewalker Armor 2P Bonus)
@@ -3489,6 +3490,10 @@ void SpellMgr::LoadDbcDataCorrections()
         case 37404: // Shadow Rain (Dimensius the All-Devouring)
         case 37410: // Shadow Rain (Dimensius the All-Devouring)
             spellInfo->PreventionType = SPELL_PREVENTION_TYPE_NONE;
+            break;
+        case 36465: // Seeping Split
+            spellInfo->EffectRadiusIndex[EFFECT_0] = EFFECT_RADIUS_3_YARDS;
+            spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_DEST_CASTER;
             break;
 
 
