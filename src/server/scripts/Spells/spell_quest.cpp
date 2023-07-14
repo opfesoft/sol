@@ -34,7 +34,6 @@ class spell_q11065_wrangle_some_aether_rays : public SpellScriptLoader
 
             SpellCastResult CheckCast()
             {
-                // if thane is present and not in combat - allow cast
                 if (Unit* target = GetExplTargetUnit())
                     if (target->GetHealthPct() < 40.0f)
                         return SPELL_CAST_OK;
@@ -68,6 +67,7 @@ class spell_q11065_wrangle_some_aether_rays : public SpellScriptLoader
                         player->KilledMonsterCredit(23343, 0);
                         if (Creature *cr = GetCaster()->SummonCreature(23343, ar->GetPositionX(), ar->GetPositionY(), ar->GetPositionZ(), ar->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 180000))
                         {
+                            cr->setActive(true);
                             cr->CastSpell(player, 40926, true);
                             cr->GetMotionMaster()->MoveFollow(player, 5.0f, 2*M_PI*rand_norm());
                             ar->ToCreature()->DespawnOrUnsummon(500);
