@@ -47,11 +47,18 @@ class PointMovementGenerator : public MovementGeneratorMedium< T, PointMovementG
 class AssistanceMovementGenerator : public PointMovementGenerator<Creature>
 {
     public:
-        AssistanceMovementGenerator(float _x, float _y, float _z, float _speed, const Movement::PointsArray* _path) :
-            PointMovementGenerator<Creature>(0, _x, _y, _z, _speed, _path) {}
+        AssistanceMovementGenerator(float _x, float _y, float _z, float _speed, const Movement::PointsArray* _path, uint64 callAssistVictim, float callAssistRadius) :
+            PointMovementGenerator<Creature>(0, _x, _y, _z, _speed, _path)
+        {
+            _callAssistVictim = callAssistVictim;
+            _callAssistRadius = callAssistRadius;
+        }
 
         MovementGeneratorType GetMovementGeneratorType() { return ASSISTANCE_MOTION_TYPE; }
         void Finalize(Unit*);
+    private:
+        uint64 _callAssistVictim;
+        float _callAssistRadius;
 };
 
 // Does almost nothing - just doesn't allows previous movegen interrupt current effect.

@@ -840,7 +840,7 @@ void Creature::RegenerateHealth()
     ModifyHealth(addvalue);
 }
 
-void Creature::DoFleeToGetAssistance()
+void Creature::DoFleeToGetAssistance(float radius /*= 0.f*/, float callAssistRadius /*= 0.f*/)
 { 
     if (!GetVictim())
         return;
@@ -848,20 +848,21 @@ void Creature::DoFleeToGetAssistance()
     if (HasAuraType(SPELL_AURA_PREVENTS_FLEEING))
         return;
 
-    float radius = sWorld->getFloatConfig(CONFIG_CREATURE_FAMILY_FLEE_ASSISTANCE_RADIUS);
-    if (radius >0)
+    float fleeAssistRadius = radius ? radius : sWorld->getFloatConfig(CONFIG_CREATURE_FAMILY_FLEE_ASSISTANCE_RADIUS);
+
+    if (fleeAssistRadius > 0)
     {
         Creature* creature = NULL;
 
         CellCoord p(acore::ComputeCellCoord(GetPositionX(), GetPositionY()));
         Cell cell(p);
         cell.SetNoCreate();
-        acore::NearestAssistCreatureInCreatureRangeCheck u_check(this, GetVictim(), radius);
+        acore::NearestAssistCreatureInCreatureRangeCheck u_check(this, GetVictim(), fleeAssistRadius);
         acore::CreatureLastSearcher<acore::NearestAssistCreatureInCreatureRangeCheck> searcher(this, creature, u_check);
 
         TypeContainerVisitor<acore::CreatureLastSearcher<acore::NearestAssistCreatureInCreatureRangeCheck>, GridTypeMapContainer > grid_creature_searcher(searcher);
 
-        cell.Visit(p, grid_creature_searcher, *GetMap(), *this, radius);
+        cell.Visit(p, grid_creature_searcher, *GetMap(), *this, fleeAssistRadius);
 
         SetNoSearchAssistance(true);
         UpdateSpeed(MOVE_RUN, false);
@@ -876,7 +877,7 @@ void Creature::DoFleeToGetAssistance()
             PathGenerator pathFinder(this);
             bool result = pathFinder.CalculatePath(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), false);
             if (result && !(pathFinder.GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE)))
-                GetMotionMaster()->MoveSeekAssistance(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), GetSpeed(MOVE_RUN), &pathFinder.GetPath());
+                GetMotionMaster()->MoveSeekAssistance(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), GetSpeed(MOVE_RUN), &pathFinder.GetPath(), GetVictim()->GetGUID(), callAssistRadius);
             else
                 SetControlled(true, UNIT_STATE_FLEEING);
         }
@@ -2111,15 +2112,19 @@ void Creature::SendAIReaction(AiReaction reactionType)
 #endif
 }
 
-void Creature::CallAssistance()
-{ 
-    if (!m_AlreadyCallAssistance && GetVictim() && !IsPet() && !IsCharmed())
+void Creature::CallAssistance(uint64 callAssistVictim /*= 0*/, float radius /*= 0.f*/)
+{
+    Unit* victim = GetVictim();
+    if (!victim && callAssistVictim)
+        victim = ObjectAccessor::GetUnit(*this, callAssistVictim);
+
+    if (!m_AlreadyCallAssistance && victim && !IsPet() && !IsCharmed())
     {
         SetNoCallAssistance(true);
 
-        float radius = sWorld->getFloatConfig(CONFIG_CREATURE_FAMILY_ASSISTANCE_RADIUS);
+        float callAssistRadius = radius ? radius : sWorld->getFloatConfig(CONFIG_CREATURE_FAMILY_ASSISTANCE_RADIUS);
 
-        if (radius > 0)
+        if (callAssistRadius > 0)
         {
             std::list<Creature*> assistList;
 
@@ -2128,17 +2133,17 @@ void Creature::CallAssistance()
                 Cell cell(p);
                 cell.SetNoCreate();
 
-                acore::AnyAssistCreatureInRangeCheck u_check(this, GetVictim(), radius);
+                acore::AnyAssistCreatureInRangeCheck u_check(this, victim, callAssistRadius);
                 acore::CreatureListSearcher<acore::AnyAssistCreatureInRangeCheck> searcher(this, assistList, u_check);
 
                 TypeContainerVisitor<acore::CreatureListSearcher<acore::AnyAssistCreatureInRangeCheck>, GridTypeMapContainer >  grid_creature_searcher(searcher);
 
-                cell.Visit(p, grid_creature_searcher, *GetMap(), *this, radius);
+                cell.Visit(p, grid_creature_searcher, *GetMap(), *this, callAssistRadius);
             }
 
             if (!assistList.empty())
             {
-                AssistDelayEvent* e = new AssistDelayEvent(GetVictim()->GetGUID(), *this);
+                AssistDelayEvent* e = new AssistDelayEvent(victim->GetGUID(), *this);
                 while (!assistList.empty())
                 {
                     // Pushing guids because in delay can happen some creature gets despawned => invalid pointer

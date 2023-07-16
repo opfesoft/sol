@@ -1077,12 +1077,14 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!me || me->HasUnitState(UNIT_STATE_LOST_CONTROL) || me->GetSpeed(MOVE_RUN) < 0.1f)
             break;
 
-        me->DoFleeToGetAssistance();
-        if (e.action.flee.withEmote)
+        me->DoFleeToGetAssistance(e.action.flee.radius, e.action.flee.callAssistRadius);
+        if (e.action.flee.withEmote == 1)
         {
             acore::BroadcastTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, BROADCAST_TEXT_FLEE_FOR_ASSIST, me->getGender());
             sCreatureTextMgr->SendChatPacket(me, builder, CHAT_MSG_MONSTER_EMOTE);
         }
+        else if (e.action.flee.withEmote > 1)
+            sCreatureTextMgr->SendChat(me, uint8(e.action.flee.withEmote - 2));
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
         sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_FLEE_FOR_ASSIST: Creature %u DoFleeToGetAssistance", me->GetGUIDLow());
 #endif

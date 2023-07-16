@@ -98,6 +98,15 @@ bool DistractMovementGenerator::Update(Unit* owner, uint32 time_diff)
     return true;
 }
 
+bool AssistanceDistractMovementGenerator::Update(Unit* /*owner*/, uint32 time_diff)
+{
+    if (time_diff > m_timer)
+        return false;
+
+    m_timer -= time_diff;
+    return true;
+}
+
 void AssistanceDistractMovementGenerator::Finalize(Unit* unit)
 {
     unit->ClearUnitState(UNIT_STATE_DISTRACTED);

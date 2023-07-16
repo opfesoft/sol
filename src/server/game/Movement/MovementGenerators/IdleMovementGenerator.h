@@ -50,7 +50,7 @@ class DistractMovementGenerator : public MovementGenerator
         bool Update(Unit*, uint32);
         MovementGeneratorType GetMovementGeneratorType() { return DISTRACT_MOTION_TYPE; }
 
-    private:
+    protected:
         uint32 m_timer;
 };
 
@@ -61,6 +61,7 @@ class AssistanceDistractMovementGenerator : public DistractMovementGenerator
             DistractMovementGenerator(timer) {}
 
         MovementGeneratorType GetMovementGeneratorType() { return ASSISTANCE_DISTRACT_MOTION_TYPE; }
+        bool Update(Unit*, uint32);
         void Finalize(Unit*);
 };
 

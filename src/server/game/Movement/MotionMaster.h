@@ -189,7 +189,7 @@ class MotionMaster //: private std::stack<MovementGenerator *>
         void MoveCyclicPath(Movement::PointsArray* path, bool walk = true, float speed = 0.f);
         void MoveFall(uint32 id = 0, bool addFlagForNPC = false);
 
-        void MoveSeekAssistance(float x, float y, float z, float speed, const Movement::PointsArray* path);
+        void MoveSeekAssistance(float x, float y, float z, float speed, const Movement::PointsArray* path, uint64 callAssistVictim, float callAssistRadius);
         void MoveSeekAssistanceDistract(uint32 timer);
         void MoveTaxiFlight(uint32 path, uint32 pathnode);
         void MoveDistract(uint32 time);

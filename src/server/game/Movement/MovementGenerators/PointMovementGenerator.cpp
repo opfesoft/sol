@@ -150,7 +150,7 @@ void AssistanceMovementGenerator::Finalize(Unit* unit)
 {
     unit->ToCreature()->SetNoCallAssistance(false);
     unit->ToCreature()->SetNoSearchAssistance(false);
-    unit->ToCreature()->CallAssistance();
+    unit->ToCreature()->CallAssistance(_callAssistVictim, _callAssistRadius);
     if (unit->IsAlive())
         unit->GetMotionMaster()->MoveSeekAssistanceDistract(sWorld->getIntConfig(CONFIG_CREATURE_FAMILY_ASSISTANCE_DELAY));
 }

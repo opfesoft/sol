@@ -649,9 +649,9 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         Unit* SelectNearestTarget(float dist = 0, bool playerOnly = false) const;
         Unit* SelectNearestTargetInAttackDistance(float dist) const;
 
-        void DoFleeToGetAssistance();
+        void DoFleeToGetAssistance(float radius = 0.f, float callAssistRadius = 0.f);
         void CallForHelp(float fRadius, bool forceAssist = false);
-        void CallAssistance();
+        void CallAssistance(uint64 callAssistVictim = 0, float radius = 0.f);
         void SetNoCallAssistance(bool val) { m_AlreadyCallAssistance = val; }
         void SetNoSearchAssistance(bool val) { m_AlreadySearchedAssistance = val; }
         bool HasSearchedAssistance() { return m_AlreadySearchedAssistance; }
