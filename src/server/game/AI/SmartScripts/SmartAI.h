@@ -152,6 +152,9 @@ class SmartAI : public CreatureAI
         // Called when victim is in line of sight
         bool CanAIAttack(const Unit* who) const;
 
+        // Called when fleeing is finished
+        void FleeFinished();
+
         // Used in scripts to share variables
         void DoAction(int32 param = 0);
 

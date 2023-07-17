@@ -98,10 +98,14 @@ bool DistractMovementGenerator::Update(Unit* owner, uint32 time_diff)
     return true;
 }
 
-bool AssistanceDistractMovementGenerator::Update(Unit* /*owner*/, uint32 time_diff)
+bool AssistanceDistractMovementGenerator::Update(Unit* owner, uint32 time_diff)
 {
     if (time_diff > m_timer)
+    {
+        if (Creature* creature = owner->ToCreature())
+            creature->AI()->FleeFinished();
         return false;
+    }
 
     m_timer -= time_diff;
     return true;

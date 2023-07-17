@@ -728,6 +728,11 @@ bool SmartAI::CanAIAttack(const Unit* /*who*/) const
     return true;
 }
 
+void SmartAI::FleeFinished()
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_FLEE_FINISHED);
+}
+
 bool SmartAI::AssistPlayerInCombat(Unit* who)
 {
     // Xinef: if unit has no victim, or victim is player controlled thing
