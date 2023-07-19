@@ -251,11 +251,16 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
     _currDestPosition.Relocate(finalPoint.x, finalPoint.y, finalPoint.z);
 
     creature->AddUnitState(UNIT_STATE_ROAMING_MOVE);
-    ++_moveCount;
-    if (roll_chance_i((int32)_moveCount * 25 + 10))
+    if (_minMoveTime && _minMoveTime <= _maxMoveTime)
+        _nextMoveTime.Reset(urand(_minMoveTime, _maxMoveTime));
+    else
     {
-        _moveCount = 0;
-        _nextMoveTime.Reset(urand(4000, 8000));
+        ++_moveCount;
+        if (roll_chance_i((int32)_moveCount * 25 + 10))
+        {
+            _moveCount = 0;
+            _nextMoveTime.Reset(urand(4000, 8000));
+        }
     }
 
     Movement::MoveSplineInit init(creature);

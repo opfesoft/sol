@@ -1109,6 +1109,12 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 return false;
             break;
         }
+        case SMART_ACTION_RANDOM_MOVE:
+        {
+            if (!IsMinMaxValid(e, e.action.moveRandom.minMoveTime, e.action.moveRandom.maxMoveTime))
+                return false;
+            break;
+        }
         case SMART_ACTION_SET_POWER:
         case SMART_ACTION_ADD_POWER:
         case SMART_ACTION_REMOVE_POWER:
@@ -1309,7 +1315,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_TALK:
         case SMART_ACTION_SIMPLE_TALK:
         case SMART_ACTION_CALL_RANDOM_TIMED_ACTIONLIST:
-        case SMART_ACTION_RANDOM_MOVE:
         case SMART_ACTION_SET_UNIT_FIELD_BYTES_1:
         case SMART_ACTION_REMOVE_UNIT_FIELD_BYTES_1:
         case SMART_ACTION_INTERRUPT_SPELL:

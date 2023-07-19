@@ -163,7 +163,7 @@ class MotionMaster //: private std::stack<MovementGenerator *>
 
         void MoveIdle();
         void MoveTargetedHome();
-        void MoveRandom(float wanderDistance = 0.0f);
+        void MoveRandom(float wanderDistance = 0.0f, uint32 minMoveTime = 0, uint32 maxMoveTime = 0);
         void MoveFollow(Unit* target, float dist, float angle, MovementSlot slot = MOTION_SLOT_ACTIVE);
         void MoveChase(Unit* target, float dist = 0.0f, float angle = 0.0f);
         void MoveConfused();

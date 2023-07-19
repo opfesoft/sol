@@ -548,7 +548,7 @@ enum SMART_ACTION
     SMART_ACTION_CROSS_CAST                         = 86,     // spellID, castFlags, CasterTargetType, CasterTarget param1, CasterTarget param2, CasterTarget param3, ( + the origonal target fields as Destination target),   CasterTargets will cast spellID on all Targets (use with caution if targeting multiple * multiple units)
     SMART_ACTION_CALL_RANDOM_TIMED_ACTIONLIST       = 87,     // script9 ids 1-9
     SMART_ACTION_CALL_RANDOM_RANGE_TIMED_ACTIONLIST = 88,     // script9 id min, max
-    SMART_ACTION_RANDOM_MOVE                        = 89,     // maxDist
+    SMART_ACTION_RANDOM_MOVE                        = 89,     // maxDist, minMoveTime, maxMoveTime
     SMART_ACTION_SET_UNIT_FIELD_BYTES_1             = 90,     // bytes, target
     SMART_ACTION_REMOVE_UNIT_FIELD_BYTES_1          = 91,     // bytes, target
     SMART_ACTION_INTERRUPT_SPELL                    = 92,
@@ -906,6 +906,8 @@ struct SmartAction
         struct
         {
             uint32 distance;
+            uint32 minMoveTime;
+            uint32 maxMoveTime;
         } moveRandom;
 
         struct

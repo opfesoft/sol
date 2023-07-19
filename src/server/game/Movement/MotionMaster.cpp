@@ -218,7 +218,7 @@ void MotionMaster::MoveIdle()
         Mutate(&si_idleMovement, MOTION_SLOT_IDLE);
 }
 
-void MotionMaster::MoveRandom(float wanderDistance)
+void MotionMaster::MoveRandom(float wanderDistance /*= 0.0f*/, uint32 minMoveTime /*= 0*/, uint32 maxMoveTime /*= 0*/)
 {
     // Xinef: do not allow to move with UNIT_FLAG_DISABLE_MOVE
     if (_owner->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
@@ -230,7 +230,7 @@ void MotionMaster::MoveRandom(float wanderDistance)
         sLog->outStaticDebug("Creature (GUID: %u) start moving random", _owner->GetGUIDLow());
 #endif
         _owner->SetLastPlayerInteraction(0);
-        Mutate(new RandomMovementGenerator<Creature>(wanderDistance), MOTION_SLOT_IDLE);
+        Mutate(new RandomMovementGenerator<Creature>(wanderDistance, minMoveTime, maxMoveTime), MOTION_SLOT_IDLE);
     }
 }
 

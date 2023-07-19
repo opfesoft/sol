@@ -2449,7 +2449,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (IsCreature((*itr)))
             {
                 if (e.action.moveRandom.distance)
-                    (*itr)->ToCreature()->GetMotionMaster()->MoveRandom((float)e.action.moveRandom.distance);
+                    (*itr)->ToCreature()->GetMotionMaster()->MoveRandom((float)e.action.moveRandom.distance, e.action.moveRandom.minMoveTime, e.action.moveRandom.maxMoveTime);
                 else
                     (*itr)->ToCreature()->GetMotionMaster()->MoveIdle();
             }
