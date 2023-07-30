@@ -2917,11 +2917,13 @@ void AchievementGlobalMgr::LoadRewards()
 void AchievementGlobalMgr::LoadRewardLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE Locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     m_achievementRewardLocales.clear();                       // need for reload case
 
     //                                               0   1       2        3
-    QueryResult result = WorldDatabase.Query("SELECT ID, Locale, Subject, Text FROM achievement_reward_locale");
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, Locale, Subject, Text FROM achievement_reward_locale%s", restrictLocale.c_str());
 
     if (!result)
     {
@@ -2952,9 +2954,9 @@ void AchievementGlobalMgr::LoadRewardLocales()
 
         ObjectMgr::AddLocaleString(Subject, locale, data.Subject);
         ObjectMgr::AddLocaleString(Text, locale, data.Text);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %lu Achievement Reward Locale strings in %u ms", (unsigned long)m_achievementRewardLocales.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Achievement Reward Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }

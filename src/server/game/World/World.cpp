@@ -1351,6 +1351,8 @@ void World::LoadConfigSettings(bool reload)
             m_packetOutputWhitelist.emplace(atoi(delimitedValue.c_str()));
     }
 
+    m_bool_configs[CONFIG_LOAD_ALL_LOCALES] = sConfigMgr->GetBoolDefault("LoadAllLocales", true);
+
     // call ScriptMgr if we're reloading the configuration
     sScriptMgr->OnAfterConfigLoad(reload);
 }
@@ -1406,12 +1408,7 @@ void World::SetInitialWorldSettings()
 
     ///- Initialize game event manager
     sGameEventMgr->Initialize();
-
-    ///- Loading strings. Getting no records means core load has to be canceled because no error message can be output.
     sLog->outString();
-    sLog->outString("Loading acore strings...");
-    if (!sObjectMgr->LoadAcoreStrings())
-        exit(1);                                            // Error message displayed in function already
 
     ///- Update the realm entry in the database with the realm type from the config file
     //No SQL injection as values are treated as integers
@@ -1439,6 +1436,11 @@ void World::SetInitialWorldSettings()
     sLog->outString("Initialize data stores...");
     LoadDBCStores(m_dataPath);
     DetectDBCLang();
+
+    ///- Loading strings. Getting no records means core load has to be canceled because no error message can be output.
+    sLog->outString("Loading acore strings...");
+    if (!sObjectMgr->LoadAcoreStrings())
+        exit(1);                                            // Error message displayed in function already
 
     sLog->outString("Loading Game Graveyard...");
     sGraveyard->LoadGraveyardFromDB();
@@ -2019,7 +2021,6 @@ void World::DetectDBCLang()
     }
 
     ChrRacesEntry const* race = sChrRacesStore.LookupEntry(1);
-    std::string availableLocalsStr;
 
     uint8 default_locale = TOTAL_LOCALES;
     for (uint8 i = default_locale -1; i < TOTAL_LOCALES; --i)  // -1 will be 255 due to uint8
@@ -2028,8 +2029,9 @@ void World::DetectDBCLang()
         {
             default_locale = i;
             m_availableDbcLocaleMask |= (1 << i);
-            availableLocalsStr += localeNames[i];
-            availableLocalsStr += " ";
+            if (!m_availableLocalsStr.empty())
+                m_availableLocalsStr += ",";
+            m_availableLocalsStr += std::string("'") + localeNames[i] + "'";
         }
     }
 
@@ -2047,7 +2049,7 @@ void World::DetectDBCLang()
 
     m_defaultDbcLocale = LocaleConstant(default_locale);
 
-    sLog->outString("Using %s DBC Locale as default. All available DBC locales: %s", localeNames[GetDefaultDbcLocale()], availableLocalsStr.empty() ? "<none>" : availableLocalsStr.c_str());
+    sLog->outString("Using %s DBC Locale as default. All available DBC locales: %s", localeNames[GetDefaultDbcLocale()], m_availableLocalsStr.empty() ? "<none>" : m_availableLocalsStr.c_str());
     sLog->outString();
 }
 

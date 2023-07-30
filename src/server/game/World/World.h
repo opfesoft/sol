@@ -178,6 +178,7 @@ enum WorldBoolConfigs
     CONFIG_OBJECT_QUEST_MARKERS,
     CONFIG_START_PLAYER_MONEY_OVERRIDE_HERO_CLASS,
     CONFIG_PACKET_OUTPUT,
+    CONFIG_LOAD_ALL_LOCALES,
     BOOL_CONFIG_VALUE_COUNT
 };
 
@@ -783,6 +784,7 @@ class World
         void UpdateRealmCharCount(uint32 accid);
 
         LocaleConstant GetAvailableDbcLocale(LocaleConstant locale) const { if (m_availableDbcLocaleMask & (1 << locale)) return locale; else return m_defaultDbcLocale; }
+        std::string GetAvailableLocalsStr() const { return m_availableLocalsStr; }
 
         // used World DB version
         void LoadDBVersion();
@@ -859,6 +861,7 @@ class World
         AccountTypes m_allowedSecurityLevel;
         LocaleConstant m_defaultDbcLocale;                     // from config for one from loaded DBC locales
         uint32 m_availableDbcLocaleMask;                       // by loaded DBC
+        std::string m_availableLocalsStr;
         void DetectDBCLang();
         bool m_allowMovement;
         std::string m_dataPath;

@@ -292,11 +292,13 @@ void ObjectMgr::AddLocaleString(std::string const& s, LocaleConstant locale, Str
 void ObjectMgr::LoadCreatureLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _creatureLocaleStore.clear();                              // need for reload case
 
-    //                                               0      1       2     3
-    QueryResult result = WorldDatabase.Query("SELECT entry, locale, Name, Title FROM creature_template_locale");
+    //                                                0      1       2     3
+    QueryResult result = WorldDatabase.PQuery("SELECT entry, locale, Name, Title FROM creature_template_locale%s", restrictLocale.c_str());
     if (!result)
         return;
 
@@ -316,20 +318,22 @@ void ObjectMgr::LoadCreatureLocales()
 
         AddLocaleString(Name, locale, data.Name);
         AddLocaleString(Title, locale, data.Title);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %lu Creature Locale strings in %u ms", (unsigned long)_creatureLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Creature Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadGossipMenuItemsLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE Locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _gossipMenuItemsLocaleStore.clear();                              // need for reload case
 
-    //                                               0       1            2       3           4
-    QueryResult result = WorldDatabase.Query("SELECT MenuID, OptionID, Locale, OptionText, BoxText FROM gossip_menu_option_locale");
+    //                                                0       1            2       3           4
+    QueryResult result = WorldDatabase.PQuery("SELECT MenuID, OptionID, Locale, OptionText, BoxText FROM gossip_menu_option_locale%s", restrictLocale.c_str());
 
     if (!result)
         return;
@@ -351,20 +355,22 @@ void ObjectMgr::LoadGossipMenuItemsLocales()
 
         AddLocaleString(OptionText, locale, data.OptionText);
         AddLocaleString(BoxText, locale, data.BoxText);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Gossip Menu Option Locale strings in %u ms", (uint32)_gossipMenuItemsLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Gossip Menu Option Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadPointOfInterestLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _pointOfInterestLocaleStore.clear();                              // need for reload case
 
-    //                                               0   1       2
-    QueryResult result = WorldDatabase.Query("SELECT ID, locale, Name FROM points_of_interest_locale");
+    //                                                0   1       2
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, locale, Name FROM points_of_interest_locale%s", restrictLocale.c_str());
 
     if (!result)
         return;
@@ -383,10 +389,10 @@ void ObjectMgr::LoadPointOfInterestLocales()
             continue;
 
         AddLocaleString(Name, locale, data.Name);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Points Of Interest Locale strings in %u ms", (uint32)_pointOfInterestLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Points Of Interest Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadCreatureTemplates()
@@ -2393,10 +2399,13 @@ uint32 ObjectMgr::GetPlayerAccountIdByPlayerName(const std::string& name) const
 void ObjectMgr::LoadItemLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _itemLocaleStore.clear();                                 // need for reload case
 
-    QueryResult result = WorldDatabase.Query("SELECT ID, locale, Name, Description FROM item_template_locale");
+    //                                                0   1       2     3
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, locale, Name, Description FROM item_template_locale%s", restrictLocale.c_str());
     if (!result)
         return;
 
@@ -2416,10 +2425,10 @@ void ObjectMgr::LoadItemLocales()
 
         AddLocaleString(Name, locale, data.Name);
         AddLocaleString(Description, locale, data.Description);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Item Locale strings in %u ms", (uint32)_itemLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Item Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadItemTemplates()
@@ -3020,10 +3029,13 @@ ItemTemplate const* ObjectMgr::GetItemTemplate(uint32 entry)
 void ObjectMgr::LoadItemSetNameLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _itemSetNameLocaleStore.clear();                                 // need for reload case
 
-    QueryResult result = WorldDatabase.Query("SELECT ID, locale, Name FROM item_set_names_locale");
+    //                                                0   1       2
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, locale, Name FROM item_set_names_locale%s", restrictLocale.c_str());
 
     if (!result)
         return;
@@ -3042,10 +3054,10 @@ void ObjectMgr::LoadItemSetNameLocales()
             continue;
 
         AddLocaleString(Name, locale, data.Name);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Item Set Name Locale strings in %u ms", uint32(_itemSetNameLocaleStore.size()), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Item Set Name Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadItemSetNames()
@@ -4763,11 +4775,13 @@ void ObjectMgr::LoadQuests()
 void ObjectMgr::LoadQuestLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _questLocaleStore.clear();                                // need for reload case
 
-    //                                               0   1       2      3        4           5        6              7               8               9               10
-    QueryResult result = WorldDatabase.Query("SELECT ID, locale, Title, Details, Objectives, EndText, CompletedText, ObjectiveText1, ObjectiveText2, ObjectiveText3, ObjectiveText4 FROM quest_template_locale");
+    //                                                0   1       2      3        4           5        6              7               8               9               10
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, locale, Title, Details, Objectives, EndText, CompletedText, ObjectiveText1, ObjectiveText2, ObjectiveText3, ObjectiveText4 FROM quest_template_locale%s", restrictLocale.c_str());
 
     if (!result)
         return;
@@ -4792,10 +4806,10 @@ void ObjectMgr::LoadQuestLocales()
 
         for (uint8 i = 0; i < 4; ++i)
             AddLocaleString(fields[i + 7].GetString(), locale, data.ObjectiveText[i]);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Quest Locale strings in %u ms", (uint32)_questLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Quest Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadScripts(ScriptsType type)
@@ -5436,11 +5450,13 @@ PageText const* ObjectMgr::GetPageText(uint32 pageEntry)
 void ObjectMgr::LoadPageTextLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _pageTextLocaleStore.clear();                             // need for reload case
 
-    //                                               0   1       2
-    QueryResult result = WorldDatabase.Query("SELECT ID, locale, Text FROM page_text_locale");
+    //                                                0   1       2
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, locale, Text FROM page_text_locale%s", restrictLocale.c_str());
 
     if (!result)
         return;
@@ -5457,10 +5473,10 @@ void ObjectMgr::LoadPageTextLocales()
         LocaleConstant locale   = GetLocaleByName(LocaleName);
 
         AddLocaleString(Text, locale, data.Text);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Page Text Locale strings in %u ms", (uint32)_pageTextLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Page Text Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadInstanceTemplate()
@@ -5689,13 +5705,15 @@ void ObjectMgr::LoadGossipText()
 void ObjectMgr::LoadNpcTextLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE Locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _npcTextLocaleStore.clear();                              // need for reload case
 
-    QueryResult result = WorldDatabase.Query("SELECT ID, Locale, "
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, Locale, "
         //   2        3        4        5        6        7        8        9        10       11       12       13       14       15       16       17
         "Text0_0, Text0_1, Text1_0, Text1_1, Text2_0, Text2_1, Text3_0, Text3_1, Text4_0, Text4_1, Text5_0, Text5_1, Text6_0, Text6_1, Text7_0, Text7_1 "
-        "FROM npc_text_locale");
+        "FROM npc_text_locale%s", restrictLocale.c_str());
 
     if (!result)
         return;
@@ -5717,10 +5735,10 @@ void ObjectMgr::LoadNpcTextLocales()
             AddLocaleString(fields[2 + i * 2].GetString(), locale, data.Text_0[i]);
             AddLocaleString(fields[3 + i * 2].GetString(), locale, data.Text_1[i]);
         }
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Npc Text Locale strings in %u ms", (uint32)_npcTextLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Npc Text Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::ReturnOrDeleteOldMails(bool serverUp)
@@ -5910,11 +5928,13 @@ void ObjectMgr::LoadQuestAreaTriggers()
 void ObjectMgr::LoadQuestOfferRewardLocale()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _questOfferRewardLocaleStore.clear(); // need for reload case
 
-    //                                               0     1          2
-    QueryResult result = WorldDatabase.Query("SELECT Id, locale, RewardText FROM quest_offer_reward_locale");
+    //                                                0     1          2
+    QueryResult result = WorldDatabase.PQuery("SELECT Id, locale, RewardText FROM quest_offer_reward_locale%s", restrictLocale.c_str());
     if (!result)
         return;
 
@@ -5931,20 +5951,22 @@ void ObjectMgr::LoadQuestOfferRewardLocale()
 
         QuestOfferRewardLocale& data = _questOfferRewardLocaleStore[id];
         AddLocaleString(fields[2].GetString(), locale, data.RewardText);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %lu Quest Offer Reward locale strings in %u ms", _questOfferRewardLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Quest Offer Reward locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadQuestRequestItemsLocale()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _questRequestItemsLocaleStore.clear(); // need for reload case
 
-    //                                               0     1          2
-    QueryResult result = WorldDatabase.Query("SELECT Id, locale, CompletionText FROM quest_request_items_locale");
+    //                                                0     1          2
+    QueryResult result = WorldDatabase.PQuery("SELECT Id, locale, CompletionText FROM quest_request_items_locale%s", restrictLocale.c_str());
     if (!result)
         return;
 
@@ -5961,10 +5983,10 @@ void ObjectMgr::LoadQuestRequestItemsLocale()
 
         QuestRequestItemsLocale& data = _questRequestItemsLocaleStore[id];
         AddLocaleString(fields[2].GetString(), locale, data.CompletionText);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %lu Quest Request Items locale strings in %u ms", _questRequestItemsLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Quest Request Items locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadTavernAreaTriggers()
@@ -6640,11 +6662,13 @@ void ObjectMgr::AddFreeGuid(HighGuid guidhigh, uint32 guid)
 void ObjectMgr::LoadGameObjectLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _gameObjectLocaleStore.clear(); // need for reload case
 
-    //                                               0      1       2     3
-    QueryResult result = WorldDatabase.Query("SELECT entry, locale, name, castBarCaption FROM gameobject_template_locale");
+    //                                                0      1       2     3
+    QueryResult result = WorldDatabase.PQuery("SELECT entry, locale, name, castBarCaption FROM gameobject_template_locale%s", restrictLocale.c_str());
     if (!result)
         return;
 
@@ -6664,10 +6688,10 @@ void ObjectMgr::LoadGameObjectLocales()
 
         AddLocaleString(Name, locale, data.Name);
         AddLocaleString(CastBarCaption, locale, data.CastBarCaption);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Gameobject Locale strings in %u ms", (uint32)_gameObjectLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Gameobject Locale strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 inline void CheckGOLockId(GameObjectTemplate const* goInfo, uint32 dataN, uint32 N)
@@ -7618,9 +7642,10 @@ void ObjectMgr::LoadQuestGreetingLocales()
 {
     uint32 oldMSTime = getMSTime();
     uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
-    //                                               0   1     2       3
-    QueryResult result = WorldDatabase.Query("SELECT ID, Type, locale, Greeting FROM quest_greeting_locale");
+    //                                                0   1     2       3
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, Type, locale, Greeting FROM quest_greeting_locale%s", restrictLocale.c_str());
 
     if (!result)
     {
@@ -8155,18 +8180,14 @@ void ObjectMgr::LoadGameObjectForQuests()
 bool ObjectMgr::LoadAcoreStrings()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     _acoreStringStore.clear(); // for reload case
-    QueryResult result = WorldDatabase.PQuery("SELECT ac_str.entry, ac_str.content_default, ac_str_loc1.content, ac_str_loc2.content, ac_str_loc3.content, ac_str_loc4.content, "
-                                              "ac_str_loc5.content, ac_str_loc6.content, ac_str_loc7.content, ac_str_loc8.content FROM acore_string ac_str "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc1 ON (ac_str.entry = ac_str_loc1.entry AND ac_str_loc1.locale = 'koKR') "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc2 ON (ac_str.entry = ac_str_loc2.entry AND ac_str_loc2.locale = 'frFR') "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc3 ON (ac_str.entry = ac_str_loc3.entry AND ac_str_loc3.locale = 'deDE') "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc4 ON (ac_str.entry = ac_str_loc4.entry AND ac_str_loc4.locale = 'zhCN') "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc5 ON (ac_str.entry = ac_str_loc5.entry AND ac_str_loc5.locale = 'zhTW') "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc6 ON (ac_str.entry = ac_str_loc6.entry AND ac_str_loc6.locale = 'esES') "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc7 ON (ac_str.entry = ac_str_loc7.entry AND ac_str_loc7.locale = 'esMX') "
-                                              "LEFT OUTER JOIN acore_string_locale ac_str_loc8 ON (ac_str.entry = ac_str_loc8.entry AND ac_str_loc8.locale = 'ruRU')");
+
+    //                                                0                1                          2
+    QueryResult result = WorldDatabase.PQuery("SELECT entry, 'enUS' AS locale, content_default AS content FROM acore_string UNION "
+                                              "SELECT entry, locale, content FROM acore_string_locale%s", restrictLocale.c_str());
 
     if (!result)
     {
@@ -8180,17 +8201,16 @@ bool ObjectMgr::LoadAcoreStrings()
         Field* fields = result->Fetch();
 
         uint32 entry = fields[0].GetUInt32();
+        std::string localeName = fields[1].GetString();
+        std::string content = fields[2].GetString();
 
         AcoreString& data = _acoreStringStore[entry];
-
-        data.Content.resize(DEFAULT_LOCALE + 1);
-
-        for (uint8 i = 0; i < TOTAL_LOCALES; ++i)
-            AddLocaleString(fields[i + 1].GetString(), LocaleConstant(i), data.Content);
-
+        LocaleConstant locale = GetLocaleByName(localeName);
+        AddLocaleString(content, locale, data.Content);
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u acore strings in %u ms", (uint32)_acoreStringStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u acore strings in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 
     return true;
@@ -9150,9 +9170,11 @@ void ObjectMgr::LoadBroadcastTexts()
 void ObjectMgr::LoadBroadcastTextLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
-    //                                               0   1       2         3
-    QueryResult result = WorldDatabase.Query("SELECT ID, locale, MaleText, FemaleText FROM broadcast_text_locale");
+    //                                                0   1       2         3
+    QueryResult result = WorldDatabase.PQuery("SELECT ID, locale, MaleText, FemaleText FROM broadcast_text_locale%s", restrictLocale.c_str());
 
     if (!result)
     {
@@ -9183,10 +9205,11 @@ void ObjectMgr::LoadBroadcastTextLocales()
 
         AddLocaleString(MaleText, locale, bct->second.MaleText);
         AddLocaleString(FemaleText, locale, bct->second.FemaleText);
+        ++count;
     }
     while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Broadcast Text Locales in %u ms", uint32(_broadcastTextStore.size()), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Broadcast Text Locales in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }
 

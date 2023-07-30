@@ -964,6 +964,15 @@ StrictPetNames = 0
 DBC.Locale = 255
 
 #
+#    LoadAllLocales
+#        Description: If disabled load only the locales which are also available via DBC
+#                     (speeds up server startup and takes less RAM)
+#        Default:     1 - (Load all locales)
+#                     0 - (Load only locales available via DBC)
+
+LoadAllLocales = 1
+
+#
 #    DeclinedNames
 #        Description: Allow Russian clients to set and use declined names.
 #        Default:     0 - (Disabled, Except when the Russian RealmZone is set)

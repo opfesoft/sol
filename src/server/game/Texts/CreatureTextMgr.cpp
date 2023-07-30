@@ -153,10 +153,12 @@ void CreatureTextMgr::LoadCreatureTexts()
 void CreatureTextMgr::LoadCreatureTextLocales()
 {
     uint32 oldMSTime = getMSTime();
+    uint32 count = 0;
+    std::string restrictLocale = (sWorld->getBoolConfig(CONFIG_LOAD_ALL_LOCALES) || sWorld->GetAvailableLocalsStr().empty() ? "" : std::string(" WHERE Locale in (") + sWorld->GetAvailableLocalsStr() + ")");
 
     mLocaleTextMap.clear(); // for reload case
 
-    QueryResult result = WorldDatabase.Query("SELECT CreatureId, GroupId, ID, Locale, Text FROM creature_text_locale");
+    QueryResult result = WorldDatabase.PQuery("SELECT CreatureId, GroupId, ID, Locale, Text FROM creature_text_locale%s", restrictLocale.c_str());
 
     if (!result)
         return;
@@ -177,10 +179,10 @@ void CreatureTextMgr::LoadCreatureTextLocales()
             continue;
 
         ObjectMgr::AddLocaleString(Text, locale, data.Text);
-
+        ++count;
     } while (result->NextRow());
 
-    sLog->outString(">> Loaded %u Creature Text Locale in %u ms", uint32(mLocaleTextMap.size()), GetMSTimeDiffToNow(oldMSTime));
+    sLog->outString(">> Loaded %u Creature Text Locale in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }
 
