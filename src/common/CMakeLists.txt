@@ -51,8 +51,7 @@ target_link_libraries(common
     utf8cpp
     openssl
     threads
-    jemalloc
-    fmt)
+    jemalloc)
 
 set_target_properties(common
   PROPERTIES

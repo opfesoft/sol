@@ -8,24 +8,27 @@
 #ifndef __STRING_FORMAT_H__
 #define __STRING_FORMAT_H__
 
-#include "fmt/printf.h"
+#include <memory>
+#include <iostream>
+#include <string>
+#include <cstdio>
 
 namespace acore
 {
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wformat-security"
+
     /// Default AC string format function.
-    template<typename Format, typename... Args>
-    inline std::string StringFormat(Format&& fmt, Args&& ... args)
+    template<typename... Args>
+    inline std::string StringFormat(const std::string& format, Args const&... args)
     {
-        try
-        {
-            return fmt::sprintf(std::forward<Format>(fmt), std::forward<Args>(args)...);
-        }
-        catch (const fmt::format_error& formatError)
-        {
-            std::string error = "An error occurred formatting string \"" + std::string(fmt) + "\" : " + std::string(formatError.what());
-            return error;
-        }
+        size_t size = std::snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
+        std::unique_ptr<char[]> buf(new char[size]);
+        std::snprintf(buf.get(), size, format.c_str(), args ...);
+        return std::string(buf.get(), buf.get() + size - 1);
     }
+
+    #pragma GCC diagnostic pop
 
     /// Returns true if the given char pointer is null.
     inline bool IsFormatEmptyOrNull(char const* fmt)

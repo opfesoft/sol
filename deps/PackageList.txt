@@ -47,7 +47,3 @@ zlib (A Massively Spiffy Yet Delicately Unobtrusive Compression Library)
 recastnavigation (Recast is state of the art navigation mesh construction toolset for games)
   https://github.com/memononen/recastnavigation
   Version: 64385e9ed0822427bca5814d03a3f4c4d7a6db9f
-
-{fmt} is an open-source formatting library providing a fast and safe alternative to C stdio and C++ iostreams.
-  https://github.com/fmtlib/fmt
-  Version: external
