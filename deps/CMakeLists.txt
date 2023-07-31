@@ -26,7 +26,6 @@ endif()
 if(SERVERS)
   add_subdirectory(mysql)
   add_subdirectory(readline)
-  add_subdirectory(jemalloc)
 endif()
 
 if(TOOLS)

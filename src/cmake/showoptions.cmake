@@ -71,12 +71,8 @@ else()
   message("* Use GIT revision hash           : Yes (default)")
 endif()
 
-if ( NOJEM )
-  message("")
-  message(" *** NOJEM - WARNING!")
-  message(" *** jemalloc linking has been disabled!")
-  message(" *** Please note that this is for DEBUGGING WITH VALGRIND only!")
-  message(" *** DO NOT DISABLE IT UNLESS YOU KNOW WHAT YOU'RE DOING!")
+if ( VAL_DEBUG )
+  message("* Valgrind debugging              : Yes")
 endif()
 
 # Performance optimization options:

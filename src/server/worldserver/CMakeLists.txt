@@ -22,7 +22,7 @@ set_target_properties(worldserver PROPERTIES
 
 add_dependencies(worldserver revision.h)
 
-if(NOT NOJEM)
+if(NOT VAL_DEBUG)
   set(worldserver_LINK_FLAGS "-pthread -lncurses ${worldserver_LINK_FLAGS}")
 endif()
 
