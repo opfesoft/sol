@@ -3495,6 +3495,12 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectRadiusIndex[EFFECT_0] = EFFECT_RADIUS_3_YARDS;
             spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_DEST_CASTER;
             break;
+        case 34239: // Absorb Life (Void Baron Galaxis)
+            spellInfo->EffectValueMultiplier[EFFECT_0] = 1.f;
+            break;
+        case 35036: // Summon a Warp Rift in Void Ridge (From the Abyss)
+            spellInfo->CastingTimeIndex = 0;
+            break;
 
 
         /////////////////////////////////////////////
