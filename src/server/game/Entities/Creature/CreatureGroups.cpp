@@ -312,15 +312,8 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
         float followAngle = itr->second->follow_angle + M_PI; // for some reason, someone thought it was a great idea to invert relative angles...
         float followDist = itr->second->follow_dist;
 
-        float dx = x + cos(followAngle + pathAngle) * followDist;
-        float dy = y + sin(followAngle + pathAngle) * followDist;
-        float dz = z;
-
-        acore::NormalizeMapCoord(dx);
-        acore::NormalizeMapCoord(dy);
-
-        Position p = {dx, dy, dz, 0.0f};
-        member->MovePosition(p, 0.0f, 0.0f);
+        Position p = {x, y, z, 0.0f};
+        member->MovePosition(p, followDist, pathAngle + followAngle - member->GetOrientation());
         p.m_orientation = pathAngle;
 
         member->SetUnitMovementFlags(m_leader->GetUnitMovementFlags());
