@@ -3501,6 +3501,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 35036: // Summon a Warp Rift in Void Ridge (From the Abyss)
             spellInfo->CastingTimeIndex = 0;
             break;
+        case 18278: // Silence (Silent Fang)
+            spellInfo->AttributesEx4 |= SPELL_ATTR4_NOT_USABLE_IN_ARENA;
+            break;
 
 
         /////////////////////////////////////////////
