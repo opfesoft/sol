@@ -3694,8 +3694,8 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->procCharges = 2;
             spellInfo->StackAmount = 0;
             break;
-        // Kill Command
-        case 34027:
+        case 34027: // Kill Command
+        case 37529: // Overpower (Destroyer Battlegear)
             spellInfo->procCharges = 0;
             break;
         // Kindred Spirits, damage aura
