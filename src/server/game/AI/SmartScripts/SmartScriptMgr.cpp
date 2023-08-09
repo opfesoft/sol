@@ -326,6 +326,22 @@ void SmartAIMgr::LoadSmartAIFromDB()
             count++;
         } while (result->NextRow());
 
+    // Post Loading Validation
+    for (SmartAIEventMap& eventmap : mEventMap)
+        for (std::pair<int32 const, SmartAIEventList>& eventlistpair : eventmap)
+            for (SmartScriptHolder const& e : eventlistpair.second)
+            {
+                if (e.link)
+                    if (FindLinkedEvent(eventlistpair.second, e.link).entryOrGuid == 0)
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Entry %d SourceType %u, Event %u, Link Event %u not found or invalid.",
+                            e.entryOrGuid, e.GetScriptType(), e.event_id, e.link);
+
+                if (e.GetEventType() == SMART_EVENT_LINK)
+                    if (FindLinkedSourceEvent(eventlistpair.second, e.event_id).entryOrGuid == 0)
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Entry %d SourceType %u, Event %u, Link Source Event not found or invalid. Event will never trigger.",
+                            e.entryOrGuid, e.GetScriptType(), e.event_id);
+            }
+
     sLog->outString(">> Loaded %u SmartAI WP pause points in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     sLog->outString();
 }
@@ -1374,4 +1390,28 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
     }
 
     return true;
+}
+
+SmartScriptHolder& SmartAIMgr::FindLinkedSourceEvent(SmartAIEventList& list, uint32 eventId)
+{
+    SmartAIEventList::iterator itr = std::find_if(list.begin(), list.end(),
+        [eventId](SmartScriptHolder& source) { return source.link == eventId; });
+
+    if (itr != list.end())
+        return *itr;
+
+    static SmartScriptHolder SmartScriptHolderDummy;
+    return SmartScriptHolderDummy;
+}
+
+SmartScriptHolder& SmartAIMgr::FindLinkedEvent(SmartAIEventList& list, uint32 link)
+{
+    SmartAIEventList::iterator itr = std::find_if(list.begin(), list.end(),
+        [link](SmartScriptHolder& linked) { return linked.event_id == link && linked.GetEventType() == SMART_EVENT_LINK; });
+
+    if (itr != list.end())
+        return *itr;
+
+    static SmartScriptHolder SmartScriptHolderDummy;
+    return SmartScriptHolderDummy;
 }

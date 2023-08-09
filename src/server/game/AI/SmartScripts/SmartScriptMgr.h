@@ -1850,6 +1850,9 @@ class SmartAIMgr
                 return temp;
         }
 
+        static SmartScriptHolder& FindLinkedSourceEvent(SmartAIEventList& list, uint32 eventId);
+        static SmartScriptHolder& FindLinkedEvent(SmartAIEventList& list, uint32 link);
+
     private:
         //event stores
         SmartAIEventMap mEventMap[SMART_SCRIPT_TYPE_MAX];

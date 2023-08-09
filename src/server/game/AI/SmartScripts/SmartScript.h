@@ -314,22 +314,6 @@ class SmartScript
                 }
             }
         }
-        SmartScriptHolder FindLinkedEvent (uint32 link)
-        {
-            if (!mEvents.empty())
-            {
-                for (SmartAIEventList::iterator i = mEvents.begin(); i != mEvents.end(); ++i)
-                {
-                    if (i->event_id == link)
-                    {
-                        return (*i);
-                    }
-
-                }
-            }
-            SmartScriptHolder s;
-            return s;
-        }
 
         void CustomTalk(WorldObject* talker, WorldObject* talkTarget, SmartScriptHolder const& e);
 };

@@ -3574,7 +3574,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
     if (e.link && e.link != e.event_id)
     {
-        SmartScriptHolder linked = FindLinkedEvent(e.link);
+        SmartScriptHolder linked = SmartAIMgr::FindLinkedEvent(mEvents, e.link);
         if (linked.GetActionType() && linked.GetEventType() == SMART_EVENT_LINK)
             ProcessEvent(linked, unit, var0, var1, bvar, spell, gob);
         else
