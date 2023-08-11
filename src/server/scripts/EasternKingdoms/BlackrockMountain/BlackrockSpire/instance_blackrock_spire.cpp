@@ -22,8 +22,8 @@ uint32 const DragonspireMobs[3] = { NPC_BLACKHAND_DREADWEAVER, NPC_BLACKHAND_SUM
 
 enum EventIds
 {
-    EVENT_DARGONSPIRE_ROOM_STORE           = 1,
-    EVENT_DARGONSPIRE_ROOM_CHECK           = 2,
+    EVENT_DRAGONSPIRE_ROOM_STORE           = 1,
+    EVENT_DRAGONSPIRE_ROOM_CHECK           = 2,
     EVENT_UROK_DOOMHOWL_SPAWNS_1           = 3,
     EVENT_UROK_DOOMHOWL_SPAWNS_2           = 4,
     EVENT_UROK_DOOMHOWL_SPAWNS_3           = 5,
@@ -309,7 +309,7 @@ public:
                     if (data == AREATRIGGER_DRAGONSPIRE_HALL)
                     {
                         if (GetBossState(DATA_DRAGONSPIRE_ROOM) != DONE)
-                            Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_STORE, 1000);
+                            Events.ScheduleEvent(EVENT_DRAGONSPIRE_ROOM_STORE, 1000);
                     }
                 default:
                     break;
@@ -400,14 +400,14 @@ public:
             {
                 switch (eventId)
                 {
-                    case EVENT_DARGONSPIRE_ROOM_STORE:
+                    case EVENT_DRAGONSPIRE_ROOM_STORE:
                         Dragonspireroomstore();
-                        Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_CHECK, 3000);
+                        Events.ScheduleEvent(EVENT_DRAGONSPIRE_ROOM_CHECK, 3000);
                         break;
-                    case EVENT_DARGONSPIRE_ROOM_CHECK:
+                    case EVENT_DRAGONSPIRE_ROOM_CHECK:
                         Dragonspireroomcheck();
                         if ((GetBossState(DATA_DRAGONSPIRE_ROOM) != DONE))
-                            Events.ScheduleEvent(EVENT_DARGONSPIRE_ROOM_CHECK, 3000);
+                            Events.ScheduleEvent(EVENT_DRAGONSPIRE_ROOM_CHECK, 3000);
                         break;
                     default:
                          break;
