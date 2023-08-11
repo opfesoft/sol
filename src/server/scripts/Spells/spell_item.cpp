@@ -3470,8 +3470,9 @@ class spell_item_nigh_invulnerability : public SpellScriptLoader
 
 enum Poultryzer
 {
-    SPELL_POULTRYIZER_SUCCESS    = 30501,
-    SPELL_POULTRYIZER_BACKFIRE   = 30504,
+    SPELL_POULTRYIZER_SUCCESS_1  = 30501,
+    SPELL_POULTRYIZER_SUCCESS_2  = 30504, // malfunction
+    SPELL_POULTRYIZER_BACKFIRE   = 30506, // not removed on damage
 };
 
 class spell_item_poultryizer : public SpellScriptLoader
@@ -3485,7 +3486,7 @@ class spell_item_poultryizer : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spell*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_POULTRYIZER_SUCCESS) || !sSpellMgr->GetSpellInfo(SPELL_POULTRYIZER_BACKFIRE))
+                if (!sSpellMgr->GetSpellInfo(SPELL_POULTRYIZER_SUCCESS_1) || !sSpellMgr->GetSpellInfo(SPELL_POULTRYIZER_SUCCESS_2) || !sSpellMgr->GetSpellInfo(SPELL_POULTRYIZER_BACKFIRE))
                     return false;
                 return true;
             }
@@ -3493,7 +3494,12 @@ class spell_item_poultryizer : public SpellScriptLoader
             void HandleDummy(SpellEffIndex /* effIndex */)
             {
                 if (GetCastItem() && GetHitUnit())
-                    GetCaster()->CastSpell(GetHitUnit(), roll_chance_i(80) ? SPELL_POULTRYIZER_SUCCESS : SPELL_POULTRYIZER_BACKFIRE, true, GetCastItem());
+                {
+                    if (roll_chance_i(80))
+                        GetCaster()->CastSpell(GetHitUnit(), roll_chance_i(80) ? SPELL_POULTRYIZER_SUCCESS_1 : SPELL_POULTRYIZER_SUCCESS_2, true, GetCastItem());
+                    else
+                        GetCaster()->CastSpell(GetCaster(),  SPELL_POULTRYIZER_BACKFIRE, true, GetCastItem());
+                }
             }
 
             void Register()

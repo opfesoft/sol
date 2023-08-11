@@ -3504,6 +3504,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 18278: // Silence (Silent Fang)
             spellInfo->AttributesEx4 |= SPELL_ATTR4_NOT_USABLE_IN_ARENA;
             break;
+        case 30504: // Poultryized! (Gnomish Poultryizer)
+            spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_TAKE_DAMAGE;
+            break;
 
 
         /////////////////////////////////////////////
