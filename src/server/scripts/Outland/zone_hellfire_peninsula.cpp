@@ -237,7 +237,8 @@ enum WoundedBloodElf
     QUEST_ROAD_TO_FALCON_WATCH  = 9375,
     NPC_HAALESHI_WINDWALKER     = 16966,
     NPC_HAALESHI_TALONGUARD     = 16967,
-    FACTION_FALCON_WATCH_QUEST  = 775
+    FACTION_FALCON_WATCH_QUEST  = 775,
+    ARAKKOA_CAGE                = 181664,
 };
 
 class npc_wounded_blood_elf : public CreatureScript
@@ -249,11 +250,16 @@ public:
     {
         npc_wounded_blood_elfAI(Creature* creature) : npc_escortAI(creature) { }
 
-        void Reset() { }
+        void Reset()
+        {
+            me->SetStandState(UNIT_STAND_STATE_STAND);
+            if (GameObject* go = me->FindNearestGameObject(ARAKKOA_CAGE, 10.0f))
+                go->SetGoState(GO_STATE_READY);
+        }
 
         void EnterCombat(Unit* /*who*/)
         {
-            if (HasEscortState(STATE_ESCORT_ESCORTING))
+            if (HasEscortState(STATE_ESCORT_ESCORTING) && roll_chance_i(10))
                 Talk(SAY_ELF_AGGRO);
         }
 
@@ -266,8 +272,8 @@ public:
         {
             if (quest->GetQuestId() == QUEST_ROAD_TO_FALCON_WATCH)
             {
-                me->setFaction(FACTION_FALCON_WATCH_QUEST);
-                npc_escortAI::Start(true, false, player->GetGUID());
+                me->setActive(true);
+                npc_escortAI::Start(true, false, player->GetGUID(), quest);
             }
         }
 
@@ -279,26 +285,44 @@ public:
 
             switch (waypointId)
             {
-                case 0:
+                case 1:
                     Talk(SAY_ELF_START, player);
+                    if (GameObject* go = me->FindNearestGameObject(ARAKKOA_CAGE, 10.0f))
+                        go->SetGoState(GO_STATE_ACTIVE);
                     break;
-                case 9:
+                case 2:
+                    me->setFaction(FACTION_FALCON_WATCH_QUEST);
+                    break;
+                case 40:
                     Talk(SAY_ELF_SUMMON1, player);
+                    me->SetFacingTo(4.16746f);
+                    me->SetOrientation(4.16746f);
+                    break;
+                case 41:
                     // Spawn two Haal'eshi Talonguard
                     DoSpawnCreature(NPC_HAALESHI_TALONGUARD, -15, -15, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     DoSpawnCreature(NPC_HAALESHI_TALONGUARD, -17, -17, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     break;
-                case 13:
+                case 59:
                     Talk(SAY_ELF_RESTING, player);
+                    me->SetStandState(UNIT_STAND_STATE_KNEEL);
+                    me->SetReactState(REACT_PASSIVE);
                     break;
-                case 14:
+                case 60:
+                    me->SetStandState(UNIT_STAND_STATE_STAND);
+                    me->SetReactState(REACT_AGGRESSIVE);
+                    break;
+                case 62:
                     Talk(SAY_ELF_SUMMON2, player);
+                    break;
+                case 63:
                     // Spawn two Haal'eshi Windwalker
                     DoSpawnCreature(NPC_HAALESHI_WINDWALKER, -15, -15, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     DoSpawnCreature(NPC_HAALESHI_WINDWALKER, -17, -17, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     break;
-                case 27:
+                case 102:
                     Talk(SAY_ELF_COMPLETE, player);
+                    me->SetStandState(UNIT_STAND_STATE_SLEEP);
                     // Award quest credit
                     player->GroupEventHappens(QUEST_ROAD_TO_FALCON_WATCH, me);
                     break;
