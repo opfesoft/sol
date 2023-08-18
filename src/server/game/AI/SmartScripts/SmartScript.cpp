@@ -2554,12 +2554,19 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!targets)
             break;
 
+        float speedXY = (float)e.action.jump.speedxy;
+        float speedZ = (float)e.action.jump.speedz;
+
         // xinef: my implementation
         if (e.action.jump.selfJump)
         {
             if (WorldObject* target = acore::Containers::SelectRandomContainerElement(*targets))
                 if (me)
-                    me->GetMotionMaster()->MoveJump(target->GetPositionX() + e.target.x, target->GetPositionY() + e.target.y, target->GetPositionZ() + e.target.z, (float)e.action.jump.speedxy, (float)e.action.jump.speedz);
+                {
+                    float x = target->GetPositionX() + e.target.x;
+                    float y = target->GetPositionY() + e.target.y;
+                    me->GetMotionMaster()->MoveJump(x, y, target->GetPositionZ() + e.target.z, speedXY == 0.f ? (me->GetExactDist2d(x, y) * 10.f / speedZ) : speedXY, speedZ);
+                }
         }
         else
         {
@@ -2567,7 +2574,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 if (WorldObject* obj = (*itr))
                 {
                     if (Creature* creature = obj->ToCreature())
-                        creature->GetMotionMaster()->MoveJump(e.target.x, e.target.y, e.target.z, (float)e.action.jump.speedxy, (float)e.action.jump.speedz);
+                    {
+                        float x = (float)e.target.x;
+                        float y = (float)e.target.y;
+                        creature->GetMotionMaster()->MoveJump(x, y, e.target.z, speedXY == 0.f ? (me->GetExactDist2d(x, y) * 10.f / speedZ) : speedXY, speedZ);
+                    }
                 }
         }
 
