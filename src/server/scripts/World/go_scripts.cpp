@@ -1000,19 +1000,17 @@ public:
 ## go_amberpine_outhouse
 ######*/
 
-#define GOSSIP_USE_OUTHOUSE "Use the outhouse."
-#define GO_ANDERHOLS_SLIDER_CIDER_NOT_FOUND "Quest item Anderhol's Slider Cider not found."
-
 enum AmberpineOuthouse
 {
     ITEM_ANDERHOLS_SLIDER_CIDER     = 37247,
     NPC_OUTHOUSE_BUNNY              = 27326,
     QUEST_DOING_YOUR_DUTY           = 12227,
-    SPELL_INDISPOSED                = 53017,
+    SPELL_INDISPOSED_MALE           = 48323,
+    SPELL_INDISPOSED_FEMALE         = 53017,
     SPELL_INDISPOSED_III            = 48341,
-    SPELL_CREATE_AMBERSEEDS         = 48330,
     GOSSIP_OUTHOUSE_INUSE           = 12775,
-    GOSSIP_OUTHOUSE_VACANT          = 12779
+    GOSSIP_OUTHOUSE_VACANT          = 12779,
+    GOSSIP_USE_OUTHOUSE             =  9492,
 };
 
 class go_amberpine_outhouse : public GameObjectScript
@@ -1023,9 +1021,9 @@ public:
     bool OnGossipHello(Player* player, GameObject* go) override
     {
         QuestStatus status = player->GetQuestStatus(QUEST_DOING_YOUR_DUTY);
-        if (status == QUEST_STATUS_INCOMPLETE || status == QUEST_STATUS_COMPLETE || status == QUEST_STATUS_REWARDED)
+        if (status == QUEST_STATUS_INCOMPLETE && player->HasItemCount(ITEM_ANDERHOLS_SLIDER_CIDER))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_USE_OUTHOUSE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            AddGossipItemFor(player, GOSSIP_USE_OUTHOUSE, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             SendGossipMenuFor(player, GOSSIP_OUTHOUSE_VACANT, go->GetGUID());
         }
         else
@@ -1040,21 +1038,26 @@ public:
         if (action == GOSSIP_ACTION_INFO_DEF +1)
         {
             CloseGossipMenuFor(player);
+            player->DestroyItemCount(ITEM_ANDERHOLS_SLIDER_CIDER, 1, true);
+            uint8 gender = player->getGender();
+            player->NearTeleportTo(3454.11f, -2802.37f, 202.14f, 0.f);
             Creature* target = GetClosestCreatureWithEntry(player, NPC_OUTHOUSE_BUNNY, 3.0f);
             if (target)
             {
-                target->AI()->SetData(1, player->getGender());
+                target->AI()->SetData(1, gender);
                 go->CastSpell(target, SPELL_INDISPOSED_III);
             }
-            go->CastSpell(player, SPELL_INDISPOSED);
-            if (player->HasItemCount(ITEM_ANDERHOLS_SLIDER_CIDER))
-                player->CastSpell(player, SPELL_CREATE_AMBERSEEDS, true);
+
+            if (gender == GENDER_MALE)
+                go->CastSpell(player, SPELL_INDISPOSED_MALE);
+            else
+                go->CastSpell(player, SPELL_INDISPOSED_FEMALE);
+
             return true;
         }
         else
         {
             CloseGossipMenuFor(player);
-            player->GetSession()->SendNotification(GO_ANDERHOLS_SLIDER_CIDER_NOT_FOUND);
             return false;
         }
     }
