@@ -1786,6 +1786,33 @@ class spell_gen_shriveling_gaze : public SpellScriptLoader
         }
 };
 
+class spell_gen_curse_of_pain : public SpellScriptLoader
+{
+    public:
+        spell_gen_curse_of_pain() : SpellScriptLoader("spell_gen_curse_of_pain") { }
+
+        class spell_gen_curse_of_pain_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_curse_of_pain_AuraScript);
+
+            void HandlePeriodic(AuraEffect const* /*aurEff*/)
+            {
+                if (Unit* target = GetTarget(); target && target->GetHealthPct() < 50.f)
+                    target->RemoveAurasDueToSpell(GetSpellInfo()->Id);
+            }
+
+            void Register()
+            {
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_gen_curse_of_pain_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_curse_of_pain_AuraScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5497,6 +5524,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_rock_shell();
     new spell_gen_creature_feign_death();
     new spell_gen_shriveling_gaze();
+    new spell_gen_curse_of_pain();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();
