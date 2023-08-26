@@ -469,6 +469,29 @@ public:
     }
 };
 
+class npc_controller : public CreatureScript
+{
+public:
+    npc_controller() : CreatureScript("npc_controller") { }
+
+    struct npc_controllerAI : public PossessedAI
+    {
+        npc_controllerAI(Creature* creature) : PossessedAI(creature) { }
+
+        void OnCharmed(bool apply)
+        {
+            if (!apply)
+                if (Unit* u = me->GetCharmerOrOwner())
+                    u->InterruptNonMeleeSpells(false);
+        }
+    };
+
+    CreatureAI *GetAI(Creature* creature) const
+    {
+        return new npc_controllerAI(creature);
+    }
+};
+
 
 // Theirs
 /*########
@@ -1789,7 +1812,11 @@ public:
                 me->SetReactState(REACT_PASSIVE);
             }
             else
+            {
+                if (Unit* u = me->GetCharmerOrOwner())
+                    u->InterruptNonMeleeSpells(false);
                 me->SetReactState(REACT_AGGRESSIVE);
+            }
         }
     };
 
@@ -2585,6 +2612,7 @@ void AddSC_npcs_special()
     new npc_target_dummy();
     new npc_training_dummy();
     new npc_frostbite_invisible_stalker();
+    new npc_controller();
 
     // Theirs
     new npc_air_force_bots();
