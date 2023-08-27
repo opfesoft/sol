@@ -4619,6 +4619,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 39095:
             spellInfo->MaxAffectedTargets = 1;
             break;
+        case 30567: // Torment of the Worgen
+            spellInfo->procChance = 3;
+            break;
 
         // Magisters' Terrace
         // Energy Feedback
