@@ -3622,6 +3622,10 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
             spellInfo->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
             break;
+        case 6940: // Hand of Sacrifice
+        case 64205: // Divine Sacrifice
+            spellInfo->AttributesEx7 |= SPELL_ATTR7_NO_PUSHBACK_ON_DAMAGE;
+            break;
 
 
         /////////////////////////////////
