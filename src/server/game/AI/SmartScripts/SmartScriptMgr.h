@@ -627,7 +627,7 @@ enum SMART_ACTION
     SMART_ACTION_CALL_EVENT_SCRIPT                  = 236,    // event script id (see event_scripts)
     SMART_ACTION_CREATURE_FORMATION                 = 237,    // groupAI (see table "creature_formations"), leave formation (0/1), z (dist), o (angle)
     SMART_ACTION_LOAD_WP_PATH                       = 238,    // path id (see table "waypoint_data"), unload path (0/1)
-    SMART_ACTION_STOP_WP_PATH                       = 239,    // duration in ms, resetLastPlayerInteraction (0/1)
+    SMART_ACTION_STOP_WP_PATH                       = 239,    // duration in ms, resetLastPlayerInteraction (0/1/2)
     SMART_ACTION_SET_OWNER_DEATH_DESPAWN            = 240,    // disable (0/1), summonType, duration in ms
     SMART_ACTION_SET_KILL_DELAY                     = 241,    // kill delay in ms
     SMART_ACTION_SCALE                              = 242,    // percent
