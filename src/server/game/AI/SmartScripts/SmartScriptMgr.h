@@ -178,8 +178,9 @@ enum SMART_EVENT
     SMART_EVENT_SPELL_START              = 235,     // SpellID, School, CooldownMin, CooldownMax
     SMART_EVENT_CHANNEL_FINISHED         = 236,     // SpellID, School, CooldownMin, CooldownMax
     SMART_EVENT_FLEE_FINISHED            = 237,
+    SMART_EVENT_CHANNEL_FINISHED_TARGET  = 238,     // SpellID, School, CooldownMin, CooldownMax
 
-    SMART_EVENT_RANGE2_END               = 238      // placeholder
+    SMART_EVENT_RANGE2_END               = 239      // placeholder
 };
 
 struct SmartEvent
@@ -1672,7 +1673,8 @@ const std::unordered_map<uint32, uint32> SmartAIEventMask =
     {SMART_EVENT_SPELL_FAILED,              SMART_SCRIPT_TYPE_MASK_CREATURE },
     {SMART_EVENT_SPELL_START,               SMART_SCRIPT_TYPE_MASK_CREATURE },
     {SMART_EVENT_CHANNEL_FINISHED,          SMART_SCRIPT_TYPE_MASK_CREATURE },
-    {SMART_EVENT_FLEE_FINISHED,             SMART_SCRIPT_TYPE_MASK_CREATURE }
+    {SMART_EVENT_FLEE_FINISHED,             SMART_SCRIPT_TYPE_MASK_CREATURE },
+    {SMART_EVENT_CHANNEL_FINISHED_TARGET,   SMART_SCRIPT_TYPE_MASK_CREATURE }
 };
 
 enum SmartEventFlags

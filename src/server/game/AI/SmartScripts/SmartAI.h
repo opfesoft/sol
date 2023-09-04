@@ -109,6 +109,7 @@ class SmartAI : public CreatureAI
 
         // Called when a channeled spell finishes
         void ChannelFinished(SpellInfo const* spellInfo);
+        void ChannelFinishedTarget(Unit* caster, SpellInfo const* spellInfo);
 
         // Called at any Damage from any attacker (before damage apply)
         void DamageTaken(Unit* done_by, uint32 &damage, DamageEffectType damagetype, SpellSchoolMask damageSchoolMask);

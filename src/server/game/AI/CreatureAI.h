@@ -122,6 +122,7 @@ class CreatureAI : public UnitAI
 
         // Called when a channeled spell finishes
         virtual void ChannelFinished(SpellInfo const* /*spell*/) {}
+        virtual void ChannelFinishedTarget(Unit* /*caster*/, SpellInfo const* /*spell*/) {}
 
         // Called when the creature is target of hostile action: swing, hostile spell landed, fear/etc)
         virtual void AttackedBy(Unit* /*attacker*/) {}

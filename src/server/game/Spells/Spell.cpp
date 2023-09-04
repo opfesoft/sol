@@ -4150,6 +4150,10 @@ void Spell::update(uint32 difftime)
                 if (m_originalCaster)
                     if (Creature* caster = m_originalCaster->ToCreature(); caster && caster->IsAIEnabled)
                         caster->AI()->ChannelFinished(m_spellInfo);
+
+                if (Unit* u = m_targets.GetUnitTarget())
+                    if (Creature* target = u->ToCreature(); target && target->IsAIEnabled)
+                        target->AI()->ChannelFinishedTarget(m_caster, m_spellInfo);
             }
             // Xinef: Dont update channeled target list on last tick, allow auras to update duration properly
             // Xinef: Added this strange check because of diffrent update routines for players / creatures

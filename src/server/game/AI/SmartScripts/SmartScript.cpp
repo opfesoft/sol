@@ -4386,6 +4386,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
     case SMART_EVENT_SPELL_FAILED:
     case SMART_EVENT_SPELL_START:
     case SMART_EVENT_CHANNEL_FINISHED:
+    case SMART_EVENT_CHANNEL_FINISHED_TARGET:
     {
         if (!spell)
             return;

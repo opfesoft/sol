@@ -895,6 +895,11 @@ void SmartAI::ChannelFinished(SpellInfo const* spellInfo)
     GetScript()->ProcessEventsFor(SMART_EVENT_CHANNEL_FINISHED, NULL, 0, 0, false, spellInfo);
 }
 
+void SmartAI::ChannelFinishedTarget(Unit* caster, SpellInfo const* spellInfo)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_CHANNEL_FINISHED_TARGET, caster, 0, 0, false, spellInfo);
+}
+
 void SmartAI::DamageTaken(Unit* doneBy, uint32& damage, DamageEffectType damagetype, SpellSchoolMask /*damageSchoolMask*/)
 {
     if (doneBy)
