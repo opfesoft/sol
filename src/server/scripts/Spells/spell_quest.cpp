@@ -1043,6 +1043,43 @@ class spell_q12573_frenzyhearts_fury : public SpellScriptLoader
         }
 };
 
+class spell_summon_caster_back_z_offset : public SpellScriptLoader
+{
+    public:
+        spell_summon_caster_back_z_offset(char const* name, float z_offset) : SpellScriptLoader(name), _z_offset(z_offset) { }
+
+        class spell_summon_caster_back_z_offset_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_summon_caster_back_z_offset_SpellScript);
+
+            public:
+                spell_summon_caster_back_z_offset_SpellScript(float z_offset) : SpellScript(), _z_offset(z_offset) { }
+
+                void SetDest(SpellDestination& dest)
+                {
+                    // Adjust effect summon position
+                    Position const offset = { 0.0f, 0.0f, _z_offset, 0.0f };
+                    dest.RelocateOffset(offset);
+                }
+
+                void Register()
+                {
+                    OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_summon_caster_back_z_offset_SpellScript::SetDest, EFFECT_0, TARGET_DEST_CASTER_BACK);
+                }
+
+            private:
+                float _z_offset;
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_summon_caster_back_z_offset_SpellScript(_z_offset);
+        }
+
+    private:
+        float _z_offset;
+};
+
 
 // Theirs
 class spell_generic_quest_update_entry_SpellScript : public SpellScript
@@ -2492,35 +2529,6 @@ class spell_q11010_q11102_q11023_q11008_check_fly_mount : public SpellScriptLoad
         }
 };
 
-// 55368 - Summon Stefan
-class spell_q12661_q12669_q12676_q12677_q12713_summon_stefan : public SpellScriptLoader
-{
-    public:
-        spell_q12661_q12669_q12676_q12677_q12713_summon_stefan() : SpellScriptLoader("spell_q12661_q12669_q12676_q12677_q12713_summon_stefan") { }
-
-        class spell_q12661_q12669_q12676_q12677_q12713_summon_stefan_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_q12661_q12669_q12676_q12677_q12713_summon_stefan_SpellScript);
-
-            void SetDest(SpellDestination& dest)
-            {
-                // Adjust effect summon position
-                Position const offset = { 0.0f, 0.0f, 20.0f, 0.0f };
-                dest.RelocateOffset(offset);
-            }
-
-            void Register()
-            {
-                OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_q12661_q12669_q12676_q12677_q12713_summon_stefan_SpellScript::SetDest, EFFECT_0, TARGET_DEST_CASTER_BACK);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_q12661_q12669_q12676_q12677_q12713_summon_stefan_SpellScript();
-        }
-};
-
 enum QuenchingMist
 {
     SPELL_FLICKERING_FLAMES = 53504
@@ -2604,35 +2612,6 @@ class spell_q13291_q13292_q13239_q13261_frostbrood_skytalon_grab_decoy : public 
         SpellScript* GetSpellScript() const
         {
             return new spell_q13291_q13292_q13239_q13261_frostbrood_skytalon_grab_decoy_SpellScript();
-        }
-};
-
-// 59303 - Summon Frost Wyrm
-class spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon : public SpellScriptLoader
-{
-    public:
-        spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon() : SpellScriptLoader("spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon") { }
-
-        class spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon_SpellScript);
-
-            void SetDest(SpellDestination& dest)
-            {
-                // Adjust effect summon position
-                Position const offset = { 0.0f, 0.0f, 20.0f, 0.0f };
-                dest.RelocateOffset(offset);
-            }
-
-            void Register()
-            {
-                OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon_SpellScript::SetDest, EFFECT_0, TARGET_DEST_CASTER_BACK);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon_SpellScript();
         }
 };
 
@@ -3115,6 +3094,7 @@ void AddSC_quest_spell_scripts()
     new spell_q10985_light_of_the_naaru();
     new spell_q9718_crow_transform();
     new spell_q12573_frenzyhearts_fury();
+    new spell_summon_caster_back_z_offset("spell_summon_caster_back_z_offset_20", 20.f);
 
     // Theirs
     new spell_q55_sacred_cleansing();
@@ -3149,10 +3129,8 @@ void AddSC_quest_spell_scripts()
     new spell_q11010_q11102_q11023_aggro_burst();
     new spell_q11010_q11102_q11023_choose_loc();
     new spell_q11010_q11102_q11023_q11008_check_fly_mount();
-    new spell_q12661_q12669_q12676_q12677_q12713_summon_stefan();
     new spell_q12730_quenching_mist();
     new spell_q13291_q13292_q13239_q13261_frostbrood_skytalon_grab_decoy();
-    new spell_q13291_q13292_q13239_q13261_armored_decoy_summon_skytalon();
     new spell_q13011_bear_flank_master();
     new spell_q12690_burst_at_the_seams();
     new spell_q12308_escape_from_silverbrook_summon_worgen();
