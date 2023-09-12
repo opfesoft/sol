@@ -15,6 +15,8 @@
 #include "SpellInfo.h"
 #include "Vehicle.h"
 #include "SpellAuras.h"
+#include "SpellScript.h"
+#include "SpellAuraEffects.h"
 
 // Ours
 enum AlchemistItemRequirements
@@ -314,6 +316,7 @@ enum overlordDrakuru
     SPELL_THROW_BRIGHT_CRYSTAL          = 54087,
     SPELL_TELEPORT_EFFECT               = 52096,
     SPELL_SCOURGE_DISGUISE              = 51966,
+    SPELL_SCOURGE_DISGUISE_INSTABILITY  = 51971,
     SPELL_BLIGHT_FOG                    = 54104,
     SPELL_THROW_PORTAL_CRYSTAL          = 54209,
     SPELL_ARTHAS_PORTAL                 = 51807,
@@ -322,6 +325,8 @@ enum overlordDrakuru
     SPELL_SUMMON_SKULL                  = 54253,
 
     QUEST_BETRAYAL                      = 12713,
+
+    TEXT_DISGUISE_WARNING               = 28891,
 
     NPC_BLIGHTBLOOD_TROLL               = 28931,
     NPC_LICH_KING                       = 28498,
@@ -744,6 +749,113 @@ public:
     }
 };
 
+class spell_scourge_disguise : public SpellScriptLoader
+{
+public:
+    spell_scourge_disguise() : SpellScriptLoader("spell_scourge_disguise") { }
+
+    class spell_scourge_disguise_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_scourge_disguise_AuraScript)
+
+        void ApplyEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            Unit* target = GetTarget();
+            target->CastSpell(target, SPELL_SCOURGE_DISGUISE_INSTABILITY, true);
+        }
+
+        void RemoveEffect(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            Unit* target = GetTarget();
+            target->RemoveAura(SPELL_SCOURGE_DISGUISE_INSTABILITY);
+        }
+
+        void Register() override
+        {
+            OnEffectRemove += AuraEffectRemoveFn(spell_scourge_disguise_AuraScript::RemoveEffect, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+            OnEffectApply += AuraEffectApplyFn(spell_scourge_disguise_AuraScript::ApplyEffect, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_scourge_disguise_AuraScript();
+    };
+};
+
+class spell_scourge_disguise_instability : public SpellScriptLoader
+{
+public:
+    spell_scourge_disguise_instability() : SpellScriptLoader("spell_scourge_disguise_instability") { }
+
+    class spell_scourge_disguise_instability_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_scourge_disguise_instability_AuraScript)
+
+        void CalcPeriodic(AuraEffect const* /*effect*/, bool& isPeriodic, int32& amplitude)
+        {
+            isPeriodic = true;
+            amplitude = irand(30, 240) * IN_MILLISECONDS;
+        }
+
+        void HandleDummyTick(AuraEffect const* /*aurEff*/)
+        {
+            GetTarget()->CastSpell(GetTarget(), SPELL_SCOURGE_DISGUISE_EXPIRING, true);
+        }
+
+        void HandleUpdatePeriodic(AuraEffect* aurEff)
+        {
+            aurEff->CalculatePeriodic(GetCaster());
+        }
+
+        void Register() override
+        {
+            DoEffectCalcPeriodic += AuraEffectCalcPeriodicFn(spell_scourge_disguise_instability_AuraScript::CalcPeriodic, EFFECT_0, SPELL_AURA_DUMMY);
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_scourge_disguise_instability_AuraScript::HandleDummyTick, EFFECT_0, SPELL_AURA_DUMMY);
+            OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_scourge_disguise_instability_AuraScript::HandleUpdatePeriodic, EFFECT_0, SPELL_AURA_DUMMY);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_scourge_disguise_instability_AuraScript();
+    };
+};
+
+class spell_scourge_disguise_expiring : public SpellScriptLoader
+{
+public:
+    spell_scourge_disguise_expiring() : SpellScriptLoader("spell_scourge_disguise_expiring") { }
+
+    class spell_scourge_disguise_expiring_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_scourge_disguise_expiring_AuraScript)
+
+        void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Player* player = GetTarget()->ToPlayer())
+                if (player->HasAura(SPELL_SCOURGE_DISGUISE))
+                    player->MonsterWhisper(TEXT_DISGUISE_WARNING, player, true);
+        }
+
+        void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            GetTarget()->RemoveAurasDueToSpell(SPELL_SCOURGE_DISGUISE);
+        }
+
+        void Register() override
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_scourge_disguise_expiring_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            AfterEffectRemove += AuraEffectRemoveFn(spell_scourge_disguise_expiring_AuraScript::AfterRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_scourge_disguise_expiring_AuraScript();
+    };
+};
+
 
 // Theirs
 /*####
@@ -953,6 +1065,9 @@ void AddSC_zuldrak()
     new npc_overlord_drakuru_betrayal();
     new npc_drakuru_shackles();
     new npc_captured_rageclaw();
+    new spell_scourge_disguise();
+    new spell_scourge_disguise_instability();
+    new spell_scourge_disguise_expiring();
 
     // Theirs
     new npc_released_offspring_harkoa();
