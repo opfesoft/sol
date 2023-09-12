@@ -2679,8 +2679,6 @@ enum BurstAtTheSeams
     QUEST_BURST_AT_THE_SEAMS                = 12690,
 
     SPELL_BURST_AT_THE_SEAMS                = 52510, // Burst at the Seams
-    SPELL_BURST_AT_THE_SEAMS_DMG            = 52508, // Damage spell
-    SPELL_BURST_AT_THE_SEAMS_DMG_2          = 59580, // Abomination self damage spell
     SPELL_BURST_AT_THE_SEAMS_BONE           = 52516, // Burst at the Seams:Bone
     SPELL_BURST_AT_THE_SEAMS_MEAT           = 52520, // Explode Abomination:Meat
     SPELL_BURST_AT_THE_SEAMS_BMEAT          = 52523, // Explode Abomination:Bloody Meat
@@ -2701,8 +2699,6 @@ class spell_q12690_burst_at_the_seams : public SpellScriptLoader
             bool Validate(SpellInfo const* /*spellInfo*/)
             {
                 if (!sSpellMgr->GetSpellInfo(SPELL_BURST_AT_THE_SEAMS)
-                    || !sSpellMgr->GetSpellInfo(SPELL_BURST_AT_THE_SEAMS_DMG)
-                    || !sSpellMgr->GetSpellInfo(SPELL_BURST_AT_THE_SEAMS_DMG_2)
                     || !sSpellMgr->GetSpellInfo(SPELL_BURST_AT_THE_SEAMS_BONE)
                     || !sSpellMgr->GetSpellInfo(SPELL_BURST_AT_THE_SEAMS_MEAT)
                     || !sSpellMgr->GetSpellInfo(SPELL_BURST_AT_THE_SEAMS_BMEAT))
@@ -2717,7 +2713,7 @@ class spell_q12690_burst_at_the_seams : public SpellScriptLoader
 
             void HandleKnockBack(SpellEffIndex /*effIndex*/)
             {
-                if (Unit* creature = GetHitCreature())
+                if (Creature* creature = GetHitCreature())
                 {
                     if (Unit* charmer = GetCaster()->GetCharmerOrOwner())
                     {
@@ -2725,11 +2721,12 @@ class spell_q12690_burst_at_the_seams : public SpellScriptLoader
                         {
                             if (player->GetQuestStatus(QUEST_BURST_AT_THE_SEAMS) == QUEST_STATUS_INCOMPLETE)
                             {
+                                creature->SetKillDelay(200);
+                                creature->SetCorpseDelay(0);
                                 creature->CastSpell(creature, SPELL_BURST_AT_THE_SEAMS_BONE, true);
                                 creature->CastSpell(creature, SPELL_BURST_AT_THE_SEAMS_MEAT, true);
                                 creature->CastSpell(creature, SPELL_BURST_AT_THE_SEAMS_BMEAT, true);
-                                creature->CastSpell(creature, SPELL_BURST_AT_THE_SEAMS_DMG, true);
-                                creature->CastSpell(creature, SPELL_BURST_AT_THE_SEAMS_DMG_2, true);
+                                Unit::Kill(creature, creature);
 
                                 player->CastSpell(player, SPELL_DRAKKARI_SKULLCRUSHER_CREDIT, true);
                                 uint16 count = player->GetReqKillOrCastCurrentCount(QUEST_BURST_AT_THE_SEAMS, NPC_DRAKKARI_CHIEFTAINK);
@@ -2743,7 +2740,12 @@ class spell_q12690_burst_at_the_seams : public SpellScriptLoader
 
             void HandleScript(SpellEffIndex /*effIndex*/)
             {
-                GetCaster()->ToCreature()->DespawnOrUnsummon(2 * IN_MILLISECONDS);
+                if (Creature* creature = GetCaster()->ToCreature())
+                {
+                    creature->SetKillDelay(200);
+                    creature->SetCorpseDelay(0);
+                    Unit::Kill(creature, creature);
+                }
             }
 
             void Register()
