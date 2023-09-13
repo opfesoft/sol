@@ -2545,7 +2545,7 @@ void WorldObject::GetNearPoint2D(float &x, float &y, float distance2d, float abs
     acore::NormalizeMapCoord(y);
 }
 
-void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, float &z, float searcher_size, float distance2d, float absAngle, float controlZ) const
+void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, float &z, float searcher_size, float distance2d, float absAngle, float controlZ /*= 0*/) const
 { 
     GetNearPoint2D(x, y, distance2d+searcher_size, absAngle);
     z = GetPositionZ();
@@ -2572,7 +2572,11 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, 
     {
         GetNearPoint2D(x, y, distance2d + searcher_size, absAngle + angle);
         z = GetPositionZ();
-        UpdateAllowedPositionZ(x, y, z);
+        if (searcher)
+            searcher->UpdateAllowedPositionZ(x, y, z);
+        else
+            UpdateAllowedPositionZ(x, y, z);
+
         if (controlZ && fabsf(GetPositionZ() - z) > controlZ)
             continue;
 

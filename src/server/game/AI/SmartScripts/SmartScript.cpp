@@ -1612,9 +1612,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     summoner->UpdateGroundPositionZ(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
 
                 if (e.action.summonCreature.randomMaxDist)
-                    summoner->MovePositionToFirstCollisionForTotem(pos, // this function is intended for totems, but works quite well here
-                        ((e.action.summonCreature.randomMaxDist - e.action.summonCreature.randomMinDist) * (float)rand_norm()) + e.action.summonCreature.randomMinDist,
-                        (float)rand_norm() * static_cast<float>(2 * M_PI), false);
+                    summoner->MovePosition(pos, ((e.action.summonCreature.randomMaxDist - e.action.summonCreature.randomMinDist) * (float)rand_norm()) + e.action.summonCreature.randomMinDist,
+                        (float)rand_norm() * static_cast<float>(2 * M_PI));
 
                 if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature,
                     pos.m_positionX, pos.m_positionY, pos.m_positionZ, pos.m_orientation, (TempSummonType)e.action.summonCreature.type, e.action.summonCreature.duration))
