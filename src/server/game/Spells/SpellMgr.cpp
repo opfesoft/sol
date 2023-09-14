@@ -3507,6 +3507,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 30504: // Poultryized! (Gnomish Poultryizer)
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_TAKE_DAMAGE;
             break;
+        case 51966: // Scourge Disguise
+            spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_SPELL_ATTACK;
+            break;
 
 
         /////////////////////////////////////////////

@@ -3476,7 +3476,12 @@ SpellCastResult Spell::prepare(SpellCastTargets const* targets, AuraEffect const
         if (!(_triggeredCastFlags & TRIGGERED_IGNORE_AURA_INTERRUPT_FLAGS) && m_spellInfo->IsBreakingStealth())
         {
             m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_CAST);
-            m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_SPELL_ATTACK);
+            for (uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+                if (m_spellInfo->Effects[i].GetUsedTargetObjectType() == TARGET_OBJECT_TYPE_UNIT)
+                {
+                    m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_SPELL_ATTACK);
+                    break;
+                }
         }
 
         m_caster->SetCurrentCastedSpell(this);
