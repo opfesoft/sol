@@ -1010,11 +1010,9 @@ public:
 
 enum StormCloud
 {
-    STORM_COULD         = 29939,
     HEALING_WINDS       = 55549,
     STORM_VISUAL        = 55708,
     GYMERS_GRAB         = 55516,
-    RIDE_VEHICLE        = 43671
 };
 
 class npc_storm_cloud : public CreatureScript
@@ -1028,6 +1026,7 @@ public:
 
         void Reset()
         {
+            me->SetCorpseDelay(1);
             me->CastSpell(me, STORM_VISUAL, true);
         }
 
@@ -1041,12 +1040,7 @@ public:
             if (spell->Id != GYMERS_GRAB)
                 return;
 
-            if (Vehicle* veh = caster->GetVehicleKit())
-                if (veh->GetAvailableSeatCount() != 0)
-            {
-                me->CastSpell(caster, RIDE_VEHICLE, true);
-                me->CastSpell(caster, HEALING_WINDS, true);
-            }
+            me->CastSpell(caster, HEALING_WINDS, true);
         }
     };
 

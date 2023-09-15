@@ -3510,6 +3510,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 51966: // Scourge Disguise
             spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_SPELL_ATTACK;
             break;
+        case 55430: // Gymer's Buddy
+            spellInfo->AuraInterruptFlags |= AURA_INTERRUPT_FLAG_CHANGE_MAP;
+            break;
 
 
         /////////////////////////////////////////////

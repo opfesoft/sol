@@ -2984,10 +2984,11 @@ class spell_q12919_gymers_grab : public SpellScriptLoader
             void HandleScript(SpellEffIndex /*effIndex*/)
             {
                 int8 seatId = 2;
-                if (!GetHitCreature())
-                    return;
-                GetHitCreature()->CastCustomSpell(SPELL_RIDE_GYMER, SPELLVALUE_BASE_POINT0, seatId, GetCaster(), true);
-                GetHitCreature()->CastSpell(GetHitCreature(), SPELL_GRABBED, true);
+                if (Creature* c = GetHitCreature())
+                {
+                    c->CastCustomSpell(SPELL_RIDE_GYMER, SPELLVALUE_BASE_POINT0, seatId, GetCaster(), true);
+                    c->CastSpell(c, SPELL_GRABBED, true);
+                }
             }
 
             void Register()
@@ -3018,13 +3019,16 @@ class spell_q12919_gymers_throw : public SpellScriptLoader
 
             void HandleScript(SpellEffIndex /*effIndex*/)
             {
-                Unit* caster = GetCaster();
-                if (caster->IsVehicle())
-                    if (Unit* passenger = caster->GetVehicleKit()->GetPassenger(1))
-                    {
-                         passenger->ExitVehicle();
-                         caster->CastSpell(passenger, SPELL_VARGUL_EXPLOSION, true);
-                    }
+                if (Unit* caster = GetCaster(); caster && caster->IsVehicle())
+                    if (Unit* u = caster->GetVehicleKit()->GetPassenger(1))
+                        if (Creature* passenger = u->ToCreature())
+                        {
+                            passenger->SetHomePosition(caster->GetPositionX(), caster->GetPositionY(), caster->GetPositionZ(), caster->GetOrientation());
+                            passenger->SetKillDelay(1500);
+                            passenger->ExitVehicle();
+                            caster->CastSpell(passenger, SPELL_VARGUL_EXPLOSION, true);
+                            Unit::Kill(caster, passenger);
+                        }
             }
 
             void Register()
@@ -3036,6 +3040,62 @@ class spell_q12919_gymers_throw : public SpellScriptLoader
         SpellScript* GetSpellScript() const
         {
             return new spell_q12919_gymers_throw_SpellScript();
+        }
+};
+
+class spell_q12919_gymers_smash : public SpellScriptLoader
+{
+    public:
+        spell_q12919_gymers_smash() : SpellScriptLoader("spell_q12919_gymers_smash") { }
+
+        class spell_q12919_gymers_smash_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_q12919_gymers_smash_SpellScript);
+
+            void FilterTargets(std::list<WorldObject*>& targets)
+            {
+                if (Unit* caster = GetCaster(); caster && caster->IsVehicle())
+                    if (Unit* passenger = caster->GetVehicleKit()->GetPassenger(1))
+                        targets.remove(passenger);
+            }
+
+            void Register()
+            {
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_q12919_gymers_smash_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENEMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_q12919_gymers_smash_SpellScript();
+        }
+};
+
+class spell_q12919_ghoul_crush : public SpellScriptLoader
+{
+    public:
+        spell_q12919_ghoul_crush() : SpellScriptLoader("spell_q12919_ghoul_crush") { }
+
+        class spell_q12919_ghoul_crush_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_q12919_ghoul_crush_SpellScript);
+
+            void FilterTargets(std::list<WorldObject*>& targets)
+            {
+                if (Unit* caster = GetCaster(); caster && caster->IsVehicle())
+                    if (Unit* passenger = caster->GetVehicleKit()->GetPassenger(1))
+                        targets.remove(passenger);
+            }
+
+            void Register()
+            {
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_q12919_ghoul_crush_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENTRY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_q12919_ghoul_crush_SpellScript();
         }
 };
 
@@ -3142,4 +3202,6 @@ void AddSC_quest_spell_scripts()
     new spell_q12619_emblazon_runeblade_effect();
     new spell_q12919_gymers_grab();
     new spell_q12919_gymers_throw();
+    new spell_q12919_gymers_smash();
+    new spell_q12919_ghoul_crush();
 }
