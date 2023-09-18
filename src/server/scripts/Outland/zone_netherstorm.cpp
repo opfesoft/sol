@@ -665,6 +665,7 @@ public:
 
         bool Weak;
         bool Materialize;
+        bool Drain;
         bool Drained;
         uint8 WeakPercent;
 
@@ -676,6 +677,7 @@ public:
         {
             Weak = false;
             Materialize = false;
+            Drain = false;
             Drained = false;
             WeakPercent = 25 + (rand() % 16); // 25-40
 
@@ -737,22 +739,34 @@ public:
 
             if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID)) // start: support for quest 10190
             {
-                if (!Weak && HealthBelowPct(WeakPercent)
-                    && player->GetQuestStatus(QUEST_RECHARGING_THE_BATTERIES) == QUEST_STATUS_INCOMPLETE)
+                if (!Weak)
                 {
-                    Talk(EMOTE_WEAK);
-                    Weak = true;
+                    if (HealthBelowPct(WeakPercent) && player->GetQuestStatus(QUEST_RECHARGING_THE_BATTERIES) == QUEST_STATUS_INCOMPLETE)
+                    {
+                        Weak = true;
+                        Talk(EMOTE_WEAK);
+                    }
                 }
-                if (Weak && !Drained && me->HasAura(SPELL_RECHARGING_BATTERY))
+                else if (!Drain)
                 {
-                    Drained = true;
-                    int32 uHpPct = int32(me->GetHealthPct());
+                    if (!Drained && me->HasAura(SPELL_RECHARGING_BATTERY))
+                        Drain = true;
+                }
+                else if (!Drained)
+                {
+                    if (!me->HasAura(SPELL_RECHARGING_BATTERY))
+                    {
+                        Drained = true;
+                        int32 uHpPct = int32(me->GetHealthPct());
 
-                    me->UpdateEntry(NPC_DRAINED_PHASE_HUNTER_ENTRY);
-
-                    me->SetHealth(me->CountPctFromMaxHealth(uHpPct));
-                    me->LowerPlayerDamageReq(me->GetMaxHealth() - me->GetHealth());
-                    me->SetInCombatWith(player);
+                        if (uHpPct > 0)
+                        {
+                            me->UpdateEntry(NPC_DRAINED_PHASE_HUNTER_ENTRY);
+                            me->SetHealth(me->CountPctFromMaxHealth(uHpPct));
+                            me->LowerPlayerDamageReq(me->GetMaxHealth() - me->GetHealth());
+                            me->SetInCombatWith(player);
+                        }
+                    }
                 }
             } // end: support for quest 10190
 
