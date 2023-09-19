@@ -358,7 +358,7 @@ public:
 
         void SpellHit(Unit* /*caster*/, const SpellInfo* Spell)
         {
-            if ((Spell->SchoolMask == SPELL_SCHOOL_MASK_FIRE) && (!(rand()%10)))
+            if ((Spell->SchoolMask == SPELL_SCHOOL_MASK_FIRE) && roll_chance_i(10))
             {
                 /*
                     if (not direct damage(aoe, dot))
