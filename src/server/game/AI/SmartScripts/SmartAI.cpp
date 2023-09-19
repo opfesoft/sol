@@ -248,7 +248,9 @@ void SmartAI::PausePath(uint32 delay, bool forced, bool onlyOOC)
 
     if (HasEscortState(SMART_ESCORT_PAUSED))
     {
-        sLog->outError("SmartAI::StartPath: Creature entry %u wanted to pause waypoint movement while already paused, ignoring.", me->GetEntry());
+        // already paused, just update the timer
+        mWPPauseTimer = delay;
+        mWPPauseOnlyOOC = onlyOOC;
         return;
     }
 
