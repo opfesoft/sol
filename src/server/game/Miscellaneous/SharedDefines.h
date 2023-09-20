@@ -457,7 +457,7 @@ enum SpellAttr5
     SPELL_ATTR5_USABLE_WHILE_STUNNED             = 0x00000008, //  3 usable while stunned
     SPELL_ATTR5_UNK4                             = 0x00000010, //  4
     SPELL_ATTR5_SINGLE_TARGET_SPELL              = 0x00000020, //  5 Only one target can be apply at a time
-    SPELL_ATTR5_UNK6                             = 0x00000040, //  6
+    SPELL_ATTR5_IGNORE_AREA_EFFECT_PVP_CHECK     = 0x00000040, //  6
     SPELL_ATTR5_UNK7                             = 0x00000080, //  7
     SPELL_ATTR5_UNK8                             = 0x00000100, //  8
     SPELL_ATTR5_START_PERIODIC_AT_APPLY          = 0x00000200, //  9 begin periodic tick at aura apply
