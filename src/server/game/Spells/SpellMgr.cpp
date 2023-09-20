@@ -3896,6 +3896,8 @@ void SpellMgr::LoadDbcDataCorrections()
         // Death Grip, should fix taunt on bosses and not break the pull protection at the same time (no aura provides immunity to grip mechanic)
         case 49576:
         case 49560:
+            spellInfo->Mechanic = 0;
+            break;
         // Death Grip Jump Dest
         case 57604:
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;

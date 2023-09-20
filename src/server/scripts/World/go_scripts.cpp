@@ -68,25 +68,6 @@ public:
     }
 };
 
-class go_mistwhisper_treasure : public GameObjectScript
-{
-public:
-    go_mistwhisper_treasure() : GameObjectScript("go_mistwhisper_treasure") { }
-
-    bool OnGossipHello(Player* pPlayer, GameObject *go) override
-    {
-        if (!go->FindNearestCreature(28105, 30.0f)) // Tartek
-        {
-            if (Creature *cr = go->SummonCreature(28105, 6708.7f, 5115.45f, -18.3f, 0.7f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
-            {
-                cr->MonsterYell("My treasure! You no steal from Tartek, dumb big-tongue traitor thing. Tartek and nasty dragon going to kill you! You so dumb.", LANG_UNIVERSAL, 0);
-                cr->AI()->AttackStart(pPlayer);
-            }
-        }
-        return false;
-    }
-};
-
 class go_witherbark_totem_bundle : public GameObjectScript
 {
     public:
@@ -1146,7 +1127,6 @@ void AddSC_go_scripts()
     // Ours
     new go_noblegarden_colored_egg();
     new go_seer_of_zebhalak();
-    new go_mistwhisper_treasure();
     new go_witherbark_totem_bundle();
     new go_arena_ready_marker();
     new go_ethereum_prison();
