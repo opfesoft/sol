@@ -1142,20 +1142,20 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
 
             }
             case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_RAID:
-                {
-                    // AchievementMgr::UpdateAchievementCriteria might also be called on login - skip in this case
-                    if (!miscValue1)
-                        continue;
+            {
+                // AchievementMgr::UpdateAchievementCriteria might also be called on login - skip in this case
+                if (!miscValue1)
+                    continue;
 
-                    Map const* map = GetPlayer()->IsInWorld() ? GetPlayer()->GetMap() : sMapMgr->FindMap(GetPlayer()->GetMapId(), GetPlayer()->GetInstanceId());
-                    if (!map || !map->IsDungeon())
-                        continue;
+                Map const* map = GetPlayer()->IsInWorld() ? GetPlayer()->GetMap() : sMapMgr->FindMap(GetPlayer()->GetMapId(), GetPlayer()->GetInstanceId());
+                if (!map || !map->IsDungeon())
+                    continue;
 
-                    if (map->ToInstanceMap()->GetMaxPlayers() != achievementCriteria->complete_raid.groupSize)
-                        continue;
-                    SetCriteriaProgress(achievementCriteria, 1, PROGRESS_ACCUMULATE);
-                    break;
-                }
+                if (map->ToInstanceMap()->GetMaxPlayers() != achievementCriteria->complete_raid.groupSize)
+                    continue;
+                SetCriteriaProgress(achievementCriteria, 1, PROGRESS_ACCUMULATE);
+                break;
+            }
             case ACHIEVEMENT_CRITERIA_TYPE_KILLED_BY_CREATURE:
                 // AchievementMgr::UpdateAchievementCriteria might also be called on login - skip in this case
                 if (!miscValue1)
