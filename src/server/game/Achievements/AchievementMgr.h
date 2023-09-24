@@ -371,6 +371,7 @@ class AchievementGlobalMgr
             return iter != m_criteriaDataMap.end() ? &iter->second : NULL;
         }
 
+        bool IsAverageCriteria(AchievementCriteriaEntry const* criteria) const;
         bool IsRealmCompleted(AchievementEntry const* achievement) const;
         void SetRealmCompleted(AchievementEntry const* achievement);
 

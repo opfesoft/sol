@@ -1207,11 +1207,14 @@ class Player : public Unit, public GridObject<Player>
         void SetCommandStatusOff(uint32 command) { _activeCheats &= ~command; }
 
         // Played Time Stuff
+        time_t m_creationTime;
         time_t m_logintime;
         time_t m_Last_tick;
         uint32 m_Played_time[MAX_PLAYED_TIME_INDEX];
         uint32 GetTotalPlayedTime() { return m_Played_time[PLAYED_TIME_TOTAL]; }
         uint32 GetLevelPlayedTime() { return m_Played_time[PLAYED_TIME_LEVEL]; }
+        time_t GetCreationTime() const { return m_creationTime; }
+        void SetCreationTime(time_t creationTime) { m_creationTime = creationTime; }
 
         void setDeathState(DeathState s, bool despawn = false) override;                   // overwrite Unit::setDeathState
 

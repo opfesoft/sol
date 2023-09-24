@@ -745,8 +745,13 @@ void AchievementMgr::SendCriteriaUpdate(AchievementCriteriaEntry const* entry, C
     else
         data << uint32(timedCompleted ? 0 : 1); // 1 is for keeping the counter at 0 in client
     data.AppendPackedTime(progress->date);
-    data << uint32(timeElapsed);    // time elapsed in seconds
-    data << uint32(0);              // unk
+    data << uint32(timeElapsed); // time elapsed in seconds
+
+    if (sAchievementMgr->IsAverageCriteria(entry))
+        data << uint32(sWorld->GetGameTime() - GetPlayer()->GetCreationTime()); // for average achievements
+    else
+        data << uint32(timeElapsed); // time elapsed in seconds
+
     GetPlayer()->SendDirectMessage(&data);
 }
 
@@ -2327,7 +2332,11 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket* data, bool inspect) const
             *data << uint32(0); // TODO: This should be 1 if it is a failed timed criteria
             data->AppendPackedTime(iter->second.date);
             *data << uint32(now - iter->second.date);
-            *data << uint32(now - iter->second.date);
+
+            if (sAchievementMgr->IsAverageCriteria(sAchievementCriteriaStore.LookupEntry(iter->first)))
+                *data << uint32(now - GetPlayer()->GetCreationTime()); // for average achievements
+            else
+                *data << uint32(now - iter->second.date);
         }
 
     *data << int32(-1);
@@ -2396,6 +2405,19 @@ bool AchievementGlobalMgr::isStatisticAchievement(AchievementEntry const* achiev
         else
             cat = sAchievementCategoryStore.LookupEntry(cat->parentCategory);
     } while (cat);
+
+    return false;
+}
+
+bool AchievementGlobalMgr::IsAverageCriteria(AchievementCriteriaEntry const* criteria) const
+{
+    if ((sAchievementStore.LookupEntry(criteria->referredAchievement))->flags & ACHIEVEMENT_FLAG_AVERAGE)
+        return true;
+
+    if (AchievementEntryList const* achRefList = GetAchievementByReferencedId(criteria->referredAchievement))
+        for (AchievementEntryList::const_iterator itr = achRefList->begin(); itr != achRefList->end(); ++itr)
+            if ((*itr)->flags & ACHIEVEMENT_FLAG_AVERAGE)
+                return true;
 
     return false;
 }
