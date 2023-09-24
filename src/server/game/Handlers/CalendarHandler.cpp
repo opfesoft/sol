@@ -243,6 +243,8 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket& recvData)
     if (!validUtf8String(recvData, title, "create", guid) || title.size() > 31 || !validUtf8String(recvData, description, "create", guid) || description.size() > 255)
         return;
 
+    eventPackedTime += timezone;
+
     // prevent events in the past
     // To Do: properly handle timezones and remove the "- time_t(86400L)" hack
     if (time_t(eventPackedTime) < (time(NULL) - time_t(86400L)))
@@ -376,6 +378,8 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket& recvData)
     if (!validUtf8String(recvData, title, "update", guid) || title.size() > 31 || !validUtf8String(recvData, description, "update", guid) || description.size() > 255)
         return;
 
+    eventPackedTime += timezone;
+
     // prevent events in the past
     // To Do: properly handle timezones and remove the "- time_t(86400L)" hack
     if (time_t(eventPackedTime) < (time(NULL) - time_t(86400L)))
@@ -432,6 +436,8 @@ void WorldSession::HandleCalendarCopyEvent(WorldPacket& recvData)
     recvData.ReadPackedTime(eventTime);
     sLog->outDebug(LOG_FILTER_NETWORKIO, "CMSG_CALENDAR_COPY_EVENT [" UI64FMTD "], EventId [" UI64FMTD
         "] inviteId [" UI64FMTD "] Time: %u", guid, eventId, inviteId, eventTime);
+
+    eventTime += timezone;
 
     // prevent events in the past
     // To Do: properly handle timezones and remove the "- time_t(86400L)" hack
