@@ -641,7 +641,8 @@ InstancePlayerBind* InstanceSaveManager::PlayerBindToInstance(uint32 guidLow, In
         stmt->setBool(2, permanent);
         CharacterDatabase.Execute(stmt);
 
-        player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_RAID, 1);
+        if (player)
+            player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_RAID, 1);
     }
 
     if (bind.save != save)
