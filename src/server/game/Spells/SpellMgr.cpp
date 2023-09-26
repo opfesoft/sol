@@ -4060,12 +4060,6 @@ void SpellMgr::LoadDbcDataCorrections()
         case 18662:
             spellInfo->DurationIndex = 6;
             break;
-        // Glyph of Voidwalker
-        case 56247:
-            spellInfo->EffectApplyAuraName[EFFECT_0] = SPELL_AURA_ADD_FLAT_MODIFIER;
-            spellInfo->EffectMiscValue[EFFECT_0] = SPELLMOD_EFFECT1;
-            spellInfo->EffectSpellClassMask[EFFECT_0] = flag96(0x8000000, 0, 0);
-            break;
         // Everlasting Affliction
         case 47201:
         case 47202:

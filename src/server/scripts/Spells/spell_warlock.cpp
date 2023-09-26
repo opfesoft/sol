@@ -1431,6 +1431,45 @@ class spell_warl_glyph_of_felguard : public SpellScriptLoader
         }
 };
 
+// 56247 - Glyph of Voidwalker
+class spell_warl_glyph_of_voidwalker : public SpellScriptLoader
+{
+    public:
+        spell_warl_glyph_of_voidwalker() : SpellScriptLoader("spell_warl_glyph_of_voidwalker") { }
+
+        class spell_warl_glyph_of_voidwalker_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_warl_glyph_of_voidwalker_AuraScript);
+
+            void HandleApply(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetCaster()->ToPlayer())
+                    if (Pet* pet = player->GetPet())
+                        if (pet->GetEntry() == NPC_VOIDWALKER)
+                            pet->HandleStatModifier(UNIT_MOD_STAT_STAMINA, TOTAL_PCT, aurEff->GetAmount(), true);
+            }
+
+            void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetCaster()->ToPlayer())
+                    if (Pet* pet = player->GetPet())
+                        if (pet->GetEntry() == NPC_VOIDWALKER)
+                            pet->HandleStatModifier(UNIT_MOD_STAT_STAMINA, TOTAL_PCT, aurEff->GetAmount(), false);
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_warl_glyph_of_voidwalker_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+                OnEffectRemove += AuraEffectRemoveFn(spell_warl_glyph_of_voidwalker_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_warl_glyph_of_voidwalker_AuraScript();
+        }
+};
+
 void AddSC_warlock_spell_scripts()
 {
     // Ours
@@ -1444,6 +1483,7 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_generic_scaling();
     new spell_warl_infernal_scaling();
     new spell_warl_glyph_of_felguard();
+    new spell_warl_glyph_of_voidwalker();
 
     // Theirs
     new spell_warl_banish();
