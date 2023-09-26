@@ -10508,12 +10508,12 @@ void Unit::EnergizeBySpell(Unit* victim, uint32 spellID, uint32 damage, Powers p
 {
     SendEnergizeSpellLog(victim, spellID, damage, powerType);
     // needs to be called after sending spell log
-    victim->ModifyPower(powerType, damage);
+    int32 gainedPower = victim->ModifyPower(powerType, damage);
 
-    if (powerType != POWER_HAPPINESS)
+    if (powerType != POWER_HAPPINESS && gainedPower)
     {
         SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellID);
-        victim->getHostileRefManager().threatAssist(this, float(damage) * 0.5f, spellInfo);
+        victim->getHostileRefManager().threatAssist(this, float(gainedPower) * 0.5f, spellInfo);
     }
 }
 
