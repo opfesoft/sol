@@ -1942,9 +1942,9 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         {
             if (!targets->empty())
             {
-                me->SetFacingToObject(*targets->begin());
+                me->SetFacingTo(me->GetAngle(*targets->begin()));
                 if (e.action.orientation.quickChange)
-                    me->SetInFront(*targets->begin());
+                    me->SetOrientation(me->GetAngle(*targets->begin()));
             }
 
             delete targets;
