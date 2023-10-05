@@ -202,7 +202,7 @@ void SmartAIMgr::LoadSmartAIFromDB()
         temp.event_id = fields[2].GetUInt16();
         temp.link = fields[3].GetUInt16();
         temp.event.type = (SMART_EVENT)fields[4].GetUInt8();
-        temp.event.event_phase_mask = fields[5].GetUInt16();
+        temp.event.event_phase_mask = fields[5].GetUInt32();
         temp.event.event_chance = fields[6].GetUInt8();
         temp.event.event_flags = fields[7].GetUInt16();
 
@@ -473,7 +473,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
     }
     if (e.event.event_phase_mask > SMART_EVENT_PHASE_ALL)
     {
-        sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has invalid phase mask  %u, skipped.", e.entryOrGuid, e.event_id, e.GetScriptType(), e.event.event_phase_mask);
+        sLog->outErrorDb("SmartAIMgr: entryorguid %d id %u source_type %u has invalid phase mask %u, skipped.", e.entryOrGuid, e.event_id, e.GetScriptType(), e.event.event_phase_mask);
         return false;
     }
     if (e.event.event_flags > SMART_EVENT_FLAGS_ALL)

@@ -247,7 +247,7 @@ class SmartScript
         void IncPhase(uint32 p)
         {
             // Xinef: protect phase from overflowing
-            mEventPhase = std::min<uint32>(SMART_EVENT_PHASE_12, mEventPhase + p);
+            mEventPhase = std::min<uint32>(SMART_EVENT_PHASE_MAX - 1, mEventPhase + p);
         }
 
         void DecPhase(uint32 p) 
