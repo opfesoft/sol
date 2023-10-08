@@ -3517,6 +3517,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 38985: // Focused Bursts
             spellInfo->Mechanic = 0;
             break;
+        case 27517: // Summon Thelrin DND (Banner of Provocation)
+            spellInfo->CastingTimeIndex = 0;
+            break;
 
 
         /////////////////////////////////////////////
