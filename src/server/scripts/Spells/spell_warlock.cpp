@@ -45,7 +45,8 @@ enum WarlockSpells
     SPELL_WARLOCK_LIFE_TAP_ENERGIZE_2               = 32553,
     SPELL_WARLOCK_SOULSHATTER                       = 32835,
     SPELL_WARLOCK_SIPHON_LIFE_HEAL                  = 63106,
-    SPELL_WARLOCK_UNSTABLE_AFFLICTION_DISPEL        = 31117
+    SPELL_WARLOCK_UNSTABLE_AFFLICTION_DISPEL        = 31117,
+    SPELL_WARLOCK_PET_VOID_STAR_TALISMAN            = 37386,
 };
 
 enum WarlockSpellIcons
@@ -350,6 +351,11 @@ class spell_warl_generic_scaling : public SpellScriptLoader
                     SpellSchoolMask schoolMask = SpellSchoolMask(aurEff->GetSpellInfo()->Effects[aurEff->GetEffIndex()].MiscValue);
                     int32 modifier = schoolMask == SPELL_SCHOOL_MASK_NORMAL ? 35 : 40;
                     amount = CalculatePct(std::max<int32>(0, owner->GetResistance(schoolMask)), modifier);
+                    if (owner->HasAura(SPELL_WARLOCK_PET_VOID_STAR_TALISMAN) && schoolMask != SPELL_SCHOOL_MASK_NORMAL)
+                    {
+                        if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_WARLOCK_PET_VOID_STAR_TALISMAN))
+                            amount += spellInfo->Effects[EFFECT_0].CalcValue();
+                    }
                 }
             }
 
@@ -467,6 +473,11 @@ class spell_warl_infernal_scaling : public SpellScriptLoader
                     SpellSchoolMask schoolMask = SpellSchoolMask(aurEff->GetSpellInfo()->Effects[aurEff->GetEffIndex()].MiscValue);
                     int32 modifier = schoolMask == SPELL_SCHOOL_MASK_NORMAL ? 35 : 40;
                     amount = CalculatePct(std::max<int32>(0, owner->GetResistance(schoolMask)), modifier);
+                    if (owner->HasAura(SPELL_WARLOCK_PET_VOID_STAR_TALISMAN) && schoolMask != SPELL_SCHOOL_MASK_NORMAL)
+                    {
+                        if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_WARLOCK_PET_VOID_STAR_TALISMAN))
+                            amount += spellInfo->Effects[EFFECT_0].CalcValue();
+                    }
                 }
             }
 
