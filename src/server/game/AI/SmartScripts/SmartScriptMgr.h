@@ -502,7 +502,7 @@ enum SMART_ACTION
     SMART_ACTION_CALL_RANDOM_TIMED_ACTIONLIST       = 87,     // script9 ids 1-9
     SMART_ACTION_CALL_RANDOM_RANGE_TIMED_ACTIONLIST = 88,     // script9 id min, max
     SMART_ACTION_RANDOM_MOVE                        = 89,     // maxDist, minMoveTime, maxMoveTime
-    SMART_ACTION_SET_UNIT_FIELD_BYTES_1             = 90,     // bytes, target
+    SMART_ACTION_SET_UNIT_FIELD_BYTES_1             = 90,     // bytes, target, setValue (0/1)
     SMART_ACTION_REMOVE_UNIT_FIELD_BYTES_1          = 91,     // bytes, target
     SMART_ACTION_INTERRUPT_SPELL                    = 92,
     SMART_ACTION_SEND_GO_CUSTOM_ANIM                = 93,     // anim id
@@ -988,6 +988,7 @@ struct SmartAction
         {
             uint32 byte1;
             uint32 type;
+            uint32 setValue;
         } setunitByte;
 
         struct

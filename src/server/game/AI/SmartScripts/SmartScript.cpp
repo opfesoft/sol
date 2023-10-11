@@ -2469,7 +2469,12 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             break;
         for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             if (IsUnit(*itr))
-                (*itr)->ToUnit()->SetByteFlag(UNIT_FIELD_BYTES_1, e.action.setunitByte.type, e.action.setunitByte.byte1);
+            {
+                if (e.action.setunitByte.setValue)
+                    (*itr)->ToUnit()->SetByteValue(UNIT_FIELD_BYTES_1, e.action.setunitByte.type, e.action.setunitByte.byte1);
+                else
+                    (*itr)->ToUnit()->SetByteFlag(UNIT_FIELD_BYTES_1, e.action.setunitByte.type, e.action.setunitByte.byte1);
+            }
 
         delete targets;
         break;
