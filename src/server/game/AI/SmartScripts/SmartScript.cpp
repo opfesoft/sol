@@ -892,7 +892,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     // Activate
                     if (go->GetGoType() != GAMEOBJECT_TYPE_DOOR)
                         go->SetLootState(GO_READY);
-                    go->UseDoorOrButton(0, e.action.activateObject.alternative ? true : false, unit);
+                    go->UseDoorOrButton(0, e.action.activateGO.alternative ? true : false, unit);
                 }
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
                 sLog->outDebug(LOG_FILTER_DATABASE_AI, "SmartScript::ProcessAction:: SMART_ACTION_ACTIVATE_GOBJECT. Gameobject %u (entry: %u) activated",

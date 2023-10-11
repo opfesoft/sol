@@ -672,6 +672,7 @@ struct SmartAction
 
         struct
         {
+            uint32 alternative;
             uint32 use;
         } activateGO;
 
@@ -703,11 +704,6 @@ struct SmartAction
             uint32 targetParam2;
             uint32 targetParam3;
         } crossCast;
-
-        struct
-        {
-            uint32 alternative;
-        } activateObject;
 
         struct
         {
