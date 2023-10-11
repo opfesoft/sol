@@ -421,7 +421,7 @@ enum SMART_ACTION
     SMART_ACTION_FAIL_QUEST                         = 6,      // QuestID
     SMART_ACTION_OFFER_QUEST                        = 7,      // QuestID, directAdd
     SMART_ACTION_SET_REACT_STATE                    = 8,      // state
-    SMART_ACTION_ACTIVATE_GOBJECT                   = 9,      //
+    SMART_ACTION_ACTIVATE_GOBJECT                   = 9,      // use instead of activate (0/1)
     SMART_ACTION_RANDOM_EMOTE                       = 10,     // EmoteId1, EmoteId2, EmoteId3...
     SMART_ACTION_CAST                               = 11,     // SpellId, CastFlags, LimitTargets, ForceRepeatOnRangeFail
     SMART_ACTION_SUMMON_CREATURE                    = 12,     // CreatureID, summonType, duration in ms, attackType, randomMinDist, randomMaxDist
@@ -669,6 +669,11 @@ struct SmartAction
         {
             uint32 state;
         } react;
+
+        struct
+        {
+            uint32 use;
+        } activateGO;
 
         struct
         {
