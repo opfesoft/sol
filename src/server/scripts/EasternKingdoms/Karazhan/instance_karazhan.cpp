@@ -202,9 +202,9 @@ public:
             case GO_SIDE_ENTRANCE_DOOR:
                 m_uiSideEntranceDoor = go->GetGUID();
                 if (GetBossState(DATA_OPERA_PERFORMANCE) == DONE)
-                    go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
-                else
                     go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
+                else
+                    go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
                 break;
             case GO_DUST_COVERED_CHEST:
                 DustCoveredChest = go->GetGUID();
