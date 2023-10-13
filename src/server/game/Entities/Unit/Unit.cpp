@@ -55,6 +55,7 @@
 #include "AccountMgr.h"
 #include "TargetedMovementGenerator.h"
 #include "MovementPacketBuilder.h"
+#include "PointMovementGenerator.h"
 
 #include <math.h>
 
@@ -13491,6 +13492,8 @@ void Unit::setDeathState(DeathState s, bool despawn)
     // death state needs to be updated before RemoveAllAurasOnDeath() calls HandleChannelDeathItem(..) so that
     // it can be used to check creation of death items (such as soul shards).
 
+    bool keepMoving = !despawn && (GetVehicle() != NULL);
+
     if (s != ALIVE && s != JUST_RESPAWNED)
     {
         CombatStop();
@@ -13514,16 +13517,27 @@ void Unit::setDeathState(DeathState s, bool despawn)
         // remove aurastates allowing special moves
         ClearAllReactives();
         ClearDiminishings();
-        GetMotionMaster()->Clear(false);
+
+        if (!keepMoving && !despawn && GetMotionMaster()->GetCurrentMovementGeneratorType() == EFFECT_MOTION_TYPE)
+            keepMoving = static_cast<EffectMovementGenerator*>(GetMotionMaster()->top())->KeepMovingAfterDeath();
+
+        if (!keepMoving)
+            GetMotionMaster()->Clear(false);
+        else
+            GetMotionMaster()->MovementExpiredOnSlot(MOTION_SLOT_ACTIVE, false);
+
         GetMotionMaster()->MoveIdle();
 
         // Xinef: Remove Hover so the corpse can fall to the ground
         SetHover(false);
 
-        if (despawn)
-            DisableSpline();
-        else
-            StopMoving();
+        if (!keepMoving)
+        {
+            if (despawn)
+                DisableSpline();
+            else
+                StopMoving();
+        }
 
         // without this when removing IncreaseMaxHealth aura player may stuck with 1 hp
         // do not why since in IncreaseMaxHealth currenthealth is checked

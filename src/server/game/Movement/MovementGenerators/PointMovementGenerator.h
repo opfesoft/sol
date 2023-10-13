@@ -65,14 +65,16 @@ class AssistanceMovementGenerator : public PointMovementGenerator<Creature>
 class EffectMovementGenerator : public MovementGenerator
 {
     public:
-        explicit EffectMovementGenerator(uint32 Id) : m_Id(Id) {}
+        explicit EffectMovementGenerator(uint32 Id, bool keepMovingAfterDeath = false) : m_Id(Id), m_keepMovingAfterDeath(keepMovingAfterDeath) {}
         void Initialize(Unit*) {}
         void Finalize(Unit*);
         void Reset(Unit*) {}
         bool Update(Unit*, uint32);
         MovementGeneratorType GetMovementGeneratorType() { return EFFECT_MOTION_TYPE; }
+        bool KeepMovingAfterDeath() { return m_keepMovingAfterDeath; }
     private:
         uint32 m_Id;
+        bool m_keepMovingAfterDeath;
 };
 
 #endif
