@@ -41,6 +41,7 @@ enum Misc
     DISPLAYID_INVISIBLE         = 23377,
     NPC_EMBER_OF_ALAR           = 19551,
     NPC_FLAME_PATCH             = 20602,
+    ALAR_PATH_ID                = 124790,
     
     POINT_PLATFORM              = 0,
     POINT_QUILL                 = 4,
@@ -184,7 +185,7 @@ class boss_alar : public CreatureScript
                 {
                     me->StopMoving();
                     startPath = false;
-                    if (WaypointPath const* i_path = sWaypointMgr->GetPath(me->GetWaypointPath()))
+                    if (WaypointPath const* i_path = sWaypointMgr->GetPath(ALAR_PATH_ID))
                     {
                         Movement::PointsArray pathPoints;
                         pathPoints.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));

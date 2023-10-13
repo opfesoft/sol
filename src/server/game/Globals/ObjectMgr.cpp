@@ -980,6 +980,8 @@ void ObjectMgr::LoadCreatureAddons()
             const_cast<CreatureData*>(creData)->movementType = IDLE_MOTION_TYPE;
             sLog->outErrorDb("Creature (GUID %u) has movement type set to WAYPOINT_MOTION_TYPE but no path assigned", guid);
         }
+        else if (creData->movementType != WAYPOINT_MOTION_TYPE && creatureAddon.path_id)
+            sLog->outErrorDb("Creature (GUID %u) has a path assigned but movement type is not set to WAYPOINT_MOTION_TYPE", guid);
 
         creatureAddon.mount   = fields[2].GetUInt32();
         creatureAddon.bytes1  = fields[3].GetUInt32();
