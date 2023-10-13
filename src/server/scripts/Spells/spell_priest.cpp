@@ -35,6 +35,7 @@ enum PriestSpells
     SPELL_PRIEST_SHADOW_WORD_DEATH                  = 32409,
     SPELL_PRIEST_T9_HEALING_2P                      = 67201,
     SPELL_PRIEST_VAMPIRIC_TOUCH_DISPEL              = 64085,
+    SPELL_PRIEST_T4_4P_FLEXIBILITY                  = 37565,
 
     SPELL_GENERIC_ARENA_DAMPENING                   = 74410,
     SPELL_GENERIC_BATTLEGROUND_DAMPENING            = 74411
@@ -132,6 +133,41 @@ class spell_pri_shadowfiend_scaling : public SpellScriptLoader
         AuraScript* GetAuraScript() const
         {
             return new spell_pri_shadowfiend_scaling_AuraScript();
+        }
+};
+
+// 37565 - Flexibility | Item - Priest T4 Holy/Discipline 4P Bonus
+class spell_pri_t4_4p_bonus : public SpellScriptLoader
+{
+    public:
+        spell_pri_t4_4p_bonus() : SpellScriptLoader("spell_pri_t4_4p_bonus") { }
+
+        class spell_pri_t4_4p_bonus_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_pri_t4_4p_bonus_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_PRIEST_T4_4P_FLEXIBILITY))
+                    return false;
+                return true;
+            }
+
+            void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+            {
+                PreventDefaultAction();
+                GetTarget()->RemoveAurasDueToSpell(SPELL_PRIEST_T4_4P_FLEXIBILITY);
+            }
+
+            void Register()
+            {
+                OnEffectProc += AuraEffectProcFn(spell_pri_t4_4p_bonus_AuraScript::HandleProc, EFFECT_1, SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_pri_t4_4p_bonus_AuraScript();
         }
 };
 
@@ -1009,6 +1045,7 @@ void AddSC_priest_spell_scripts()
 {
     // Ours
     new spell_pri_shadowfiend_scaling();
+    new spell_pri_t4_4p_bonus();
 
     // Theirs
     new spell_pri_circle_of_healing();
