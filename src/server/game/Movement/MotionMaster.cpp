@@ -458,13 +458,14 @@ void MotionMaster::MoveKnockbackFrom(float srcX, float srcY, float speedXY, floa
     float max_height = -Movement::computeFallElevation(moveTimeHalf, false, -speedZ);
 
     Position pos;
-    _owner->GetNearPoint(_owner, pos.m_positionX, pos.m_positionY, pos.m_positionZ, _owner->GetObjectSize(), dist, _owner->GetAngle(srcX, srcY) + M_PI);
+    _owner->GetPosition(&pos);
+    _owner->MovePosition(pos, dist, _owner->GetAngle(srcX, srcY) - _owner->GetOrientation() + M_PI);
 
     // xinef: check LoS!
     if (!_owner->IsWithinLOS(pos.m_positionX, pos.m_positionY, pos.m_positionZ))
     {
         _owner->GetPosition(&pos);
-        _owner->MovePositionToFirstCollision(pos, dist, _owner->GetAngle(srcX, srcY) + M_PI);
+        _owner->MovePositionToFirstCollision(pos, dist, _owner->GetAngle(srcX, srcY) - _owner->GetOrientation() + M_PI);
     }
 
     Movement::MoveSplineInit init(_owner);
