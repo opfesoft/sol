@@ -341,6 +341,7 @@ public:
         bool setCharm;
         bool switching;
         bool startPath;
+        bool warnGrip;
 
         void EnterEvadeMode()
         {
@@ -356,6 +357,7 @@ public:
             setCharm = false;
             switching = false;
             startPath = false;
+            warnGrip = false;
             checkTimer = 0;
             playerGUID = 0;
             attackTimer = 0;
@@ -431,9 +433,10 @@ public:
             }
             else if (spellInfo->Id == SPELL_FATAL_STRIKE)
             {
+                Player* player = GetValidPlayer();
                 if (roll_chance_i(me->GetAuraCount(SPELL_PRY_JAWS_OPEN)*10))
                 {
-                    if (Player* player = GetValidPlayer())
+                    if (player)
                     {
                         player->KilledMonsterCredit(30415, 0);
                         player->RemoveAurasDueToSpell(SPELL_JAWS_OF_DEATH);
@@ -442,7 +445,7 @@ public:
                     me->GetMotionMaster()->MoveFall(me->GetEntry());
                 }
                 else
-                    Talk(2);
+                    Talk(4, player);
 
             }
         }
@@ -501,10 +504,25 @@ public:
                 if (checkTimer >= 2000)
                 {
                     checkTimer = 1;
-                    if (me->HealthBelowPct(25)) {
+                    if (Aura* aura = me->GetAura(SPELL_WYRM_GRIP))
+                    {
+                        if (aura->GetStackAmount() < 20)
+                        {
+                            if (!warnGrip)
+                            {
+                                warnGrip = true;
+                                Talk(3, GetValidPlayer());
+                            }
+                        }
+                        else
+                            warnGrip = false;
+                    }
+
+                    if (me->HealthBelowPct(25))
+                    {
                         if (Player* player = GetValidPlayer())
                         {
-                            Talk(3);
+                            Talk(2, player);
                             switching = true;
                             me->RemoveAllAuras();
                             me->CastSpell(me, SPELL_JAWS_OF_DEATH, true);
@@ -550,7 +568,8 @@ public:
             if (announceAttackTimer >= 7000)
             {
                 announceAttackTimer = urand(0, 3000);
-                Talk(0);
+                if (Player* player = GetValidPlayer())
+                    Talk(0, player);
                 attackTimer = 1;
             }
             if (attackTimer)
@@ -559,9 +578,9 @@ public:
                 if (attackTimer > 2000)
                 {
                     attackTimer = 0;
-                    Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
+                    Player* player = GetValidPlayer();
                     if (player && player->HasAura(SPELL_DODGE_CLAWS))
-                        Talk(1);
+                        Talk(1, player);
                     else if (player)
                         me->AttackerStateUpdate(player);
                     else
