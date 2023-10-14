@@ -852,6 +852,7 @@ Player::Player(WorldSession* session): Unit(true), m_mover(this)
     m_baseFeralAP = 0;
     m_baseManaRegen = 0;
     m_baseHealthRegen = 0;
+    m_fractionHealthRegen = 0.f;
     m_spellPenetrationItemMod = 0;
 
     // Honor System
@@ -2829,20 +2830,28 @@ void Player::RegenerateHealth()
             for (AuraEffectList::const_iterator i = mModHealthRegenPct.begin(); i != mModHealthRegenPct.end(); ++i)
                 AddPct(addvalue, (*i)->GetAmount());
 
-            addvalue += GetTotalAuraModifier(SPELL_AURA_MOD_REGEN) * 2 * IN_MILLISECONDS / (5 * IN_MILLISECONDS);
+            addvalue += GetTotalAuraModifier(SPELL_AURA_MOD_REGEN) * 0.4f;
         }
         else if (HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT))
             ApplyPct(addvalue, GetTotalAuraModifier(SPELL_AURA_MOD_REGEN_DURING_COMBAT));
     }
 
     // always regeneration bonus (including combat)
-    addvalue += GetTotalAuraModifier(SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT);
+    addvalue += GetTotalAuraModifier(SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT) * 0.4f;
     addvalue += m_baseHealthRegen / 2.5f;
 
     if (addvalue < 0)
         addvalue = 0;
 
-    ModifyHealth(int32(addvalue));
+    int32 addvalueint = int32(addvalue);
+    m_fractionHealthRegen += addvalue - addvalueint;
+    if (m_fractionHealthRegen >= 1.f)
+    {
+        ++addvalueint;
+        m_fractionHealthRegen -= 1.f;
+    }
+
+    ModifyHealth(addvalueint);
 }
 
 void Player::ResetAllPowers()
