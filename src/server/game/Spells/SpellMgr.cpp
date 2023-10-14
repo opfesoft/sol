@@ -3522,6 +3522,13 @@ void SpellMgr::LoadDbcDataCorrections()
         case 27517: // Summon Thelrin DND (Banner of Provocation)
             spellInfo->CastingTimeIndex = 0;
             break;
+        case 3219:  // Weak Troll's Blood Elixir
+        case 3222:  // Strong Troll's Blood Elixir
+        case 3223:  // Major Troll's Blood Elixir
+        case 24361: // Mighty Troll's Blood Elixir
+            spellInfo->Category = 0;
+            spellInfo->CategoryRecoveryTime = 0;
+            break;
 
 
         /////////////////////////////////////////////
@@ -6591,6 +6598,12 @@ void SpellMgr::LoadDbcDataCorrections()
     vse = const_cast<VehicleSeatEntry*>(sVehicleSeatStore.LookupEntry(2845));
     vse->m_attachmentOffsetX += 0.0f;
     vse->m_attachmentOffsetY += 1.6f;
+
+    // Adjust spell categories
+    sSpellsByCategoryStore[4].erase(3219);  // Weak Troll's Blood Elixir
+    sSpellsByCategoryStore[4].erase(3222);  // Strong Troll's Blood Elixir
+    sSpellsByCategoryStore[4].erase(3223);  // Major Troll's Blood Elixir
+    sSpellsByCategoryStore[4].erase(24361); // Mighty Troll's Blood Elixir
 
 
 
