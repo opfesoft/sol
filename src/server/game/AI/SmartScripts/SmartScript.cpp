@@ -1928,7 +1928,50 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_SET_ORIENTATION:
     {
-        if (!me)
+        if (e.action.orientation.targetType)
+        {
+            if (ObjectList* l = GetTargets(CreateSmartEvent(SMART_EVENT_UPDATE_IC, 0, 0, 0, 0, 0, 0, SMART_ACTION_NONE, 0, 0, 0, 0, 0, 0, (SMARTAI_TARGETS)e.action.orientation.targetType, e.action.orientation.targetParam1, e.action.orientation.targetParam2, e.action.orientation.targetParam3, e.action.orientation.targetParam4, 0), unit, gob))
+            {
+                if (e.GetTargetType() == SMART_TARGET_SELF)
+                {
+                    for (ObjectList::const_iterator itr = l->begin(); itr != l->end(); ++itr)
+                        if (Creature* c = (*itr)->ToCreature())
+                        {
+                            c->SetFacingTo((c->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && c->GetTransGUID() ? c->GetTransportHomePosition() : c->GetHomePosition()).GetOrientation());
+                            if (e.action.orientation.quickChange)
+                                c->SetOrientation((c->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && c->GetTransGUID() ? c->GetTransportHomePosition() : c->GetHomePosition()).GetOrientation());
+                        }
+                }
+                else if (e.GetTargetType() == SMART_TARGET_POSITION)
+                {
+                    for (ObjectList::const_iterator itr = l->begin(); itr != l->end(); ++itr)
+                        if (Creature* c = (*itr)->ToCreature())
+                        {
+                            c->SetFacingTo(e.target.o);
+                            if (e.action.orientation.quickChange)
+                                c->SetOrientation(e.target.o);
+                        }
+                }
+                else if (ObjectList* targets = GetTargets(e, unit, gob))
+                {
+                    if (!targets->empty())
+                        for (ObjectList::const_iterator itr = l->begin(); itr != l->end(); ++itr)
+                            if (Creature* c = (*itr)->ToCreature())
+                            {
+                                c->SetFacingTo(c->GetAngle(*targets->begin()));
+                                if (e.action.orientation.quickChange)
+                                    c->SetOrientation(c->GetAngle(*targets->begin()));
+                            }
+
+                    delete targets;
+                }
+
+                delete l;
+            }
+
+            break;
+        }
+        else if (!me)
             break;
 
         if (e.GetTargetType() == SMART_TARGET_SELF)

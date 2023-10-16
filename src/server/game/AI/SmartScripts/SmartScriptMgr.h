@@ -478,7 +478,7 @@ enum SMART_ACTION
     SMART_ACTION_SET_COUNTER                        = 63,     // id, value, reset (0/1)
     SMART_ACTION_STORE_TARGET_LIST                  = 64,     // varID, varID range
     SMART_ACTION_WP_RESUME                          = 65,     // none
-    SMART_ACTION_SET_ORIENTATION                    = 66,     //
+    SMART_ACTION_SET_ORIENTATION                    = 66,     // quickChange (0/1), targetType, targetParam1, targetParam2, targetParam3, targetParam4
     SMART_ACTION_CREATE_TIMED_EVENT                 = 67,     // id, InitialMin, InitialMax, RepeatMin(only if it repeats), RepeatMax(only if it repeats), chance
     SMART_ACTION_PLAYMOVIE                          = 68,     // entry
     SMART_ACTION_MOVE_TO_POS                        = 69,     // PointId (optional x,y,z offset), transport, controlled, ContactDistance
@@ -1183,6 +1183,11 @@ struct SmartAction
         struct
         {
             uint32 quickChange;
+            uint32 targetType;
+            uint32 targetParam1;
+            uint32 targetParam2;
+            uint32 targetParam3;
+            uint32 targetParam4;
         } orientation;
 
         struct
