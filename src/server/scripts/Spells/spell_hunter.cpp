@@ -50,7 +50,8 @@ enum HunterSpells
     SPELL_HUNTER_SNIPER_TRAINING_BUFF_R1            = 64418,
     SPELL_HUNTER_VICIOUS_VIPER                      = 61609,
     SPELL_HUNTER_VIPER_ATTACK_SPEED                 = 60144,
-    SPELL_DRAENEI_GIFT_OF_THE_NAARU                 = 59543
+    SPELL_DRAENEI_GIFT_OF_THE_NAARU                 = 59543,
+    SPELL_HUNTER_PET_LEGGINGS_OF_BEAST_MASTERY      = 38297,
 };
 
 // Ours
@@ -196,6 +197,8 @@ class spell_hun_generic_scaling : public SpellScriptLoader
                     SpellSchoolMask schoolMask = SpellSchoolMask(aurEff->GetSpellInfo()->Effects[aurEff->GetEffIndex()].MiscValue);
                     int32 modifier = schoolMask == SPELL_SCHOOL_MASK_NORMAL ? 35 : 40;
                     amount = CalculatePct(std::max<int32>(0, owner->GetResistance(schoolMask)), modifier);
+                    if (owner->HasAura(SPELL_HUNTER_PET_LEGGINGS_OF_BEAST_MASTERY) && schoolMask == SPELL_SCHOOL_MASK_NORMAL)
+                        amount += 490;
                 }
             }
 
@@ -211,6 +214,8 @@ class spell_hun_generic_scaling : public SpellScriptLoader
                         AddPct(modifier, wildHuntEff->GetAmount());
 
                     amount = CalculatePct(std::max<int32>(0, owner->GetStat(Stats(aurEff->GetSpellInfo()->Effects[aurEff->GetEffIndex()].MiscValue))), modifier);
+                    if (owner->HasAura(SPELL_HUNTER_PET_LEGGINGS_OF_BEAST_MASTERY))
+                        amount += 52;
                 }
             }
 
@@ -232,6 +237,8 @@ class spell_hun_generic_scaling : public SpellScriptLoader
                         ownerAP += CalculatePct(owner->GetStat(STAT_STAMINA), HvWEff->GetAmount());
 
                     amount = CalculatePct(std::max<int32>(0, ownerAP), modifier);
+                    if (owner->HasAura(SPELL_HUNTER_PET_LEGGINGS_OF_BEAST_MASTERY))
+                        amount += 70;
                 }
             }
 
