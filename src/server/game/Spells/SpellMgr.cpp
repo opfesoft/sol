@@ -2945,6 +2945,7 @@ void SpellMgr::LoadSpellCustomAttr()
             case 42976: // Executioner
             case 16928: // Armor Shatter
             case 17315: // Puncture Armor
+            case 30285: // Eagle Claw
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SINGLE_AURA_STACK;
                 break;
             case 43138: // North Fleet Reservist Kill Credit
