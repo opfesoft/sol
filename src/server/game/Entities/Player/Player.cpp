@@ -1336,7 +1336,7 @@ uint32 Player::EnvironmentalDamage(EnviromentalDamage type, uint32 damage)
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
             sLog->outStaticDebug("We are fall to death, loosing 10 percents durability");
 #endif
-            DurabilityLossAll(0.10f, false);
+            DurabilityLossAll(sWorld->getRate(RATE_DURABILITY_LOSS_ON_DEATH), false);
             // durability lost message
             WorldPacket data2(SMSG_DURABILITY_DAMAGE_DEATH, 0);
             GetSession()->SendPacket(&data2);
@@ -5466,7 +5466,7 @@ void Player::DurabilityLossAll(double percent, bool inventory)
 
 void Player::DurabilityLoss(Item* item, double percent)
 { 
-    if(!item)
+    if(!item || !percent || !sWorld->getBoolConfig(CONFIG_DURABILITY_LOSS_ENABLE))
         return;
 
     uint32 pMaxDurability = item ->GetUInt32Value(ITEM_FIELD_MAXDURABILITY);

@@ -2479,6 +2479,14 @@ SkillChance.MiningSteps   = 0
 SkillChance.SkinningSteps = 0
 
 #
+#    DurabilityLoss.Enable
+#        Description: Enable durability loss.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+DurabilityLoss.Enable = 1
+
+#
 #    DurabilityLoss.InPvP
 #        Description: Durability loss on death during PvP.
 #        Default:     0 - (Disabled)
