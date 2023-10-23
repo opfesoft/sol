@@ -3312,7 +3312,7 @@ void SpellMgr::LoadDbcDataCorrections()
         case 53244: // Marked for Death (Rank 3)
         case 53245: // Marked for Death (Rank 4)
         case 53246: // Marked for Death (Rank 5)
-            spellInfo->EffectSpellClassMask[0] = flag96(423937, 276955137, 2049);
+            spellInfo->EffectSpellClassMask[0] = flag96(399361, 276955137, 1);
             break;
         case 70728: // Exploit Weakness
         case 70840: // Devious Minds
