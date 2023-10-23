@@ -151,12 +151,14 @@ public:
 
         int Random = rand() % (sizeof(NpcPrisonEntry) / sizeof(uint32));
 
-        if (Creature* creature = player->SummonCreature(NpcPrisonEntry[Random], go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), go->GetAngle(player),
-            TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+        if (Creature* creature = player->SummonCreature(NpcPrisonEntry[Random], go->GetPositionX(), go->GetPositionY(), go->GetPositionZ() + 0.4f, go->GetAngle(player),
+            TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000))
         {
             creature->setActive(true);
             if (!creature->IsHostileTo(player))
             {
+                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                creature->AI()->Talk(0, player);
                 uint32 Spell = 0;
 
                 switch (creature->GetEntry())
