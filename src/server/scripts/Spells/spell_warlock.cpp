@@ -304,8 +304,9 @@ class spell_warl_demonic_knowledge : public SpellScriptLoader
 
             void CalculateAmount(AuraEffect const* aurEff, int32 & amount, bool & /*canBeRecalculated*/)
             {
+                int32 baseAmount = aurEff->GetBaseAmount();
                 if (Unit* caster = GetCaster())
-                    amount = CalculatePct(caster->GetStat(STAT_STAMINA)+caster->GetStat(STAT_INTELLECT), aurEff->GetBaseAmount());
+                    amount = CalculatePct(caster->GetStat(STAT_STAMINA)+caster->GetStat(STAT_INTELLECT), aurEff->GetSpellInfo()->Effects[aurEff->GetEffIndex()].CalcValue(NULL, &baseAmount));
             }
 
             void CalcPeriodic(AuraEffect const* /*aurEff*/, bool& isPeriodic, int32& amplitude)
