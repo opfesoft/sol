@@ -1980,9 +1980,8 @@ void World::SetInitialWorldSettings()
     {
         sLog->outString();
         sLog->outString("Enable loading of all grids for all non-instanced maps");
-        for (uint32 i = 0; i < sMapStore.GetNumRows(); ++i)
-            if (MapEntry const* mapEntry = sMapStore.LookupEntry(i); mapEntry && !mapEntry->Instanceable())
-                sMapMgr->CreateBaseMap(mapEntry->MapID);
+        for (uint32 mapId : {0, 1, 369, 530, 571, 609})
+            sMapMgr->CreateBaseMap(mapId);
     }
 
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
