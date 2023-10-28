@@ -22,6 +22,8 @@ enum ShamanSpells
 {
     // Ours
     SPELL_SHAMAN_GLYPH_OF_FERAL_SPIRIT          = 63271,
+    SPELL_SHAMAN_ELECTRIFIED                    = 64930,
+    SPELL_SHAMAN_LIGHTNING_BOLT_OVERLOAD        = 45284,
 
     // Theirs
     SPELL_SHAMAN_ANCESTRAL_AWAKENING_PROC       = 52752,
@@ -401,6 +403,48 @@ class spell_sha_fire_elemental_scaling : public SpellScriptLoader
         AuraScript* GetAuraScript() const
         {
             return new spell_sha_fire_elemental_scaling_AuraScript();
+        }
+};
+
+// 64928 - Item - Shaman T8 Elemental 4P Bonus
+class spell_sha_t8_electrified : public SpellScriptLoader
+{
+    public:
+        spell_sha_t8_electrified() : SpellScriptLoader("spell_sha_t8_electrified") { }
+
+        class spell_sha_t8_electrified_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_sha_t8_electrified_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_SHAMAN_ELECTRIFIED))
+                    return false;
+                return true;
+            }
+
+            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            {
+                PreventDefaultAction();
+
+                // Do not proc from Lightning Overload (patch 3.1~)
+                if (SpellInfo const* spellInfo = eventInfo.GetDamageInfo()->GetSpellInfo(); spellInfo && spellInfo->Id == SPELL_SHAMAN_LIGHTNING_BOLT_OVERLOAD)
+                    return;
+
+                SpellInfo const* electrifiedDot = sSpellMgr->GetSpellInfo(SPELL_SHAMAN_ELECTRIFIED);
+                int32 amount = int32(CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), aurEff->GetAmount()) / electrifiedDot->GetMaxTicks());
+                eventInfo.GetProcTarget()->CastDelayedSpellWithPeriodicAmount(eventInfo.GetActor(), SPELL_SHAMAN_ELECTRIFIED, SPELL_AURA_PERIODIC_DAMAGE, amount);
+            }
+
+            void Register()
+            {
+                OnEffectProc += AuraEffectProcFn(spell_sha_t8_electrified_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_sha_t8_electrified_AuraScript();
         }
 };
 
@@ -1401,6 +1445,7 @@ void AddSC_shaman_spell_scripts()
     new spell_sha_totemic_mastery();
     new spell_sha_feral_spirit_scaling();
     new spell_sha_fire_elemental_scaling();
+    new spell_sha_t8_electrified();
 
     // theirs
     new spell_sha_ancestral_awakening_proc();

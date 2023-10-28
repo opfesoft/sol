@@ -7609,13 +7609,6 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, int32 effectiveValue
                     CastCustomSpell(this, triggered_spell_id, &basepoints0, NULL, NULL, true, castItem, triggeredByAura, originalCaster);
                     break;
                 }
-                // Shaman T8 Elemental 4P Bonus
-                case 64928:
-                {
-                    basepoints0 = CalculatePct(int32(damage), triggerAmount);
-                    triggered_spell_id = 64930;            // Electrified
-                    break;
-                }
                 // Shaman T9 Elemental 4P Bonus
                 case 67228:
                 {
