@@ -784,8 +784,8 @@ public:
 
 enum InconspicuousLandmark
 {
-    SPELL_SUMMON_PIRATES_TREASURE_AND_TRIGGER_MOB    = 11462,
-    ITEM_CUERGOS_KEY                                 = 9275,
+    NPC_PIRATE_TREASURE_TRIGGER_MOB = 7898,
+    ITEM_CUERGOS_KEY                = 9275,
 };
 
 class go_inconspicuous_landmark : public GameObjectScript
@@ -796,7 +796,7 @@ class go_inconspicuous_landmark : public GameObjectScript
             _lastUsedTime = time(NULL);
         }
 
-        bool OnGossipHello(Player* player, GameObject* /*go*/) override
+        bool OnGossipHello(Player* player, GameObject* go) override
         {
             if (player->HasItemCount(ITEM_CUERGOS_KEY))
                 return true;
@@ -804,8 +804,8 @@ class go_inconspicuous_landmark : public GameObjectScript
             if (_lastUsedTime > time(NULL))
                 return true;
 
-            _lastUsedTime = time(NULL) + MINUTE;
-            player->CastSpell(player, SPELL_SUMMON_PIRATES_TREASURE_AND_TRIGGER_MOB, true);
+            _lastUsedTime = time(NULL) + MINUTE * 5;
+            go->SummonCreature(NPC_PIRATE_TREASURE_TRIGGER_MOB, go->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN);
             return true;
         }
 
