@@ -1265,6 +1265,11 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses no contact distance but has target o set, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
                 return false;
             }
+            if (e.GetTargetType() != SMART_TARGET_POSITION && (std::abs(e.target.x) > 50.f || std::abs(e.target.y) > 50.f || std::abs(e.target.z) > 50.f))
+            {
+                sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses an absolute offset which is too big (max. 50 allowed), skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
+                return false;
+            }
             break;
         }
         case SMART_ACTION_SET_OWNER_DEATH_DESPAWN:
