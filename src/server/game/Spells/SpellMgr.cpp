@@ -4329,6 +4329,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
             break;
+        case 37571: // Improved Mind Flay and Smite (Incarnate Regalia 4P Bonus)
+            spellInfo->EffectSpellClassMask[EFFECT_0][0] = 8388736;
+            break;
 
 
 
