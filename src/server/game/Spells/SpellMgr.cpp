@@ -4136,6 +4136,15 @@ void SpellMgr::LoadDbcDataCorrections()
         case 47834: // Seed of Corruption (Rank 3)
             spellInfo->AttributesEx |= SPELL_ATTR1_CANT_BE_REFLECTED;
             break;
+        case 61992: // Improved Corruption and Immolate (Updated) (Corruptor Raiment 4P Bonus)
+            spellInfo->Effect[EFFECT_1] = spellInfo->Effect[EFFECT_0];
+            spellInfo->EffectApplyAuraName[EFFECT_1] = spellInfo->EffectApplyAuraName[EFFECT_0];
+            spellInfo->EffectImplicitTargetA[EFFECT_1] = spellInfo->EffectImplicitTargetA[EFFECT_0];
+            spellInfo->EffectDieSides[EFFECT_1] = spellInfo->EffectDieSides[EFFECT_0];
+            spellInfo->EffectBasePoints[EFFECT_1] = spellInfo->EffectBasePoints[EFFECT_0];
+            spellInfo->EffectSpellClassMask[EFFECT_1] = spellInfo->EffectSpellClassMask[EFFECT_0];
+            spellInfo->EffectMiscValue[EFFECT_1] = SPELLMOD_DOT;
+            break;
 
 
         /////////////////////////////////
