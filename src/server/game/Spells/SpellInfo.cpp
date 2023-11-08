@@ -488,10 +488,24 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster, int32 const* bp, Unit const
 
             if (canEffectScale)
             {
-                GtNPCManaCostScalerEntry const* spellScaler = sGtNPCManaCostScalerStore.LookupEntry(_spellInfo->SpellLevel - 1);
-                GtNPCManaCostScalerEntry const* casterScaler = sGtNPCManaCostScalerStore.LookupEntry(caster->getLevel() - 1);
-                if (spellScaler && casterScaler)
-                    value *= casterScaler->ratio / spellScaler->ratio;
+                Creature const* creature = caster->ToCreature();
+                CreatureBaseStats const* creatureCBS = sObjectMgr->GetCreatureBaseStats(caster->getLevel(), caster->getClass());
+                CreatureBaseStats const* spellCBS = sObjectMgr->GetCreatureBaseStats(_spellInfo->SpellLevel, caster->getClass());
+
+                if (creature && creatureCBS && spellCBS)
+                {
+                    CreatureTemplate const* ct = creature->GetCreatureTemplate();
+                    float creatureCBSBaseDamage = creatureCBS->BaseDamage[ct->expansion];
+                    float spellCBSBaseDamage = spellCBS->BaseDamage[ct->expansion];
+                    value *= creatureCBSBaseDamage / spellCBSBaseDamage;
+                }
+                else
+                {
+                    GtNPCManaCostScalerEntry const* spellScaler = sGtNPCManaCostScalerStore.LookupEntry(_spellInfo->SpellLevel - 1);
+                    GtNPCManaCostScalerEntry const* casterScaler = sGtNPCManaCostScalerStore.LookupEntry(caster->getLevel() - 1);
+                    if (spellScaler && casterScaler)
+                        value *= casterScaler->ratio / spellScaler->ratio;
+                }
             }
         }
     }
