@@ -2948,6 +2948,10 @@ void SpellMgr::LoadSpellCustomAttr()
             case 30285: // Eagle Claw
             case 32722: // Blistering Rot
             case 5416:  // Venom Sting
+            case 35147: // Sundering Swipe
+            case 30494: // Sticky Ooze
+            case 30639: // Carnivorous Bite
+            case 16427: // Virulent Poison
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SINGLE_AURA_STACK;
                 break;
             case 43138: // North Fleet Reservist Kill Credit
