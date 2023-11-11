@@ -393,7 +393,10 @@ void ChaseMovementGenerator<Creature>::MovementInform(Creature* unit)
 template<>
 bool FollowMovementGenerator<Creature>::EnableWalking() const
 {
-    return i_target.isValid() && (i_target->IsWalking() || i_target->movespline->isWalking());
+    if (i_target->GetTypeId() == TYPEID_PLAYER)
+        return i_target.isValid() && (i_target->IsWalking() || (!i_target->movespline->Finalized() && i_target->movespline->isWalking()));
+    else
+        return i_target.isValid() && (i_target->IsWalking() || i_target->movespline->isWalking());
 }
 
 template<>
