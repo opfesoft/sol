@@ -1373,8 +1373,9 @@ struct SmartTarget
         struct
         {
             uint32 maxDist;
-            uint32 playerOnly;
+            uint32 restrictType;
             uint32 powerType;
+            uint32 restrictValue;
         } hostilRandom;
 
         struct
@@ -1661,6 +1662,13 @@ enum SmartCastFlags
     //CAST_FORCE_TARGET_SELF      = 0x10,                     //Forces the target to cast this spell on itself
     SMARTCAST_AURA_NOT_PRESENT       = 0x20,                     //Only casts the spell if the target does not have an aura from the spell
     SMARTCAST_COMBAT_MOVE            = 0x40                      //Prevents combat movement if cast successful. Allows movement on range, OOM, LOS
+};
+
+enum SmartTargetRestrictFlags
+{
+    SMART_TARGET_RESTRICT_PLAYER_ONLY     = 0x1,
+    SMART_TARGET_RESTRICT_THREAT_SIZE_LTE = 0x2,
+    SMART_TARGET_RESTRICT_THREAT_SIZE_GTE = 0x4,
 };
 
 // one line in DB is one event

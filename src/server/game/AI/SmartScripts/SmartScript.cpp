@@ -3729,53 +3729,73 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         break;
     case SMART_TARGET_VICTIM:
         if (me && me->GetVictim())
+        {
+            if (((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY) && me->GetVictim()->GetTypeId() != TYPEID_PLAYER)
+                || (e.target.hostilRandom.powerType && Powers(e.target.hostilRandom.powerType - 1) != me->GetVictim()->getPowerType())
+                || (e.target.hostilRandom.maxDist && !me->IsWithinCombatRange(me->GetVictim(), (float)e.target.hostilRandom.maxDist))
+                || ((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_LTE) && me->getThreatManager().getThreatList().size() > e.target.hostilRandom.restrictValue)
+                || ((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_GTE) && me->getThreatManager().getThreatList().size() < e.target.hostilRandom.restrictValue))
+                break;
             l->push_back(me->GetVictim());
+        }
         break;
     case SMART_TARGET_HOSTILE_SECOND_AGGRO:
         if (me)
         {
+            if (((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_LTE) && me->getThreatManager().getThreatList().size() > e.target.hostilRandom.restrictValue)
+                || ((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_GTE) && me->getThreatManager().getThreatList().size() < e.target.hostilRandom.restrictValue))
+                break;
             if (e.target.hostilRandom.powerType)
             {
-                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_TOPAGGRO, 1, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly)))
+                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_TOPAGGRO, 1, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY)))
                     l->push_back(u);
             }
-            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_TOPAGGRO, 1, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly))
+            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_TOPAGGRO, 1, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY))
                 l->push_back(u);
         }
         break;
     case SMART_TARGET_HOSTILE_LAST_AGGRO:
         if (me)
         {
+            if (((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_LTE) && me->getThreatManager().getThreatList().size() > e.target.hostilRandom.restrictValue)
+                || ((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_GTE) && me->getThreatManager().getThreatList().size() < e.target.hostilRandom.restrictValue))
+                break;
             if (e.target.hostilRandom.powerType)
             {
-                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_BOTTOMAGGRO, 0, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly)))
+                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_BOTTOMAGGRO, 0, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY)))
                     l->push_back(u);
             }
-            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_BOTTOMAGGRO, 0, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly))
+            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_BOTTOMAGGRO, 0, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY))
                 l->push_back(u);
         }
         break;
     case SMART_TARGET_HOSTILE_RANDOM:
         if (me)
         {
+            if (((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_LTE) && me->getThreatManager().getThreatList().size() > e.target.hostilRandom.restrictValue)
+                || ((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_GTE) && me->getThreatManager().getThreatList().size() < e.target.hostilRandom.restrictValue))
+                break;
             if (e.target.hostilRandom.powerType)
             {
-                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly)))
+                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY)))
                     l->push_back(u);
             }
-            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly))
+            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY))
                 l->push_back(u);
         }
         break;
     case SMART_TARGET_HOSTILE_RANDOM_NOT_TOP:
         if (me)
         {
+            if (((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_LTE) && me->getThreatManager().getThreatList().size() > e.target.hostilRandom.restrictValue)
+                || ((e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_THREAT_SIZE_GTE) && me->getThreatManager().getThreatList().size() < e.target.hostilRandom.restrictValue))
+                break;
             if (e.target.hostilRandom.powerType)
             {
-                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 1, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly)))
+                if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 1, PowerUsersSelector(me, Powers(e.target.hostilRandom.powerType - 1), (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY)))
                     l->push_back(u);
             }
-            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 1, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.playerOnly))
+            else if (Unit* u = me->AI()->SelectTarget(SELECT_TARGET_RANDOM, 1, (float)e.target.hostilRandom.maxDist, e.target.hostilRandom.restrictType & SMART_TARGET_RESTRICT_PLAYER_ONLY))
                 l->push_back(u);
         }
         break;
