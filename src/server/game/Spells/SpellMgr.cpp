@@ -3536,6 +3536,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->Category = 0;
             spellInfo->CategoryRecoveryTime = 0;
             break;
+        case 36146: // Chains of Naberius
+            spellInfo->MaxAffectedTargets = 1;
+            break;
 
 
         /////////////////////////////////////////////
