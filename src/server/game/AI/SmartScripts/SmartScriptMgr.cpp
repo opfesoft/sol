@@ -495,6 +495,18 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         uint32 type = e.event.type;
         switch (type)
         {
+            case SMART_EVENT_RANGE:
+                if (e.event.minMaxRepeat.min > 250)
+                {
+                    sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses invalid min distance %u (only <= 250 allowed).", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.minMaxRepeat.min);
+                    return false;
+                }
+                if (e.event.minMaxRepeat.max > 250)
+                {
+                    sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses invalid max distance %u (only <= 250 allowed).", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.minMaxRepeat.max);
+                    return false;
+                }
+                [[fallthrough]];
             case SMART_EVENT_UPDATE:
             case SMART_EVENT_UPDATE_IC:
             case SMART_EVENT_UPDATE_OOC:
@@ -502,7 +514,6 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             case SMART_EVENT_MANA_PCT:
             case SMART_EVENT_TARGET_HEALTH_PCT:
             case SMART_EVENT_TARGET_MANA_PCT:
-            case SMART_EVENT_RANGE:
                 if (!IsMinMaxValid(e, e.event.minMaxRepeat.min, e.event.minMaxRepeat.max))
                     return false;
                 if (!IsMinMaxValid(e, e.event.minMaxRepeat.repeatMin, e.event.minMaxRepeat.repeatMax))
