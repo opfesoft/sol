@@ -217,7 +217,9 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullR
         }
         case CONDITION_NEAR_GAMEOBJECT:
         {
-            condMeets = GetClosestGameObjectWithEntry(object, ConditionValue1, (float)ConditionValue2, ConditionValue3 > 0) ? true : false;
+            if (GameObject* go = GetClosestGameObjectWithEntry(object, ConditionValue1, (float)ConditionValue2, ConditionValue3 > 0))
+                if (ConditionValue3 <= 1 || (ConditionValue3 > 1 && go->GetGoState() == (GOState)(ConditionValue3 - 2)))
+                    condMeets = true;
             break;
         }
         case CONDITION_OBJECT_ENTRY_GUID:
@@ -1982,6 +1984,11 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
             if (!sObjectMgr->GetGameObjectTemplate(cond->ConditionValue1))
             {
                 sLog->outErrorDb("NearGameObject condition has non existing gameobject template entry (%u), skipped", cond->ConditionValue1);
+                return false;
+            }
+            if (cond->ConditionValue3 > MAX_GO_STATE + 1)
+            {
+                sLog->outErrorDb("NearGameObject condition value3 > %u (%u), skipped", MAX_GO_STATE + 1, cond->ConditionValue3);
                 return false;
             }
             break;
