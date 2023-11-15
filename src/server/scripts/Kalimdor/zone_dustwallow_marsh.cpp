@@ -126,6 +126,9 @@ class spell_ooze_zap : public SpellScriptLoader
                 if (!GetExplTargetUnit())
                     return SPELL_FAILED_BAD_TARGETS;
 
+                if (Creature* c = GetExplTargetUnit()->ToCreature())
+                    c->AI()->AttackStart(GetCaster());
+
                 return SPELL_CAST_OK;
             }
 
