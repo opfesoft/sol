@@ -12612,7 +12612,7 @@ void Unit::SetInCombatWith(Unit* enemy, uint32 duration)
 {
 
     // Xinef: Dont allow to start combat with triggers
-    if (enemy->GetTypeId() == TYPEID_UNIT && enemy->ToCreature()->IsTrigger())
+    if ((enemy->GetTypeId() == TYPEID_UNIT && enemy->ToCreature()->IsTrigger()) || (GetTypeId() == TYPEID_UNIT && ToCreature()->IsTrigger()))
         return;
 
     Unit* eOwner = enemy->GetCharmerOrOwnerOrSelf();
@@ -12639,7 +12639,7 @@ void Unit::CombatStart(Unit* target, bool initialAggro)
 {
 
     // Xinef: Dont allow to start combat with triggers
-    if (target->GetTypeId() == TYPEID_UNIT && target->ToCreature()->IsTrigger())
+    if ((target->GetTypeId() == TYPEID_UNIT && target->ToCreature()->IsTrigger()) || (GetTypeId() == TYPEID_UNIT && ToCreature()->IsTrigger()))
         return;
 
     if (initialAggro)
@@ -12686,7 +12686,7 @@ void Unit::CombatStart(Unit* target, bool initialAggro)
 void Unit::CombatStartOnCast(Unit* target, bool initialAggro, uint32 duration)
 {
     // Xinef: Dont allow to start combat with triggers
-    if (target->GetTypeId() == TYPEID_UNIT && target->ToCreature()->IsTrigger())
+    if ((target->GetTypeId() == TYPEID_UNIT && target->ToCreature()->IsTrigger()) || (GetTypeId() == TYPEID_UNIT && ToCreature()->IsTrigger()))
         return;
 
     if (initialAggro)
