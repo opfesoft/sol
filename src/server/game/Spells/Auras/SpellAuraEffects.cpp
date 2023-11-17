@@ -520,10 +520,10 @@ int32 AuraEffect::CalculateAmount(Unit* caster)
             // Titan's Grip
             if (!caster)
                 break;
-            if (GetId() == 49152 && caster->ToPlayer())
+            if (Player* player = caster->ToPlayer(); player && GetId() == 49152)
             {
-                Item *item1 = caster->ToPlayer()->GetWeaponForAttack(BASE_ATTACK);
-                Item *item2 = caster->ToPlayer()->GetWeaponForAttack(OFF_ATTACK);
+                Item* item1 = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND);
+                Item* item2 = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND);
 
                 if (item1 && item2 && (item1->GetTemplate()->InventoryType == INVTYPE_2HWEAPON || item2->GetTemplate()->InventoryType == INVTYPE_2HWEAPON))
                     amount = -10;
