@@ -126,6 +126,36 @@ public:
     }
 };
 
+class spell_calling_korkron_or_wildhammer : public SpellScriptLoader
+{
+public:
+    spell_calling_korkron_or_wildhammer() : SpellScriptLoader("spell_calling_korkron_or_wildhammer") { }
+
+    class spell_calling_korkron_or_wildhammer_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_calling_korkron_or_wildhammer_SpellScript);
+
+        void SetDest(SpellDestination& dest)
+        {
+            Position pos;
+            GetCaster()->GetPosition(&pos);
+            GetCaster()->MovePosition(pos, 20.f, 0.f);
+            pos.m_positionZ = std::max(GetCaster()->GetPositionZ(), pos.m_positionZ) + 20.f;
+            dest.Relocate(pos);
+        }
+
+        void Register()
+        {
+            OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_calling_korkron_or_wildhammer_SpellScript::SetDest, EFFECT_0, TARGET_DEST_CASTER);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_calling_korkron_or_wildhammer_SpellScript();
+    }
+};
+
 
 // Theirs
 /*#####
@@ -1760,6 +1790,7 @@ void AddSC_shadowmoon_valley()
     // Ours
     new spell_q10612_10613_the_fel_and_the_furious();
     new spell_q10563_q10596_to_legion_hold();
+    new spell_calling_korkron_or_wildhammer();
 
     // Theirs
     new npc_invis_infernal_caster();
