@@ -270,7 +270,6 @@ class boss_sindragosa : public CreatureScript
 
             void Reset()
             {
-                _didFirstFlyPhase = false;
                 _isBelow20Pct = false;
                 _isThirdPhase = false;
                 _bombCount = 0;
@@ -321,7 +320,6 @@ class boss_sindragosa : public CreatureScript
                     return;
                 }
 
-                _didFirstFlyPhase = false;
                 _isBelow20Pct = false;
                 _isThirdPhase = false;
                 _bombCount = 0;
@@ -474,9 +472,6 @@ class boss_sindragosa : public CreatureScript
                 if (!damage || me->IsInEvadeMode())
                     return;
 
-                if (!_didFirstFlyPhase)
-                    return;
-
                 if (!_isThirdPhase)
                 {
                     if (!HealthAbovePct(35))
@@ -597,7 +592,6 @@ class boss_sindragosa : public CreatureScript
                             me->SetControlled(false, UNIT_STATE_ROOT);
                         }
 
-                        _didFirstFlyPhase = true;
                         Talk(SAY_AIR_PHASE);
                         me->SetReactState(REACT_PASSIVE);
                         me->SetSpeed(MOVE_RUN, 4.28571f);
@@ -697,7 +691,6 @@ class boss_sindragosa : public CreatureScript
             bool _summoned;
             uint8 _bombCount;
             uint8 _mysticBuffetStack;
-            bool _didFirstFlyPhase;
             bool _isBelow20Pct;
             bool _isThirdPhase;
         };
