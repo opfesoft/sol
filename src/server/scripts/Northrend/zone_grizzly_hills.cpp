@@ -742,7 +742,6 @@ enum LakeFrog
     SPELL_WARTS                            = 62581,
     SPELL_MAIDEN_OF_ASHWOOD_LAKE_TRANSFORM = 62550,
     SPELL_SUMMON_ASHWOOD_BRAND             = 62554,
-    SPELL_FROG_KISS                        = 62536,
     // Text
     SAY_MAIDEN_0                           = 0,
     SAY_MAIDEN_1                           = 1
@@ -824,16 +823,19 @@ public:
                         player->AddAura(SPELL_WARTS, player);
                     else
                     {
-                        DoCast(player, SPELL_FROG_KISS); // Removes SPELL_WARTSBGONE_LIP_BALM
+                        player->RemoveAurasDueToSpell(SPELL_WARTSBGONE_LIP_BALM);
 
                         if (me->GetEntry() == NPC_LAKE_FROG)
                         {
+                            me->setActive(true);
                             me->AddAura(SPELL_FROG_LOVE, me);
                             me->GetMotionMaster()->MoveFollow(player, 0.3f, frand(M_PI/2, M_PI + (M_PI/2)));
+                            me->DespawnOrUnsummon(60000);
                             _following = true;
                         }
                         else if (me->GetEntry() == NPC_LAKE_FROG_QUEST)
                         {
+                            me->setActive(true);
                             me->GetMotionMaster()->MoveIdle();
                             me->SetFacingToObject(player);
                             _runningScript = true;
