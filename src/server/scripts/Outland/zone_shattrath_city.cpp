@@ -88,7 +88,12 @@ public:
 # npc_zephyr
 ######*/
 
-#define GOSSIP_HZ "Take me to the Caverns of Time."
+enum Zephyr
+{
+    GOSSIP_MENU_ZEPHYR             =  9205,
+    SPELL_TELEPORT_CAVERNS_OF_TIME = 37778,
+};
+
 
 class npc_zephyr : public CreatureScript
 {
@@ -99,7 +104,7 @@ public:
     {
         ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF+1)
-            player->CastSpell(player, 37778, false);
+            player->CastSpell(player, SPELL_TELEPORT_CAVERNS_OF_TIME, false);
 
         return true;
     }
@@ -107,7 +112,7 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (player->GetReputationRank(989) >= REP_REVERED)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_HZ, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            AddGossipItemFor(player, GOSSIP_MENU_ZEPHYR, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
         SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
