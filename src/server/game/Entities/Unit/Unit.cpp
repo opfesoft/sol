@@ -13332,8 +13332,10 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                     if (Unit* target = follow->GetTarget(); target && target->GetTypeId() == TYPEID_PLAYER)
                     {
                         if (!pOwner)
+                        {
                             pOwner = target;
-                        npcFollowingPlayer = true;
+                            npcFollowingPlayer = true;
+                        }
                         pos.Relocate(follow->GetNextPos());
                     }
                 }
@@ -13360,6 +13362,9 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
                         if (speed < ownerSpeed || IsInDist(&pos, 10.0f * ownerSpeed))
                             speed = ownerSpeed;
                         speed *= std::min(std::max(1.0f, 0.75f + GetExactDist(&pos) * 0.05f / ownerSpeed), 1.3f);
+
+                        if (npcFollowingPlayer && speed > GetSpeedRate(mtype))
+                            speed = GetSpeedRate(mtype);
                     }
                 }
                 else
