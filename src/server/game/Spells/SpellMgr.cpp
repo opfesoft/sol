@@ -3543,6 +3543,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 36146: // Chains of Naberius
             spellInfo->MaxAffectedTargets = 1;
             break;
+        case 53768: // Haunted
+            spellInfo->Attributes |= SPELL_ATTR0_CANT_CANCEL;
+            break;
 
 
         /////////////////////////////////////////////
