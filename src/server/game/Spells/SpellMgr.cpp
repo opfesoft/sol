@@ -2956,6 +2956,8 @@ void SpellMgr::LoadSpellCustomAttr()
             case 36796: // Acidic Bite
             case 14120: // Tunneler Acid
             case 16145: // Sunder Armor
+            case 15572: // Sunder Armor
+            case 35244: // Choking Vines
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SINGLE_AURA_STACK;
                 break;
             case 43138: // North Fleet Reservist Kill Credit

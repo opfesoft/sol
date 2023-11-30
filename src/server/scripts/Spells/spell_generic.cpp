@@ -1813,6 +1813,55 @@ class spell_gen_curse_of_pain : public SpellScriptLoader
         }
 };
 
+// 35244 - Choking Vines
+enum ChokingVines
+{
+    SPELL_CHOKING_VINES = 35244,
+    SPELL_CHOKING_WOUND = 35247,
+};
+
+class spell_gen_choking_vines : public SpellScriptLoader
+{
+    public:
+        spell_gen_choking_vines() : SpellScriptLoader("spell_gen_choking_vines") { }
+
+        class spell_gen_choking_vines_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_choking_vines_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_CHOKING_VINES) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_CHOKING_WOUND))
+                    return false;
+                return true;
+            }
+
+            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                Unit* target = GetTarget();
+                if (!target)
+                    return;
+
+                if (GetStackAmount() == GetSpellInfo()->StackAmount) // 5 stacks
+                {
+                    target->RemoveAurasDueToSpell(SPELL_CHOKING_VINES);
+                    target->CastSpell(target, SPELL_CHOKING_WOUND, true);
+                }
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_gen_choking_vines_AuraScript::OnApply, EFFECT_0, SPELL_AURA_MOD_DECREASE_SPEED, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_choking_vines_AuraScript();
+        }
+};
+
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5525,6 +5574,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_creature_feign_death();
     new spell_gen_shriveling_gaze();
     new spell_gen_curse_of_pain();
+    new spell_gen_choking_vines();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();
