@@ -1114,8 +1114,10 @@ public:
             for (std::list<Creature*>::const_iterator itr = childrenList.begin(); itr != childrenList.end(); ++itr)
             {
                 player->KilledMonsterCredit(NPC_CAPTIVE_CHILD, (*itr)->GetGUID());
+                Position pos;
+                go->GetNearPosition(pos, frand(3.f, 5.f), frand(-0.13f, 0.13f) + M_PI / 2.f);
                 (*itr)->DespawnOrUnsummon(5000);
-                (*itr)->GetMotionMaster()->MovePoint(1, go->GetPositionX()+5, go->GetPositionY(), go->GetPositionZ());
+                (*itr)->GetMotionMaster()->MovePoint(1, pos);
                 (*itr)->AI()->Talk(SAY_FREE_0);
                 (*itr)->GetMotionMaster()->Clear();
             }
