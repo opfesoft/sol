@@ -4572,25 +4572,31 @@ void ObjectMgr::LoadQuests()
         for (uint8 j = 0; j < QUEST_REWARDS_COUNT; ++j)
         {
             uint32 id = qinfo->RewardItemId[j];
+            if (j > 0 && !qinfo->RewardItemId[0] && id)
+                sLog->outErrorDb("Quest %u has `RewardItem%d` = %u but no `RewardItem1`, quest will not reward this item.", qinfo->GetQuestId(), j+1, id);
+            if (j > 1 && !qinfo->RewardItemId[1] && id)
+                sLog->outErrorDb("Quest %u has `RewardItem%d` = %u but no `RewardItem2`, quest will not reward this item.", qinfo->GetQuestId(), j+1, id);
+            if (j > 2 && !qinfo->RewardItemId[2] && id)
+                sLog->outErrorDb("Quest %u has `RewardItem%d` = %u but no `RewardItem3`, quest will not reward this item.", qinfo->GetQuestId(), j+1, id);
             if (id)
             {
                 if (!sObjectMgr->GetItemTemplate(id))
                 {
-                    sLog->outErrorDb("Quest %u has `RewardItemId%d` = %u but item with entry %u does not exist, quest will not reward this item.",
+                    sLog->outErrorDb("Quest %u has `RewardItem%d` = %u but item with entry %u does not exist, quest will not reward this item.",
                         qinfo->GetQuestId(), j+1, id, id);
                     qinfo->RewardItemId[j] = 0;                // no changes, quest will not reward this item
                 }
 
                 if (!qinfo->RewardItemIdCount[j])
                 {
-                    sLog->outErrorDb("Quest %u has `RewardItemId%d` = %u but `RewardItemIdCount%d` = 0, quest will not reward this item.",
+                    sLog->outErrorDb("Quest %u has `RewardItem%d` = %u but `RewardAmount%d` = 0, quest will not reward this item.",
                         qinfo->GetQuestId(), j+1, id, j+1);
                     // no changes
                 }
             }
             else if (qinfo->RewardItemIdCount[j]>0)
             {
-                sLog->outErrorDb("Quest %u has `RewardItemId%d` = 0 but `RewardItemIdCount%d` = %u.",
+                sLog->outErrorDb("Quest %u has `RewardItem%d` = 0 but `RewardAmount%d` = %u.",
                     qinfo->GetQuestId(), j+1, j+1, qinfo->RewardItemIdCount[j]);
                 // no changes, quest ignore this data
             }
