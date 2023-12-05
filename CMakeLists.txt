@@ -89,7 +89,6 @@ CU_RUN_HOOK("AFTER_LOAD_CMAKE_MODULES")
 # basic packagesearching and setup (further support will be needed, this is a preliminary release!)
 set(ACE_EXPECTED_VERSION 6.3.3)
 
-find_package(OpenSSL REQUIRED)
 find_package(ACE REQUIRED)
 find_package(MySQL REQUIRED)
 

@@ -9,11 +9,14 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-add_library(openssl STATIC IMPORTED GLOBAL)
+find_package(OpenSSL 3.0.0...3.1.4 REQUIRED)
 
-set_target_properties(openssl
-  PROPERTIES
-    IMPORTED_LOCATION
-      "${OPENSSL_LIBRARY}"
-    INTERFACE_INCLUDE_DIRECTORIES
-      "${OPENSSL_INCLUDE_DIR}")
+add_library(openssl INTERFACE)
+
+target_link_libraries(openssl
+  INTERFACE
+    ${OPENSSL_LIBRARIES})
+
+target_include_directories(openssl
+  INTERFACE
+    ${OPENSSL_INCLUDE_DIR})
