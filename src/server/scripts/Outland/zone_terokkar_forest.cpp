@@ -161,7 +161,8 @@ class npc_greatfather_aldrimus : public CreatureScript
 
 enum q10036Torgos
 {
-    NPC_TORGOS                  = 18707
+    NPC_TORGOS                  =  18707,
+    GO_TRACHELAS_CARCASS        = 184844,
 };
 
 class spell_q10036_torgos : public SpellScriptLoader
@@ -173,14 +174,26 @@ class spell_q10036_torgos : public SpellScriptLoader
         {
             PrepareSpellScript(spell_q10036_torgos_SpellScript);
 
+            SpellCastResult CheckCast()
+            {
+                if (GetCaster()->FindNearestCreature(NPC_TORGOS, 100.0f, true))
+                    return SPELL_CAST_OK;
+                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+            }
+
             void HandleSendEvent(SpellEffIndex  /*effIndex*/)
             {
+                GetCaster()->SummonGameObject(GO_TRACHELAS_CARCASS, GetCaster()->GetPositionX(), GetCaster()->GetPositionY(), GetCaster()->GetPositionZ(), GetCaster()->GetOrientation(), 0, 0, 0, 0, 60);
                 if (Creature* torgos = GetCaster()->FindNearestCreature(NPC_TORGOS, 100.0f, true))
+                {
+                    torgos->SetCorpseDelay(60);
                     torgos->GetAI()->AttackStart(GetCaster());
+                }
             }
 
             void Register()
             {
+                OnCheckCast += SpellCheckCastFn(spell_q10036_torgos_SpellScript::CheckCast);
                 OnEffectLaunch += SpellEffectFn(spell_q10036_torgos_SpellScript::HandleSendEvent, EFFECT_0, SPELL_EFFECT_SEND_EVENT);
             }
         };
