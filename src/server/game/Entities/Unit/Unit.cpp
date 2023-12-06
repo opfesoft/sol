@@ -939,7 +939,11 @@ uint32 Unit::DealDamage(Unit* attacker, Unit* victim, uint32 damage, CleanDamage
                 victim->ToCreature()->SetLastDamagedTime(sWorld->GetGameTime()+MAX_AGGRO_RESET_TIME);
 
             if (attacker)
+            {
+                if (spellProto && victim->CanHaveThreatList() && !victim->HasUnitState(UNIT_STATE_EVADE) && !victim->IsInCombat() && !victim->IsInCombatWith(attacker))
+                    victim->CombatStart(attacker, !(spellProto->HasAttribute(SPELL_ATTR3_NO_INITIAL_AGGRO)));
                 victim->AddThreat(attacker, float(damage), damageSchoolMask, spellProto);
+            }
         }
         else                                                // victim is a player
         {
