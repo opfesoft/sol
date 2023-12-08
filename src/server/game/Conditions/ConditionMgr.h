@@ -72,18 +72,18 @@ enum ConditionTypes
     CONDITION_QUESTSTATE            = 47,                   // quest_id         state_mask     0                  true if player is in any of the provided quest states for the quest (1 = not taken, 2 = completed, 8 = in progress, 32 = failed, 64 = rewarded)
     CONDITION_QUEST_OBJECTIVE_PROGRESS = 48,                // quest_id         objectiveIndex objectiveCount     true if player has reached the specified objectiveCount quest progress for the objectiveIndex for the specified quest
     CONDITION_DIFFICULTY_ID            = 49,                // don't use on 3.3.5a
-    CONDITION_TC_END                   = 50,                // placeholder
+    CONDITION_RANGE1_END               = 50,                // placeholder
 
-    CONDITION_AC_START                 = 100,
+    CONDITION_RANGE2_START             = 100,
     CONDITION_QUEST_SATISFY_EXCLUSIVE  = 101,                // quest_id         0              0                  true if satisfied exclusive group
     CONDITION_HAS_AURA_TYPE            = 102,                // aura_type        0              0                  true if has aura type
-    CONDITION_AC_END                   = 103,                // placeholder
+    CONDITION_RANGE2_END               = 103,                // placeholder
 
-    CONDITION_SOL_START                = 150,                // placeholder
+    CONDITION_RANGE3_START             = 150,                // placeholder
     CONDITION_HAS_EMPTY_SEAT           = 151,                // 0                0              0                  true if the unit is a vehicle and has an empty seat
     CONDITION_HAS_MINION               = 152,                // creature entry   alive state    0                  true if the unit has a minion with the specified creature entry and the alive state 1 (alive), 2 (dead) or 0 (both)
     CONDITION_UNIT_HAS_FLAG            = 153,                // index            flag mask      0                  true if the unit has all flags specified in the mask
-    CONDITION_SOL_END                  = 154                 // placeholder
+    CONDITION_RANGE3_END               = 154                 // placeholder
 };
 
 /*! Documentation on implementing a new ConditionSourceType:
@@ -140,10 +140,11 @@ enum ConditionSourceType
     CONDITION_SOURCE_TYPE_SMART_EVENT                    = 22,
     CONDITION_SOURCE_TYPE_NPC_VENDOR                     = 23,
     CONDITION_SOURCE_TYPE_SPELL_PROC                     = 24,
-    CONDITION_SOURCE_TYPE_TERRAIN_SWAP                   = 25, // don't use on 3.3.5a
-    CONDITION_SOURCE_TYPE_PHASE                          = 26, // don't use on 3.3.5a
-    CONDITION_SOURCE_TYPE_GRAVEYARD                      = 27, // don't use on 3.3.5a
-    CONDITION_SOURCE_TYPE_MAX                            = 28  // placeholder
+    CONDITION_SOURCE_TYPE_RANGE1_END                     = 25, // placeholder
+
+    CONDITION_SOURCE_TYPE_RANGE2_START                   = 150, // placeholder
+    CONDITION_SOURCE_TYPE_SMART_EVENT_TARGET             = 151,
+    CONDITION_SOURCE_TYPE_RANGE2_END                     = 152, // placeholder
 };
 
 enum RelationType
@@ -187,7 +188,7 @@ struct Condition
     ConditionSourceType     SourceType;        //SourceTypeOrReferenceId
     uint32                  SourceGroup;
     int32                   SourceEntry;
-    uint32                  SourceId;          // So far, only used in CONDITION_SOURCE_TYPE_SMART_EVENT
+    uint32                  SourceId;          // So far, only used in CONDITION_SOURCE_TYPE_SMART_EVENT and CONDITION_SOURCE_TYPE_SMART_EVENT_TARGET
     uint32                  ElseGroup;
     ConditionTypes          ConditionType;     //ConditionTypeOrReference
     uint32                  ConditionValue1;
@@ -254,6 +255,7 @@ class ConditionMgr
         ConditionList GetConditionsForNotGroupedEntry(ConditionSourceType sourceType, uint32 entry);
         ConditionList GetConditionsForSpellClickEvent(uint32 creatureId, uint32 spellId);
         ConditionList GetConditionsForSmartEvent(int32 entryOrGuid, uint32 eventId, uint32 sourceType);
+        ConditionList GetConditionsForSmartEventTarget(int32 entryOrGuid, uint32 eventId, uint32 sourceType);
         ConditionList GetConditionsForVehicleSpell(uint32 creatureId, uint32 spellId);
         ConditionList GetConditionsForNpcVendorEvent(uint32 creatureId, uint32 itemId);
 
@@ -274,6 +276,7 @@ class ConditionMgr
         CreatureSpellConditionContainer   SpellClickEventConditionStore;
         NpcVendorConditionContainer       NpcVendorConditionContainerStore;
         SmartEventConditionContainer      SmartEventConditionStore;
+        SmartEventConditionContainer      SmartEventTargetConditionStore;
 };
 
 #define sConditionMgr ACE_Singleton<ConditionMgr, ACE_Null_Mutex>::instance()

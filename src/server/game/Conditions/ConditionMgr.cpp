@@ -805,18 +805,20 @@ bool ConditionMgr::CanHaveSourceGroupSet(ConditionSourceType sourceType) const
             sourceType == CONDITION_SOURCE_TYPE_SPELL_IMPLICIT_TARGET ||
             sourceType == CONDITION_SOURCE_TYPE_SPELL_CLICK_EVENT ||
             sourceType == CONDITION_SOURCE_TYPE_SMART_EVENT ||
+            sourceType == CONDITION_SOURCE_TYPE_SMART_EVENT_TARGET ||
             sourceType == CONDITION_SOURCE_TYPE_NPC_VENDOR);
 }
 
 bool ConditionMgr::CanHaveSourceIdSet(ConditionSourceType sourceType) const
 {
-    return (sourceType == CONDITION_SOURCE_TYPE_SMART_EVENT);
+    return (sourceType == CONDITION_SOURCE_TYPE_SMART_EVENT || sourceType == CONDITION_SOURCE_TYPE_SMART_EVENT_TARGET);
 }
 
 ConditionList ConditionMgr::GetConditionsForNotGroupedEntry(ConditionSourceType sourceType, uint32 entry)
 {
     ConditionList spellCond;
-    if (sourceType > CONDITION_SOURCE_TYPE_NONE && sourceType < CONDITION_SOURCE_TYPE_MAX)
+    if ((sourceType > CONDITION_SOURCE_TYPE_NONE && sourceType < CONDITION_SOURCE_TYPE_RANGE1_END)
+        || (sourceType > CONDITION_SOURCE_TYPE_RANGE2_START && sourceType < CONDITION_SOURCE_TYPE_RANGE2_END))
     {
         ConditionContainer::const_iterator itr = ConditionStore.find(sourceType);
         if (itr != ConditionStore.end())
@@ -882,6 +884,24 @@ ConditionList ConditionMgr::GetConditionsForSmartEvent(int32 entryOrGuid, uint32
             cond = (*i).second;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
             sLog->outDebug(LOG_FILTER_CONDITIONSYS, "GetConditionsForSmartEvent: found conditions for Smart Event entry or guid %d event_id %u", entryOrGuid, eventId);
+#endif
+        }
+    }
+    return cond;
+}
+
+ConditionList ConditionMgr::GetConditionsForSmartEventTarget(int32 entryOrGuid, uint32 eventId, uint32 sourceType)
+{
+    ConditionList cond;
+    SmartEventConditionContainer::const_iterator itr = SmartEventTargetConditionStore.find(std::make_pair(entryOrGuid, sourceType));
+    if (itr != SmartEventTargetConditionStore.end())
+    {
+        ConditionTypeContainer::const_iterator i = (*itr).second.find(eventId + 1);
+        if (i != (*itr).second.end())
+        {
+            cond = (*i).second;
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
+            sLog->outDebug(LOG_FILTER_CONDITIONSYS, "GetConditionsForSmartEventTarget: found conditions for Smart Event entry or guid %d event_id %u", entryOrGuid, eventId);
 #endif
         }
     }
@@ -1134,6 +1154,14 @@ void ConditionMgr::LoadConditions(bool isReload)
                     ++count;
                     continue;
                 }
+                case CONDITION_SOURCE_TYPE_SMART_EVENT_TARGET:
+                {
+                    std::pair<int32, uint32> key = std::make_pair(cond->SourceEntry, cond->SourceId);
+                    SmartEventTargetConditionStore[key][cond->SourceGroup].push_back(cond);
+                    valid = true;
+                    ++count;
+                    continue;
+                }
                 default:
                     break;
             }
@@ -1317,7 +1345,9 @@ bool ConditionMgr::addToSpellImplicitTargetConditions(Condition* cond)
 
 bool ConditionMgr::isSourceTypeValid(Condition* cond)
 {
-    if (cond->SourceType == CONDITION_SOURCE_TYPE_NONE || cond->SourceType >= CONDITION_SOURCE_TYPE_MAX)
+    if (cond->SourceType == CONDITION_SOURCE_TYPE_NONE
+        || (cond->SourceType >= CONDITION_SOURCE_TYPE_RANGE1_END && cond->SourceType <= CONDITION_SOURCE_TYPE_RANGE2_START)
+        || (cond->SourceType >= CONDITION_SOURCE_TYPE_RANGE2_END))
     {
         sLog->outErrorDb("Invalid ConditionSourceType %u in `condition` table, ignoring.", uint32(cond->SourceType));
         return false;
@@ -1325,13 +1355,6 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond)
 
     switch (cond->SourceType)
     {
-        case CONDITION_SOURCE_TYPE_TERRAIN_SWAP:
-        case CONDITION_SOURCE_TYPE_PHASE:
-        case CONDITION_SOURCE_TYPE_GRAVEYARD:
-        {
-            sLog->outErrorDb("ConditionSourceType %u in `condition` table is not supported on 3.3.5a, ignoring.", uint32(cond->SourceType));
-            return false;
-        }
         case CONDITION_SOURCE_TYPE_CREATURE_LOOT_TEMPLATE:
         {
             if (!LootTemplates_Creature.HaveLootFor(cond->SourceGroup))
@@ -1662,6 +1685,7 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond)
         case CONDITION_SOURCE_TYPE_GOSSIP_MENU:
         case CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION:
         case CONDITION_SOURCE_TYPE_SMART_EVENT:
+        case CONDITION_SOURCE_TYPE_SMART_EVENT_TARGET:
         case CONDITION_SOURCE_TYPE_NONE:
         default:
             break;
@@ -1672,9 +1696,9 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond)
 bool ConditionMgr::isConditionTypeValid(Condition* cond)
 {
     if (cond->ConditionType == CONDITION_NONE
-        || (cond->ConditionType >= CONDITION_TC_END && cond->ConditionType <= CONDITION_AC_START)
-        || (cond->ConditionType >= CONDITION_AC_END && cond->ConditionType <= CONDITION_SOL_START)
-        || (cond->ConditionType >= CONDITION_SOL_END)
+        || (cond->ConditionType >= CONDITION_RANGE1_END && cond->ConditionType <= CONDITION_RANGE2_START)
+        || (cond->ConditionType >= CONDITION_RANGE2_END && cond->ConditionType <= CONDITION_RANGE3_START)
+        || (cond->ConditionType >= CONDITION_RANGE3_END)
         )
     {
         sLog->outErrorDb("SourceEntry %u in `condition` table has an invalid ConditionType (%u), ignoring.",
@@ -2330,6 +2354,19 @@ void ConditionMgr::Clean()
     }
 
     SmartEventConditionStore.clear();
+
+    for (SmartEventConditionContainer::iterator itr = SmartEventTargetConditionStore.begin(); itr != SmartEventTargetConditionStore.end(); ++itr)
+    {
+        for (ConditionTypeContainer::iterator it = itr->second.begin(); it != itr->second.end(); ++it)
+        {
+            for (ConditionList::const_iterator i = it->second.begin(); i != it->second.end(); ++i)
+                delete *i;
+            it->second.clear();
+        }
+        itr->second.clear();
+    }
+
+    SmartEventTargetConditionStore.clear();
 
     for (CreatureSpellConditionContainer::iterator itr = SpellClickEventConditionStore.begin(); itr != SpellClickEventConditionStore.end(); ++itr)
     {

@@ -4198,6 +4198,18 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         delete l;
         l = NULL;
     }
+    else
+    {
+        ConditionList conds = sConditionMgr->GetConditionsForSmartEventTarget(e.entryOrGuid, e.event_id, e.source_type);
+        for (ObjectList::const_iterator itr = l->begin(); itr != l->end();)
+        {
+            ConditionSourceInfo info = ConditionSourceInfo(*itr);
+            if (!sConditionMgr->IsObjectMeetToConditions(info, conds))
+                l->erase(itr++);
+            else
+                ++itr;
+        }
+    }
 
     return l;
 }
