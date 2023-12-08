@@ -1080,6 +1080,57 @@ class spell_summon_caster_back_z_offset : public SpellScriptLoader
         float _z_offset;
 };
 
+enum TriangulationPoint
+{
+    SPELL_TRIANGULATION_POINT_ONE = 34830,
+    SPELL_TRIANGULATION_POINT_TWO = 34857,
+};
+
+class spell_triangulation_point : public SpellScriptLoader
+{
+public:
+    spell_triangulation_point() : SpellScriptLoader("spell_triangulation_point") { }
+
+    class spell_triangulation_point_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_triangulation_point_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellEntry*/)
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_TRIANGULATION_POINT_ONE) || !sSpellMgr->GetSpellInfo(SPELL_TRIANGULATION_POINT_TWO))
+                return false;
+            return true;
+        }
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            if (Unit* u = GetCaster())
+                if (Player* p = u->ToPlayer())
+                {
+                    switch (GetSpellInfo()->Id)
+                    {
+                        case SPELL_TRIANGULATION_POINT_ONE:
+                            p->SetFacingTo(p->GetAngle(4199.7f, 1766.39f));
+                            break;
+                        case SPELL_TRIANGULATION_POINT_TWO:
+                            p->SetFacingTo(p->GetAngle(3923.06f, 3873.36f));
+                            break;
+                    }
+                }
+        }
+
+        void Register()
+        {
+            OnEffectLaunch += SpellEffectFn(spell_triangulation_point_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_triangulation_point_SpellScript();
+    };
+};
+
 
 // Theirs
 class spell_generic_quest_update_entry_SpellScript : public SpellScript
@@ -3157,6 +3208,7 @@ void AddSC_quest_spell_scripts()
     new spell_q9718_crow_transform();
     new spell_q12573_frenzyhearts_fury();
     new spell_summon_caster_back_z_offset("spell_summon_caster_back_z_offset_20", 20.f);
+    new spell_triangulation_point();
 
     // Theirs
     new spell_q55_sacred_cleansing();
