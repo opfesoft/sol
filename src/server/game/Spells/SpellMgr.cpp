@@ -4656,6 +4656,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 37852:
             spellInfo->AttributesEx5 |= SPELL_ATTR5_USABLE_WHILE_STUNNED;
             break;
+        case 37730: // Tidal Wave (Morogrim Tidewalker)
+            spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
+            break;
 
         // Underbog
         case 34290: // Acid Spit (Ghaz'an)
