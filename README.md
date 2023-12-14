@@ -48,6 +48,11 @@ You are free to use Sol, but there won't be any support for it. This is solely a
 - The events "Zalazane's Fall" and "Operation: Gnomeregan" will not be implemented as those events are useless without progressing to Cataclysm where the Trolls and Gnomes got their own starting areas.
 - Sol aims exclusively at fixing bugs and improving the player experience; this also means to include changes which were not part of retail at the time
 
+#### Authors & Contributors
+This project exists thanks to the [authors](AUTHORS).
+
 #### License:
 - The new source components of Project "Sol" and the old sources based on AzerothCore are released under the [GNU AGPLv3](LICENSE.md) license
 - The old sources based on MaNGOS/TrinityCore are released under the [GNU GPLv2](deps/gpl-2.0.md) license
+
+It's important to note that Project "Sol" is not an official Blizzard Entertainment product, and it is not affiliated with or endorsed by World of Warcraft or Blizzard Entertainment. Project "Sol" does not in any case sponsor nor support illegal public servers. If you use this project to run an illegal public server and not for testing and learning it is your own personal choice.
