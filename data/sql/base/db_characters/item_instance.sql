@@ -24,7 +24,7 @@ CREATE TABLE `item_instance` (
   `text` text DEFAULT NULL,
   PRIMARY KEY (`guid`),
   KEY `idx_owner_guid` (`owner_guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Item System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Item System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `item_instance` WRITE;

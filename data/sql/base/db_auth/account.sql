@@ -16,13 +16,13 @@ CREATE TABLE `account` (
   `token_key` varchar(100) NOT NULL DEFAULT '',
   `email` varchar(255) NOT NULL DEFAULT '',
   `reg_mail` varchar(255) NOT NULL DEFAULT '',
-  `joindate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `joindate` datetime NOT NULL DEFAULT current_timestamp(),
   `last_ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
   `last_attempt_ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
   `failed_logins` int(10) unsigned NOT NULL DEFAULT 0,
   `locked` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `lock_country` varchar(2) NOT NULL DEFAULT '00',
-  `last_login` timestamp NULL DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
   `online` int(10) unsigned NOT NULL DEFAULT 0,
   `expansion` tinyint(3) unsigned NOT NULL DEFAULT 2,
   `mutetime` bigint(20) NOT NULL DEFAULT 0,
@@ -33,7 +33,7 @@ CREATE TABLE `account` (
   `recruiter` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COMMENT='Account System';
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Account System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `account` WRITE;

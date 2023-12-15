@@ -11,13 +11,12 @@ CREATE TABLE `gameobject_queststarter` (
   `id` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `quest` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Quest Identifier',
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `gameobject_queststarter` WRITE;
 /*!40000 ALTER TABLE `gameobject_queststarter` DISABLE KEYS */;
-INSERT INTO `gameobject_queststarter`
-VALUES
+INSERT INTO `gameobject_queststarter` VALUES
 (31,248),
 (31,249),
 (34,140),
@@ -118,6 +117,7 @@ VALUES
 (142151,285),
 (142179,2867),
 (142195,2903),
+(142343,2954),
 (142343,2967),
 (142343,2977),
 (142487,2947),
@@ -126,6 +126,7 @@ VALUES
 (142487,2952),
 (142487,2953),
 (142702,2933),
+(142712,2933),
 (142958,2940),
 (144063,2942),
 (148504,3914),

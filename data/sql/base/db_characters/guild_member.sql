@@ -16,7 +16,7 @@ CREATE TABLE `guild_member` (
   UNIQUE KEY `guid_key` (`guid`),
   KEY `guildid_key` (`guildid`),
   KEY `guildid_rank_key` (`guildid`,`rank`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Guild System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `guild_member` WRITE;

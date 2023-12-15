@@ -13,13 +13,12 @@ CREATE TABLE `gameobject_questitem` (
   `ItemId` int(10) unsigned NOT NULL DEFAULT 0,
   `VerifiedBuild` smallint(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`GameObjectEntry`,`Idx`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `gameobject_questitem` WRITE;
 /*!40000 ALTER TABLE `gameobject_questitem` DISABLE KEYS */;
-INSERT INTO `gameobject_questitem`
-VALUES
+INSERT INTO `gameobject_questitem` VALUES
 (32,0,1309,0),
 (41,0,1923,0),
 (52,0,2007,0),

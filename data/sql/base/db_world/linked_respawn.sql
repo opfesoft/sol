@@ -12,13 +12,12 @@ CREATE TABLE `linked_respawn` (
   `linkedGuid` int(10) unsigned NOT NULL COMMENT 'master creature',
   `linkType` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`,`linkType`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='Creature Respawn Link System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC COMMENT='Creature Respawn Link System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `linked_respawn` WRITE;
 /*!40000 ALTER TABLE `linked_respawn` DISABLE KEYS */;
-INSERT INTO `linked_respawn`
-VALUES
+INSERT INTO `linked_respawn` VALUES
 (116,12597,0),
 (118,3453,0),
 (120,3453,0),

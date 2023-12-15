@@ -13,13 +13,12 @@ CREATE TABLE `spell_pet_auras` (
   `pet` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'pet id; 0 = all',
   `aura` mediumint(8) unsigned NOT NULL COMMENT 'pet aura id',
   PRIMARY KEY (`spell`,`effectId`,`pet`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_pet_auras` WRITE;
 /*!40000 ALTER TABLE `spell_pet_auras` DISABLE KEYS */;
-INSERT INTO `spell_pet_auras`
-VALUES
+INSERT INTO `spell_pet_auras` VALUES
 (19028,0,0,25228),
 (19578,0,0,19579),
 (20895,0,0,24529),

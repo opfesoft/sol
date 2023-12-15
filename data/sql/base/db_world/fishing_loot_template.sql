@@ -19,13 +19,12 @@ CREATE TABLE `fishing_loot_template` (
   `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `fishing_loot_template` WRITE;
 /*!40000 ALTER TABLE `fishing_loot_template` DISABLE KEYS */;
-INSERT INTO `fishing_loot_template`
-VALUES
+INSERT INTO `fishing_loot_template` VALUES
 (1,11000,11000,100,0,1,1,1,1,NULL),
 (1,11799,11799,100,0,32768,1,1,1,NULL),
 (2,11003,11003,100,0,1,1,1,1,NULL),

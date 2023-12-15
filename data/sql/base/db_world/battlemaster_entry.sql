@@ -11,13 +11,12 @@ CREATE TABLE `battlemaster_entry` (
   `entry` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Entry of a creature',
   `bg_template` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Battleground template id',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `battlemaster_entry` WRITE;
 /*!40000 ALTER TABLE `battlemaster_entry` DISABLE KEYS */;
-INSERT INTO `battlemaster_entry`
-VALUES
+INSERT INTO `battlemaster_entry` VALUES
 (347,1),
 (857,3),
 (907,3),

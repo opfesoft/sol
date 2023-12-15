@@ -13,7 +13,7 @@ CREATE TABLE `account_data` (
   `time` int(10) unsigned NOT NULL DEFAULT 0,
   `data` blob NOT NULL,
   PRIMARY KEY (`accountId`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `account_data` WRITE;

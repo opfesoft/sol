@@ -13,7 +13,7 @@ CREATE TABLE `character_reputation` (
   `standing` int(11) NOT NULL DEFAULT 0,
   `flags` smallint(5) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`,`faction`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Player System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_reputation` WRITE;

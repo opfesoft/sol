@@ -13,7 +13,7 @@ CREATE TABLE `playercreateinfo_spell_custom` (
   `Spell` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `Note` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`racemask`,`classmask`,`Spell`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `playercreateinfo_spell_custom` WRITE;

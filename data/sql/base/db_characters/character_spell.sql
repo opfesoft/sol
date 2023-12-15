@@ -12,7 +12,7 @@ CREATE TABLE `character_spell` (
   `spell` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Spell Identifier',
   `specMask` tinyint(3) unsigned NOT NULL DEFAULT 1,
   PRIMARY KEY (`guid`,`spell`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Player System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_spell` WRITE;

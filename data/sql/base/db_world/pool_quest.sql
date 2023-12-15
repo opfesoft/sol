@@ -13,13 +13,12 @@ CREATE TABLE `pool_quest` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`entry`),
   KEY `idx_guid` (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pool_quest` WRITE;
 /*!40000 ALTER TABLE `pool_quest` DISABLE KEYS */;
-INSERT INTO `pool_quest`
-VALUES
+INSERT INTO `pool_quest` VALUES
 (236,385,'Fueling the Demolishers'),
 (11354,356,'Wanted: Nazan\'s Riding Crop'),
 (11362,356,'Wanted: Keli\'dan\'s Feathered Stave'),

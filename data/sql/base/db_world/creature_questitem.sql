@@ -13,13 +13,12 @@ CREATE TABLE `creature_questitem` (
   `ItemId` int(10) unsigned NOT NULL DEFAULT 0,
   `VerifiedBuild` smallint(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`CreatureEntry`,`Idx`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_questitem` WRITE;
 /*!40000 ALTER TABLE `creature_questitem` DISABLE KEYS */;
-INSERT INTO `creature_questitem`
-VALUES
+INSERT INTO `creature_questitem` VALUES
 (3,0,884,0),
 (3,1,1129,0),
 (38,0,752,0),

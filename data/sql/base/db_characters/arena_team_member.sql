@@ -16,7 +16,7 @@ CREATE TABLE `arena_team_member` (
   `seasonWins` smallint(5) unsigned NOT NULL DEFAULT 0,
   `personalRating` smallint(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`arenaTeamId`,`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `arena_team_member` WRITE;

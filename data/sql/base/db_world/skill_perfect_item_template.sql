@@ -13,13 +13,12 @@ CREATE TABLE `skill_perfect_item_template` (
   `perfectCreateChance` float NOT NULL DEFAULT 0 COMMENT 'chance to create the perfect item instead',
   `perfectItemType` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'perfect item type to create instead',
   PRIMARY KEY (`spellId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Crafting Perfection System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Crafting Perfection System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `skill_perfect_item_template` WRITE;
 /*!40000 ALTER TABLE `skill_perfect_item_template` DISABLE KEYS */;
-INSERT INTO `skill_perfect_item_template`
-VALUES
+INSERT INTO `skill_perfect_item_template` VALUES
 (53831,55534,20,41432),
 (53832,55534,20,41434),
 (53834,55534,20,41438),

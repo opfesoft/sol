@@ -13,13 +13,12 @@ CREATE TABLE `playercreateinfo_spell` (
   `Spell` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `Note` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`racemask`,`classmask`,`Spell`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `playercreateinfo_spell` WRITE;
 /*!40000 ALTER TABLE `playercreateinfo_spell` DISABLE KEYS */;
-INSERT INTO `playercreateinfo_spell`
-VALUES
+INSERT INTO `playercreateinfo_spell` VALUES
 (0,0,81,'Dodge'),
 (0,0,203,'Unarmed'),
 (0,0,204,'Defense'),
@@ -99,6 +98,7 @@ VALUES
 (2,32,54562,'Command'),
 (2,45,20572,'Blood Fury'),
 (2,64,33697,'Blood Fury'),
+(2,64,65222,'Command'),
 (2,73,21563,'Command'),
 (2,256,20575,'Command'),
 (2,256,33702,'Blood Fury'),

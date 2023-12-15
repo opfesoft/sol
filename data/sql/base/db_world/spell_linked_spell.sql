@@ -13,13 +13,12 @@ CREATE TABLE `spell_linked_spell` (
   `type` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `comment` text NOT NULL,
   UNIQUE KEY `trigger_effect_type` (`spell_trigger`,`spell_effect`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='Spell System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Spell System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_linked_spell` WRITE;
 /*!40000 ALTER TABLE `spell_linked_spell` DISABLE KEYS */;
-INSERT INTO `spell_linked_spell`
-VALUES
+INSERT INTO `spell_linked_spell` VALUES
 (-75731,-75055,0,'Instant Statue'),
 (-75731,-74890,0,'Instant Statue'),
 (-73077,-69188,0,'Rocket Pack - linked aura'),
@@ -73,7 +72,6 @@ VALUES
 (-52278,52279,0,'Hell Hath a Fury: High Priestess Tua-Tua on Burn'),
 (-52249,41909,0,'Hell Hath a Fury: Hex of Air Knockback'),
 (-52098,52092,0,'Charge Up - Temporary Electrical Charge'),
-(-52010,-51966,0,'Remove Scourge Disguise'),
 (-51221,44280,0,'On spellfade Taxi to Explorers\' League Outpost - Spellcast Taxi to Explorers\' League'),
 (-50493,-50314,0,'Disco Ball(Listening to Music)'),
 (-50314,-50493,0,'Disco Ball'),
@@ -86,6 +84,7 @@ VALUES
 (-49097,49098,0,'When Out of Body Experience expires cast Arugal Teleport Back'),
 (-48809,-48143,0,'Removing Binding Life removes Forgotten Aura'),
 (-48417,-47406,0,'On Strip Detect Drakuru 04 fade - Remove Envision Drakuru'),
+(-48323,48330,0,'Indisposed - Cast \'Create Amberseeds\' On Expiration'),
 (-48263,-57340,0,'Frost Presence - Tank Class Passive Threat Remove'),
 (-47960,-63311,0,'Glyph of Shadowflame Rank 1'),
 (-47744,61611,0,'Cast other side when curse expires'),
@@ -103,7 +102,6 @@ VALUES
 (-43883,-42992,0,'Rental racing ram removed removes Trot'),
 (-43883,-42146,0,'Remove Brewfest Ram DND when Rental racing ram removed'),
 (-43369,-68347,0,'Worg Disguise'),
-(-43351,50167,0,''),
 (-43351,61720,0,''),
 (-42846,-36032,0,'Arcane Missiles Rank 13'),
 (-42843,-36032,0,'Arcane Missiles Rank 12'),
@@ -181,6 +179,7 @@ VALUES
 (7946,-7944,1,'Evolving Ectoplasm (Black) - Remove Evolving Ectoplasm Blue'),
 (7946,-7943,1,'Evolving Ectoplasm (Black) - Remove Evolving Ectoplasm Red'),
 (7946,7743,2,'Evolving Ectoplasm (Black) - trigger Shadow Immunity'),
+(8151,-22766,0,'Surprise Attack - Remove \'Sneak\''),
 (11511,11518,0,'Activate Bomb trigger'),
 (13278,13493,0,'Gnomish Death Ray'),
 (13819,31726,0,'Summon Warhorse'),
@@ -244,6 +243,7 @@ VALUES
 (28084,-28059,1,'Negative Charge - Positive Charge'),
 (28273,-28274,0,'Bloodthistle'),
 (28732,-28798,1,'Widow\'s Embrace - Frenzy'),
+(28757,28758,0,'Stalker\'s Ally'),
 (29126,29099,1,'Flame of Darnassus'),
 (29135,29102,1,'Flame of Ironforge'),
 (29136,29130,1,'Flame of Orgrimmar'),
@@ -266,6 +266,10 @@ VALUES
 (33686,31705,0,'Murmur\'s Shockwave Jump'),
 (34767,31726,0,'Summon Charger - Blood Elf'),
 (34769,31726,0,'Summon Warhorse - Blood Elf'),
+(35475,51120,1,'Drums of War - Tinnitus'),
+(35476,51120,1,'Drums of Battle - Tinnitus'),
+(35477,51120,1,'Drums of Speed - Tinnitus'),
+(35478,51120,1,'Drums of War - Tinnitus'),
 (36574,36650,0,'Apply Phase Slip Vulnerability'),
 (36587,36573,1,'Vision Guide quest'),
 (37493,31261,2,'Feign Death'),
@@ -330,6 +334,8 @@ VALUES
 (43332,-42992,0,'Exhausted removes Trot'),
 (43369,68347,0,'Worg Disguise'),
 (43392,42168,0,'Mindless abomination control'),
+(43568,34872,1,'Frost Strike - Frostbite Rune'),
+(43569,34872,1,'Frost - Frostbite Rune'),
 (43648,44007,1,'Storm Eye Safe Zone'),
 (43658,43653,0,'Electrical Arc Visual'),
 (43658,43654,0,'Electrical Arc Visual'),
@@ -371,6 +377,7 @@ VALUES
 (47311,47309,0,'Quest - Jormungar Explosion Spell Spawner triggers Quest - Jormungar Explosion Summon Object'),
 (47311,47924,0,'Quest - Jormungar Explosion Spell Spawner triggers Quest - Jormungar Explosion Summon Object'),
 (47311,47925,0,'Quest - Jormungar Explosion Spell Spawner triggers Quest - Jormungar Explosion Summon Object'),
+(47430,-47447,2,'Undigestible - Immune to Corrosive Spit'),
 (47435,-47447,1,'Messy Business - Remove Spit'),
 (47585,60069,2,'Dispersion (transform/regen)'),
 (47585,63230,2,'Dispersion (immunity)'),
@@ -489,6 +496,7 @@ VALUES
 (58666,58672,1,'Impale (Archavon)'),
 (58875,58876,1,'Spirit Walk'),
 (59628,-57934,0,'Tricks of Trade - remove at trigger'),
+(59651,61358,2,'Infra-green Vision'),
 (59752,72752,0,'Will of the Forsaken Cooldown Trigger'),
 (60882,58672,1,'Impale (Archavon)'),
 (60932,60934,0,'Disengage'),

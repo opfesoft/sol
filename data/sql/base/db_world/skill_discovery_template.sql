@@ -13,13 +13,12 @@ CREATE TABLE `skill_discovery_template` (
   `reqSkillValue` smallint(5) unsigned NOT NULL DEFAULT 0 COMMENT 'skill points requirement',
   `chance` float NOT NULL DEFAULT 0 COMMENT 'chance to discover',
   PRIMARY KEY (`spellId`,`reqSpell`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Skill Discovery System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Skill Discovery System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `skill_discovery_template` WRITE;
 /*!40000 ALTER TABLE `skill_discovery_template` DISABLE KEYS */;
-INSERT INTO `skill_discovery_template`
-VALUES
+INSERT INTO `skill_discovery_template` VALUES
 (28580,0,0,0.1),
 (28581,0,0,0.1),
 (28582,0,0,0.1),

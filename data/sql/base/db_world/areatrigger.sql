@@ -19,13 +19,12 @@ CREATE TABLE `areatrigger` (
   `height` float NOT NULL DEFAULT 0 COMMENT 'Most commonly used when size is 0, but not always',
   `orientation` float NOT NULL DEFAULT 0 COMMENT 'Most commonly used when size is 0, but not always',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM AUTO_INCREMENT=5873 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5873 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `areatrigger` WRITE;
 /*!40000 ALTER TABLE `areatrigger` DISABLE KEYS */;
-INSERT INTO `areatrigger`
-VALUES
+INSERT INTO `areatrigger` VALUES
 (45,0,2924.38,-798.429,161.611,8,0,0,0,0),
 (71,0,-10645.9,1179.06,48.1781,27,0,0,0,0),
 (78,0,-11208.5,1685.34,25.7612,7,0,0,0,0),

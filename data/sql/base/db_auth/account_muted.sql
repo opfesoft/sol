@@ -14,7 +14,7 @@ CREATE TABLE `account_muted` (
   `mutedby` varchar(50) NOT NULL,
   `mutereason` varchar(255) NOT NULL,
   PRIMARY KEY (`guid`,`mutedate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='mute List';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='mute List';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `account_muted` WRITE;

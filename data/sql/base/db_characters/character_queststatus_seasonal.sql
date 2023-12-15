@@ -13,7 +13,7 @@ CREATE TABLE `character_queststatus_seasonal` (
   `event` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Event Identifier',
   PRIMARY KEY (`guid`,`quest`),
   KEY `idx_guid` (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Player System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_queststatus_seasonal` WRITE;

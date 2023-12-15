@@ -19,13 +19,12 @@ CREATE TABLE `quest_details` (
   `EmoteDelay4` int(10) unsigned NOT NULL DEFAULT 0,
   `VerifiedBuild` smallint(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `quest_details` WRITE;
 /*!40000 ALTER TABLE `quest_details` DISABLE KEYS */;
-INSERT INTO `quest_details`
-VALUES
+INSERT INTO `quest_details` VALUES
 (5,5,1,0,0,0,0,0,0,0),
 (6,1,0,0,0,0,0,0,0,12340),
 (7,1,0,0,0,0,0,0,0,12340),
@@ -53,7 +52,6 @@ VALUES
 (51,94,0,0,0,0,0,0,0,0),
 (52,66,1,0,0,0,0,0,0,0),
 (53,94,0,0,0,0,0,0,0,0),
-(54,113,0,0,0,0,0,0,0,12340),
 (55,1,1,5,0,0,0,0,0,0),
 (56,1,5,0,0,0,0,0,0,0),
 (57,5,25,0,0,0,0,0,0,0),
@@ -808,6 +806,7 @@ VALUES
 (1471,1,0,0,0,0,0,0,0,0),
 (1473,1,0,0,0,0,0,0,0,0),
 (1475,1,1,1,1,0,0,0,0,0),
+(1476,1,0,0,0,0,0,0,0,0),
 (1477,1,1,0,0,0,0,0,0,0),
 (1478,1,0,0,0,0,0,0,0,0),
 (1479,1,1,0,0,0,0,0,0,12340),

@@ -22,13 +22,12 @@ CREATE TABLE `reputation_spillover_template` (
   `rate_4` float NOT NULL DEFAULT 0,
   `rank_4` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`faction`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='Reputation spillover reputation gain';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC COMMENT='Reputation spillover reputation gain';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `reputation_spillover_template` WRITE;
 /*!40000 ALTER TABLE `reputation_spillover_template` DISABLE KEYS */;
-INSERT INTO `reputation_spillover_template`
-VALUES
+INSERT INTO `reputation_spillover_template` VALUES
 (21,369,0.5,7,470,0.5,7,577,0.5,7,0,0,0),
 (47,72,0.25,7,54,0.25,7,69,0.25,7,930,0.25,7),
 (54,47,0.25,7,72,0.25,7,69,0.25,7,930,0.25,7),

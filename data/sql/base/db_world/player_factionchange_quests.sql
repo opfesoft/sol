@@ -13,13 +13,12 @@ CREATE TABLE `player_factionchange_quests` (
   PRIMARY KEY (`alliance_id`,`horde_id`),
   UNIQUE KEY `alliance_uniq` (`alliance_id`),
   UNIQUE KEY `horde_uniq` (`horde_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `player_factionchange_quests` WRITE;
 /*!40000 ALTER TABLE `player_factionchange_quests` DISABLE KEYS */;
-INSERT INTO `player_factionchange_quests`
-VALUES
+INSERT INTO `player_factionchange_quests` VALUES
 (7065,7064),
 (7168,7163),
 (7169,7164),
@@ -115,6 +114,7 @@ VALUES
 (10147,10133),
 (10148,10135),
 (10163,10162),
+(10382,10388),
 (10394,10390),
 (10395,10393),
 (10397,10392),

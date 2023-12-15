@@ -19,13 +19,12 @@ CREATE TABLE `disenchant_loot_template` (
   `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `disenchant_loot_template` WRITE;
 /*!40000 ALTER TABLE `disenchant_loot_template` DISABLE KEYS */;
-INSERT INTO `disenchant_loot_template`
-VALUES
+INSERT INTO `disenchant_loot_template` VALUES
 (1,10938,0,0,0,1,1,1,2,NULL),
 (1,10940,0,80,0,1,1,1,2,NULL),
 (2,10939,0,20,0,1,1,1,2,NULL),

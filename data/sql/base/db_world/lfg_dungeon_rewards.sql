@@ -13,13 +13,12 @@ CREATE TABLE `lfg_dungeon_rewards` (
   `firstQuestId` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Quest id with rewards for first dungeon this day',
   `otherQuestId` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Quest id with rewards for Nth dungeon this day',
   PRIMARY KEY (`dungeonId`,`maxLevel`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `lfg_dungeon_rewards` WRITE;
 /*!40000 ALTER TABLE `lfg_dungeon_rewards` DISABLE KEYS */;
-INSERT INTO `lfg_dungeon_rewards`
-VALUES
+INSERT INTO `lfg_dungeon_rewards` VALUES
 (258,15,24881,24889),
 (258,25,24882,24890),
 (258,34,24883,24891),

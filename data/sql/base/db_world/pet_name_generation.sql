@@ -13,13 +13,12 @@ CREATE TABLE `pet_name_generation` (
   `entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `half` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=314 DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM AUTO_INCREMENT=314 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pet_name_generation` WRITE;
 /*!40000 ALTER TABLE `pet_name_generation` DISABLE KEYS */;
-INSERT INTO `pet_name_generation`
-VALUES
+INSERT INTO `pet_name_generation` VALUES
 (1,'Aba',416,0),
 (2,'Az',416,0),
 (3,'Bel',416,0),

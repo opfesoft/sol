@@ -15,13 +15,12 @@ CREATE TABLE `disables` (
   `params_1` varchar(255) NOT NULL DEFAULT '',
   `comment` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`sourceType`,`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `disables` WRITE;
 /*!40000 ALTER TABLE `disables` DISABLE KEYS */;
-INSERT INTO `disables`
-VALUES
+INSERT INTO `disables` VALUES
 (0,128,8,'','','Spell for deprecated item'),
 (0,698,17,'30,489','','Disable of Ritual of Summoning on Alterac Valley and Warsong Gulch'),
 (0,758,8,'','','Spell for deprecated item 1254'),
@@ -106,6 +105,7 @@ VALUES
 (0,58515,64,'','','Ignore LOS on Burn Corpse'),
 (0,58518,64,'','','Ignore LOS on Ahn kahet Brazier Kill Credit'),
 (0,58875,64,'','','Disable LOS for Spirit Walk'),
+(0,59659,64,'','','Ignore LOS for Neutralizing Dose Applied'),
 (0,60535,64,'','','Windles Lighter, disable LOS'),
 (0,60946,64,'','','Disable LOS for Nightmare'),
 (0,60947,64,'','','Disable LOS for Nightmare'),
@@ -803,6 +803,7 @@ VALUES
 (1,13210,0,'','','Deprecated quest: Blizzard Account: - DEM - E - FLAG'),
 (1,13303,0,'','','Deprecated quest'),
 (1,13317,0,'','','Deprecated quest: ----'),
+(1,13374,0,'','','Deprecated Quest: Amped for Revolt!'),
 (1,13381,0,'','','Deprecated Quest: Watts My Target'),
 (1,13405,0,'','','Deprecated quest: Call to Arms: Strand of the Ancients'),
 (1,13407,0,'','','Deprecated quest: Call to Arms: Strand of the Ancients'),

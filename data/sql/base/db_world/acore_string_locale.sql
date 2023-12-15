@@ -12,13 +12,12 @@ CREATE TABLE `acore_string_locale` (
   `locale` varchar(4) NOT NULL,
   `content` text DEFAULT NULL,
   PRIMARY KEY (`entry`,`locale`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `acore_string_locale` WRITE;
 /*!40000 ALTER TABLE `acore_string_locale` DISABLE KEYS */;
-INSERT INTO `acore_string_locale`
-VALUES
+INSERT INTO `acore_string_locale` VALUES
 (1,'deDE','Ihr solltet einen Charakter oder eine Kreatur auswählen.'),
 (2,'deDE','Ihr solltet eine Kreatur auswählen.'),
 (3,'deDE','[SERVER]: %s'),
@@ -178,7 +177,7 @@ VALUES
 (219,'deDE','Talente werden für alle Spieler beim nächsten Login zurückgesetzt. Es wird dringend empfohlen sich neu einzuloggen!'),
 (220,'deDE','Kreatur (GUID: %u) Kein Wegpunkt gefunden.'),
 (221,'deDE','Kreatur (GUID: %u) Letzter Wegpunkt nicht gefunden.'),
-(223,'deDE','Kreatur (GUID: %u) Keine Wegpunkte gefunden - Dies ist ein Trinity-DB Problem (single float).'),
+(223,'deDE','Kreatur (GUID: %u) Keine Wegpunkte gefunden.'),
 (224,'deDE','Angewählte Kreatur wird ignoriert - bereitgestellte GUID wird verwendet'),
 (225,'deDE','Kreatur (GUID: %u) nicht gefunden'),
 (226,'deDE','Ihr müsst einen visuellen Wegpunkt wählen.'),
@@ -427,7 +426,7 @@ VALUES
 (512,'deDE','%d - |cffffffff|Hitem:%d:0:0:0:0:0:0:0:0|h[%s]|h|r '),
 (513,'deDE','%d - |cffffffff|Hquest:%d:%d|h[%s]|h|r %s'),
 (514,'deDE','%d - |cffffffff|Hcreature_entry:%d|h[%s]|h|r '),
-(515,'deDE','%d - |cffffffff|Hcreature:%d|h[%s X:%f Y:%f Z:%f MapId:%d]|h|r '),
+(515,'deDE','%d (Eintrag: %d) - |cffffffff|Hcreature:%d|h[%s X:%f Y:%f Z:%f MapId:%d]|h|r '),
 (516,'deDE','%d - |cffffffff|Hgameobject_entry:%d|h[%s]|h|r '),
 (517,'deDE','%d (Eintrag: %d) - |cffffffff|Hgameobject:%d|h[%s X:%f Y:%f Z:%f MapId:%d]|h|r '),
 (518,'deDE','%d - |cffffffff|Hitemset:%d|h[%s %s]|h|r '),
@@ -451,7 +450,7 @@ VALUES
 (536,'deDE','   Bewegung zum Startpunkt für Spieler?!?'),
 (537,'deDE','   Flugroute'),
 (538,'deDE','   Unbekannter Bewegungsgenerator (%u)'),
-(539,'deDE','Spieler hat folgenden NPC angewählt\nDB GUID: %u, aktuelle GUID: %u.\nFaction: %u.\nnpcFlags: %u.\nEntry: %u.\nDisplayID: %u (Native: %u).'),
+(539,'deDE','DB GUID: %u, aktuelle GUID: %u, aktiv: %u.\nFaction: %u.\nnpcFlags: %u.\nEntry: %u.\nDisplayID: %u (Native: %u).'),
 (540,'deDE','Level: %u.'),
 (541,'deDE','Leben (Basis): %u. (max): %u. (aktuell): %u.'),
 (542,'deDE','Field Flags: %u.\nDynamic Flags: %u.\nFaction Template: %u.'),
@@ -943,7 +942,8 @@ VALUES
 (30077,'deDE','Sofortflug umschalten'),
 (30078,'deDE','Sofortflug EIN'),
 (30079,'deDE','Sofortflug AUS'),
-(30080,'ruRU','Файл \'opcode.txt\' не найден в рабочей директории сервера');
+(30080,'ruRU','Файл \'opcode.txt\' не найден в рабочей директории сервера'),
+(31080,'deDE','Abschluss der Quest \"%s\" wird benötigt.');
 /*!40000 ALTER TABLE `acore_string_locale` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

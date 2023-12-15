@@ -11,13 +11,12 @@ CREATE TABLE `acore_string` (
   `entry` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `content_default` text NOT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `acore_string` WRITE;
 /*!40000 ALTER TABLE `acore_string` DISABLE KEYS */;
-INSERT INTO `acore_string`
-VALUES
+INSERT INTO `acore_string` VALUES
 (1,'You should select a character or a creature.'),
 (2,'You should select a creature.'),
 (3,'[SERVER] %s'),
@@ -206,7 +205,7 @@ VALUES
 (219,'Talents will reset for all players at login. Strongly recommend re-login!'),
 (220,'Creature (GUID: %u) No waypoint found.'),
 (221,'Creature (GUID: %u) Last waypoint not found.'),
-(223,'Creature (GUID: %u) No waypoints found - This is a MaNGOS db problem (single float).'),
+(223,'Creature (GUID: %u) No waypoints found.'),
 (224,'Selected creature is ignored - provided GUID is used'),
 (225,'Creature (GUID: %u) not found'),
 (226,'You must select a visual waypoint.'),
@@ -463,7 +462,7 @@ VALUES
 (512,'%d - |cffffffff|Hitem:%d:0:0:0:0:0:0:0:0|h[%s]|h|r '),
 (513,'%d - |cffffffff|Hquest:%d:%d|h[%s]|h|r %s'),
 (514,'%d - |cffffffff|Hcreature_entry:%d|h[%s]|h|r '),
-(515,'%d - |cffffffff|Hcreature:%d|h[%s X:%f Y:%f Z:%f MapId:%d]|h|r '),
+(515,'%d (Entry: %d) - |cffffffff|Hcreature:%d|h[%s X:%f Y:%f Z:%f MapId:%d]|h|r '),
 (516,'%d - |cffffffff|Hgameobject_entry:%d|h[%s]|h|r '),
 (517,'%d (Entry: %d) - |cffffffff|Hgameobject:%d|h[%s X:%f Y:%f Z:%f MapId:%d]|h|r '),
 (518,'%d - |cffffffff|Hitemset:%d|h[%s %s]|h|r '),
@@ -487,7 +486,7 @@ VALUES
 (536,'   Home movement used for player?!?'),
 (537,'   Taxi flight'),
 (538,'   Unknown movement generator (%u)'),
-(539,'Player selected NPC\nDB GUID: %u, current GUID: %u, active: %u.\nFaction: %u.\nnpcFlags: %u.\nEntry: %u.\nDisplayID: %u (Native: %u).'),
+(539,'DB GUID: %u, current GUID: %u, active: %u.\nFaction: %u.\nnpcFlags: %u.\nEntry: %u.\nDisplayID: %u (Native: %u).'),
 (540,'Level: %u.'),
 (541,'Health (base): %u. (max): %u. (current): %u.'),
 (542,'Unit Flags: %u.\nUnit Flags 2: %u.\nDynamic Flags: %u.\nFaction Template: %u.'),
@@ -1187,6 +1186,7 @@ VALUES
 (31077,'Warning: Gameobject found more than once - you will be teleported to the first one found in DB.'),
 (31078,'Field %i data is now set to %i.'),
 (31079,'Field %i data is %i.'),
+(31080,'Completion of the \"%s\" quest is required.'),
 (35400,'│Player %s %s (guid: %u)'),
 (35401,'│ GM Mode active, Phase: -1'),
 (35402,'├─ Banned: (Type: %s, Reason: %s, Time: %s, By: %s)'),

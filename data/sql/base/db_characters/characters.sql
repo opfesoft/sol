@@ -81,7 +81,7 @@ CREATE TABLE `characters` (
   `knownTitles` longtext DEFAULT NULL,
   `actionBars` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `grantableLevels` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `creation_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `creation_date` datetime NOT NULL DEFAULT current_timestamp(),
   `deleteInfos_Account` int(10) unsigned DEFAULT NULL,
   `deleteInfos_Name` varchar(12) DEFAULT NULL,
   `deleteDate` int(10) unsigned DEFAULT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE `characters` (
   KEY `idx_account` (`account`),
   KEY `idx_online` (`online`),
   KEY `idx_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Player System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `characters` WRITE;

@@ -17,13 +17,12 @@ CREATE TABLE `reputation_reward_rate` (
   `creature_rate` float NOT NULL DEFAULT 1,
   `spell_rate` float NOT NULL DEFAULT 1,
   PRIMARY KEY (`faction`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `reputation_reward_rate` WRITE;
 /*!40000 ALTER TABLE `reputation_reward_rate` DISABLE KEYS */;
-INSERT INTO `reputation_reward_rate`
-VALUES
+INSERT INTO `reputation_reward_rate` VALUES
 (529,1,1,1,1,1,1,2),
 (576,4,4,1,1,4,1,1),
 (609,1,1,1,1,1,1,2),

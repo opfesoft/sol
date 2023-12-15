@@ -1,1 +1,0 @@
-ALTER TABLE `character_homebind` ADD COLUMN `posO` FLOAT DEFAULT 0 NOT NULL AFTER `posZ`;

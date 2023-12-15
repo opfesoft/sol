@@ -16,13 +16,12 @@ CREATE TABLE `points_of_interest` (
   `Importance` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `Name` text NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `points_of_interest` WRITE;
 /*!40000 ALTER TABLE `points_of_interest` DISABLE KEYS */;
-INSERT INTO `points_of_interest`
-VALUES
+INSERT INTO `points_of_interest` VALUES
 (1,-9459,42.0805,7,99,0,'Lion\'s Pride Inn'),
 (2,-9471,33.4441,7,99,0,'Zaldimar Wefhellt'),
 (3,-9469,108.053,7,99,0,'Brother Wilhelm'),

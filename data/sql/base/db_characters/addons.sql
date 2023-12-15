@@ -11,13 +11,12 @@ CREATE TABLE `addons` (
   `name` varchar(120) NOT NULL DEFAULT '',
   `crc` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Addons';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Addons';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `addons` WRITE;
 /*!40000 ALTER TABLE `addons` DISABLE KEYS */;
-INSERT INTO `addons`
-VALUES
+INSERT INTO `addons` VALUES
 ('Blizzard_AchievementUI',1276933997),
 ('Blizzard_ArenaUI',1276933997),
 ('Blizzard_AuctionUI',1276933997),

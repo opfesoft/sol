@@ -23,7 +23,7 @@ CREATE TABLE `pvpstats_players` (
   `attr_4` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `attr_5` mediumint(8) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`battleground_id`,`character_guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pvpstats_players` WRITE;

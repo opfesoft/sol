@@ -11,7 +11,7 @@ CREATE TABLE `battleground_deserters` (
   `guid` int(10) unsigned NOT NULL COMMENT 'characters.guid',
   `type` tinyint(3) unsigned NOT NULL COMMENT 'type of the desertion',
   `datetime` datetime NOT NULL COMMENT 'datetime of the desertion'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `battleground_deserters` WRITE;

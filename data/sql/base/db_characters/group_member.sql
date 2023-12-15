@@ -14,7 +14,7 @@ CREATE TABLE `group_member` (
   `subgroup` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `roles` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`memberGuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Groups';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Groups';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `group_member` WRITE;

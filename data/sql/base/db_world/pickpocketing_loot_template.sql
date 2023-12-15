@@ -19,13 +19,12 @@ CREATE TABLE `pickpocketing_loot_template` (
   `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pickpocketing_loot_template` WRITE;
 /*!40000 ALTER TABLE `pickpocketing_loot_template` DISABLE KEYS */;
-INSERT INTO `pickpocketing_loot_template`
-VALUES
+INSERT INTO `pickpocketing_loot_template` VALUES
 (3,929,0,2.449,0,1,0,1,1,NULL),
 (3,1206,0,0.8163,0,1,0,1,1,NULL),
 (3,4606,0,5.7143,0,1,0,1,1,NULL),
@@ -8380,7 +8379,6 @@ VALUES
 (18203,29569,0,9.8339,0,1,0,1,1,NULL),
 (18203,29570,0,9.9686,0,1,0,1,1,NULL),
 (18204,22829,0,1.8182,0,1,0,1,1,NULL),
-(18204,24543,0,100,1,1,0,1,1,NULL),
 (18204,27854,0,5.4545,0,1,0,1,1,NULL),
 (18204,29569,0,5.4545,0,1,0,1,1,NULL),
 (18204,29570,0,10.9091,0,1,0,1,1,NULL),

@@ -21,13 +21,12 @@ CREATE TABLE `access_requirement` (
   `quest_failed_text` text DEFAULT NULL,
   `comment` text DEFAULT NULL,
   PRIMARY KEY (`mapId`,`difficulty`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='Access Requirements';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC COMMENT='Access Requirements';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `access_requirement` WRITE;
 /*!40000 ALTER TABLE `access_requirement` DISABLE KEYS */;
-INSERT INTO `access_requirement`
-VALUES
+INSERT INTO `access_requirement` VALUES
 (33,0,14,0,0,0,0,0,0,0,NULL,'Shadowfang Keep Entrance'),
 (34,0,15,0,0,0,0,0,0,0,NULL,'Stormwind Stockades Entrance'),
 (36,0,10,0,0,0,0,0,0,0,NULL,'DeadMines Entrance'),
@@ -44,8 +43,8 @@ VALUES
 (230,0,40,0,0,0,0,0,0,0,NULL,'Blackrock Mountain - Searing Gorge Instance?'),
 (249,0,80,0,0,0,0,0,0,0,NULL,'Onyxia\'s Lair Entrance'),
 (249,1,80,0,0,0,0,0,0,0,NULL,'Onyxia\'s Lair Entrance'),
-(269,0,66,0,0,0,0,10285,10285,0,'You must complete the quest \"Return to Andormu\" before entering the Black Morass.','Caverns Of Time,Black Morass (Entrance)'),
-(269,1,70,0,0,30635,0,10285,10285,0,'You must complete the quest \"Return to Andormu\" and be level 70 before entering the Heroic difficulty of the Black Morass.','Caverns Of Time,Black Morass (Entrance)'),
+(269,0,66,0,0,0,0,10285,10285,0,NULL,'Caverns Of Time,Black Morass (Entrance)'),
+(269,1,70,0,0,30635,0,10285,10285,0,NULL,'Caverns Of Time,Black Morass (Entrance)'),
 (289,0,45,0,0,0,0,0,0,0,NULL,'Scholomance Entrance'),
 (309,0,50,0,0,0,0,0,0,0,NULL,'Zul\'Gurub Entrance '),
 (329,0,45,0,0,0,0,0,0,0,NULL,'Stratholme - Eastern Plaguelands Instance'),
@@ -89,8 +88,8 @@ VALUES
 (557,1,70,0,0,30633,0,0,0,0,NULL,'Mana Tombs (Entrance)'),
 (558,0,55,0,0,0,0,0,0,0,NULL,'Auchenai Crypts (Entrance)'),
 (558,1,70,0,0,30633,0,0,0,0,NULL,'Auchenai Crypts (Entrance)'),
-(560,0,64,0,0,0,0,0,0,0,NULL,'Caverns Of Time,Old Hillsbrad Foothills (Entrance)'),
-(560,1,70,0,0,30635,0,0,0,0,NULL,'Caverns Of Time,Old Hillsbrad Foothills (Entrance)'),
+(560,0,64,0,0,0,0,10277,10277,0,NULL,'Caverns Of Time,Old Hillsbrad Foothills (Entrance)'),
+(560,1,70,0,0,30635,0,10277,10277,0,NULL,'Caverns Of Time,Old Hillsbrad Foothills (Entrance)'),
 (564,0,70,0,0,0,0,0,0,0,NULL,'Black Temple (Entrance)'),
 (565,0,70,0,0,0,0,0,0,0,NULL,'Gruul\'s Lair (Entrance)'),
 (568,0,70,0,0,0,0,0,0,0,NULL,'Zul\'Aman (Entrance)'),

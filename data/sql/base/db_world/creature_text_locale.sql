@@ -14,13 +14,12 @@ CREATE TABLE `creature_text_locale` (
   `Locale` varchar(4) NOT NULL,
   `Text` text DEFAULT NULL,
   PRIMARY KEY (`CreatureID`,`GroupID`,`ID`,`Locale`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_text_locale` WRITE;
 /*!40000 ALTER TABLE `creature_text_locale` DISABLE KEYS */;
-INSERT INTO `creature_text_locale`
-VALUES
+INSERT INTO `creature_text_locale` VALUES
 (197,0,0,'frFR','Vous pouvez rompre les rangs, $N.'),
 (253,0,0,'frFR','Cela ne devrait prendre que quelques instants...'),
 (253,1,0,'frFR','Votre potion d\'invisibilité est prête, %N.'),

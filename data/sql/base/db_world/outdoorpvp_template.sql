@@ -12,13 +12,12 @@ CREATE TABLE `outdoorpvp_template` (
   `ScriptName` char(64) NOT NULL DEFAULT '',
   `comment` text DEFAULT NULL,
   PRIMARY KEY (`TypeId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='OutdoorPvP Templates';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC COMMENT='OutdoorPvP Templates';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `outdoorpvp_template` WRITE;
 /*!40000 ALTER TABLE `outdoorpvp_template` DISABLE KEYS */;
-INSERT INTO `outdoorpvp_template`
-VALUES
+INSERT INTO `outdoorpvp_template` VALUES
 (1,'outdoorpvp_hp','Hellfire Peninsula'),
 (2,'outdoorpvp_na','Nagrand'),
 (3,'outdoorpvp_tf','Terokkar Forest'),

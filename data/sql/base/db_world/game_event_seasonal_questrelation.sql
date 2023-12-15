@@ -12,13 +12,12 @@ CREATE TABLE `game_event_seasonal_questrelation` (
   `eventEntry` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Entry of the game event',
   PRIMARY KEY (`questId`,`eventEntry`),
   KEY `idx_quest` (`questId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='Player System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Player System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_seasonal_questrelation` WRITE;
 /*!40000 ALTER TABLE `game_event_seasonal_questrelation` DISABLE KEYS */;
-INSERT INTO `game_event_seasonal_questrelation`
-VALUES
+INSERT INTO `game_event_seasonal_questrelation` VALUES
 (171,10),
 (172,10),
 (558,10),

@@ -15,13 +15,12 @@ CREATE TABLE `playercreateinfo_action` (
   `type` smallint(5) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`race`,`class`,`button`),
   KEY `playercreateinfo_race_class_index` (`race`,`class`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `playercreateinfo_action` WRITE;
 /*!40000 ALTER TABLE `playercreateinfo_action` DISABLE KEYS */;
-INSERT INTO `playercreateinfo_action`
-VALUES
+INSERT INTO `playercreateinfo_action` VALUES
 (1,1,0,6603,0),
 (1,1,72,6603,0),
 (1,1,73,78,0),

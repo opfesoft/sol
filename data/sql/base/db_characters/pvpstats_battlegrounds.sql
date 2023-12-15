@@ -14,7 +14,7 @@ CREATE TABLE `pvpstats_battlegrounds` (
   `type` tinyint(3) unsigned NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pvpstats_battlegrounds` WRITE;

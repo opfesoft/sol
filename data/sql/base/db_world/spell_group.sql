@@ -12,13 +12,12 @@ CREATE TABLE `spell_group` (
   `spell_id` int(11) unsigned NOT NULL DEFAULT 0,
   `special_flag` int(11) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`,`spell_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Spell System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Spell System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_group` WRITE;
 /*!40000 ALTER TABLE `spell_group` DISABLE KEYS */;
-INSERT INTO `spell_group`
-VALUES
+INSERT INTO `spell_group` VALUES
 (1,673,2),
 (1,2367,1),
 (1,2374,1),
@@ -94,6 +93,7 @@ VALUES
 (1,28521,3),
 (1,28540,3),
 (1,29348,2),
+(1,33053,3),
 (1,33720,1),
 (1,33721,1),
 (1,33726,1),
@@ -167,6 +167,7 @@ VALUES
 (1001,24799,0),
 (1001,24870,0),
 (1001,25037,0),
+(1001,25661,0),
 (1001,25694,0),
 (1001,25722,0),
 (1001,25804,0),
@@ -293,6 +294,8 @@ VALUES
 (1013,30708,0),
 (1014,89,2),
 (1014,6343,1),
+(1014,8042,0),
+(1014,20005,0),
 (1014,55095,0),
 (1014,58179,2),
 (1014,68055,1),

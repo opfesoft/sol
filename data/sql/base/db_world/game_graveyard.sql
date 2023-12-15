@@ -15,13 +15,12 @@ CREATE TABLE `game_graveyard` (
   `z` float NOT NULL DEFAULT 0,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_graveyard` WRITE;
 /*!40000 ALTER TABLE `game_graveyard` DISABLE KEYS */;
-INSERT INTO `game_graveyard`
-VALUES
+INSERT INTO `game_graveyard` VALUES
 (1,0,-9115,423,96,'Stormwind'),
 (2,0,-9194.31,-2313.26,88.8265,'Redridge Mountains'),
 (3,0,-10774.3,-1189.67,33.1494,'Duskwood, Darkshire'),

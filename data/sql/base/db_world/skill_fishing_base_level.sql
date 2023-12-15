@@ -11,13 +11,12 @@ CREATE TABLE `skill_fishing_base_level` (
   `entry` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Area identifier',
   `skill` smallint(6) NOT NULL DEFAULT 0 COMMENT 'Base skill level requirement',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Fishing system';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Fishing system';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `skill_fishing_base_level` WRITE;
 /*!40000 ALTER TABLE `skill_fishing_base_level` DISABLE KEYS */;
-INSERT INTO `skill_fishing_base_level`
-VALUES
+INSERT INTO `skill_fishing_base_level` VALUES
 (1,-70),
 (8,130),
 (10,55),

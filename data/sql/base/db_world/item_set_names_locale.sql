@@ -13,13 +13,12 @@ CREATE TABLE `item_set_names_locale` (
   `Name` text DEFAULT NULL,
   `VerifiedBuild` smallint(5) DEFAULT 0,
   PRIMARY KEY (`ID`,`locale`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `item_set_names_locale` WRITE;
 /*!40000 ALTER TABLE `item_set_names_locale` DISABLE KEYS */;
-INSERT INTO `item_set_names_locale`
-VALUES
+INSERT INTO `item_set_names_locale` VALUES
 (6473,'deDE','Rüstung des Giftzahns',15050),
 (6473,'esES','Armadura del Colmillo',15050),
 (6473,'frFR','Armure du Croc',15050),

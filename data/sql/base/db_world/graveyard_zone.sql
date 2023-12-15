@@ -15,13 +15,12 @@ CREATE TABLE `graveyard_zone` (
   `ClassMask` smallint(5) unsigned NOT NULL DEFAULT 0,
   `Comment` text DEFAULT NULL,
   PRIMARY KEY (`ID`,`GhostZone`,`GhostArea`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='Trigger System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Trigger System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `graveyard_zone` WRITE;
 /*!40000 ALTER TABLE `graveyard_zone` DISABLE KEYS */;
-INSERT INTO `graveyard_zone`
-VALUES
+INSERT INTO `graveyard_zone` VALUES
 (2,44,0,469,0,'Redridge Mountains - Redridge Mountains'),
 (3,10,0,469,0,'Duskwood, Darkshire - Duskwood'),
 (4,40,0,0,0,'Westfall, Sentinel Hill GY - Westfall'),
@@ -50,7 +49,8 @@ VALUES
 (89,215,0,67,0,'Mulgore, Bloodhoof Village GY - Mulgore'),
 (90,141,0,469,0,'Teldrassil, Darnassus GY'),
 (90,1657,0,469,0,'Teldrassil, Darnassus GY'),
-(91,141,0,469,0,'Teldrassil, Dolanaar GY - Teldrassil'),
+(91,141,0,0,0,'Teldrassil, Dolanaar GY'),
+(91,1657,0,67,0,'Teldrassil, Dolanaar GY'),
 (92,331,0,0,0,'Ashenvale, Astranaar GY - Ashenvale'),
 (93,141,0,469,0,'Teldrassil, Aldrassil GY - Teldrassil'),
 (94,85,0,67,0,'Tirisfal Glades, Deathknell - Tirisfal Glades'),
@@ -77,7 +77,7 @@ VALUES
 (108,1417,0,0,0,'Swamp of Sorrows, Stonard GY'),
 (108,1477,0,0,0,'Swamp of Sorrows, Stonard GY'),
 (109,33,0,0,0,'Stranglethorn Vale, Booty Bay GY - Stranglethorn Vale'),
-(129,141,0,0,0,'Teldrassil, Rut\'theran Village GY - Teldrassil'),
+(129,141,0,469,0,'Teldrassil, Rut\'theran Village GY'),
 (149,36,0,469,0,'Hillsbrad Foothills, Southshore'),
 (149,130,0,469,0,'Hillsbrad Foothills, Southshore'),
 (149,209,0,469,0,'Hillsbrad Foothills, Southshore'),
@@ -107,10 +107,9 @@ VALUES
 (429,2057,0,0,0,NULL),
 (449,361,0,0,0,'Felwood, Morlos\'Aran - Felwood'),
 (450,490,0,0,0,'Un\'Goro Crater, The Marshlands - Un\'Goro Crater'),
-(469,141,0,67,0,'Darkshore, Twilight Vale GY'),
+(469,141,702,67,0,'Darkshore, Twilight Vale GY'),
 (469,148,0,0,0,'Darkshore, Twilight Vale GY'),
 (469,719,0,0,0,'Darkshore, Twilight Vale GY'),
-(469,1657,0,67,0,'Darkshore, Twilight Vale GY'),
 (489,11,0,0,0,'Wetlands, Baradin Bay GY - Wetlands'),
 (509,28,0,469,0,'Western Plaguelands, Chillwind Camp - Western Plaguelands'),
 (510,139,0,0,0,'Eastern Plaguelands, Pestilent Scar - Eastern Plaguelands'),

@@ -13,13 +13,12 @@ CREATE TABLE `player_classlevelstats` (
   `basehp` smallint(5) unsigned NOT NULL,
   `basemana` smallint(5) unsigned NOT NULL,
   PRIMARY KEY (`class`,`level`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 PACK_KEYS=0 COMMENT='Stores levels stats.';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci PACK_KEYS=0 COMMENT='Stores levels stats.';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `player_classlevelstats` WRITE;
 /*!40000 ALTER TABLE `player_classlevelstats` DISABLE KEYS */;
-INSERT INTO `player_classlevelstats`
-VALUES
+INSERT INTO `player_classlevelstats` VALUES
 (1,1,20,0),
 (1,2,29,0),
 (1,3,38,0),

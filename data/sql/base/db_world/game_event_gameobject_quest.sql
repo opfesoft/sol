@@ -12,13 +12,12 @@ CREATE TABLE `game_event_gameobject_quest` (
   `id` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `quest` mediumint(8) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`,`quest`,`eventEntry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_gameobject_quest` WRITE;
 /*!40000 ALTER TABLE `game_event_gameobject_quest` DISABLE KEYS */;
-INSERT INTO `game_event_gameobject_quest`
-VALUES
+INSERT INTO `game_event_gameobject_quest` VALUES
 (1,187559,11580),
 (1,187564,11581),
 (1,187914,11732),

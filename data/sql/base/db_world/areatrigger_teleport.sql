@@ -17,13 +17,12 @@ CREATE TABLE `areatrigger_teleport` (
   `target_orientation` float NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`),
   FULLTEXT KEY `name` (`Name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Trigger System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Trigger System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `areatrigger_teleport` WRITE;
 /*!40000 ALTER TABLE `areatrigger_teleport` DISABLE KEYS */;
-INSERT INTO `areatrigger_teleport`
-VALUES
+INSERT INTO `areatrigger_teleport` VALUES
 (45,'Scarlet Monastery - Graveyard (Entrance)',189,1688.99,1053.48,18.6775,0.00117),
 (78,'DeadMines Entrance',36,-16.4,-383.07,61.78,1.86),
 (101,'Stormwind Stockades Entrance',34,54.23,0.28,-18.34,6.26),
@@ -71,6 +70,7 @@ VALUES
 (1468,'Blackrock Spire - Searing Gorge Instance (Inside)',229,78.5083,-225.044,49.839,5.1),
 (1470,'Blackrock Spire - Searing Gorge Instance',0,-7524.19,-1230.13,285.743,2.09544),
 (1472,'Blackrock Dephts - Searing Gorge Instance',0,-7179.63,-923.667,166.416,1.84097),
+(2068,'Blackrock Spire - Jump Exit',0,-7558.39,-1309.43,248.454,1.5708),
 (2166,'Deeprun Tram - Ironforge Instance (Inside)',0,-4838.95,-1318.46,501.868,1.42372),
 (2171,'Deeprun Tram - Stormwind Instance (Inside)',0,-8364.57,535.981,91.7969,2.24619),
 (2173,'Deeprun Tram - Stormwind Instance',369,68.3006,2490.91,-4.29647,3.12192),

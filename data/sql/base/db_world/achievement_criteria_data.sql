@@ -14,13 +14,12 @@ CREATE TABLE `achievement_criteria_data` (
   `value2` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `ScriptName` char(64) NOT NULL DEFAULT '',
   PRIMARY KEY (`criteria_id`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Achievment system';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Achievment system';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `achievement_criteria_data` WRITE;
 /*!40000 ALTER TABLE `achievement_criteria_data` DISABLE KEYS */;
-INSERT INTO `achievement_criteria_data`
-VALUES
+INSERT INTO `achievement_criteria_data` VALUES
 (100,0,0,0,''),
 (102,0,0,0,''),
 (123,0,0,0,''),
@@ -169,13 +168,13 @@ VALUES
 (608,9,80,0,''),
 (609,9,80,0,''),
 (610,9,80,0,''),
-(611,17,0,0,''),
+(611,24,1600,0,''),
 (758,0,0,0,''),
 (1234,11,0,0,'achievement_bg_control_all_nodes'),
-(1235,17,1590,1590,''),
-(1236,17,0,0,''),
+(1235,24,1600,1590,''),
+(1236,24,3,0,''),
 (1237,0,0,0,''),
-(1238,17,0,0,''),
+(1238,24,1600,0,''),
 (1239,11,0,0,'achievement_bg_control_all_nodes'),
 (1240,0,0,0,''),
 (1241,0,0,0,''),
@@ -481,6 +480,25 @@ VALUES
 (4521,0,0,0,''),
 (4522,0,0,0,''),
 (4523,0,0,0,''),
+(4768,25,4,0,''),
+(4769,25,4,0,''),
+(4770,25,4,0,''),
+(4771,25,4,0,''),
+(4772,25,4,0,''),
+(4773,25,4,0,''),
+(4774,25,4,0,''),
+(4775,25,4,0,''),
+(4776,25,4,0,''),
+(4777,25,4,0,''),
+(4778,25,4,0,''),
+(4779,25,4,0,''),
+(4780,25,4,0,''),
+(4781,25,4,0,''),
+(4782,25,4,0,''),
+(4783,25,4,0,''),
+(4784,25,4,0,''),
+(4785,25,4,0,''),
+(4786,25,4,0,''),
 (4944,0,0,0,''),
 (4946,11,0,0,'achievement_killed_exp_or_honor_target'),
 (4948,8,1,0,''),
@@ -493,7 +511,7 @@ VALUES
 (4955,8,6,0,''),
 (4956,8,10,0,''),
 (4957,8,11,0,''),
-(4958,8,12,0,''),
+(4958,8,8,0,''),
 (4966,0,0,0,''),
 (4967,0,0,0,''),
 (4968,0,0,0,''),
@@ -780,6 +798,9 @@ VALUES
 (5897,0,0,0,''),
 (5898,0,0,0,''),
 (5899,0,0,0,''),
+(6140,25,4,0,''),
+(6141,25,5,0,''),
+(6142,25,4,0,''),
 (6225,1,5661,0,''),
 (6226,1,26044,0,''),
 (6228,1,739,0,''),

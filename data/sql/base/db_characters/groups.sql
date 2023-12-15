@@ -27,7 +27,7 @@ CREATE TABLE `groups` (
   `masterLooterGuid` int(10) unsigned NOT NULL,
   PRIMARY KEY (`guid`),
   KEY `leaderGuid` (`leaderGuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Groups';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Groups';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `groups` WRITE;

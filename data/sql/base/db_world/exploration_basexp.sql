@@ -11,13 +11,12 @@ CREATE TABLE `exploration_basexp` (
   `level` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `basexp` mediumint(8) NOT NULL DEFAULT 0,
   PRIMARY KEY (`level`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Exploration System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Exploration System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `exploration_basexp` WRITE;
 /*!40000 ALTER TABLE `exploration_basexp` DISABLE KEYS */;
-INSERT INTO `exploration_basexp`
-VALUES
+INSERT INTO `exploration_basexp` VALUES
 (0,0),
 (1,5),
 (2,15),

@@ -13,7 +13,7 @@ CREATE TABLE `account_access` (
   `RealmID` int(11) NOT NULL DEFAULT -1,
   `comment` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`,`RealmID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `account_access` WRITE;

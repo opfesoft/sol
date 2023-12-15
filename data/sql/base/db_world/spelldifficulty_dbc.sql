@@ -14,13 +14,12 @@ CREATE TABLE `spelldifficulty_dbc` (
   `spellid2` int(11) unsigned NOT NULL DEFAULT 0,
   `spellid3` int(11) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spelldifficulty_dbc` WRITE;
 /*!40000 ALTER TABLE `spelldifficulty_dbc` DISABLE KEYS */;
-INSERT INTO `spelldifficulty_dbc`
-VALUES
+INSERT INTO `spelldifficulty_dbc` VALUES
 (3262,64395,64592,0,0),
 (3263,64599,64607,0,0),
 (3264,64443,64584,0,0),

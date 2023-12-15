@@ -13,13 +13,12 @@ CREATE TABLE `npc_spellclick_spells` (
   `cast_flags` tinyint(3) unsigned NOT NULL COMMENT 'first bit defines caster: 1=player, 0=creature; second bit defines target, same mapping as caster bit',
   `user_type` smallint(5) unsigned NOT NULL DEFAULT 0 COMMENT 'relation with summoner: 0-no 1-friendly 2-raid 3-party player can click',
   PRIMARY KEY (`npc_entry`,`spell_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `npc_spellclick_spells` WRITE;
 /*!40000 ALTER TABLE `npc_spellclick_spells` DISABLE KEYS */;
-INSERT INTO `npc_spellclick_spells`
-VALUES
+INSERT INTO `npc_spellclick_spells` VALUES
 (24083,46598,1,0),
 (24418,43768,3,0),
 (24750,46598,1,0),
@@ -54,7 +53,7 @@ VALUES
 (27587,49078,1,0),
 (27593,49177,1,0),
 (27626,49138,1,0),
-(27661,48365,1,0),
+(27661,46598,1,0),
 (27714,49584,1,0),
 (27761,43671,1,0),
 (27881,60968,1,0),

@@ -12,13 +12,12 @@ CREATE TABLE `item_enchantment_template` (
   `ench` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `chance` float unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`entry`,`ench`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Item Random Enchantment System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Item Random Enchantment System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `item_enchantment_template` WRITE;
 /*!40000 ALTER TABLE `item_enchantment_template` DISABLE KEYS */;
-INSERT INTO `item_enchantment_template`
-VALUES
+INSERT INTO `item_enchantment_template` VALUES
 (61,6,7.73),
 (61,8,7.31),
 (61,9,8.02),
@@ -23090,15 +23089,10 @@ VALUES
 (5173,18,2.21),
 (5173,22,2.93),
 (5173,24,2.82),
-(5173,29,0.1),
-(5173,33,0.1),
-(5173,91,0.1),
 (5173,93,2.21),
 (5173,96,2.93),
 (5173,97,2.82),
-(5173,197,0.1),
 (5173,228,3),
-(5173,231,0.1),
 (5173,256,3),
 (5173,501,3),
 (5173,502,3),
@@ -23114,7 +23108,6 @@ VALUES
 (5173,840,3),
 (5173,841,3),
 (5173,842,3),
-(5173,927,0.1),
 (5173,1009,2.82),
 (5173,1010,2.82),
 (5173,1011,2.82),
@@ -23128,16 +23121,10 @@ VALUES
 (5173,1180,2.51),
 (5173,1181,2.51),
 (5173,1182,2.51),
-(5173,1399,0.1),
 (5173,1547,0.63),
 (5173,1548,0.78),
 (5173,1549,0.78),
 (5173,1550,0.78),
-(5173,1913,0.1),
-(5173,1952,0.1),
-(5173,2067,0.03),
-(5173,2068,0.03),
-(5173,2069,0.03),
 (5174,18,3.05),
 (5174,22,3),
 (5174,24,2.9),

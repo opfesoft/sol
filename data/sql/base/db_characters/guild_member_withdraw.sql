@@ -17,7 +17,7 @@ CREATE TABLE `guild_member_withdraw` (
   `tab5` int(10) unsigned NOT NULL DEFAULT 0,
   `money` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Guild Member Daily Withdraws';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Guild Member Daily Withdraws';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `guild_member_withdraw` WRITE;

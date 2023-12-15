@@ -19,18 +19,16 @@ CREATE TABLE `spell_loot_template` (
   `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_loot_template` WRITE;
 /*!40000 ALTER TABLE `spell_loot_template` DISABLE KEYS */;
-INSERT INTO `spell_loot_template`
-VALUES
+INSERT INTO `spell_loot_template` VALUES
 (48247,37168,0,100,0,1,0,1,1,NULL),
 (57844,36782,0,89,0,1,1,1,3,NULL),
 (57844,36783,0,10,0,1,1,1,1,NULL),
 (57844,36784,0,1,0,1,1,1,1,NULL),
-(58160,13926,0,5,0,1,1,1,1,NULL),
 (58160,24477,0,100,0,1,0,1,1,NULL),
 (58160,24478,0,15,0,1,1,1,1,NULL),
 (58160,24479,0,1,0,1,1,1,1,NULL),

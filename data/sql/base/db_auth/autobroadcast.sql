@@ -13,7 +13,7 @@ CREATE TABLE `autobroadcast` (
   `weight` tinyint(3) unsigned DEFAULT 1,
   `text` longtext NOT NULL,
   PRIMARY KEY (`id`,`realmid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `autobroadcast` WRITE;

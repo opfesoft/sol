@@ -28,7 +28,7 @@ CREATE TABLE `character_pet` (
   PRIMARY KEY (`id`),
   KEY `owner` (`owner`),
   KEY `idx_slot` (`slot`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Pet System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Pet System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_pet` WRITE;

@@ -16,13 +16,12 @@ CREATE TABLE `vehicle_template_accessory` (
   `summontype` tinyint(3) unsigned NOT NULL DEFAULT 6 COMMENT 'see enum TempSummonType',
   `summontimer` int(10) unsigned NOT NULL DEFAULT 30000 COMMENT 'timer, only relevant for certain summontypes',
   PRIMARY KEY (`entry`,`seat_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `vehicle_template_accessory` WRITE;
 /*!40000 ALTER TABLE `vehicle_template_accessory` DISABLE KEYS */;
-INSERT INTO `vehicle_template_accessory`
-VALUES
+INSERT INTO `vehicle_template_accessory` VALUES
 (24083,24082,0,0,'Proto-Drake Handler',6,120000),
 (24750,24751,0,1,'Excelsior rides Hidalgo the Master Falconer',6,30000),
 (25762,25760,0,1,'Kvaldir Raider',8,0),
@@ -39,7 +38,7 @@ VALUES
 (27587,27588,2,1,'7th Legion Elite Rides Alliance Steam Tank',5,0),
 (27587,27588,3,1,'7th Legion Elite Rides Alliance Steam Tank',5,0),
 (27626,27627,0,0,'Tatjana\'s Horse',8,30000),
-(27661,27662,0,0,'Wintergarde Gryphon',6,30000),
+(27661,27662,0,1,'Wintergarde Gryphon',6,1),
 (27939,32576,0,0,'Orabus the Helmsman',8,0),
 (27939,32577,1,0,'Kvaldir Crewman',8,0),
 (27939,32578,2,0,'Kvaldir Crewman',8,0),
@@ -66,6 +65,7 @@ VALUES
 (29625,29694,1,1,'Hyldsmeet Proto-Drake',6,30000),
 (29698,29699,0,0,'Drakuru Raptor',6,30000),
 (29708,29805,0,1,'Captive Proto-Drake',8,0),
+(29736,30401,0,1,'Stormcrest Eagle',8,0),
 (29838,29836,0,0,'Drakkari Battle Rider on Drakkari Rhino, not minion',6,30000),
 (29863,28518,0,1,'Persistence',8,0),
 (29931,29982,0,0,'Drakkari Rider on Drakkari Rhino',6,300),

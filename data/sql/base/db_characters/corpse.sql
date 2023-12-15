@@ -31,7 +31,7 @@ CREATE TABLE `corpse` (
   KEY `idx_instance` (`instanceId`),
   KEY `idx_player` (`guid`),
   KEY `idx_time` (`time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Death System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Death System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `corpse` WRITE;

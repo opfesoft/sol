@@ -11,13 +11,12 @@ CREATE TABLE `areatrigger_scripts` (
   `entry` mediumint(8) NOT NULL,
   `ScriptName` char(64) NOT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `areatrigger_scripts` WRITE;
 /*!40000 ALTER TABLE `areatrigger_scripts` DISABLE KEYS */;
-INSERT INTO `areatrigger_scripts`
-VALUES
+INSERT INTO `areatrigger_scripts` VALUES
 (171,'SmartTrigger'),
 (302,'at_sentry_point'),
 (962,'SmartTrigger'),

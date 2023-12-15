@@ -12,13 +12,12 @@ CREATE TABLE `worldstates` (
   `value` int(10) unsigned NOT NULL DEFAULT 0,
   `comment` tinytext DEFAULT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Variable Saves';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Variable Saves';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `worldstates` WRITE;
 /*!40000 ALTER TABLE `worldstates` DISABLE KEYS */;
-INSERT INTO `worldstates`
-VALUES
+INSERT INTO `worldstates` VALUES
 (3781,9000000,NULL),
 (3801,0,NULL),
 (3802,1,NULL),

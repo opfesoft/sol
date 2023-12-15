@@ -12,13 +12,12 @@ CREATE TABLE `command` (
   `security` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `help` longtext DEFAULT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Chat System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Chat System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `command` WRITE;
 /*!40000 ALTER TABLE `command` DISABLE KEYS */;
-INSERT INTO `command`
-VALUES
+INSERT INTO `command` VALUES
 ('account',0,'Syntax: .account\r\n\r\nDisplay the access level of your account and the email adress if you possess the necessary permissions.'),
 ('account addon',1,'Syntax: .account addon #addon\nSet expansion addon level allowed. Addon values: 0 - normal, 1 - tbc, 2 - wotlk.'),
 ('account create',4,'Syntax: .account create $account $password\r\n\r\nCreate account and set password to it.'),
@@ -116,6 +115,7 @@ VALUES
 ('debug play cinematic',1,'Syntax: .debug play cinematic #cinematicid\r\n\r\nPlay cinematic #cinematicid for you. You stay at place while your mind fly.\r\n'),
 ('debug play movie',1,'Syntax: .debug play movie #movieid\r\n\r\nPlay movie #movieid for you.'),
 ('debug play sound',1,'Syntax: .debug play sound #soundid\r\n\r\nPlay sound with #soundid.\r\nSound will be play only for you. Other players do not hear this.\r\nWarning: client may have more 5000 sounds...'),
+('debug play visual',1,'Syntax: .debug play visual #visualid\r\nPlay spell visual with #visualid.\n#visualid refers to the ID from SpellVisualKit.dbc'),
 ('debug send',3,''),
 ('debug send buyerror',3,''),
 ('debug send channelnotify',3,''),
@@ -560,10 +560,12 @@ VALUES
 ('wp',3,'Syntax: wp $subcommand\n Type .wp to see a list of possible subcommands\n or .help wp $subcommand to see info on the subcommand.'),
 ('wp add',3,'Syntax: .wp add\r\n\r\nAdd a waypoint for the selected creature at your current position.'),
 ('wp event',3,'Syntax: .wp event $subcommand\nType .path event to see the list of possible subcommands or .help path event $subcommand to see info on subcommands.'),
+('wp go',3,'Syntax: .wp go $pathid $point\r\nTeleport the player to the specified waypoint (has to be on the same map!).'),
 ('wp load',3,'Syntax: .wp load $pathid\nLoad pathid number for selected creature. Creature must have no waypoint data.'),
 ('wp modify',3,'Syntax: '),
 ('wp reload',3,'Syntax: .wp reload $pathid\nLoad path changes ingame - IMPORTANT: must be applied first for new paths before .wp load #pathid '),
-('wp show',3,'Syntax: .wp show $option\nOptions:\non $pathid (or selected creature with loaded path) - Show path\noff - Hide path\ninfo $slected_waypoint - Show info for selected waypoint.'),
+('wp show',3,'Syntax: .wp show $option\nOptions:\non $pathid (or selected creature with loaded path) - Show path\noff - Hide path\ninfo $selected_waypoint - Show info for selected waypoint.'),
+('wp stop',3,'Syntax: .wp stop $duration\r\nStop WP movement for $duration ms (can also be used to decrease the current WP duration).'),
 ('wp unload',3,'Syntax: .wp unload\nUnload path for selected creature.'),
 ('wpgps',4,'Syntax: .wpgps\n\nOutput current position to sql developer log as partial SQL query to be used in pathing');
 /*!40000 ALTER TABLE `command` ENABLE KEYS */;

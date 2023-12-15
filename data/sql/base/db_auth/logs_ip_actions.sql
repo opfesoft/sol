@@ -15,10 +15,10 @@ CREATE TABLE `logs_ip_actions` (
   `ip` varchar(15) NOT NULL DEFAULT '127.0.0.1',
   `systemnote` text DEFAULT NULL COMMENT 'Notes inserted by system',
   `unixtime` int(10) unsigned NOT NULL COMMENT 'Unixtime',
-  `time` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Timestamp',
+  `time` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'Timestamp',
   `comment` text DEFAULT NULL COMMENT 'Allows users to add a comment',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Used to log ips of individual actions';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Used to log ips of individual actions';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `logs_ip_actions` WRITE;

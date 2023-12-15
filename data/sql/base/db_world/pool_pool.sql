@@ -13,13 +13,12 @@ CREATE TABLE `pool_pool` (
   `chance` float NOT NULL DEFAULT 0,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`pool_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pool_pool` WRITE;
 /*!40000 ALTER TABLE `pool_pool` DISABLE KEYS */;
-INSERT INTO `pool_pool`
-VALUES
+INSERT INTO `pool_pool` VALUES
 (3000,2000,0,'Spawn Point 1 - Alterac Mountains (Inner Section)'),
 (3001,2000,0,'Spawn Point 2 - Alterac Mountains (Inner Section)'),
 (3002,2000,0,'Spawn Point 3 - Alterac Mountains (Inner Section)'),
@@ -1131,7 +1130,6 @@ VALUES
 (4507,2009,0,'Spawn Point 108 - Duskwood'),
 (4508,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4509,2009,0,'Spawn Point 110 - Duskwood'),
-(4510,11650,0,'Minerals - Rolands Doom - Duskwood'),
 (4511,2009,0,'Spawn Point 112 - Duskwood'),
 (4512,2009,0,'Spawn Point 113 - Duskwood'),
 (4600,2010,0,'Spawn Point 1 - Eastern Plaguelands'),

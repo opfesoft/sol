@@ -11,13 +11,12 @@ CREATE TABLE `spell_required` (
   `spell_id` mediumint(8) NOT NULL DEFAULT 0,
   `req_spell` mediumint(8) NOT NULL DEFAULT 0,
   PRIMARY KEY (`spell_id`,`req_spell`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Spell Additinal Data';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Spell Additinal Data';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_required` WRITE;
 /*!40000 ALTER TABLE `spell_required` DISABLE KEYS */;
-INSERT INTO `spell_required`
-VALUES
+INSERT INTO `spell_required` VALUES
 (16689,339),
 (16810,1062),
 (16811,5195),

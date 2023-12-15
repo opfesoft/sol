@@ -17,7 +17,7 @@ CREATE TABLE `character_glyphs` (
   `glyph5` smallint(5) unsigned DEFAULT 0,
   `glyph6` smallint(5) unsigned DEFAULT 0,
   PRIMARY KEY (`guid`,`talentGroup`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_glyphs` WRITE;

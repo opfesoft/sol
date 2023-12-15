@@ -15,7 +15,7 @@ CREATE TABLE `character_banned` (
   `banreason` varchar(255) NOT NULL,
   `active` tinyint(3) unsigned NOT NULL DEFAULT 1,
   PRIMARY KEY (`guid`,`bandate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Ban List';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Ban List';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_banned` WRITE;

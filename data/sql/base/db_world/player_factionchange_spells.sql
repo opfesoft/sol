@@ -13,13 +13,12 @@ CREATE TABLE `player_factionchange_spells` (
   `horde_id` int(10) unsigned NOT NULL,
   `horde_comment` text NOT NULL,
   PRIMARY KEY (`alliance_id`,`horde_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `player_factionchange_spells` WRITE;
 /*!40000 ALTER TABLE `player_factionchange_spells` DISABLE KEYS */;
-INSERT INTO `player_factionchange_spells`
-VALUES
+INSERT INTO `player_factionchange_spells` VALUES
 (458,'Brown Horse',6654,'Brown Wolf'),
 (470,'Black Stallion',64658,'Black Wolf'),
 (472,'Pinto',580,'Timber Wolf'),
@@ -44,6 +43,7 @@ VALUES
 (16083,'White Stallion',16081,'Winter Wolf'),
 (17229,'Winterspring Frostsaber',64659,'Venomhide Ravasaur'),
 (17453,'Green Mechanostrider',18989,'Gray Kodo'),
+(17454,'Unpainted Mechanostrider',18990,'Brown Kodo'),
 (17459,'Icy Blue Mechanostrider Mod A',18991,'Green Kodo'),
 (17460,'Frost Ram',17450,'Ivory Raptor'),
 (17461,'Black Ram',16084,'Mottled Red Raptor'),

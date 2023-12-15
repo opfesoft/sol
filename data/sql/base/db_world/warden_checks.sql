@@ -17,13 +17,12 @@ CREATE TABLE `warden_checks` (
   `result` varchar(24) DEFAULT NULL,
   `comment` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=793 DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM AUTO_INCREMENT=797 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `warden_checks` WRITE;
 /*!40000 ALTER TABLE `warden_checks` DISABLE KEYS */;
-INSERT INTO `warden_checks`
-VALUES
+INSERT INTO `warden_checks` VALUES
 (1,178,'07F223143C69271AA2A851FECF6DC883A9D3A7DBA6FE26CC','',710730,23,'',NULL),
 (2,191,'C7D18F99DBC446A4B36E78B9130B6FA2E365B3D2D4199DF5','',28940,17,'',NULL),
 (3,191,'AA1A8559776F873F26954F15E49E6041EDC2C3766AD87A59','',21826,11,'',NULL),
@@ -814,7 +813,9 @@ VALUES
 (789,139,NULL,'return not not PQR_IsMoving',NULL,NULL,NULL,'Detects PQR'),
 (790,139,NULL,'local f=DEFAULT_CHAT_FRAME for i=1,f:GetNumMessages() do if (f:GetMessageInfo(i)):find(\"|cffffd200PQR|r\") then return true end end',NULL,NULL,NULL,'Detects PQR'),
 (791,139,NULL,'local f=DEFAULT_CHAT_FRAME for i=1,f:GetNumMessages() do if (f:GetMessageInfo(i)):find(\"|cFF32CD32EWT|r\") then return true end end',NULL,NULL,NULL,'Detects EWT'),
-(792,139,NULL,'local f=DEFAULT_CHAT_FRAME for i=1,f:GetNumMessages() do if (f:GetMessageInfo(i)):find(\"|cFFFF4400WoWPlus|r\") then return true end end',NULL,NULL,NULL,'Detects WoWPlus');
+(792,139,NULL,'local f=DEFAULT_CHAT_FRAME for i=1,f:GetNumMessages() do if (f:GetMessageInfo(i)):find(\"|cFFFF4400WoWPlus|r\") then return true end end',NULL,NULL,NULL,'Detects WoWPlus'),
+(795,139,NULL,'local f=DEFAULT_CHAT_FRAME for i=1,f:GetNumMessages() do if (f:GetMessageInfo(i)):find(\"Rotation Mode Disable\") then return true end end',NULL,NULL,NULL,'Detects PQR'),
+(796,139,NULL,'local f=DEFAULT_CHAT_FRAME for i=1,f:GetNumMessages() do if (f:GetMessageInfo(i)):find(\"Rotation Mode Enable\") then return true end end',NULL,NULL,NULL,'Detects PQR');
 /*!40000 ALTER TABLE `warden_checks` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

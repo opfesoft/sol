@@ -24,7 +24,7 @@ CREATE TABLE `pet_aura` (
   `remainTime` int(11) NOT NULL DEFAULT 0,
   `remainCharges` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`,`casterGuid`,`spell`,`effectMask`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Pet System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Pet System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pet_aura` WRITE;

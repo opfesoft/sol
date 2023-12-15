@@ -14,7 +14,7 @@ CREATE TABLE `log_encounter` (
   `creditType` tinyint(3) unsigned NOT NULL,
   `creditEntry` int(10) unsigned NOT NULL,
   `playersInfo` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `log_encounter` WRITE;

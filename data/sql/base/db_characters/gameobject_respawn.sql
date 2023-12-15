@@ -14,7 +14,7 @@ CREATE TABLE `gameobject_respawn` (
   `instanceId` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Instance Identifier',
   PRIMARY KEY (`guid`,`instanceId`),
   KEY `idx_instance` (`instanceId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Grid Loading System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Grid Loading System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `gameobject_respawn` WRITE;

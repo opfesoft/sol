@@ -11,13 +11,12 @@ CREATE TABLE `game_event_arena_seasons` (
   `eventEntry` tinyint(3) unsigned NOT NULL COMMENT 'Entry of the game event',
   `season` tinyint(3) unsigned NOT NULL COMMENT 'Arena season number',
   UNIQUE KEY `season` (`season`,`eventEntry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_arena_seasons` WRITE;
 /*!40000 ALTER TABLE `game_event_arena_seasons` DISABLE KEYS */;
-INSERT INTO `game_event_arena_seasons`
-VALUES
+INSERT INTO `game_event_arena_seasons` VALUES
 (55,3),
 (56,4),
 (57,5),

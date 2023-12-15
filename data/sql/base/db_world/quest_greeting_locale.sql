@@ -14,13 +14,12 @@ CREATE TABLE `quest_greeting_locale` (
   `Greeting` text DEFAULT NULL,
   `VerifiedBuild` smallint(6) DEFAULT 0,
   PRIMARY KEY (`ID`,`Type`,`locale`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `quest_greeting_locale` WRITE;
 /*!40000 ALTER TABLE `quest_greeting_locale` DISABLE KEYS */;
-INSERT INTO `quest_greeting_locale`
-VALUES
+INSERT INTO `quest_greeting_locale` VALUES
 (234,0,'deDE','In Westfall hat sich üble Verderbnis eingeschlichen. Während ich auf dem Schlachtfeld von Lordaeron meine Pflicht tat, wurden diese anständig geführten Höfe überfallen und zu Schlupfwinkeln für Schläger und Mörder umfunktioniert. Die Volksmiliz ist auf Eure Hilfe angewiesen.',0),
 (234,0,'esES','Una completa corrupción se ha infiltrado en Paramos de Poniente. Mientras cumplía con mi deber en los campos de batalla de Lordaeron, estas honestas granjas fueron invadidas y convertidas en escondites para matones y asesinos. La Milicia Popular necesita tu ayuda.',0),
 (235,0,'deDE','Willkommen in unserer bescheidenen Hütte! Wir freuen uns über jedes freundliche Gesicht. Und Ihr habt so starke Arme. Mein Mann und ich sind ständig auf der Suche nach jemandem, der uns auf dem Hof hilft. Jetzt, wo die ganzen guten Leute weg sind, ist es nicht einfach, kräftige Helfer zu bekommen.',0),

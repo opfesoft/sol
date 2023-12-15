@@ -14,10 +14,11 @@ CREATE TABLE `character_entry_point` (
   `joinZ` float NOT NULL DEFAULT 0,
   `joinO` float NOT NULL DEFAULT 0,
   `joinMapId` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Map Identifier',
-  `taxiPath` text DEFAULT NULL,
+  `taxiPath0` int(10) unsigned NOT NULL DEFAULT 0,
+  `taxiPath1` int(10) unsigned NOT NULL DEFAULT 0,
   `mountSpell` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Player System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `character_entry_point` WRITE;

@@ -17,13 +17,12 @@ CREATE TABLE `achievement_reward` (
   `Body` text DEFAULT NULL,
   `MailTemplateID` mediumint(8) unsigned DEFAULT 0,
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `achievement_reward` WRITE;
 /*!40000 ALTER TABLE `achievement_reward` DISABLE KEYS */;
-INSERT INTO `achievement_reward`
-VALUES
+INSERT INTO `achievement_reward` VALUES
 (13,0,0,41426,16128,'Level 80','Congratulations on your conviction to reach the 80th season of adventure. You are undoubtedly dedicated to the cause of ridding Azeroth of the evils which have plagued us.$B$BAnd while the journey thus far has been no minor feat, the true battle lies ahead.$B$BFight on!$B$BRhonin',0),
 (45,0,0,43348,28070,'You\'ve Been Around!','Well, look at ye!$B$BAnd I thought I had seen some things in this icy place! It seems obvious to this dwarf that you have the fire of the explorer burning in your eyes.$B$BWear this tabard with pride. That way your friends will know who to ask for directions when the time comes!$B$BKeep on the move!$B$BBrann Bronzebeard',0),
 (46,78,78,0,0,'','',0),

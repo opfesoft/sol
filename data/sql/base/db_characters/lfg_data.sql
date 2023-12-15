@@ -12,7 +12,7 @@ CREATE TABLE `lfg_data` (
   `dungeon` int(10) unsigned NOT NULL DEFAULT 0,
   `state` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='LFG Data';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='LFG Data';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `lfg_data` WRITE;

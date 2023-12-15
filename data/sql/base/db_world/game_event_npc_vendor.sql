@@ -17,13 +17,12 @@ CREATE TABLE `game_event_npc_vendor` (
   `ExtendedCost` mediumint(8) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`guid`,`item`),
   KEY `slot` (`slot`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `game_event_npc_vendor` WRITE;
 /*!40000 ALTER TABLE `game_event_npc_vendor` DISABLE KEYS */;
-INSERT INTO `game_event_npc_vendor`
-VALUES
+INSERT INTO `game_event_npc_vendor` VALUES
 (17,7,0,23160,0,0,0),
 (17,7,0,23161,0,0,0),
 (17,1803,0,23160,0,0,0),

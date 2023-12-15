@@ -19,13 +19,12 @@ CREATE TABLE `prospecting_loot_template` (
   `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `prospecting_loot_template` WRITE;
 /*!40000 ALTER TABLE `prospecting_loot_template` DISABLE KEYS */;
-INSERT INTO `prospecting_loot_template`
-VALUES
+INSERT INTO `prospecting_loot_template` VALUES
 (2770,774,0,0,0,1,1,1,1,NULL),
 (2770,818,0,0,0,1,1,1,1,NULL),
 (2770,1210,0,10,0,1,0,1,1,NULL),
@@ -53,7 +52,8 @@ VALUES
 (10620,12800,0,17,0,1,1,1,2,NULL),
 (23424,1,1000,100,0,1,1,1,1,NULL),
 (23425,1,13001,100,0,1,1,1,1,NULL),
-(23425,2,13002,10,0,1,1,1,1,NULL),
+(23425,2,13002,24,0,1,1,1,1,NULL),
+(23425,3,13001,15,0,1,1,1,1,NULL),
 (23425,24243,0,100,0,1,0,1,1,NULL),
 (36909,1,1001,100,0,1,1,1,1,NULL),
 (36910,1,13005,20,0,1,0,1,1,NULL),

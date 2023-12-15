@@ -13,13 +13,12 @@ CREATE TABLE `instance_template` (
   `script` varchar(128) NOT NULL DEFAULT '',
   `allowMount` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`map`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `instance_template` WRITE;
 /*!40000 ALTER TABLE `instance_template` DISABLE KEYS */;
-INSERT INTO `instance_template`
-VALUES
+INSERT INTO `instance_template` VALUES
 (30,0,'',1),
 (33,0,'instance_shadowfang_keep',0),
 (34,0,'instance_the_stockade',0),

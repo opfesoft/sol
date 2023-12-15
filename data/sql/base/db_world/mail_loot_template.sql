@@ -19,13 +19,12 @@ CREATE TABLE `mail_loot_template` (
   `MaxCount` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `Comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Entry`,`Item`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Loot System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `mail_loot_template` WRITE;
 /*!40000 ALTER TABLE `mail_loot_template` DISABLE KEYS */;
-INSERT INTO `mail_loot_template`
-VALUES
+INSERT INTO `mail_loot_template` VALUES
 (84,21746,0,100,0,1,0,1,1,NULL),
 (85,21746,0,100,0,1,0,1,1,NULL),
 (86,21746,0,100,0,1,0,1,1,NULL),

@@ -22,13 +22,12 @@ CREATE TABLE `realmlist` (
   `gamebuild` int(10) unsigned NOT NULL DEFAULT 12340,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='Realm System';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Realm System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `realmlist` WRITE;
 /*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
-INSERT INTO `realmlist`
-VALUES
+INSERT INTO `realmlist` VALUES
 (1,'AzerothCore','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,0,1,0,0,12340);
 /*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
 UNLOCK TABLES;

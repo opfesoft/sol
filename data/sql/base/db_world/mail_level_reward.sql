@@ -13,13 +13,12 @@ CREATE TABLE `mail_level_reward` (
   `mailTemplateId` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `senderEntry` mediumint(8) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`level`,`raceMask`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Mail System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Mail System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `mail_level_reward` WRITE;
 /*!40000 ALTER TABLE `mail_level_reward` DISABLE KEYS */;
-INSERT INTO `mail_level_reward`
-VALUES
+INSERT INTO `mail_level_reward` VALUES
 (20,1,224,4732),
 (20,2,231,4752),
 (20,4,226,4772),

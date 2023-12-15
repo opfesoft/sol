@@ -13,13 +13,12 @@ CREATE TABLE `spell_ranks` (
   `rank` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`first_spell_id`,`rank`),
   UNIQUE KEY `spell_id` (`spell_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Spell Rank Data';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Spell Rank Data';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `spell_ranks` WRITE;
 /*!40000 ALTER TABLE `spell_ranks` DISABLE KEYS */;
-INSERT INTO `spell_ranks`
-VALUES
+INSERT INTO `spell_ranks` VALUES
 (10,10,1),
 (10,6141,2),
 (10,8427,3),

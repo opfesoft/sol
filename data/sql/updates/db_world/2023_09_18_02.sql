@@ -1,2 +1,0 @@
-DELETE FROM `game_event_creature` WHERE `guid` IN (245648,245645,245649); 
-DELETE FROM `creature` WHERE `guid` IN (245648,245645,245649);

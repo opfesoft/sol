@@ -14,13 +14,12 @@ CREATE TABLE `playercreateinfo_item` (
   `amount` tinyint(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`race`,`class`,`itemid`),
   KEY `playercreateinfo_race_class_index` (`race`,`class`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `playercreateinfo_item` WRITE;
 /*!40000 ALTER TABLE `playercreateinfo_item` DISABLE KEYS */;
-INSERT INTO `playercreateinfo_item`
-VALUES
+INSERT INTO `playercreateinfo_item` VALUES
 (0,6,40582,-1);
 /*!40000 ALTER TABLE `playercreateinfo_item` ENABLE KEYS */;
 UNLOCK TABLES;

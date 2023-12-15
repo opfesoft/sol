@@ -11,13 +11,12 @@ CREATE TABLE `areatrigger_involvedrelation` (
   `id` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Identifier',
   `quest` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Quest Identifier',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Trigger System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Trigger System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `areatrigger_involvedrelation` WRITE;
 /*!40000 ALTER TABLE `areatrigger_involvedrelation` DISABLE KEYS */;
-INSERT INTO `areatrigger_involvedrelation`
-VALUES
+INSERT INTO `areatrigger_involvedrelation` VALUES
 (78,155),
 (87,76),
 (88,62),
@@ -61,8 +60,6 @@ VALUES
 (4298,9731),
 (4300,9752),
 (4301,9786),
-(4473,10269),
-(4475,10275),
 (4581,10750),
 (4588,10772),
 (4899,11890),

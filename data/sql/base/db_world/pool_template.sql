@@ -12,13 +12,12 @@ CREATE TABLE `pool_template` (
   `max_limit` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Max number of objects (0) is no limit',
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `pool_template` WRITE;
 /*!40000 ALTER TABLE `pool_template` DISABLE KEYS */;
-INSERT INTO `pool_template`
-VALUES
+INSERT INTO `pool_template` VALUES
 (1,1,''),
 (2,1,''),
 (3,1,''),
@@ -424,6 +423,7 @@ VALUES
 (505,1,'Water Barrel and Food Crate5'),
 (506,1,'Water Barrel and Food Crate6'),
 (507,1,'Water Barrel and Food Crate7'),
+(508,1,'Water Barrel and Food Crate8'),
 (763,8,'Searing Gorge Dark Iron Pillow Spawns (8 out of 24)'),
 (800,18,'Master Zone 17 Leftover Areas (18 out of 106 nodes)'),
 (801,60,'Master Zone 17 Area 17 (60 out of 369 nodes)'),
@@ -550,6 +550,7 @@ VALUES
 (1044,1,'Gorgon\'och (9604)'),
 (1045,1,'Gruklash (8979)'),
 (1046,1,'Hahk\'Zor (9602)'),
+(1047,41,'Coilskar Chest (41 out of 108)'),
 (1048,1,'Malfunctioning Reaver (8981)'),
 (1049,1,'Terrorspark (10078)'),
 (1050,1,'Thauris Balgarr (8978)'),
@@ -578,7 +579,8 @@ VALUES
 (1073,1,'Okrek Rare Spawn (1 out 4)'),
 (1074,1,'Ambassador Jerrikar Rare Spawn (1 out 5)'),
 (1075,1,'Okrek Rare Spawn (1 out 3)'),
-(1076,1,'Crippler Rare Spawn (1 out 1)'),
+(1076,1,'Crippler (1 out of 6)'),
+(1077,20,'Ravenous Flayer Egg (20 out of 32)'),
 (1078,1,'Ever-Core the Punisher Rare Spawn (1 out 4)'),
 (1079,1,'Fulgore Rare Spawn (1 out 3)'),
 (1080,1,'Goretooth Rare Spawn (1 out 4)'),
@@ -609,6 +611,8 @@ VALUES
 (1105,1,'Putridus the Ancient Rare Spawn (1 out 5)'),
 (1106,1,'Zul Drak Sentinel Rare Spawn (1 out 2)'),
 (1107,1,'Lady Sathrah (1 out of 2)'),
+(1108,1,'Araga (1 out of 3)'),
+(1109,1,'Bro\'Gaz the Clanless (1 out of 3)'),
 (1161,5,'Large Scarab Coffers'),
 (1162,7,'Scarab Coffers'),
 (1500,1,'Auchenai Crypts - Group 1'),
@@ -1771,7 +1775,6 @@ VALUES
 (4507,1,'Spawn Point 108 - Duskwood'),
 (4508,1,'Spawn Point 109 - Duskwood'),
 (4509,1,'Spawn Point 110 - Duskwood'),
-(4510,1,'Spawn Point 111 - Duskwood'),
 (4511,1,'Spawn Point 112 - Duskwood'),
 (4512,1,'Spawn Point 113 - Duskwood'),
 (4600,1,'Spawn Point 1 - Eastern Plaguelands'),
@@ -3210,7 +3213,14 @@ VALUES
 (203342,1,'Jubjub (1 out 4) Darkmoon Faire (Elwynn Forest)'),
 (203343,1,'Jubjub (1 out 4) Darkmoon Faire (Mulgore)'),
 (203344,1,'Sister Riven (1 out of 2)'),
-(203345,45,'Ravager Specimen (45 out of 91)');
+(203345,45,'Ravager Specimen (45 out of 91)'),
+(203346,30,'Plaguebone Pillager & Rotlimb Cannibal (30 out of 63)'),
+(203347,19,'Tirisfal Pumpkin (19 out of 39)'),
+(203348,4,'Dragonflayer Invaders (4 out of 13)'),
+(203349,1,'Ethereum Jailor (1 out of 21'),
+(203350,5,'Void Waste (5 out of 10'),
+(203351,1,'Bash\'ir Surveyor (1 out of 4)'),
+(203352,1,'Jin\'Zallah the Sandbringer (1 out of 2)');
 /*!40000 ALTER TABLE `pool_template` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

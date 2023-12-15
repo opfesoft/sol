@@ -11,13 +11,12 @@ CREATE TABLE `quest_mail_sender` (
   `QuestId` int(5) unsigned NOT NULL DEFAULT 0,
   `RewardMailSenderEntry` int(5) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`QuestId`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `quest_mail_sender` WRITE;
 /*!40000 ALTER TABLE `quest_mail_sender` DISABLE KEYS */;
-INSERT INTO `quest_mail_sender`
-VALUES
+INSERT INTO `quest_mail_sender` VALUES
 (8729,11811),
 (10588,18166),
 (10966,22818),

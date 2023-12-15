@@ -9,20 +9,19 @@ DROP TABLE IF EXISTS `lfg_dungeon_template`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lfg_dungeon_template` (
   `dungeonId` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Unique id from LFGDungeons.dbc',
-  `name` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `position_x` float NOT NULL DEFAULT 0,
   `position_y` float NOT NULL DEFAULT 0,
   `position_z` float NOT NULL DEFAULT 0,
   `orientation` float NOT NULL DEFAULT 0,
   `VerifiedBuild` smallint(5) DEFAULT 0,
   PRIMARY KEY (`dungeonId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `lfg_dungeon_template` WRITE;
 /*!40000 ALTER TABLE `lfg_dungeon_template` DISABLE KEYS */;
-INSERT INTO `lfg_dungeon_template`
-VALUES
+INSERT INTO `lfg_dungeon_template` VALUES
 (14,'Gnomeregan',-332.22,-2.28,-150.86,2.77,0),
 (18,'Scarlet Monastery - Graveyard',1688.99,1053.48,18.6775,0.00117,0),
 (22,'Uldaman',-226.8,49.09,-46.03,1.39,0),

@@ -11,13 +11,12 @@ CREATE TABLE `creature_queststarter` (
   `id` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Identifier',
   `quest` mediumint(8) unsigned NOT NULL DEFAULT 0 COMMENT 'Quest Identifier',
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Creature System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_queststarter` WRITE;
 /*!40000 ALTER TABLE `creature_queststarter` DISABLE KEYS */;
-INSERT INTO `creature_queststarter`
-VALUES
+INSERT INTO `creature_queststarter` VALUES
 (196,33),
 (197,7),
 (197,15),
@@ -135,6 +134,7 @@ VALUES
 (311,269),
 (311,323),
 (313,94),
+(313,249),
 (328,1860),
 (328,1919),
 (332,141),
@@ -2094,7 +2094,6 @@ VALUES
 (7916,3661),
 (7916,4902),
 (7917,2923),
-(7918,2954),
 (7937,2929),
 (7944,2922),
 (7944,3640),
@@ -3103,6 +3102,7 @@ VALUES
 (14905,8073),
 (14905,8141),
 (14905,8142),
+(14905,8143),
 (14905,8144),
 (14905,8145),
 (14905,8146),

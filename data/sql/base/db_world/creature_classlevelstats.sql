@@ -22,13 +22,12 @@ CREATE TABLE `creature_classlevelstats` (
   `damage_exp2` float NOT NULL DEFAULT 0,
   `comment` text DEFAULT NULL,
   PRIMARY KEY (`level`,`class`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_classlevelstats` WRITE;
 /*!40000 ALTER TABLE `creature_classlevelstats` DISABLE KEYS */;
-INSERT INTO `creature_classlevelstats`
-VALUES
+INSERT INTO `creature_classlevelstats` VALUES
 (1,1,42,42,42,0,7,9,0,0.1321,0.1321,0.1321,NULL),
 (1,2,41,41,41,60,23,9,0,0.2381,0.2381,0.2381,NULL),
 (1,4,42,42,42,0,23,9,0,0.1321,0.1321,0.1321,NULL),

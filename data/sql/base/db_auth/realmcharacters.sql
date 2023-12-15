@@ -13,7 +13,7 @@ CREATE TABLE `realmcharacters` (
   `numchars` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`realmid`,`acctid`),
   KEY `acctid` (`acctid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='Realm Character Tracker';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Realm Character Tracker';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `realmcharacters` WRITE;

@@ -13,13 +13,12 @@ CREATE TABLE `creature_guid_chance` (
   `chance` float NOT NULL,
   PRIMARY KEY (`id`,`guid`),
   UNIQUE KEY `creature_guid_chance_unique` (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_guid_chance` WRITE;
 /*!40000 ALTER TABLE `creature_guid_chance` DISABLE KEYS */;
-INSERT INTO `creature_guid_chance`
-VALUES
+INSERT INTO `creature_guid_chance` VALUES
 (12237,54652,5),
 (12237,160509,5),
 (12237,203506,5);

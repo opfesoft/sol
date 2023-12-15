@@ -14,13 +14,12 @@ CREATE TABLE `creature_model_info` (
   `Gender` tinyint(3) unsigned NOT NULL DEFAULT 2,
   `DisplayID_Other_Gender` mediumint(8) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`DisplayID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='Creature System (Model related info)';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci COMMENT='Creature System (Model related info)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `creature_model_info` WRITE;
 /*!40000 ALTER TABLE `creature_model_info` DISABLE KEYS */;
-INSERT INTO `creature_model_info`
-VALUES
+INSERT INTO `creature_model_info` VALUES
 (4,2,3,2,0),
 (13,0,0,2,0),
 (14,0,0,2,0),
@@ -12212,7 +12211,7 @@ VALUES
 (17883,2,0,0,17884),
 (17884,0,0,1,17883),
 (17886,0,0,0,0),
-(17887,2,0,0,0),
+(17887,9,15.75,0,0),
 (17888,0,0,2,0),
 (17889,0,0,2,0),
 (17890,0,0,2,0),
@@ -12613,7 +12612,7 @@ VALUES
 (18306,0.389,1.5,0,0),
 (18307,1,1.5,0,0),
 (18308,0.3672,1.8,0,18309),
-(18309,0.306,1.5,1,18308),
+(18309,0.306,1.5,1,0),
 (18310,0,0,2,0),
 (18311,0.9932,1.95,0,0),
 (18312,1,1,2,0),
@@ -15018,7 +15017,7 @@ VALUES
 (20743,0.451389,1.95,0,0),
 (20744,1.3,1.95,0,20165),
 (20745,0,0,2,0),
-(20746,2,0,2,0),
+(20746,2.29167,16.875,2,0),
 (20747,0,0,2,0),
 (20748,2,0,1,0),
 (20749,0,0,2,0),

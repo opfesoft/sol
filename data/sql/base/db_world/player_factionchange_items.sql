@@ -13,13 +13,12 @@ CREATE TABLE `player_factionchange_items` (
   `horde_id` int(10) unsigned NOT NULL,
   `horde_comment` text NOT NULL,
   PRIMARY KEY (`alliance_id`,`horde_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `player_factionchange_items` WRITE;
 /*!40000 ALTER TABLE `player_factionchange_items` DISABLE KEYS */;
-INSERT INTO `player_factionchange_items`
-VALUES
+INSERT INTO `player_factionchange_items` VALUES
 (1201,'Dull Heater Shield',2376,'Worn Heater Shield'),
 (1307,'Gold Pickup Schedule',45978,'Solid Gold Coin'),
 (1962,'Glowing Shadowhide Pendant',45978,'Solid Gold Coin'),

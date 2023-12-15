@@ -13,13 +13,12 @@ CREATE TABLE `skill_extra_item_template` (
   `additionalCreateChance` float NOT NULL DEFAULT 0 COMMENT 'chance to create add',
   `additionalMaxNum` tinyint(3) NOT NULL DEFAULT 0,
   PRIMARY KEY (`spellId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 ROW_FORMAT=FIXED COMMENT='Skill Specialization System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=FIXED COMMENT='Skill Specialization System';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `skill_extra_item_template` WRITE;
 /*!40000 ALTER TABLE `skill_extra_item_template` DISABLE KEYS */;
-INSERT INTO `skill_extra_item_template`
-VALUES
+INSERT INTO `skill_extra_item_template` VALUES
 (2329,28677,14,4),
 (2331,28675,14,4),
 (2332,28675,14,4),
