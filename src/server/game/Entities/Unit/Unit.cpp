@@ -9526,6 +9526,9 @@ bool Unit::IsNeutralToAll() const
 
 bool Unit::Attack(Unit* victim, bool meleeAttack)
 {
+    if ((victim->GetTypeId() == TYPEID_UNIT && victim->ToCreature()->IsTrigger()) || (GetTypeId() == TYPEID_UNIT && ToCreature()->IsTrigger()))
+        return false;
+
     if (!victim || victim == this)
         return false;
 
