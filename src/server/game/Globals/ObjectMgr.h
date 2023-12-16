@@ -458,7 +458,6 @@ struct BroadcastText
     uint32 SoundId;
     uint32 Unk1;
     uint32 Unk2;
-    // uint32 VerifiedBuild;
 
     std::string const& GetText(LocaleConstant locale = DEFAULT_LOCALE, uint8 gender = GENDER_MALE, bool forceGender = false) const
     {

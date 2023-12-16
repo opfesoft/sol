@@ -109,7 +109,6 @@ Quest::Quest(Field* questRecord)
     }
 
     // int8 Unknown0 = questRecord[99].GetUInt8();
-    // int32 VerifiedBuild = questRecord[104].GetInt32();
 
     for (int i = 0; i < QUEST_EMOTE_COUNT; ++i)
     {
