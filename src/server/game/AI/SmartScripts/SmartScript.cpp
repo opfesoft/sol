@@ -3220,8 +3220,9 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_LOAD_GRID:
     {
-        if (me && me->FindMap())
-            me->FindMap()->LoadGrid(e.target.x, e.target.y);
+        WorldObject* obj = GetBaseObject();
+        if (obj && obj->FindMap())
+            obj->FindMap()->LoadGrid(e.target.x, e.target.y);
         break;
     }
     case SMART_ACTION_CYCLIC_MOVE:
