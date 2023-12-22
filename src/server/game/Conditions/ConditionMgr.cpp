@@ -648,6 +648,7 @@ uint32 Condition::GetMaxAvailableConditionTargets()
         case CONDITION_SOURCE_TYPE_GOSSIP_MENU:
         case CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION:
         case CONDITION_SOURCE_TYPE_NPC_VENDOR:
+        case CONDITION_SOURCE_TYPE_NPC_INTERACTION:
         case CONDITION_SOURCE_TYPE_SPELL_PROC:
             return 2;
         default:
@@ -918,7 +919,9 @@ ConditionList ConditionMgr::GetConditionsForNpcVendorEvent(uint32 creatureId, ui
         if (i != (*itr).second.end())
         {
             cond = (*i).second;
+#if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
             sLog->outDebug(LOG_FILTER_CONDITIONSYS, "GetConditionsForNpcVendorEvent: found conditions for creature entry %u item %u", creatureId, itemId);
+#endif
         }
     }
     return cond;
@@ -1667,7 +1670,7 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond)
         {
             if (!sObjectMgr->GetCreatureTemplate(cond->SourceGroup))
             {
-                sLog->outError("SourceEntry %u in `condition` table, does not exist in `creature_template`, ignoring.", cond->SourceGroup);
+                sLog->outError("SourceGroup %u in `condition` table, does not exist in `creature_template`, ignoring.", cond->SourceGroup);
                 return false;
             }
 
@@ -1679,6 +1682,15 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond)
                     sLog->outError("SourceEntry %u in `condition` table, does not exist in `item_template`, ignoring.", cond->SourceEntry);
                     return false;
                 }
+            }
+            break;
+        }
+        case CONDITION_SOURCE_TYPE_NPC_INTERACTION:
+        {
+            if (!sObjectMgr->GetCreatureTemplate(cond->SourceEntry))
+            {
+                sLog->outError("SourceEntry %u in `condition` table, does not exist in `creature_template`, ignoring.", cond->SourceEntry);
+                return false;
             }
             break;
         }

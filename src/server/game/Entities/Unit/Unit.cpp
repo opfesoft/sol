@@ -19616,6 +19616,10 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
                     if (!sConditionMgr->IsObjectMeetToConditions(target, (WorldObject*)creature, conditions))
                         appendValue &= ~UNIT_NPC_FLAG_VENDOR;
 
+                    conditions = sConditionMgr->GetConditionsForNotGroupedEntry(CONDITION_SOURCE_TYPE_NPC_INTERACTION, creature->GetEntry());
+                    if (!sConditionMgr->IsObjectMeetToConditions(target, (WorldObject*)creature, conditions))
+                        appendValue = 0;
+
                     sScriptMgr->OnBuildValuesUpdateNpcFlags(target, creature, appendValue);
                 }
 

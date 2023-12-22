@@ -144,7 +144,8 @@ enum ConditionSourceType
 
     CONDITION_SOURCE_TYPE_RANGE2_START                   = 150, // placeholder
     CONDITION_SOURCE_TYPE_SMART_EVENT_TARGET             = 151,
-    CONDITION_SOURCE_TYPE_RANGE2_END                     = 152, // placeholder
+    CONDITION_SOURCE_TYPE_NPC_INTERACTION                = 152,
+    CONDITION_SOURCE_TYPE_RANGE2_END                     = 153, // placeholder
 };
 
 enum RelationType

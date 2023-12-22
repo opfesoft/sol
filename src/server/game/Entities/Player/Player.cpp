@@ -2911,6 +2911,10 @@ Creature* Player::GetNPCIfCanInteractWith(uint64 guid, uint32 npcflagmask)
     if (!creature)
         return NULL;
 
+    ConditionList conditions = sConditionMgr->GetConditionsForNotGroupedEntry(CONDITION_SOURCE_TYPE_NPC_INTERACTION, creature->GetEntry());
+    if (!sConditionMgr->IsObjectMeetToConditions(this, creature, conditions))
+        return NULL;
+
     // Deathstate checks
     if (!IsAlive() && !(creature->GetCreatureTemplate()->type_flags & CREATURE_TYPE_FLAG_GHOST_VISIBLE))
         return NULL;
