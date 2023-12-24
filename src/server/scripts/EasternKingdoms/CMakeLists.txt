@@ -90,7 +90,6 @@ set(scripts_STAT_SRCS
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_arathi_highlands.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/Gnomeregan/instance_gnomeregan.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_redridge_mountains.cpp
-  ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_ironforge.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/ScarletEnclave/chapter2.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/ScarletEnclave/chapter5.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/ScarletEnclave/chapter1.cpp
@@ -140,7 +139,6 @@ set(scripts_STAT_SRCS
   ${AC_SCRIPTS_DIR}/EasternKingdoms/ZulAman/zulaman.h
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_hinterlands.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_western_plaguelands.cpp
-  ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_alterac_mountains.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_westfall.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/zone_silverpine_forest.cpp
   ${AC_SCRIPTS_DIR}/EasternKingdoms/Karazhan/instance_karazhan.cpp
