@@ -3311,49 +3311,6 @@ class spell_item_purify_helboar_meat : public SpellScriptLoader
         }
 };
 
-enum CrystalPrison
-{
-    OBJECT_IMPRISONED_DOOMGUARD     = 179644,
-};
-
-class spell_item_crystal_prison_dummy_dnd : public SpellScriptLoader
-{
-    public:
-        spell_item_crystal_prison_dummy_dnd() : SpellScriptLoader("spell_item_crystal_prison_dummy_dnd") { }
-
-        class spell_item_crystal_prison_dummy_dnd_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_item_crystal_prison_dummy_dnd_SpellScript);
-
-            bool Validate(SpellInfo const* /*spell*/)
-            {
-                if (!sObjectMgr->GetGameObjectTemplate(OBJECT_IMPRISONED_DOOMGUARD))
-                    return false;
-                return true;
-            }
-
-            void HandleDummy(SpellEffIndex /* effIndex */)
-            {
-                if (Creature* target = GetHitCreature())
-                    if (target->isDead() && !target->IsPet())
-                    {
-                        GetCaster()->SummonGameObject(OBJECT_IMPRISONED_DOOMGUARD, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 0, 0, 0, 0, uint32(target->GetRespawnTime()-time(NULL)));
-                        target->DespawnOrUnsummon();
-                    }
-            }
-
-            void Register()
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_item_crystal_prison_dummy_dnd_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_item_crystal_prison_dummy_dnd_SpellScript();
-        }
-};
-
 enum ReindeerTransformation
 {
     SPELL_FLYING_REINDEER_310                   = 44827,
@@ -4520,7 +4477,6 @@ void AddSC_item_spell_scripts()
     new spell_item_refocus();
     new spell_item_shimmering_vessel();
     new spell_item_purify_helboar_meat();
-    new spell_item_crystal_prison_dummy_dnd();
     new spell_item_reindeer_transformation();
     new spell_item_nigh_invulnerability();
     new spell_item_poultryizer();
