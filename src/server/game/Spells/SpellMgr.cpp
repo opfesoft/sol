@@ -3549,6 +3549,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 53768: // Haunted
             spellInfo->Attributes |= SPELL_ATTR0_CANT_CANCEL;
             break;
+        case 52255: // Engine on Fire
+            spellInfo->AttributesEx |= SPELL_ATTR1_AURA_STAYS_AFTER_COMBAT;
+            break;
 
 
         /////////////////////////////////////////////
