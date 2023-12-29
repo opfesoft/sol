@@ -46,14 +46,22 @@ struct Location
 
 Location AmbushSpawn[] =
 {
-    { 191.296204f, -2839.329346f, 107.388f },
-    { 70.972466f,  -2848.674805f, 109.459f }
+    { 191.296f, -2839.33f, 107.389f },
+    { 190.944f, -2842.48f, 106.592f },
+    { 194.007f, -2840.77f, 107.238f },
+    { 70.9725f, -2848.67f, 109.460f },
+    { 72.2378f, -2846.40f, 109.721f },
+    { 68.5215f, -2846.45f, 109.407f }
 };
 
 Location AmbushMoveTo[] =
 {
-    { 166.630386f, -2824.780273f, 108.153f },
-    { 70.886589f,  -2874.335449f, 116.675f }
+    { 166.630f, -2824.78f, 108.153f },
+    { 165.848f, -2827.86f, 107.401f },
+    { 169.901f, -2826.39f, 108.019f },
+    { 70.8866f, -2874.34f, 116.676f },
+    { 72.1135f, -2871.84f, 116.192f },
+    { 67.7536f, -2873.28f, 116.410f }
 };
 
 class npc_rinji : public CreatureScript
@@ -67,19 +75,20 @@ public:
         {
             _IsByOutrunner = false;
             spawnId = 0;
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_DISABLE_MOVE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
         }
 
         void Reset()
         {
             postEventCount = 0;
-            postEventTimer = 3000;
+            postEventTimer = 6000;
         }
 
         void JustRespawned()
         {
             _IsByOutrunner = false;
             spawnId = 0;
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
 
             npc_escortAI::JustRespawned();
         }
@@ -108,27 +117,32 @@ public:
             if (!_first)
                 spawnId = 1;
 
-            me->SummonCreature(NPC_RANGER, AmbushSpawn[spawnId].posX, AmbushSpawn[spawnId].posY, AmbushSpawn[spawnId].posZ, 0.0f,
-                TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000);
+            uint32 posId = spawnId * 3;
 
-            for (int i = 0; i < 2; ++i)
+            for (int i = 0; i < 3; ++i)
             {
-                me->SummonCreature(NPC_OUTRUNNER, AmbushSpawn[spawnId].posX, AmbushSpawn[spawnId].posY, AmbushSpawn[spawnId].posZ, 0.0f,
-                    TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000);
-            }
-        }
+                uint32 creatureId = (i == 0 ? NPC_RANGER : NPC_OUTRUNNER);
 
-        void JustSummoned(Creature* summoned)
-        {
-            summoned->SetWalk(false);
-            summoned->GetMotionMaster()->MovePoint(0, AmbushMoveTo[spawnId].posX, AmbushMoveTo[spawnId].posY, AmbushMoveTo[spawnId].posZ);
+                if (Creature* summon = me->SummonCreature(creatureId, AmbushSpawn[posId].posX, AmbushSpawn[posId].posY, AmbushSpawn[posId].posZ, 0.0f,
+                    TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000))
+                {
+                    summon->setActive(true);
+                    summon->SetWalk(false);
+                    summon->GetMotionMaster()->MovePoint(0, AmbushMoveTo[posId].posX, AmbushMoveTo[posId].posY, AmbushMoveTo[posId].posZ);
+                }
+
+                posId++;
+            }
         }
 
         void sQuestAccept(Player* player, Quest const* quest)
         {
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_DISABLE_MOVE);
             if (quest->GetQuestId() == QUEST_RINJI_TRAPPED)
             {
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                me->SetReactState(REACT_DEFENSIVE);
+                me->setActive(true);
+
                 if (GameObject* go = me->FindNearestGameObject(GO_RINJI_CAGE, INTERACTION_DISTANCE))
                     go->UseDoorOrButton();
 
@@ -154,10 +168,12 @@ public:
                     DoSpawnAmbush(false);
                     break;
                 case 17:
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
                     Talk(SAY_RIN_COMPLETE, player);
                     player->GroupEventHappens(QUEST_RINJI_TRAPPED, me);
                     SetRun();
                     postEventCount = 1;
+                    SetEscortPaused(true);
                     break;
             }
         }
@@ -171,7 +187,7 @@ public:
                 {
                     if (postEventTimer <= diff)
                     {
-                        postEventTimer = 3000;
+                        postEventTimer = 6000;
 
                         if (Player* player = GetPlayerForEscort())
                         {
@@ -184,6 +200,7 @@ public:
                                 case 2:
                                     Talk(SAY_RIN_PROGRESS_2, player);
                                     postEventCount = 0;
+                                    SetEscortPaused(false);
                                     break;
                             }
                         }
@@ -204,7 +221,7 @@ public:
     private:
         uint32 postEventCount;
         uint32 postEventTimer;
-        int    spawnId;
+        uint32 spawnId;
         bool   _IsByOutrunner;
     };
 
