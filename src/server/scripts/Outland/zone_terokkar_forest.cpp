@@ -477,7 +477,17 @@ public:
 
     struct npc_isla_starmaneAI : public npc_escortAI
     {
-        npc_isla_starmaneAI(Creature* creature) : npc_escortAI(creature) { }
+        npc_isla_starmaneAI(Creature* creature) : npc_escortAI(creature)
+        {
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+        }
+
+        void JustRespawned()
+        {
+            me->RestoreFaction();
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            npc_escortAI::JustRespawned();
+        }
 
         void WaypointReached(uint32 waypointId)
         {
@@ -487,10 +497,6 @@ public:
 
             switch (waypointId)
             {
-                case 0:
-                    if (GameObject* Cage = me->FindNearestGameObject(GO_CAGE, 10))
-                        Cage->SetGoState(GO_STATE_ACTIVE);
-                    break;
                 case 2:
                     Talk(SAY_PROGRESS_1, player);
                     break;
@@ -516,11 +522,6 @@ public:
                     me->SetWalk(false);
                     break;
             }
-        }
-
-        void Reset()
-        {
-            me->RestoreFaction();
         }
 
         void JustDied(Unit* /*killer*/)
@@ -579,6 +580,11 @@ public:
         {
             CAST_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
             creature->setFaction(250);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            creature->SetReactState(REACT_DEFENSIVE);
+            creature->setActive(true);
+            if (GameObject* go = creature->FindNearestGameObject(GO_CAGE, INTERACTION_DISTANCE))
+                go->UseDoorOrButton();
         }
         return true;
     }
