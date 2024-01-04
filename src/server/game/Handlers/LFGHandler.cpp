@@ -217,7 +217,7 @@ void WorldSession::HandleLfgPlayerLockInfoRequestOpcode(WorldPacket& /*recvData*
         {
             data << uint8(done);
             data << uint32(quest->GetRewOrReqMoney(GetPlayer()));
-            data << uint32(quest->XPValue(GetPlayer()));
+            data << uint32(GetPlayer()->getLevel() < sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL) ? quest->XPValue(GetPlayer()) : 0);
             data << uint32(0);
             data << uint32(0);
             data << uint8(quest->GetRewItemsCount());
