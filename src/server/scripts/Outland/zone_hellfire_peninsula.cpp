@@ -14,7 +14,6 @@ EndScriptData */
 
 /* ContentData
 npc_aeranas
-npc_ancestral_wolf
 npc_wounded_blood_elf
 EndContentData */
 
@@ -152,77 +151,6 @@ public:
 };
 
 /*######
-## npc_ancestral_wolf
-######*/
-
-enum AncestralWolf
-{
-    EMOTE_WOLF_LIFT_HEAD        = 0,
-    EMOTE_WOLF_HOWL             = 1,
-    SAY_WOLF_WELCOME            = 2,
-    SPELL_ANCESTRAL_WOLF_BUFF   = 29981,
-    NPC_RYGA                    = 17123
-};
-
-class npc_ancestral_wolf : public CreatureScript
-{
-public:
-    npc_ancestral_wolf() : CreatureScript("npc_ancestral_wolf") { }
-
-    struct npc_ancestral_wolfAI : public npc_escortAI
-    {
-        npc_ancestral_wolfAI(Creature* creature) : npc_escortAI(creature)
-        {
-            if (creature->GetOwner() && creature->GetOwner()->GetTypeId() == TYPEID_PLAYER)
-                Start(false, true, creature->GetOwner()->GetGUID());
-        }
-
-        void Reset()
-        {
-            ryga = NULL;
-            me->CastSpell(me, SPELL_ANCESTRAL_WOLF_BUFF, false);
-            me->SetReactState(REACT_PASSIVE);
-        }
-
-        void MoveInLineOfSight(Unit* who)
-
-        {
-            if (!ryga && who->GetEntry() == NPC_RYGA && me->IsWithinDistInMap(who, 15.0f))
-                if (Creature* temp = who->ToCreature())
-                    ryga = temp;
-
-            npc_escortAI::MoveInLineOfSight(who);
-        }
-
-        void WaypointReached(uint32 waypointId)
-        {
-            me->CastSpell(me, SPELL_ANCESTRAL_WOLF_BUFF, false);
-            switch (waypointId)
-            {
-                case 0:
-                    Talk(EMOTE_WOLF_LIFT_HEAD);
-                    break;
-                case 2:
-                    Talk(EMOTE_WOLF_HOWL);
-                    break;
-                case 50:
-                    if (ryga && ryga->IsAlive() && !ryga->IsInCombat())
-                        ryga->AI()->Talk(SAY_WOLF_WELCOME);
-                    break;
-            }
-        }
-
-    private:
-        Creature* ryga;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_ancestral_wolfAI(creature);
-    }
-};
-
-/*######
 ## npc_wounded_blood_elf
 ######*/
 
@@ -343,6 +271,5 @@ void AddSC_hellfire_peninsula()
 
     // Theirs
     new npc_aeranas();
-    new npc_ancestral_wolf();
     new npc_wounded_blood_elf();
 }
