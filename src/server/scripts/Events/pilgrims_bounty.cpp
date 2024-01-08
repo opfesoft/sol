@@ -510,6 +510,14 @@ enum tTracker
     SPELL_ACHI_TURKINATOR_CREDIT        = 62021,
 };
 
+enum SayTurkeyTracker
+{
+    SAY_TURKEY_HUNTER                   = 33163,
+    SAY_TURKEY_DOMINATION               = 33164,
+    SAY_TURKEY_SLAUGHTER                = 33165,
+    SAY_TURKEY_TRIUMPH                  = 33167,
+};
+
 class spell_pilgrims_bounty_turkey_tracker : public SpellScriptLoader
 {
     public:
@@ -528,16 +536,16 @@ class spell_pilgrims_bounty_turkey_tracker : public SpellScriptLoader
                     switch (stackAmount)
                     {
                         case 10:
-                            target->MonsterTextEmote("Turkey Hunter!", target, true);
+                            target->MonsterWhisper(SAY_TURKEY_HUNTER, target, true);
                             break;
                         case 20:
-                            target->MonsterTextEmote("Turkey Domination!", target, true);
+                            target->MonsterWhisper(SAY_TURKEY_DOMINATION, target, true);
                             break;
                         case 30:
-                            target->MonsterTextEmote("Turkey Slaughter!", target, true);
+                            target->MonsterWhisper(SAY_TURKEY_SLAUGHTER, target, true);
                             break;
                         case 40:
-                            target->MonsterTextEmote("TURKEY TRIUMPH!", target, true);
+                            target->MonsterWhisper(SAY_TURKEY_TRIUMPH, target, true);
                             target->CastSpell(target, SPELL_ACHI_TURKINATOR_CREDIT, true);
                             aurEff->GetBase()->Remove();
                             break;
