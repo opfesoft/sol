@@ -630,6 +630,9 @@ void WorldSession::HandleCharCreateCallback(PreparedQueryResult result, Characte
                 return;
             }
 
+            newChar.UpdateAllStats();
+            newChar.SetFullHealth();
+
             if ((haveSameRace && skipCinematics == 1) || skipCinematics == 2)
                 newChar.setCinematic(1);                          // not show intro
 
