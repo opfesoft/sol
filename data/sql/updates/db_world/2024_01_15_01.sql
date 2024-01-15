@@ -1,0 +1,1 @@
+UPDATE `smart_scripts` SET `event_param1` = 240000, `event_param2` = 360000, `event_param3` = 240000, `event_param4` = 360000 WHERE `source_type` = 0 AND `entryorguid` IN (18927,19148,19169,19171,19172,19173,19175,19176,19177,19178,20102) AND `action_type` = 1 AND `event_type` = 1;
