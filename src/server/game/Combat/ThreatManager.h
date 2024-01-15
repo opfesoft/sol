@@ -236,6 +236,7 @@ class ThreatManager
 
                 if (predicate(ref->getTarget()))
                 {
+                    ref->resetTempThreat();
                     ref->setThreat(0);
                     setDirty(true);
                 }

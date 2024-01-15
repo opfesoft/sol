@@ -603,7 +603,10 @@ void ThreatManager::resetAllAggro()
         return;
 
     for (ThreatContainer::StorageType::iterator itr = threatList.begin(); itr != threatList.end(); ++itr)
+    {
+        (*itr)->resetTempThreat();
         (*itr)->setThreat(0);
+    }
 
     setDirty(true);
 }
