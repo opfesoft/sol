@@ -273,8 +273,9 @@ uint8 WorldSession::HandleLoadPetFromDBFirstCallback(PreparedQueryResult result,
     if (_loadPetFromDBSecondCallback.ready())
     {
         SQLQueryHolder* param;
-        _loadPetFromDBSecondCallback.get(param);
-        delete param;
+        int r = _loadPetFromDBSecondCallback.get(param);
+        if (r == 0)
+            delete param;
     }
     _loadPetFromDBSecondCallback.cancel();
 
