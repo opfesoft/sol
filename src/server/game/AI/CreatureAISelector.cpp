@@ -14,6 +14,7 @@
 #include "TemporarySummon.h"
 #include "CreatureAIFactory.h"
 #include "ScriptMgr.h"
+#include "SmartAI.h"
 
 namespace FactorySelector
 {
@@ -21,6 +22,12 @@ namespace FactorySelector
     {
         const CreatureAICreator* ai_factory = NULL;
         CreatureAIRegistry& ai_registry(*CreatureAIRepository::instance());
+        std::string ainame = creature->GetAIName();
+        std::string scriptname = creature->GetScriptName();
+        CreatureAI* scriptedAI = sScriptMgr->GetCreatureAI(creature);
+        if (!ainame.empty() && !scriptname.empty())
+            if ((ainame == "SmartAI" && (!scriptedAI || (scriptedAI && !dynamic_cast<SmartAI*>(scriptedAI)))) || (ainame != "SmartAI" && scriptedAI))
+                sLog->outError("creature %u (entry %u) uses %s but overrides AI via script %s", creature->GetGUIDLow(), creature->GetEntry(), ainame.c_str(), scriptname.c_str());
 
         // xinef: if we have controlable guardian, define petai for players as they can steer him, otherwise db / normal ai
         // xinef: dont remember why i changed this qq commented out as may break some quests
@@ -29,11 +36,10 @@ namespace FactorySelector
 
         //scriptname in db
         if (!ai_factory)
-            if (CreatureAI* scriptedAI = sScriptMgr->GetCreatureAI(creature))
+            if (scriptedAI)
                 return scriptedAI;
 
         // AIname in db
-        std::string ainame=creature->GetAIName();
         if (!ai_factory && !ainame.empty())
             ai_factory = ai_registry.GetRegistryItem(ainame);
 
@@ -124,16 +130,22 @@ namespace FactorySelector
     {
         const GameObjectAICreator* ai_factory = NULL;
         GameObjectAIRegistry& ai_registry(*GameObjectAIRepository::instance());
+        std::string ainame = go->GetAIName();
+        std::string scriptname = go->GetScriptName();
+        GameObjectAI* scriptedAI = sScriptMgr->GetGameObjectAI(go);
+        if (!ainame.empty() && !scriptname.empty())
+            if ((ainame == "SmartGameObjectAI" && (!scriptedAI || (scriptedAI && !dynamic_cast<SmartGameObjectAI*>(scriptedAI)))) || (ainame != "SmartGameObjectAI" && scriptedAI))
+                sLog->outError("gameobject %u (entry %u) uses %s but overrides AI via script %s", go->GetGUIDLow(), go->GetEntry(), ainame.c_str(), scriptname.c_str());
 
-        if (GameObjectAI* scriptedAI = sScriptMgr->GetGameObjectAI(go))
+        if (scriptedAI)
             return scriptedAI;
 
-        ai_factory = ai_registry.GetRegistryItem(go->GetAIName());
+        ai_factory = ai_registry.GetRegistryItem(ainame);
 
         //future goAI types go here
 
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
-        std::string ainame = (ai_factory == NULL || go->GetScriptId()) ? "NullGameObjectAI" : ai_factory->key();
+        ainame = (ai_factory == NULL || go->GetScriptId()) ? "NullGameObjectAI" : ai_factory->key();
         sLog->outDebug(LOG_FILTER_TSCR, "GameObject %u used AI is %s.", go->GetGUIDLow(), ainame.c_str());
 #endif
 

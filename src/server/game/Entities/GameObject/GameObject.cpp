@@ -90,6 +90,11 @@ std::string GameObject::GetAIName() const
     return sObjectMgr->GetGameObjectTemplate(GetEntry())->AIName;
 }
 
+std::string GameObject::GetScriptName() const
+{
+    return sObjectMgr->GetScriptName(GetScriptId());
+}
+
 void GameObject::CleanupsBeforeDelete(bool /*finalCleanup*/)
 { 
     if (GetTransport() && !ToTransport())

@@ -856,6 +856,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
         GameObjectAI* AI() const { return m_AI; }
 
         std::string GetAIName() const;
+        std::string GetScriptName() const;
         void SetDisplayId(uint32 displayid);
         uint32 GetDisplayId() const { return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
 
