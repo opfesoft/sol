@@ -324,73 +324,6 @@ public:
     }
 };
 
-/*######
-## npc_razael_and_lyana
-######*/
-
-enum Razael
-{
-    QUEST_REPORTS_FROM_THE_FIELD = 11221,
-    NPC_RAZAEL = 23998,
-    NPC_LYANA = 23778,
-    GOSSIP_TEXTID_RAZAEL1 = 11562,
-    GOSSIP_TEXTID_RAZAEL2 = 11564,
-    GOSSIP_TEXTID_LYANA1 = 11586,
-    GOSSIP_TEXTID_LYANA2 = 11588
-};
-
-class npc_razael_and_lyana : public CreatureScript
-{
-public:
-    npc_razael_and_lyana() : CreatureScript("npc_razael_and_lyana") { }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        if (creature->IsQuestGiver())
-            player->PrepareQuestMenu(creature->GetGUID());
-
-        if (player->GetQuestStatus(QUEST_REPORTS_FROM_THE_FIELD) == QUEST_STATUS_INCOMPLETE)
-            switch (creature->GetEntry())
-            {
-                case NPC_RAZAEL:
-                    if (!player->GetReqKillOrCastCurrentCount(QUEST_REPORTS_FROM_THE_FIELD, NPC_RAZAEL))
-                    {
-                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                        SendGossipMenuFor(player, GOSSIP_TEXTID_RAZAEL1, creature->GetGUID());
-                        return true;
-                    }
-                break;
-                case NPC_LYANA:
-                    if (!player->GetReqKillOrCastCurrentCount(QUEST_REPORTS_FROM_THE_FIELD, NPC_LYANA))
-                    {
-                        AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                        SendGossipMenuFor(player, GOSSIP_TEXTID_LYANA1, creature->GetGUID());
-                        return true;
-                    }
-                break;
-            }
-        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
-        return true;
-    }
-
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-    {
-        ClearGossipMenuFor(player);
-        switch (action)
-        {
-            case GOSSIP_ACTION_INFO_DEF + 1:
-                SendGossipMenuFor(player, GOSSIP_TEXTID_RAZAEL2, creature->GetGUID());
-                player->TalkedToCreature(NPC_RAZAEL, creature->GetGUID());
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 2:
-                SendGossipMenuFor(player, GOSSIP_TEXTID_LYANA2, creature->GetGUID());
-                player->TalkedToCreature(NPC_LYANA, creature->GetGUID());
-                break;
-        }
-        return true;
-    }
-};
-
 enum SummonSpells
 {
     SPELL_SUMMON_BABY_RIVEN_WIDOWS        = 43275,
@@ -469,6 +402,5 @@ void AddSC_howling_fjord()
     // Theirs
     new npc_apothecary_hanes();
     new npc_plaguehound_tracker();
-    new npc_razael_and_lyana();
     new npc_riven_widow_cocoon();
  }
