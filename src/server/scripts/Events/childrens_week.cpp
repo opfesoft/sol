@@ -91,6 +91,7 @@ enum Quests
     QUEST_HOME_OF_THE_BEAR_MEN              = 13930,
     QUEST_THE_DRAGON_QUEEN_ORACLE           = 13954,
     QUEST_THE_DRAGON_QUEEN_WOLVAR           = 13955,
+    QUEST_THE_ACTIVATION_RUNE               = 12547,
 };
 
 enum Areatriggers
@@ -598,6 +599,14 @@ class npc_the_etymidian : public CreatureScript
 {
     public:
         npc_the_etymidian() : CreatureScript("npc_the_etymidian") {}
+
+        bool OnQuestReward(Player* /*player*/, Creature* creature, Quest const* quest, uint32 /*opt*/)
+        {
+            if (quest->GetQuestId() == QUEST_THE_ACTIVATION_RUNE)
+                creature->AI()->Talk(0);
+
+            return true;
+        }
 
         struct npc_the_etymidianAI : public ScriptedAI
         {
