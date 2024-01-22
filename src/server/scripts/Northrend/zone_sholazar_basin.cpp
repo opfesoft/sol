@@ -285,6 +285,7 @@ quest Still At It (12644)
 enum StillAtIt
 {
     NPC_WANTS_BANANAS            =  28537,
+    NPC_STEAMING_VALVE           =  28539,
     GO_THUNDERBREWS_JUNGLE_PUNCH = 190643,
 
     QUEST_STILL_AT_IT            =  12644,
@@ -299,6 +300,8 @@ enum StillAtIt
     SAY_MCMANUS_WELL_DONE        =      6,
     SAY_MCMANUS_FAILED           =      7,
     SAY_MCMANUS_END              =      8,
+
+    SPELL_COSMETIC_STEAM_BLAST   =  51920,
 };
 
 
@@ -389,6 +392,10 @@ public:
 
                 Say(SAY_MCMANUS_WELL_DONE);
 
+                if (a == 1)
+                    if (Creature* c = me->FindNearestCreature(NPC_STEAMING_VALVE, 20.0f))
+                        c->DespawnOrUnsummon(1);
+
                 if (currentstep >= stepcount)
                 {
                     success = true;
@@ -454,11 +461,23 @@ public:
                     expectedaction = urand(1,5);
                     switch (expectedaction)
                     {
-                        case 1: Say(SAY_MCMANUS_PRESSURE); break;
-                        case 2: Say(SAY_MCMANUS_HEAT);     break;
-                        case 3: Say(SAY_MCMANUS_BANANA);   break;
-                        case 4: Say(SAY_MCMANUS_ORANGE);   break;
-                        case 5: Say(SAY_MCMANUS_PAPAYA);   break;
+                        case 1:
+                            Say(SAY_MCMANUS_PRESSURE);
+                            if (Creature* steam = me->SummonCreature(NPC_STEAMING_VALVE, 5548.1f, 5767.4f, -76.2673f, -2.1293f, TEMPSUMMON_TIMED_DESPAWN, 11000))
+                                steam->CastSpell(steam, SPELL_COSMETIC_STEAM_BLAST, false);
+                            break;
+                        case 2:
+                            Say(SAY_MCMANUS_HEAT);
+                            break;
+                        case 3:
+                            Say(SAY_MCMANUS_BANANA);
+                            break;
+                        case 4:
+                            Say(SAY_MCMANUS_ORANGE);
+                            break;
+                        case 5:
+                            Say(SAY_MCMANUS_PAPAYA);
+                            break;
                     }
                     timer = 10000;
                 }
