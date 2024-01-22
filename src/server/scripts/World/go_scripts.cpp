@@ -55,19 +55,6 @@ public:
     }
 };
 
-class go_seer_of_zebhalak : public GameObjectScript
-{
-public:
-    go_seer_of_zebhalak() : GameObjectScript("go_seer_of_zebhalak") { }
-
-    bool OnGossipHello(Player* player, GameObject* /*go*/) override
-    {
-        if (player->GetQuestStatus(12007) == QUEST_STATUS_INCOMPLETE)
-            player->CastSpell(player, 47293, true);
-        return true;
-    }
-};
-
 class go_witherbark_totem_bundle : public GameObjectScript
 {
     public:
@@ -1130,7 +1117,6 @@ void AddSC_go_scripts()
 {
     // Ours
     new go_noblegarden_colored_egg();
-    new go_seer_of_zebhalak();
     new go_witherbark_totem_bundle();
     new go_arena_ready_marker();
     new go_ethereum_prison();
