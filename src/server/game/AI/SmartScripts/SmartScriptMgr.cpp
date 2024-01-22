@@ -138,18 +138,30 @@ void SmartAIMgr::LoadSmartAIFromDB()
             {
                 case SMART_SCRIPT_TYPE_CREATURE:
                 {
-                    if (!sObjectMgr->GetCreatureTemplate((uint32)temp.entryOrGuid))
+                    CreatureTemplate const* cInfo = sObjectMgr->GetCreatureTemplate((uint32)temp.entryOrGuid);
+                    if (!cInfo)
                     {
                         sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature entry %u does not exist, skipped loading.", uint32(temp.entryOrGuid));
+                        continue;
+                    }
+                    else if (cInfo->AIName != "SmartAI")
+                    {
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature entry %u has a SmartAI script, but AIName is not SmartAI.", uint32(temp.entryOrGuid));
                         continue;
                     }
                     break;
                 }
                 case SMART_SCRIPT_TYPE_GAMEOBJECT:
                 {
-                    if (!sObjectMgr->GetGameObjectTemplate((uint32)temp.entryOrGuid))
+                    GameObjectTemplate const* goInfo = sObjectMgr->GetGameObjectTemplate((uint32)temp.entryOrGuid);
+                    if (!goInfo)
                     {
                         sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: GameObject entry %u does not exist, skipped loading.", uint32(temp.entryOrGuid));
+                        continue;
+                    }
+                    else if (goInfo->AIName != "SmartGameObjectAI")
+                    {
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: GameObject entry %u has a SmartGameObjectAI script, but AIName is not SmartGameObjectAI.", uint32(temp.entryOrGuid));
                         continue;
                     }
                     break;
@@ -176,18 +188,30 @@ void SmartAIMgr::LoadSmartAIFromDB()
             {
                 case SMART_SCRIPT_TYPE_CREATURE:
                 {
-                    if (!sObjectMgr->GetCreatureData(uint32(abs(temp.entryOrGuid))))
+                    CreatureData const* cData = sObjectMgr->GetCreatureData(uint32(abs(temp.entryOrGuid)));
+                    if (!cData)
                     {
                         sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature guid %u does not exist, skipped loading.", uint32(abs(temp.entryOrGuid)));
+                        continue;
+                    }
+                    else if (CreatureTemplate const* cInfo = sObjectMgr->GetCreatureTemplate(cData->id); cInfo && cInfo->AIName != "SmartAI")
+                    {
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature guid %u has a SmartAI script, but AIName is not SmartAI.", uint32(abs(temp.entryOrGuid)));
                         continue;
                     }
                     break;
                 }
                 case SMART_SCRIPT_TYPE_GAMEOBJECT:
                 {
-                    if (!sObjectMgr->GetGOData(uint32(abs(temp.entryOrGuid))))
+                    GameObjectData const* goData = sObjectMgr->GetGOData(uint32(abs(temp.entryOrGuid)));
+                    if (!goData)
                     {
                         sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: GameObject guid %u does not exist, skipped loading.", uint32(abs(temp.entryOrGuid)));
+                        continue;
+                    }
+                    else if (GameObjectTemplate const* goInfo = sObjectMgr->GetGameObjectTemplate(goData->id); goInfo && goInfo->AIName != "SmartGameObjectAI")
+                    {
+                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: GameObject guid %u has a SmartGameObjectAI script, but AIName is not SmartGameObjectAI.", uint32(abs(temp.entryOrGuid)));
                         continue;
                     }
                     break;
