@@ -149,98 +149,6 @@ class npc_love_in_air_snivel : public CreatureScript
         }
 };
 
-enum SnivelRealSay
-{
-    SAY_SNIVEL_REAL_0 = 0,
-    SAY_SNIVEL_REAL_1 = 1,
-    SAY_SNIVEL_REAL_2 = 2,
-    SAY_SNIVEL_REAL_3 = 3
-};
-
-class npc_love_in_air_snivel_real : public CreatureScript
-{
-    public:
-        npc_love_in_air_snivel_real() : CreatureScript("npc_love_in_air_snivel_real") { }
-
-        struct npc_love_in_air_snivel_realAI : public ScriptedAI
-        {
-            npc_love_in_air_snivel_realAI(Creature* creature) : ScriptedAI(creature)
-            {
-                actionTimer = 7000;
-                actionCounter = 0;
-            }
-
-            uint32 actionTimer;
-            uint32 actionCounter;
-
-            bool Talk(uint32 time)
-            {
-                switch (me->GetEntry())
-                {
-                    case NPC_SNIVEL_ALLY:
-                    case NPC_SNIVEL_HORDE:
-                    {
-                        switch (time)
-                        {
-                            case 1: me->AI()->Talk(SAY_SNIVEL_REAL_0); return false;
-                            case 2: me->AI()->Talk(SAY_SNIVEL_REAL_1); return true;
-                        }
-                        break;
-                    }
-                    case NPC_SNIVEL_ALLY+1:
-                    case NPC_SNIVEL_HORDE+1:
-                    {
-                        switch (time)
-                        {
-                            case 1: me->AI()->Talk(SAY_SNIVEL_REAL_0); return false;
-                            case 2: me->AI()->Talk(SAY_SNIVEL_REAL_1); return false;
-                            case 3: me->AI()->Talk(SAY_SNIVEL_REAL_2); return true;
-                        }
-                        break;
-                    }
-
-                    case NPC_SNIVEL_ALLY+2:
-                    case NPC_SNIVEL_HORDE+2:
-                    {
-                        switch (time)
-                        {
-                            case 1: me->AI()->Talk(SAY_SNIVEL_REAL_0); return false;
-                            case 2: me->AI()->Talk(SAY_SNIVEL_REAL_1); return false;
-                            case 3: me->AI()->Talk(SAY_SNIVEL_REAL_2); return false;
-                            case 4: me->AI()->Talk(SAY_SNIVEL_REAL_3); return true;
-                        }
-                        break;
-                    }
-                }
-
-                return true;
-            }
-
-            void UpdateAI(uint32 diff)
-            {
-                actionTimer += diff;
-                if (actionTimer >= 7000)
-                {
-                    actionTimer = 0;
-                    actionCounter++;
-                    if (Talk(actionCounter))
-                    {
-                        if (me->ToTempSummon())
-                            if (Unit* owner = me->ToTempSummon()->GetSummoner())
-                                me->CastSpell(owner, SPELL_SNIVEL_GUN, true);
-
-                        me->DespawnOrUnsummon(1000);
-                    }
-                }
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_love_in_air_snivel_realAI(creature);
-        }
-};
-
 ///////////////////////////////////////
 ////// BOSS
 ///////////////////////////////////////
@@ -786,7 +694,6 @@ void AddSC_event_love_in_the_air()
     // Npcs
     new npc_love_in_air_supply_sentry();
     new npc_love_in_air_snivel();
-    new npc_love_in_air_snivel_real();
 
     // Boss
     new npc_love_in_air_hummel();
