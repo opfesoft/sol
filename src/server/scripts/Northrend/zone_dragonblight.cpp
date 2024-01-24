@@ -815,6 +815,8 @@ public:
                 go->Delete();
             if (GameObject* go = me->FindNearestGameObject(GO_SAC_LIGHTS_VENGEANCE_2, 150.0f))
                 go->Delete();
+            if (GameObject* go = me->FindNearestGameObject(GO_SAC_LIGHTS_VENGEANCE_3, 150.0f))
+                go->Delete();
             WretchedGhoulCleaner cleaner;
             acore::CreatureWorker<WretchedGhoulCleaner> worker(me, cleaner);
             me->VisitNearbyGridObject(150.0f, worker);
