@@ -3488,6 +3488,8 @@ void SpellMgr::LoadDbcDataCorrections()
             break;
         case 35596: // Power of the Legion (Socrethar - Deathblow to the Legion)
         case 35556: // Eco-Contamination (Congealed Void Horror)
+        case 52255: // Engine on Fire
+        case 46340: // Crates Carried
             spellInfo->AttributesEx |= SPELL_ATTR1_AURA_STAYS_AFTER_COMBAT;
             break;
         case 37608: // Hit Rating (Wastewalker Armor 2P Bonus)
@@ -3549,9 +3551,6 @@ void SpellMgr::LoadDbcDataCorrections()
             break;
         case 53768: // Haunted
             spellInfo->Attributes |= SPELL_ATTR0_CANT_CANCEL;
-            break;
-        case 52255: // Engine on Fire
-            spellInfo->AttributesEx |= SPELL_ATTR1_AURA_STAYS_AFTER_COMBAT;
             break;
 
 
