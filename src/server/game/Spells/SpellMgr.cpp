@@ -3552,6 +3552,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 53768: // Haunted
             spellInfo->Attributes |= SPELL_ATTR0_CANT_CANCEL;
             break;
+        case 48272: // Let Them Not Rise!: Summon Rat
+            spellInfo->EffectBasePoints[EFFECT_0] = 5;
+            break;
 
 
         /////////////////////////////////////////////
