@@ -860,6 +860,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         {
             if (IsUnit(*itr))
             {
+                if (e.action.addAura.notPresent && (*itr)->ToUnit()->HasAura(e.action.addAura.spell))
+                    continue;
                 Aura* aura = (*itr)->ToUnit()->AddAura(e.action.addAura.spell, (*itr)->ToUnit());
                 if (aura && e.action.addAura.stacks > 0)
                     aura->SetStackAmount(e.action.addAura.stacks);
