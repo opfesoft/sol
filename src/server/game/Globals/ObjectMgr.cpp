@@ -1001,7 +1001,7 @@ void ObjectMgr::LoadCreatureAddons()
                 continue;
             }
             if (AdditionalSpellInfo->GetDuration() > 0)
-                sLog->outWarn("Creature (GUID: %u, entry: %u) has temporary aura (spell %u) in `auras` field in `creature_addon`.", guid, creData->id, uint32(atol(*itr)));
+                sLog->outErrorDb("Creature (GUID: %u, entry: %u) has temporary aura (spell %u) in `auras` field in `creature_addon`.", guid, creData->id, uint32(atol(*itr)));
             creatureAddon.auras[i++] = uint32(atol(*itr));
         }
 
@@ -1960,7 +1960,7 @@ void ObjectMgr::LoadCreatures()
         if (CreatureAddon const* cta = GetCreatureTemplateAddon(data.id); cta && !cta->auras.empty())
             for (std::vector<uint32>::const_iterator itr = cta->auras.begin(); itr != cta->auras.end(); ++itr)
                 if (SpellInfo const* si = sSpellMgr->GetSpellInfo(*itr); si && si->GetDuration() > 0)
-                    sLog->outWarn("Creature (GUID: %u, entry: %u) has temporary aura (spell %u) in `auras` field in `creature_template_addon`.", guid, data.id, *itr);
+                    sLog->outErrorDb("Creature (GUID: %u, entry: %u) has temporary aura (spell %u) in `auras` field in `creature_template_addon`.", guid, data.id, *itr);
 
         if (sWorld->getBoolConfig(CONFIG_CALCULATE_CREATURE_ZONE_AREA_DATA))
         {
