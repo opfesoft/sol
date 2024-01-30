@@ -116,7 +116,6 @@ class Log
         void outString(const char * str, ...)                   ATTR_PRINTF(2, 3);
         void outString();
         void outStringInLine(const char * str, ...)             ATTR_PRINTF(2, 3);
-        void outWarn(const char * warn, ...)                    ATTR_PRINTF(2, 3);
         void outError(const char * err, ...)                    ATTR_PRINTF(2, 3);
         void outCrash(const char * err, ...)                    ATTR_PRINTF(2, 3);
         void outBasic(const char * str, ...)                    ATTR_PRINTF(2, 3);

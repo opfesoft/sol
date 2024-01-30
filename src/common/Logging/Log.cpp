@@ -458,49 +458,6 @@ void Log::outError(const char * err, ...)
     fflush(stderr);
 }
 
-void Log::outWarn(const char * warn, ...)
-{
-    if (!warn)
-        return;
-
-    if (m_enableLogDB)
-    {
-        va_list ap2;
-        va_start(ap2, warn);
-        char nnew_str[MAX_QUERY_LEN];
-        vsnprintf(nnew_str, MAX_QUERY_LEN, warn, ap2);
-        outDB(LOG_TYPE_ERROR, nnew_str);
-        va_end(ap2);
-    }
-
-    if (m_colored)
-        SetColor(false, LRED);
-
-    va_list ap;
-
-    va_start(ap, warn);
-    vutf8printf(stderr, warn, &ap);
-    va_end(ap);
-
-    if (m_colored)
-        ResetColor(false);
-
-    fprintf( stderr, "\n");
-    if (logfile)
-    {
-        outTimestamp(logfile);
-        fprintf(logfile, "WARNING: ");
-
-        va_start(ap, warn);
-        vfprintf(logfile, warn, ap);
-        va_end(ap);
-
-        fprintf(logfile, "\n");
-        fflush(logfile);
-    }
-    fflush(stderr);
-}
-
 void Log::outSQLDriver(const char* str, ...)
 {
     if (!str)

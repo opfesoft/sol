@@ -22,6 +22,7 @@
 #include "GameEventMgr.h"
 #include "PetDefines.h"
 #include "AuctionHouseMgr.h"
+#include "DisableMgr.h"
 #include <atomic>
 
 class AuctionHouseObject;
@@ -1587,6 +1588,12 @@ class ScriptRegistry
                     if (!_checkMemory(script))
                         return;
 
+                    if (DisableMgr::IsDisabledFor(DISABLE_TYPE_SCRIPT_NAME, 0, NULL, 0, &script->GetName()))
+                    {
+                        delete script;
+                        continue;
+                    }
+
                     // Get an ID for the script. An ID only exists if it's a script that is assigned in the database
                     // through a script name (or similar).
                     uint32 id = sObjectMgr->GetScriptId(script->GetName().c_str());
@@ -1625,7 +1632,7 @@ class ScriptRegistry
                         // The script uses a script name from database, but isn't assigned to anything.
                         if (script->GetName().find("Smart") == std::string::npos)
                         {
-                            sLog->outWarn("Script named '%s' is not assigned in the database.",
+                            sLog->outError("Script named '%s' is not assigned in the database.",
                                 script->GetName().c_str());
                             delete script;
                         }

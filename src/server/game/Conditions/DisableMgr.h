@@ -9,6 +9,7 @@
 #define ACORE_DISABLEMGR_H
 
 #include "Define.h"
+#include <string>
 
 class Unit;
 
@@ -23,6 +24,7 @@ enum DisableType
     DISABLE_TYPE_VMAP                   = 6,
     DISABLE_TYPE_GO_LOS                 = 7,
     DISABLE_TYPE_LFG_MAP                = 8,
+    DISABLE_TYPE_SCRIPT_NAME            = 9,
 };
 
 enum SpellDisableTypes
@@ -50,7 +52,7 @@ enum VmapDisableTypes
 namespace DisableMgr
 {
     void LoadDisables();
-    bool IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags = 0);
+    bool IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags = 0, std::string const* params_0 = NULL);
     void CheckQuestDisables();
 }
 

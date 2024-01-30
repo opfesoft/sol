@@ -22,6 +22,7 @@ namespace
     {
         uint8 flags;
         std::set<uint32> params[2];                             // params0, params1
+        std::string params_0;
     };
 
     // single disables here with optional data
@@ -31,7 +32,7 @@ namespace
 
     DisableMap m_DisableMap;
 
-    uint8 MAX_DISABLE_TYPES = 9;
+    uint8 MAX_DISABLE_TYPES = 10;
 }
 
 void LoadDisables()
@@ -227,6 +228,11 @@ void LoadDisables()
                 }
                 break;
             }
+            case DISABLE_TYPE_SCRIPT_NAME:
+            {
+                data.params_0 = params_0;
+                break;
+            }
             default:
                 break;
         }
@@ -271,11 +277,19 @@ void CheckQuestDisables()
     sLog->outString();
 }
 
-bool IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags)
+bool IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags /*= 0*/, std::string const* params_0 /*= NULL*/)
 {
     ASSERT(type < MAX_DISABLE_TYPES);
     if (m_DisableMap[type].empty())
         return false;
+
+    if (type == DISABLE_TYPE_SCRIPT_NAME && params_0)
+    {
+        for (DisableTypeMap::iterator itr = m_DisableMap[DISABLE_TYPE_SCRIPT_NAME].begin(); itr != m_DisableMap[DISABLE_TYPE_SCRIPT_NAME].end(); ++itr)
+            if (itr->second.params_0 == *params_0)
+                return true;
+        return false;
+    }
 
     DisableTypeMap::iterator itr = m_DisableMap[type].find(entry);
     if (itr == m_DisableMap[type].end())    // not disabled
@@ -357,6 +371,8 @@ bool IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags
             return flags & itr->second.flags;
         case DISABLE_TYPE_GO_LOS:
             return true;
+        case DISABLE_TYPE_SCRIPT_NAME:
+            return false;
     }
 
     return false;
