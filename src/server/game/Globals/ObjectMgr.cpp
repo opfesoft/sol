@@ -535,8 +535,8 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6         7
-    QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, isLarge, auras FROM creature_template_addon");
+    //                                                0       1       2      3       4       5      6         7               8
+    QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, isLarge, maxAggroRadius, auras FROM creature_template_addon");
 
     if (!result)
     {
@@ -560,14 +560,15 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 
         CreatureAddon& creatureAddon = _creatureTemplateAddonStore[entry];
 
-        creatureAddon.path_id = fields[1].GetUInt32();
-        creatureAddon.mount   = fields[2].GetUInt32();
-        creatureAddon.bytes1  = fields[3].GetUInt32();
-        creatureAddon.bytes2  = fields[4].GetUInt32();
-        creatureAddon.emote   = fields[5].GetUInt32();
-        creatureAddon.isLarge = fields[6].GetBool();
+        creatureAddon.path_id        = fields[1].GetUInt32();
+        creatureAddon.mount          = fields[2].GetUInt32();
+        creatureAddon.bytes1         = fields[3].GetUInt32();
+        creatureAddon.bytes2         = fields[4].GetUInt32();
+        creatureAddon.emote          = fields[5].GetUInt32();
+        creatureAddon.isLarge        = fields[6].GetBool();
+        creatureAddon.maxAggroRadius = fields[7].IsNull() ? -1.f : fields[7].GetFloat();
 
-        Tokenizer tokens(fields[7].GetString(), ' ');
+        Tokenizer tokens(fields[8].GetString(), ' ');
         uint8 i = 0;
         creatureAddon.auras.resize(tokens.size());
         for (Tokenizer::const_iterator itr = tokens.begin(); itr != tokens.end(); ++itr)
@@ -948,8 +949,8 @@ void ObjectMgr::LoadCreatureAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6        7
-    QueryResult result = WorldDatabase.Query("SELECT guid, path_id, mount, bytes1, bytes2, emote, isLarge, auras FROM creature_addon");
+    //                                                0       1       2      3       4       5      6        7               8
+    QueryResult result = WorldDatabase.Query("SELECT guid, path_id, mount, bytes1, bytes2, emote, isLarge, maxAggroRadius, auras FROM creature_addon");
 
     if (!result)
     {
@@ -983,13 +984,14 @@ void ObjectMgr::LoadCreatureAddons()
         else if (creData->movementType != WAYPOINT_MOTION_TYPE && creatureAddon.path_id)
             sLog->outErrorDb("Creature (GUID %u) has a path assigned but movement type is not set to WAYPOINT_MOTION_TYPE", guid);
 
-        creatureAddon.mount   = fields[2].GetUInt32();
-        creatureAddon.bytes1  = fields[3].GetUInt32();
-        creatureAddon.bytes2  = fields[4].GetUInt32();
-        creatureAddon.emote   = fields[5].GetUInt32();
-        creatureAddon.isLarge = fields[6].GetBool();
+        creatureAddon.mount          = fields[2].GetUInt32();
+        creatureAddon.bytes1         = fields[3].GetUInt32();
+        creatureAddon.bytes2         = fields[4].GetUInt32();
+        creatureAddon.emote          = fields[5].GetUInt32();
+        creatureAddon.isLarge        = fields[6].GetBool();
+        creatureAddon.maxAggroRadius = fields[7].IsNull() ? -1.f : fields[7].GetFloat();
 
-        Tokenizer tokens(fields[7].GetString(), ' ');
+        Tokenizer tokens(fields[8].GetString(), ' ');
         uint8 i = 0;
         creatureAddon.auras.resize(tokens.size());
         for (Tokenizer::const_iterator itr = tokens.begin(); itr != tokens.end(); ++itr)

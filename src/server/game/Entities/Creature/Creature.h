@@ -320,6 +320,7 @@ struct CreatureAddon
     uint32 bytes2;
     uint32 emote;
     bool isLarge;
+    float maxAggroRadius;
     std::vector<uint32> auras;
 };
 
@@ -865,6 +866,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool m_hasLevelRange;
         bool m_saveRespawnTime;
         bool m_updateHealth;
+        float m_maxAggroRadius;
 
         inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
         inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;

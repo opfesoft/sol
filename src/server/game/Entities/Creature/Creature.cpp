@@ -170,7 +170,7 @@ m_reactState(REACT_AGGRESSIVE), m_storedReactState(REACT_AGGRESSIVE), m_defaultM
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
 m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_despawnTime(0), m_killDelay(0), m_killTime(0), m_path_id(0), m_formation(NULL), m_assistanceTimer(0),
-m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false), m_hasLevelRange(false), m_saveRespawnTime(true), m_updateHealth(false)
+m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false), m_hasLevelRange(false), m_saveRespawnTime(true), m_updateHealth(false), m_maxAggroRadius(-1.f)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
     m_idleLosCheckTimer = CREATURE_IDLE_LOS_CHECK_INTERVAL;
@@ -2428,6 +2428,9 @@ bool Creature::LoadCreaturesAddon(bool reload)
     if (cainfo->isLarge)
         SetVisibilityDistanceOverride(true);
 
+    if (cainfo->maxAggroRadius >= 0.f)
+        m_maxAggroRadius = cainfo->maxAggroRadius;
+
     if (cainfo->emote != 0)
         SetUInt32Value(UNIT_NPC_EMOTESTATE, cainfo->emote);
 
@@ -2931,7 +2934,7 @@ float Creature::GetAggroRange(Unit const* target) const
     // Based on data from wowwiki due to lack of 3.3.5a data
 
     float aggroRate = sWorld->getRate(RATE_CREATURE_AGGRO);
-    if (aggroRate == 0)
+    if (aggroRate == 0 || m_maxAggroRadius == 0.f || !target)
         return 0.0f;
 
     uint32 targetLevel = target->getLevelForTarget(this);
@@ -2964,7 +2967,12 @@ float Creature::GetAggroRange(Unit const* target) const
     if (aggroRadius < minRange)
         aggroRadius = minRange;
 
-    return (aggroRadius * aggroRate);
+    float retValue = aggroRadius * aggroRate;
+
+    if (m_maxAggroRadius > 0.f && m_maxAggroRadius < retValue)
+        return m_maxAggroRadius;
+    else
+        return retValue;
 }
 
 void Creature::SetObjectScale(float scale)
@@ -3033,10 +3041,7 @@ float Creature::GetAttackDistance(Unit const* player) const
 {
     float aggroRate = sWorld->getRate(RATE_CREATURE_AGGRO);
 
-    if (aggroRate == 0)
-        return 0.0f;
-
-    if (!player)
+    if (aggroRate == 0 || m_maxAggroRadius == 0.f || !player)
         return 0.0f;
 
     uint32 playerLevel = player->getLevelForTarget(this);
@@ -3068,7 +3073,12 @@ float Creature::GetAttackDistance(Unit const* player) const
     if (retDistance < 5.0f)
         retDistance = 5.0f;
 
-    return (retDistance*aggroRate);
+    float retValue = retDistance * aggroRate;
+
+    if (m_maxAggroRadius > 0.f && m_maxAggroRadius < retValue)
+        return m_maxAggroRadius;
+    else
+        return retValue;
 }
 
 time_t Creature::GetLastDamagedTime() const
