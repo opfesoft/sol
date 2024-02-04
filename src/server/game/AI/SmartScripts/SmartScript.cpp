@@ -4039,9 +4039,9 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         uint32 count = 0;
         // will always return a valid pointer, even if empty list
         ObjectList* units = GetWorldObjectsInDist((float)e.target.playerRange.maxDist);
-        if (!units->empty() && GetBaseObject())
+        if (!units->empty() && baseObject)
             for (ObjectList::const_iterator itr = units->begin(); itr != units->end(); ++itr)
-                if (IsPlayer(*itr) && GetBaseObject()->IsInRange(*itr, (float)e.target.playerRange.minDist, (float)e.target.playerRange.maxDist))
+                if (IsPlayer(*itr) && baseObject->IsInRange(*itr, (float)e.target.playerRange.minDist, (float)e.target.playerRange.maxDist))
                 {
                     l->push_back(*itr);
                     if (e.target.playerRange.maxCount && ++count >= e.target.playerRange.maxCount)
@@ -4076,21 +4076,30 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
     }
     case SMART_TARGET_CLOSEST_CREATURE:
     {
-        Creature* target = GetClosestCreatureWithEntry(GetBaseObject(), e.target.closest.entry, (float)(e.target.closest.dist ? e.target.closest.dist : 100), !e.target.closest.dead);
-        if (target)
-            l->push_back(target);
+        WorldObject* obj = e.GetScriptType() == SMART_SCRIPT_TYPE_AREATRIGGER ? invoker : baseObject;
+        if (obj)
+        {
+            Creature* target = GetClosestCreatureWithEntry(obj, e.target.closest.entry, (float)(e.target.closest.dist ? e.target.closest.dist : 100), !e.target.closest.dead);
+            if (target)
+                l->push_back(target);
+        }
         break;
     }
     case SMART_TARGET_CLOSEST_GAMEOBJECT:
     {
-        GameObject* target = GetClosestGameObjectWithEntry(GetBaseObject(), e.target.closest.entry, (float)(e.target.closest.dist ? e.target.closest.dist : 100));
-        if (target)
-            l->push_back(target);
+        WorldObject* obj = e.GetScriptType() == SMART_SCRIPT_TYPE_AREATRIGGER ? invoker : baseObject;
+        if (obj)
+        {
+            GameObject* target = GetClosestGameObjectWithEntry(obj, e.target.closest.entry, (float)(e.target.closest.dist ? e.target.closest.dist : 100));
+            if (target)
+                l->push_back(target);
+        }
         break;
     }
     case SMART_TARGET_CLOSEST_PLAYER:
     {
-        if (WorldObject* obj = GetBaseObject())
+        WorldObject* obj = e.GetScriptType() == SMART_SCRIPT_TYPE_AREATRIGGER ? invoker : baseObject;
+        if (obj)
         {
             Player* target = obj->SelectNearestPlayer((float)(e.target.playerDistance.dist ? e.target.playerDistance.dist : 100));
             if (target)
