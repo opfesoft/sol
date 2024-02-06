@@ -420,7 +420,7 @@ bool Creature::InitEntry(uint32 Entry, const CreatureData* data)
     SetFloatValue(UNIT_FIELD_HOVERHEIGHT, cinfo->HoverHeight);
 
     // checked at loading
-    m_defaultMovementType = MovementGeneratorType(cinfo->MovementType);
+    m_defaultMovementType = MovementGeneratorType(m_creatureData ? m_creatureData->movementType : cinfo->MovementType);
     if (!m_wanderDistance && m_defaultMovementType == RANDOM_MOTION_TYPE)
         m_defaultMovementType = IDLE_MOTION_TYPE;
 
@@ -1841,6 +1841,7 @@ void Creature::Respawn(bool force)
             SetByteValue(UNIT_FIELD_BYTES_0, 2, minfo->gender);
         }
 
+        SetLastPlayerInteraction(0);
         GetMotionMaster()->InitDefault();
 
         //Call AI respawn virtual function
