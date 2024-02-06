@@ -30,6 +30,7 @@ EndContentData */
 #include "PassiveAI.h"
 #include "GridNotifiers.h"
 #include "CellImpl.h"
+#include "SmartAI.h"
 
 // Ours
 enum eBKG
@@ -59,8 +60,15 @@ public:
             if (me->FindNearestCreature(NPC_CULT_ASSASSIN, 30.0f))
                 return;
 
-            me->SummonCreature(NPC_CULT_ASSASSIN, 8452.50f, 459.08f, 596.08f, 0.93f, TEMPSUMMON_CORPSE_DESPAWN);
-            me->SummonCreature(NPC_CULT_SABOTEUR, 8455.47f, 458.64f, 596.08f, 2.36f, TEMPSUMMON_CORPSE_DESPAWN);
+            me->SummonCreature(NPC_CULT_SABOTEUR, 8452.68f, 459.877f, 596.072f, 0.872664f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+
+            if (Creature* c = me->SummonCreature(NPC_CULT_ASSASSIN, 8455.80f, 459.095f, 596.072f, 1.570800f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
+                if (SmartAI* ai = CAST_AI(SmartAI, c->AI()))
+                {
+                    ObjectList* l = new ObjectList();
+                    l->push_back(who);
+                    ai->GetScript()->StoreTargetList(l, 1);
+                }
         }
     };
 
