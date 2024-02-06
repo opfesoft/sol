@@ -3555,6 +3555,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 48272: // Let Them Not Rise!: Summon Rat
             spellInfo->EffectBasePoints[EFFECT_0] = 5;
             break;
+        case 54632: // Claws of Ice
+            spellInfo->rangeIndex = 2; // melee range
+            break;
 
 
         /////////////////////////////////////////////
