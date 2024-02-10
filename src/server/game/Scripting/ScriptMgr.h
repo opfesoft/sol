@@ -975,6 +975,9 @@ class PlayerScript : public ScriptObject
 
         // Called after the player activates a spec
         virtual void OnAfterActivateSpec(Player* /*player*/, uint8 /*spec*/) {}
+
+        // Called after pet auras are cast
+        virtual void OnAfterCastPetAuras(Player* /*player*/, Pet* /*pet*/) { }
 };
 
 class AccountScript : public ScriptObject
@@ -1431,6 +1434,7 @@ class ScriptMgr
         void OnAfterGuardianInitStatsForLevel(Player* player, Guardian* guardian);
         void OnBeforeLoadPetFromDB(Player* player, uint32& petentry, uint32& petnumber, bool& current, bool& forceLoadFromDB);
         void OnAfterActivateSpec(Player* player, uint8 spec);
+        void OnAfterCastPetAuras(Player* player, Pet* pet);
 
     public: /* AccountScript */
 

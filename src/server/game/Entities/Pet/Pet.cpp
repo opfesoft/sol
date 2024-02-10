@@ -2063,6 +2063,8 @@ void Pet::CastPetAuras(bool current)
         else
             CastPetAura(pa);
     }
+
+    sScriptMgr->OnAfterCastPetAuras(owner->ToPlayer(), this);
 }
 
 void Pet::learnSpellHighRank(uint32 spellid)

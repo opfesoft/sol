@@ -1434,6 +1434,11 @@ void ScriptMgr::OnAfterActivateSpec(Player* player, uint8 spec)
     FOREACH_SCRIPT(PlayerScript)->OnAfterActivateSpec(player, spec);
 }
 
+void ScriptMgr::OnAfterCastPetAuras(Player* player, Pet* pet)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnAfterCastPetAuras(player, pet);
+}
+
 // Account
 void ScriptMgr::OnAccountLogin(uint32 accountId)
 {
