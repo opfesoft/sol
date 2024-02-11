@@ -18,7 +18,7 @@
 
 namespace DisableMgr
 {
-    bool IsDisabledFor(DisableType /*type*/, uint32 /*entry*/, Unit const* /*unit*/, uint8 /*flags*/ /*= 0*/) { return false; }
+    bool IsDisabledFor(DisableType /*type*/, uint32 /*entry*/, Unit const* /*unit*/, uint8 /*flags*/ /*= 0*/, std::string const* /*params_0*/ /*= NULL*/) { return false; }
 }
 
 #define MMAP_MAGIC 0x4d4d4150   // 'MMAP'
