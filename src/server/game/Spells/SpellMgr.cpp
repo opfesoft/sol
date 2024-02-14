@@ -3558,6 +3558,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 54632: // Claws of Ice
             spellInfo->rangeIndex = 2; // melee range
             break;
+        case 49068: // Summon Frigid Ghoul
+            spellInfo->DurationIndex = 3; // 60s
+            break;
 
 
         /////////////////////////////////////////////
