@@ -119,6 +119,7 @@ enum Misc
 {
     SPELL_SNOWBALL                          = 21343,
     SPELL_ORPHAN_OUT                        = 58818,
+    SPELL_CRYSTAL_OFFERING                  = 65571,
 
     DISPLAY_INVISIBLE                       = 11686,
 };
@@ -593,7 +594,6 @@ class npc_elder_kekek : public CreatureScript
 
 /*######
 ## npc_the_etymidian
-## TODO: A red crystal as a gift for the great one should be spawned during the event.
 ######*/
 class npc_the_etymidian : public CreatureScript
 {
@@ -663,11 +663,12 @@ class npc_the_etymidian : public CreatureScript
                             break;
                         case 3:
                             orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_9);
-                            timer = 5000;
+                            timer = 8000;
                             break;
                         case 4:
                             orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_10);
-                            timer = 5000;
+                            orphan->CastSpell(orphan, SPELL_CRYSTAL_OFFERING, false);
+                            timer = 8000;
                             break;
                         case 5:
                             orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
