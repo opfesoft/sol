@@ -19,8 +19,11 @@ struct FormationInfo
 {
     uint32 leaderGUID;
     float follow_dist;
+    float follow_dist_init;
     float follow_angle;
+    float follow_angle_init;
     uint8 groupAI;
+    uint8 groupAI_init;
 };
 
 typedef std::unordered_map<uint32/*memberDBGUID*/, FormationInfo*>   CreatureGroupInfoType;
@@ -38,6 +41,7 @@ class FormationMgr
         void RemoveCreatureFromGroup(CreatureGroup* group, Creature* creature);
         void LoadCreatureFormations();
         void UpdateFormationInfo(Creature* member, float dist, float angle, uint32 groupAI);
+        void ResetFormationInfo(Creature* member);
         CreatureGroupInfoType CreatureGroupMap;
 };
 

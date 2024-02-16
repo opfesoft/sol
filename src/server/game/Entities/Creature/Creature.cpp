@@ -1841,6 +1841,9 @@ void Creature::Respawn(bool force)
             SetByteValue(UNIT_FIELD_BYTES_0, 2, minfo->gender);
         }
 
+        if (m_formation)
+            sFormationMgr->ResetFormationInfo(this);
+
         SetLastPlayerInteraction(0);
         GetMotionMaster()->InitDefault();
 

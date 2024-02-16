@@ -133,6 +133,9 @@ void FormationMgr::LoadCreatureFormations()
             }
         }
 
+        group_member->groupAI_init = group_member->groupAI;
+        group_member->follow_dist_init = group_member->follow_dist;
+        group_member->follow_angle_init = group_member->follow_angle;
         CreatureGroupMap[memberGUID] = group_member;
         ++count;
     }
@@ -151,6 +154,18 @@ void FormationMgr::UpdateFormationInfo(Creature* member, float dist, float angle
          itr->second->follow_dist = dist;
          itr->second->follow_angle = angle;
          itr->second->groupAI = groupAI;
+    }
+}
+
+void FormationMgr::ResetFormationInfo(Creature* member)
+{
+    uint32 guid = member->GetDBTableGUIDLow() ? member->GetDBTableGUIDLow() : member->GetGUIDLow();
+    CreatureGroupInfoType::iterator itr = sFormationMgr->CreatureGroupMap.find(guid);
+    if (itr != sFormationMgr->CreatureGroupMap.end())
+    {
+         itr->second->follow_dist = itr->second->follow_dist_init;
+         itr->second->follow_angle = itr->second->follow_angle_init;
+         itr->second->groupAI = itr->second->groupAI_init;
     }
 }
 
@@ -196,6 +211,9 @@ void CreatureGroup::AddMember(Creature* member, float dist, float angle, uint32 
             formationInfo->follow_angle = 0.f;
         }
 
+        formationInfo->groupAI_init = formationInfo->groupAI;
+        formationInfo->follow_dist_init = formationInfo->follow_dist;
+        formationInfo->follow_angle_init = formationInfo->follow_angle;
         sFormationMgr->CreatureGroupMap[member->GetGUIDLow()] = formationInfo;
         m_members[member] = formationInfo;
     }
