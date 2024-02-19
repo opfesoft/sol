@@ -1364,7 +1364,7 @@ void WorldSession::HandleWrapItemOpcode(WorldPacket& recvData)
     }
 
     // maybe not correct check  (it is better than nothing)
-    if (item->GetTemplate()->MaxCount>0)
+    if (item->GetTemplate()->MaxCount > 0 || item->GetTemplate()->Duration > 0)
     {
         _player->SendEquipError(EQUIP_ERR_UNIQUE_CANT_BE_WRAPPED, item, NULL);
         return;
