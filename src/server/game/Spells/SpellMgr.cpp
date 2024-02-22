@@ -2561,6 +2561,9 @@ void SpellMgr::LoadSpellCustomAttr()
                 case SPELL_AURA_POWER_BURN:
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_INITIAL_THREAT;
                     break;
+                case SPELL_AURA_BIND_SIGHT:
+                    spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_PVP_FLAG;
+                    break;
             }
 
             switch (spellInfo->Effects[j].Effect)
@@ -2964,6 +2967,10 @@ void SpellMgr::LoadSpellCustomAttr()
                 break;
             case 43138: // North Fleet Reservist Kill Credit
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_ALLOW_INFLIGHT_TARGET;
+                break;
+            case 50315: // Disco Ball
+            case 26074: // Holiday Cheer
+                spellInfo->AttributesCu |= SPELL_ATTR0_CU_NO_PVP_FLAG;
                 break;
 
             // Xinef: NOT CUSTOM, cant add in DBC CORRECTION because i need to swap effects, too much work to do there
