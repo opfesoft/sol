@@ -331,7 +331,12 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
         float followDist = itr->second->follow_dist;
 
         Position p = {x, y, z, 0.0f};
-        member->MovePosition(p, followDist, pathAngle + followAngle - member->GetOrientation());
+
+        if (m_leader->IsFlying() && member->CanFly())
+            Position::GetNearPoint2D(x, y, p.m_positionX, p.m_positionY, followDist, pathAngle + followAngle);
+        else
+            member->MovePosition(p, followDist, pathAngle + followAngle - member->GetOrientation());
+
         p.m_orientation = pathAngle;
 
         member->SetUnitMovementFlags(m_leader->GetUnitMovementFlags());
