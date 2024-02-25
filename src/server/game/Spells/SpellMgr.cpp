@@ -3568,6 +3568,9 @@ void SpellMgr::LoadDbcDataCorrections()
         case 49068: // Summon Frigid Ghoul
             spellInfo->DurationIndex = 3; // 60s
             break;
+        case 40657: // Ancient Flames
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
+            break;
 
 
         /////////////////////////////////////////////
