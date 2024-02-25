@@ -2963,6 +2963,7 @@ void SpellMgr::LoadSpellCustomAttr()
             case 35244: // Choking Vines
             case 33911: // Tear Armor
             case 50196: // Rotting Touch
+            case 36482: // Armor Disruption
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SINGLE_AURA_STACK;
                 break;
             case 43138: // North Fleet Reservist Kill Credit
