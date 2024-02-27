@@ -842,6 +842,15 @@ public:
                     return false;
                 }
             }
+            else if (show == "stop")
+            {
+                if (target->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
+                    handler->PSendSysMessage("|cff00ff00DEBUG: wp stop timer: |cff00ffff%i|r", static_cast<WaypointMovementGenerator<Creature>*>(target->GetMotionMaster()->top())->GetStop());
+                else
+                    handler->PSendSysMessage(LANG_WAYPOINT_NOTFOUNDDBPROBLEM, target->GetGUIDLow());
+
+                return true;
+            }
             else
                 pathid = target->GetWaypointPath();
         }

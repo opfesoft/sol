@@ -59,7 +59,8 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
 
         // now path movement implmementation
         void LoadPath(Creature*);
-        void Stop(int32 time) { i_nextMoveTime.Reset(time);}
+        void Stop(int32 time) { i_nextMoveTime.Reset(time); }
+        int32 GetStop() const { return i_nextMoveTime.GetExpiry(); }
 
     private:
 
