@@ -165,6 +165,7 @@ enum WoundedBloodElf
     QUEST_ROAD_TO_FALCON_WATCH  = 9375,
     NPC_HAALESHI_WINDWALKER     = 16966,
     NPC_HAALESHI_TALONGUARD     = 16967,
+    NPC_TALERIS                 = 17015,
     FACTION_FALCON_WATCH_QUEST  = 775,
     ARAKKOA_CAGE                = 181664,
 };
@@ -249,6 +250,8 @@ public:
                     DoSpawnCreature(NPC_HAALESHI_WINDWALKER, -17, -17, 0, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     break;
                 case 102:
+                    if (Creature* taleris = GetClosestCreatureWithEntry(me, NPC_TALERIS, 1.f))
+                        taleris->AI()->SetData(1, 1);
                     Talk(SAY_ELF_COMPLETE, player);
                     me->SetStandState(UNIT_STAND_STATE_SLEEP);
                     // Award quest credit
