@@ -1337,14 +1337,22 @@ bool BattlegroundAV::SetupBattleground()
     // Quest banners
     if (!AddObject(BG_AV_OBJECT_FROSTWOLF_BANNER, BG_AV_OBJECTID_FROSTWOLF_BANNER, BG_AV_ObjectPos[AV_OPLACE_FROSTWOLF_BANNER][0], BG_AV_ObjectPos[AV_OPLACE_FROSTWOLF_BANNER][1], BG_AV_ObjectPos[AV_OPLACE_FROSTWOLF_BANNER][2], BG_AV_ObjectPos[AV_OPLACE_FROSTWOLF_BANNER][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FROSTWOLF_BANNER][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FROSTWOLF_BANNER][3]/2), RESPAWN_ONE_DAY))
     {
-        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!8");
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!10");
         return false;
     }
     if (!AddObject(BG_AV_OBJECT_STORMPIKE_BANNER, BG_AV_OBJECTID_STORMPIKE_BANNER, BG_AV_ObjectPos[AV_OPLACE_STORMPIKE_BANNER][0], BG_AV_ObjectPos[AV_OPLACE_STORMPIKE_BANNER][1], BG_AV_ObjectPos[AV_OPLACE_STORMPIKE_BANNER][2], BG_AV_ObjectPos[AV_OPLACE_STORMPIKE_BANNER][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_STORMPIKE_BANNER][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_STORMPIKE_BANNER][3]/2), RESPAWN_ONE_DAY))
     {
-        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!8");
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!11");
         return false;
     }
+
+    // Chairs
+    for (uint16 i = 0; i <= (BG_AV_OBJECT_CHAIR_MAX - BG_AV_OBJECT_CHAIR_MIN); i++)
+        if (!AddObject(BG_AV_OBJECT_CHAIR_MIN + i, BG_AV_CHAIR, BG_AV_ObjectPos[AV_OPLACE_CHAIR_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_CHAIR_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_CHAIR_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_CHAIR_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CHAIR_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CHAIR_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        {
+            sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!12");
+            return false;
+        }
 
     uint16 i;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
@@ -1394,6 +1402,10 @@ bool BattlegroundAV::SetupBattleground()
     // Quest banners
     SpawnBGObject(BG_AV_OBJECT_FROSTWOLF_BANNER, RESPAWN_IMMEDIATELY);
     SpawnBGObject(BG_AV_OBJECT_STORMPIKE_BANNER, RESPAWN_IMMEDIATELY);
+
+    // Chairs
+    for (i = BG_AV_OBJECT_CHAIR_MIN ; i <= BG_AV_OBJECT_CHAIR_MAX; i++)
+        SpawnBGObject(i, RESPAWN_IMMEDIATELY);
 
     //creatures
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)

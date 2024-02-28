@@ -143,6 +143,8 @@ enum BG_AV_ObjectIds
 
     BG_AV_OBJECTID_FROSTWOLF_BANNER     = 179025,
     BG_AV_OBJECTID_STORMPIKE_BANNER     = 179024,
+
+    BG_AV_CHAIR                         = 112192,
 };
 
 enum BG_AV_Nodes
@@ -299,8 +301,10 @@ enum BG_AV_ObjectTypes
     BG_AV_OBJECT_HANDPACKED_SNOWDRIFT_MAX    = 246,
     BG_AV_OBJECT_FROSTWOLF_BANNER            = 247,
     BG_AV_OBJECT_STORMPIKE_BANNER            = 248,
+    BG_AV_OBJECT_CHAIR_MIN                   = 249,
+    BG_AV_OBJECT_CHAIR_MAX                   = 267,
 
-    BG_AV_OBJECT_MAX                         = 249
+    BG_AV_OBJECT_MAX                         = 268
 };
 
 enum BG_AV_OBJECTS
@@ -351,8 +355,10 @@ enum BG_AV_OBJECTS
     AV_OPLACE_HANDPACKED_SNOWDRIFT_MAX    = 158,
     AV_OPLACE_FROSTWOLF_BANNER            = 159,
     AV_OPLACE_STORMPIKE_BANNER            = 160,
+    AV_OPLACE_CHAIR_MIN                   = 161,
+    AV_OPLACE_CHAIR_MAX                   = 179,
 
-    AV_OPLACE_MAX                         = 161
+    AV_OPLACE_MAX                         = 180
 };
 
 const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
@@ -536,8 +542,29 @@ const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
     {-389.5f, -325.0f, 17.98f, 3.89f},
     {-919.57f, -362.48f, 52.13f, 3.8f},
     {-1259.1f, -500.8f, 50.81f, 1.2f},
-    {-1552.55f, -359.738f, 66.948f, 2.8875f},
-    {40.0913f, 0.0153897f, -4.0962f, 0.96131f}
+
+    {-1552.55f, -359.738f, 66.948f, 2.8875f}, // frostwolf banner
+    {40.0913f, 0.0153897f, -4.0962f, 0.96131f}, // stormpike banner
+    // chairs
+    {-168.342, -458.4, 33.2862, 5.83813},
+    {-155.405, -440.24, 33.2862, 2.34747},
+    {-153.748, -438.639, 33.2862, 3.39467},
+    {-150.787, -459.829, 26.4163, 0.558504},
+    {-149.057, -461.089, 26.4163, 1.38754},
+    {-145.341, -444.846, 26.4163, 6.23083},
+    {-142.968, -444.076, 26.4163, 4.04917},
+    {25.2482, -433.104, 47.6369, 2.38237},
+    {25.758, -425.837, 47.6369, 4.30224},
+    {27.6786, -427.69, 47.6369, 3.60411},
+    {39.0988, -425.746, 44.688, 5.66359},
+    {41.1672, -426.866, 44.6828, 2.7838},
+    {550.597, -77.5213, 44.8257, 4.23242},
+    {550.678, -79.8234, 44.8257, 3.18527},
+    {555.517, -101.589, 44.8257, 0.392697},
+    {560.834, -75.4266, 37.9558, 0.785397},
+    {561.851, -73.1481, 37.9558, 4.88692},
+    {568.326, -89.4992, 37.9558, 1.39626},
+    {570.419, -89.0567, 37.9558, 2.22529}
 };
 
 const float BG_AV_DoorPositons[2][4] =

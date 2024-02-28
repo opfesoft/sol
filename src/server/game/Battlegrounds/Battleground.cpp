@@ -1486,7 +1486,7 @@ void Battleground::RelocateDeadPlayers(uint64 queueIndex)
     }
 }
 
-bool Battleground::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 /*respawnTime*/, GOState goState)
+bool Battleground::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 /*respawnTime*/, GOState goState, uint32 flags)
 {
     // If the assert is called, means that BgObjects must be resized!
     ASSERT(type < BgObjects.size());
@@ -1508,6 +1508,8 @@ bool Battleground::AddObject(uint32 type, uint32 entry, float x, float y, float 
         delete go;
         return false;
     }
+    else if (flags)
+        go->SetFlag(GAMEOBJECT_FLAGS, flags);
 /*
     uint32 guid = go->GetGUIDLow();
 
