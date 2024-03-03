@@ -788,6 +788,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             }
             else if (me && (!(e.action.cast.flags & SMARTCAST_AURA_NOT_PRESENT) || !(*itr)->ToUnit()->HasAura(e.action.cast.spell)))
             {
+                if (e.action.cast.flags & SMARTCAST_AURA_NOT_PRESENT_UNIT)
+                    if ((*itr)->ToUnit()->GetAuraApplication(e.action.cast.spell, me->GetGUID()))
+                        continue;
+
                 if (e.action.cast.flags & SMARTCAST_INTERRUPT_PREVIOUS)
                     me->InterruptNonMeleeSpells(false);
 
@@ -840,6 +844,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
             if (!(e.action.cast.flags & SMARTCAST_AURA_NOT_PRESENT) || !(*itr)->ToUnit()->HasAura(e.action.cast.spell))
             {
+                if (e.action.cast.flags & SMARTCAST_AURA_NOT_PRESENT_UNIT)
+                    if ((*itr)->ToUnit()->GetAuraApplication(e.action.cast.spell, tempLastInvoker->GetGUID()))
+                        continue;
+
                 if (e.action.cast.flags & SMARTCAST_INTERRUPT_PREVIOUS)
                     tempLastInvoker->InterruptNonMeleeSpells(false);
 
@@ -2375,6 +2383,10 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
                 if (!(e.action.cast.flags & SMARTCAST_AURA_NOT_PRESENT) || !(*it)->ToUnit()->HasAura(e.action.cast.spell))
                 {
+                    if (e.action.cast.flags & SMARTCAST_AURA_NOT_PRESENT_UNIT)
+                        if ((*it)->ToUnit()->GetAuraApplication(e.action.cast.spell, (*itr)->ToUnit()->GetGUID()))
+                            continue;
+
                     if (!interruptedSpell && e.action.cast.flags & SMARTCAST_INTERRUPT_PREVIOUS)
                     {
                         (*itr)->ToUnit()->InterruptNonMeleeSpells(false);
