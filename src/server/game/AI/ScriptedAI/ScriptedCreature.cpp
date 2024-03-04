@@ -686,9 +686,9 @@ void WorldBossAI::UpdateAI(uint32 diff)
 }
 
 // SD2 grid searchers.
-Creature* GetClosestCreatureWithEntry(WorldObject* source, uint32 entry, float maxSearchRange, bool alive /*= true*/)
+Creature* GetClosestCreatureWithEntry(WorldObject* source, uint32 entry, float maxSearchRange, bool alive /*= true*/, bool corpse /*= false*/)
 {
-    return source->FindNearestCreature(entry, maxSearchRange, alive);
+    return source->FindNearestCreature(entry, maxSearchRange, alive, corpse);
 }
 
 GameObject* GetClosestGameObjectWithEntry(WorldObject* source, uint32 entry, float maxSearchRange, bool spawnedOnly /*= false*/)

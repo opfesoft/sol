@@ -210,7 +210,7 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullR
         case CONDITION_NEAR_UNIT:
         {
             if (ConditionValue1 > 0)
-                condMeets = GetClosestCreatureWithEntry(object, ConditionValue1, (float)ConditionValue2, !ConditionValue3) ? true : false;
+                condMeets = GetClosestCreatureWithEntry(object, ConditionValue1, (float)ConditionValue2, !ConditionValue3, ConditionValue3 == 2) ? true : false;
             else
                 condMeets = object->SelectNearestPlayer((float)ConditionValue2, !ConditionValue3, false) ? true : false;
             break;
@@ -436,6 +436,12 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullR
                 condMeets = (unit->GetUInt32Value(ConditionValue1) & ConditionValue2) == ConditionValue2;
             break;
         }
+        case CONDITION_CORPSE:
+        {
+            if (Unit* unit = object->ToUnit())
+                condMeets = unit->IsCorpse();
+            break;
+        }
         default:
             condMeets = false;
             break;
@@ -624,6 +630,9 @@ uint32 Condition::GetSearcherTypeMaskForCondition()
             mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
             break;
         case CONDITION_UNIT_HAS_FLAG:
+            mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_CORPSE:
             mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
             break;
         default:
@@ -2309,6 +2318,16 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
                 sLog->outErrorDb("Has Aura Effect condition has non existing aura (%u), skipped", cond->ConditionValue1);
                 return false;
             }
+            break;
+        }
+        case CONDITION_CORPSE:
+        {
+            if (cond->ConditionValue1)
+                sLog->outErrorDb("Corpse condition has useless data in value1 (%u)!", cond->ConditionValue1);
+            if (cond->ConditionValue2)
+                sLog->outErrorDb("Corpse condition has useless data in value2 (%u)!", cond->ConditionValue2);
+            if (cond->ConditionValue3)
+                sLog->outErrorDb("Corpse condition has useless data in value3 (%u)!", cond->ConditionValue3);
             break;
         }
         default:

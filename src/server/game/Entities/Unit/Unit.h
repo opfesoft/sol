@@ -1815,6 +1815,7 @@ class Unit : public WorldObject
         void BuildHeartBeatMsg(WorldPacket* data) const;
 
         bool IsAlive() const { return (m_deathState == ALIVE); };
+        bool IsCorpse() const { return (m_deathState == CORPSE); };
         bool isDying() const { return (m_deathState == JUST_DIED); };
         bool isDead() const { return (m_deathState == DEAD || m_deathState == CORPSE); };
         DeathState getDeathState() { return m_deathState; };

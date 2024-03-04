@@ -2383,10 +2383,10 @@ void WorldObject::SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list 
                 list->push_back(summon);
 }
 
-Creature* WorldObject::FindNearestCreature(uint32 entry, float range, bool alive) const
+Creature* WorldObject::FindNearestCreature(uint32 entry, float range, bool alive /*= true*/, bool corpse /*= false*/) const
 { 
     Creature* creature = NULL;
-    acore::NearestCreatureEntryWithLiveStateInObjectRangeCheck checker(*this, entry, alive, range);
+    acore::NearestCreatureEntryWithLiveStateInObjectRangeCheck checker(*this, entry, alive, range, corpse);
     acore::CreatureLastSearcher<acore::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(this, creature, checker);
     VisitNearbyObject(range, searcher);
     return creature;
