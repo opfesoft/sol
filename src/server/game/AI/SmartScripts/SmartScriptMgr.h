@@ -1348,8 +1348,9 @@ enum SMARTAI_TARGETS
     SMART_TARGET_RANGE2_START                   = 230,  // placeholder
 
     SMART_TARGET_CREATURE_FORMATION             = 231,  // memberType (0 - members only, 1 - leader only, 2 - leader and members)
+    SMART_TARGET_MINION                         = 232,  // CreatureEntry, alive(0 - both, 1 - alive, 2 - dead)
 
-    SMART_TARGET_RANGE2_END                     = 232   // placeholder
+    SMART_TARGET_RANGE2_END                     = 233   // placeholder
 };
 
 struct SmartTarget
@@ -1484,6 +1485,12 @@ struct SmartTarget
         {
             uint32 memberType;
         } creatureFormation;
+
+        struct
+        {
+            uint32 creature;
+            uint32 livingState;
+        } minion;
 
         struct
         {

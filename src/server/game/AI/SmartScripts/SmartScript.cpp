@@ -4211,6 +4211,28 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
 
         break;
     }
+    case SMART_TARGET_MINION:
+    {
+        if (me)
+        {
+            std::list<Creature*> minions;
+            me->GetAllMinionsByEntry(minions, e.target.minion.creature);
+            for (std::list<Creature*>::iterator itr = minions.begin(); itr != minions.end(); ++itr)
+            {
+                // check alive state - 1 alive, 2 dead, 0 both
+                if (uint32 state = e.target.minion.livingState)
+                {
+                    if ((*itr)->IsAlive() && state == 2)
+                        continue;
+                    if (!(*itr)->IsAlive() && state == 1)
+                        continue;
+                }
+
+                l->push_back(*itr);
+            }
+        }
+        break;
+    }
     case SMART_TARGET_NONE:
     case SMART_TARGET_POSITION:
     default:
@@ -4730,6 +4752,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         case SMART_TARGET_PLAYER_RANGE:
         case SMART_TARGET_PLAYER_DISTANCE:
         case SMART_TARGET_CREATURE_FORMATION:
+        case SMART_TARGET_MINION:
         {
             ObjectList* _targets = GetTargets(e);
             if (!_targets)

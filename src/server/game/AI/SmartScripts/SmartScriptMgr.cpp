@@ -406,6 +406,15 @@ bool SmartAIMgr::IsTargetValid(SmartScriptHolder const& e)
                 return false;
             break;
         }
+        case SMART_TARGET_MINION:
+        {
+            if (!sObjectMgr->GetCreatureTemplate(e.target.minion.creature))
+            {
+                sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses non-existent Creature entry %u as target_param1, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.target.unitDistance.creature);
+                return false;
+            }
+            break;
+        }
         case SMART_TARGET_PLAYER_DISTANCE:
         case SMART_TARGET_CLOSEST_PLAYER:
         case SMART_TARGET_PLAYER_RANGE:
@@ -759,6 +768,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                     case SMART_TARGET_PLAYER_DISTANCE:
                     case SMART_TARGET_ACTION_INVOKER:
                     case SMART_TARGET_CREATURE_FORMATION:
+                    case SMART_TARGET_MINION:
                         break;
                     default:
                         sLog->outErrorDb("SmartAIMgr: entryorguid %d source_type %u id %u action_type %u uses invalid target_type %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.GetTargetType());
