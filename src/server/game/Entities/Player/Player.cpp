@@ -15383,7 +15383,7 @@ void Player::SendPreparedQuest(uint64 guid)
         QuestMenuItem const& qmi0 = questMenu.GetItem(0);
         uint32 questId = qmi0.QuestId;
 
-        // Auto open -- maybe also should verify there is no greeting
+        // Auto open
         if (Quest const* quest = sObjectMgr->GetQuestTemplate(questId))
         {
             if (qmi0.QuestIcon == 4)
@@ -15399,15 +15399,13 @@ void Player::SendPreparedQuest(uint64 guid)
                     return;
                 }
 
-                bool autoAccept = true;
-                if (quest->IsAutoAccept() && CanAddQuest(quest, true) && CanTakeQuest(quest, true))
+                bool autoAccept = !questGreeting && quest->IsAutoAccept() && CanAddQuest(quest, true) && CanTakeQuest(quest, true);
+                if (autoAccept)
                     AddQuestAndCheckCompletion(quest, object);
-                else
-                    autoAccept = false;
 
                 if ((quest->IsAutoComplete() && quest->IsRepeatable() && !quest->IsDailyOrWeekly()) || quest->HasFlag(QUEST_FLAGS_AUTOCOMPLETE))
                     PlayerTalkClass->SendQuestGiverRequestItems(quest, guid, CanCompleteRepeatableQuest(quest), true);
-                else if (!questGreeting || autoAccept)
+                else if (autoAccept)
                     PlayerTalkClass->SendQuestGiverQuestDetails(quest, guid, true);
                 else
                     showQuestMenu = true;
