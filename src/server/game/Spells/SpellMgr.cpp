@@ -3215,6 +3215,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->MaxAffectedTargets = 4;
             break;
         case 38296: // Spitfire Totem
+        case 37135: // Domination (Nether Scryer)
             spellInfo->MaxAffectedTargets = 5;
             break;
         case 40827: // Sinful Beam
