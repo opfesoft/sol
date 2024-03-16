@@ -3572,6 +3572,42 @@ void SpellMgr::LoadDbcDataCorrections()
         case 40657: // Ancient Flames
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
             break;
+        case 469:   // Commanding Shout (Rank 1)
+        case 47439: // Commanding Shout (Rank 2)
+        case 47440: // Commanding Shout (Rank 3)
+        case 6673:  // Battle Shout (Rank 1)
+        case 5242:  // Battle Shout (Rank 2)
+        case 6192:  // Battle Shout (Rank 3)
+        case 11549: // Battle Shout (Rank 4)
+        case 11550: // Battle Shout (Rank 5)
+        case 11551: // Battle Shout (Rank 6)
+        case 25289: // Battle Shout (Rank 7)
+        case 2048:  // Battle Shout (Rank 8)
+        case 47436: // Battle Shout (Rank 9)
+        case 21562: // Prayer of Fortitude (Rank 1)
+        case 21564: // Prayer of Fortitude (Rank 2)
+        case 25392: // Prayer of Fortitude (Rank 3)
+        case 48162: // Prayer of Fortitude (Rank 4)
+        case 21849: // Gift of the Wild (Rank 1)
+        case 21850: // Gift of the Wild (Rank 2)
+        case 26991: // Gift of the Wild (Rank 3)
+        case 48470: // Gift of the Wild (Rank 4)
+        case 69381: // Gift of the Wild (Drums of the Wild)
+        case 23028: // Arcane Brilliance (Rank 1)
+        case 27127: // Arcane Brilliance (Rank 2)
+        case 43002: // Arcane Brilliance (Rank 3)
+        case 27681: // Prayer of Spirit (Rank 1)
+        case 32999: // Prayer of Spirit (Rank 2)
+        case 48074: // Prayer of Spirit (Rank 3)
+        case 27683: // Prayer of Shadow Protection (Rank 1)
+        case 39374: // Prayer of Shadow Protection (Rank 2)
+        case 48170: // Prayer of Shadow Protection (Rank 3)
+        case 61316: // Dalaran Brilliance (Rank 3)
+        case 61332: // [DND] Dalaran Brilliance
+        case 69377: // Fortitude
+        case 69378: // Blessing of Forgotten Kings
+            spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
+            break;
 
 
         /////////////////////////////////////////////
@@ -3646,6 +3682,7 @@ void SpellMgr::LoadDbcDataCorrections()
         // Light's Beacon, Beacon of Light
         case 53651:
             spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS|SPELL_ATTR3_NO_INITIAL_AGGRO;
+            spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
             break;
         // Hand of Reckoning
         case 62124:
@@ -3930,6 +3967,7 @@ void SpellMgr::LoadDbcDataCorrections()
         case 57330:
         case 57623:
             spellInfo->EffectImplicitTargetA[1] = 0;
+            spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
             break;
         // Scourge Strike trigger
         case 70890:
