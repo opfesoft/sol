@@ -3508,6 +3508,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         }
         else
         {
+            if (e.action.loadWPPath.nextPathPoint)
+                creature->SetNextPathPoint(e.action.loadWPPath.nextPathPoint);
             creature->LoadPath(e.action.loadWPPath.pathID);
             creature->SetDefaultMovementType(WAYPOINT_MOTION_TYPE);
             creature->GetMotionMaster()->InitDefault();

@@ -721,6 +721,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         uint32 GetWaypointPath() const { return m_path_id; }
         void LoadPath(uint32 pathid);
+        uint32 GetNextPathPoint() const { return m_nextPathPoint; }
+        void SetNextPathPoint(uint32 nextPathPoint) { m_nextPathPoint = nextPathPoint; }
 
         void SearchFormation();
         CreatureGroup* GetFormation() const { return m_formation; }
@@ -846,6 +848,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
 
         // WaypointMovementGenerator
         uint32 m_path_id;
+        uint32 m_nextPathPoint;
 
         //Formation var
         CreatureGroup* m_formation;

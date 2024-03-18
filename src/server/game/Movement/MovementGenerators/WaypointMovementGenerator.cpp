@@ -100,6 +100,12 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
     if (Stopped())
         return true;
 
+    if (creature->GetNextPathPoint())
+    {
+        i_currentNode = creature->GetNextPathPoint() % i_path->size();
+        creature->SetNextPathPoint(0);
+    }
+
     bool transportPath = creature->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && creature->GetTransGUID();
 
     if (m_isArrivalDone)
