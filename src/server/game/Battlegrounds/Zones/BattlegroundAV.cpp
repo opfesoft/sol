@@ -1354,6 +1354,18 @@ bool BattlegroundAV::SetupBattleground()
             return false;
         }
 
+    // Bonfires
+    if (!AddObject(BG_AV_OBJECT_BONFIRE1, BG_AV_BONFIRE1, BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][0], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][1], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][2], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!13");
+        return false;
+    }
+    if (!AddObject(BG_AV_OBJECT_BONFIRE2, BG_AV_BONFIRE2, BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][0], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][1], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][2], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!14");
+        return false;
+    }
+
     uint16 i;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_BATTLEGROUND, "Alterac Valley: entering state STATUS_WAIT_JOIN ...");
@@ -1406,6 +1418,10 @@ bool BattlegroundAV::SetupBattleground()
     // Chairs
     for (i = BG_AV_OBJECT_CHAIR_MIN ; i <= BG_AV_OBJECT_CHAIR_MAX; i++)
         SpawnBGObject(i, RESPAWN_IMMEDIATELY);
+
+    // Bonfires
+    SpawnBGObject(BG_AV_OBJECT_BONFIRE1, RESPAWN_IMMEDIATELY);
+    SpawnBGObject(BG_AV_OBJECT_BONFIRE2, RESPAWN_IMMEDIATELY);
 
     //creatures
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
