@@ -3609,6 +3609,11 @@ void SpellMgr::LoadDbcDataCorrections()
         case 69378: // Blessing of Forgotten Kings
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
             break;
+        case 32976: // Cinematic - Mind Control
+            spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_SRC_CASTER;
+            spellInfo->EffectImplicitTargetB[EFFECT_0] = TARGET_UNIT_SRC_AREA_ENTRY;
+            spellInfo->EffectRadiusIndex[EFFECT_0] = 9;
+            break;
 
 
         /////////////////////////////////////////////
