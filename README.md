@@ -22,6 +22,7 @@ You are free to use Sol, but there won't be any support for it. This is solely a
   - [DBC](https://gitlab.com/opfesoft/sol-docs/-/tree/master/dbc)
 - Server software:
   - [Sol](https://gitlab.com/opfesoft/sol)
+  - [SolBot](https://gitlab.com/opfesoft/solbot)
 - AC modules (adapted to Sol):
   - [mod-ah-bot](https://gitlab.com/opfesoft/mod-ah-bot)
   - [mod-autobalance](https://gitlab.com/opfesoft/mod-autobalance)
