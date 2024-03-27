@@ -117,7 +117,7 @@ bool InstanceSaveManager::DeleteInstanceSaveIfNeeded(uint32 InstanceId, bool ski
     return DeleteInstanceSaveIfNeeded(GetInstanceSave(InstanceId), skipMapCheck);
 }
 
-bool InstanceSaveManager::DeleteInstanceSaveIfNeeded(InstanceSave* save, bool skipMapCheck)
+bool InstanceSaveManager::DeleteInstanceSaveIfNeeded(InstanceSave* save, bool skipMapCheck, bool deleteSave /*= true*/)
 {
     // pussywizard: save is removed only when there are no more players bound AND the map doesn't exist
     // pussywizard: this function is called when unbinding a player and when unloading a map
@@ -137,7 +137,9 @@ bool InstanceSaveManager::DeleteInstanceSaveIfNeeded(InstanceSave* save, bool sk
         // clear respawn times (if map is loaded do it just to be sure, if already unloaded it won't do it by itself)
         Map::DeleteRespawnTimesInDB(save->GetMapId(), save->GetInstanceId());
 
-        delete save;
+        if (deleteSave)
+            delete save;
+
         return true;
     }
     return false;
@@ -212,11 +214,21 @@ void InstanceSave::AddPlayer(uint32 guidLow)
 
 bool InstanceSave::RemovePlayer(uint32 guidLow, InstanceSaveManager* ism)
 {
-    ACORE_GUARD(ACE_Thread_Mutex, _lock);
-    m_playerList.remove(guidLow);
+    bool deleteSave = false;
 
-    // ism passed as an argument to avoid calling via singleton (might result in a deadlock)
-    return ism->DeleteInstanceSaveIfNeeded(this->GetInstanceId(), false);
+    {
+        ACORE_GUARD(ACE_Thread_Mutex, _lock);
+        m_playerList.remove(guidLow);
+
+        // ism passed as an argument to avoid calling via singleton (might result in a deadlock)
+        deleteSave = ism->DeleteInstanceSaveIfNeeded(this, false, false);
+    }
+
+    // Delete save now (avoid mutex memory corruption)
+    if (deleteSave)
+        delete this;
+
+    return deleteSave;
 }
 
 void InstanceSave::ClearPlayerList()
@@ -794,7 +806,10 @@ void InstanceSaveManager::CopyBinds(uint32 from, uint32 to, Player* toPlr)
 
 void InstanceSaveManager::UnbindAllFor(InstanceSave* save)
 {
-    InstanceSave::PlayerListType &pList = save->m_playerList;
-    while (!pList.empty())
-        PlayerUnbindInstance(*(pList.begin()), save->GetMapId(), save->GetDifficulty(), true, ObjectAccessor::GetObjectInOrOutOfWorld(MAKE_NEW_GUID(*(pList.begin()), 0, HIGHGUID_PLAYER), (Player*)NULL));
+    uint32 mapId = save->GetMapId();
+    Difficulty difficulty = save->GetDifficulty();
+    InstanceSave::PlayerListType pList = save->m_playerList;
+
+    for (uint32 const& guidLow : pList)
+        PlayerUnbindInstance(guidLow, mapId, difficulty, true, ObjectAccessor::GetObjectInOrOutOfWorld(MAKE_NEW_GUID(guidLow, 0, HIGHGUID_PLAYER), (Player*)NULL));
 }
