@@ -147,6 +147,7 @@ enum BG_AV_ObjectIds
     BG_AV_CHAIR                         = 112192,
     BG_AV_BONFIRE1                      = 161488,
     BG_AV_BONFIRE2                      = 177408,
+    BG_AV_BURNING_EMBERS                = 3832,
 };
 
 enum BG_AV_Nodes
@@ -307,8 +308,10 @@ enum BG_AV_ObjectTypes
     BG_AV_OBJECT_CHAIR_MAX                   = 267,
     BG_AV_OBJECT_BONFIRE1                    = 268,
     BG_AV_OBJECT_BONFIRE2                    = 269,
+    BG_AV_OBJECT_BURNING_EMBERS_MIN          = 270,
+    BG_AV_OBJECT_BURNING_EMBERS_MAX          = 276,
 
-    BG_AV_OBJECT_MAX                         = 270,
+    BG_AV_OBJECT_MAX                         = 277,
 };
 
 enum BG_AV_OBJECTS
@@ -363,8 +366,10 @@ enum BG_AV_OBJECTS
     AV_OPLACE_CHAIR_MAX                   = 179,
     AV_OPLACE_BONFIRE1                    = 180,
     AV_OPLACE_BONFIRE2                    = 181,
+    AV_OPLACE_BURNING_EMBERS_MIN          = 182,
+    AV_OPLACE_BURNING_EMBERS_MAX          = 188,
 
-    AV_OPLACE_MAX                         = 182,
+    AV_OPLACE_MAX                         = 189,
 };
 
 const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
@@ -573,7 +578,15 @@ const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
     {570.419, -89.0567, 37.9558, 2.22529},
     // bonfires
     {360.915, -497.099, 71.3389, 3.14159},
-    {-743.427, -398.241, 76.4266, 0.872664}
+    {-743.427, -398.241, 76.4266, 0.872664},
+    // burning embers
+    {-1235.57, -241.478, 73.4377, 1.48353},
+    {-1248.85, -254.06, 73.4377, 1.48353},
+    {-1248.15, -245.599, 73.4377, 6.23083},
+    {-1237.21, -260.168, 73.4377, 1.48353},
+    {-1260.37, -248.767, 77.9454, 1.48353},
+    {-1249.32, -244.907, 92.3372, 0.401425},
+    {-1250.09, -254.604, 92.3015, 0.148352}
 };
 
 const float BG_AV_DoorPositons[2][4] =

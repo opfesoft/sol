@@ -1366,6 +1366,14 @@ bool BattlegroundAV::SetupBattleground()
         return false;
     }
 
+    // Burning Embers
+    for (uint16 i = 0; i <= (BG_AV_OBJECT_BURNING_EMBERS_MAX - BG_AV_OBJECT_BURNING_EMBERS_MIN); i++)
+        if (!AddObject(BG_AV_OBJECT_BURNING_EMBERS_MIN + i, BG_AV_BURNING_EMBERS, BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        {
+            sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!15");
+            return false;
+        }
+
     uint16 i;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_BATTLEGROUND, "Alterac Valley: entering state STATUS_WAIT_JOIN ...");
@@ -1422,6 +1430,10 @@ bool BattlegroundAV::SetupBattleground()
     // Bonfires
     SpawnBGObject(BG_AV_OBJECT_BONFIRE1, RESPAWN_IMMEDIATELY);
     SpawnBGObject(BG_AV_OBJECT_BONFIRE2, RESPAWN_IMMEDIATELY);
+
+    // Burning Embers
+    for (i = BG_AV_OBJECT_BURNING_EMBERS_MIN ; i <= BG_AV_OBJECT_BURNING_EMBERS_MAX; i++)
+        SpawnBGObject(i, RESPAWN_IMMEDIATELY);
 
     //creatures
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
