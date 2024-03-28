@@ -148,6 +148,9 @@ enum BG_AV_ObjectIds
     BG_AV_BONFIRE1                      = 161488,
     BG_AV_BONFIRE2                      = 177408,
     BG_AV_BURNING_EMBERS                = 3832,
+    BG_AV_CAMPFIRE1                     = 177262,
+    BG_AV_CAMPFIRE2                     = 177324,
+    BG_AV_CAMPFIRE3                     = 179945,
 };
 
 enum BG_AV_Nodes
@@ -310,8 +313,13 @@ enum BG_AV_ObjectTypes
     BG_AV_OBJECT_BONFIRE2                    = 269,
     BG_AV_OBJECT_BURNING_EMBERS_MIN          = 270,
     BG_AV_OBJECT_BURNING_EMBERS_MAX          = 276,
+    BG_AV_OBJECT_CAMPFIRE1_1                 = 277,
+    BG_AV_OBJECT_CAMPFIRE1_2                 = 278,
+    BG_AV_OBJECT_CAMPFIRE2_MIN               = 279,
+    BG_AV_OBJECT_CAMPFIRE2_MAX               = 283,
+    BG_AV_OBJECT_CAMPFIRE3                   = 284,
 
-    BG_AV_OBJECT_MAX                         = 277,
+    BG_AV_OBJECT_MAX                         = 285,
 };
 
 enum BG_AV_OBJECTS
@@ -368,8 +376,13 @@ enum BG_AV_OBJECTS
     AV_OPLACE_BONFIRE2                    = 181,
     AV_OPLACE_BURNING_EMBERS_MIN          = 182,
     AV_OPLACE_BURNING_EMBERS_MAX          = 188,
+    AV_OPLACE_CAMPFIRE1_1                 = 189,
+    AV_OPLACE_CAMPFIRE1_2                 = 190,
+    AV_OPLACE_CAMPFIRE2_MIN               = 191,
+    AV_OPLACE_CAMPFIRE2_MAX               = 195,
+    AV_OPLACE_CAMPFIRE3                   = 196,
 
-    AV_OPLACE_MAX                         = 189,
+    AV_OPLACE_MAX                         = 197,
 };
 
 const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
@@ -586,7 +599,18 @@ const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
     {-1237.21, -260.168, 73.4377, 1.48353},
     {-1260.37, -248.767, 77.9454, 1.48353},
     {-1249.32, -244.907, 92.3372, 0.401425},
-    {-1250.09, -254.604, 92.3015, 0.148352}
+    {-1250.09, -254.604, 92.3015, 0.148352},
+    // campfire 1
+    {-1286.25, -184.481, 71.8334, 4.23243},
+    {-1280.17, -220.536, 72.2686, 1.62315},
+    // campfire 2
+    {-375.017, -523.71, 84.0771, 3.14159},
+    {-413.51, -521.413, 84.0771, 2.05948},
+    {-487.401, -526.486, 82.5708, 5.47161},
+    {-251.556, -562.061, 68.1725, 6.11738},
+    {-353.118, 37.0955, 65.8904, 3.14159},
+    // campfire 3
+    {-1070.53, -617.908, 51.3249, 5.83813}
 };
 
 const float BG_AV_DoorPositons[2][4] =

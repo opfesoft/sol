@@ -1374,6 +1374,33 @@ bool BattlegroundAV::SetupBattleground()
             return false;
         }
 
+    // Campfire 1
+    if (!AddObject(BG_AV_OBJECT_CAMPFIRE1_1, BG_AV_CAMPFIRE1, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!16.1");
+        return false;
+    }
+    if (!AddObject(BG_AV_OBJECT_CAMPFIRE1_2, BG_AV_CAMPFIRE1, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!16.2");
+        return false;
+    }
+
+    // Campfire 2
+    for (uint16 i = 0; i <= (BG_AV_OBJECT_CAMPFIRE2_MAX - BG_AV_OBJECT_CAMPFIRE2_MIN); i++)
+        if (!AddObject(BG_AV_OBJECT_CAMPFIRE2_MIN + i, BG_AV_CAMPFIRE2, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        {
+            sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!17");
+            return false;
+        }
+
+    // Campfire 3
+    if (!AddObject(BG_AV_OBJECT_CAMPFIRE3, BG_AV_CAMPFIRE3, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!18");
+        return false;
+    }
+
     uint16 i;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_BATTLEGROUND, "Alterac Valley: entering state STATUS_WAIT_JOIN ...");
@@ -1434,6 +1461,17 @@ bool BattlegroundAV::SetupBattleground()
     // Burning Embers
     for (i = BG_AV_OBJECT_BURNING_EMBERS_MIN ; i <= BG_AV_OBJECT_BURNING_EMBERS_MAX; i++)
         SpawnBGObject(i, RESPAWN_IMMEDIATELY);
+
+    // Campfire 1
+    SpawnBGObject(BG_AV_OBJECT_CAMPFIRE1_1, RESPAWN_IMMEDIATELY);
+    SpawnBGObject(BG_AV_OBJECT_CAMPFIRE1_2, RESPAWN_IMMEDIATELY);
+
+    // Campfire 2
+    for (i = BG_AV_OBJECT_CAMPFIRE2_MIN ; i <= BG_AV_OBJECT_CAMPFIRE2_MAX; i++)
+        SpawnBGObject(i, RESPAWN_IMMEDIATELY);
+
+    // Campfire 3
+    SpawnBGObject(BG_AV_OBJECT_CAMPFIRE3, RESPAWN_IMMEDIATELY);
 
     //creatures
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
