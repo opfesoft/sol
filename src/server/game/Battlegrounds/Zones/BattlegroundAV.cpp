@@ -1435,6 +1435,22 @@ bool BattlegroundAV::SetupBattleground()
             return false;
         }
 
+    // Anvil 1
+    for (uint16 i = 0; i <= (BG_AV_OBJECT_ANVIL1_MAX - BG_AV_OBJECT_ANVIL1_MIN); i++)
+        if (!AddObject(BG_AV_OBJECT_ANVIL1_MIN + i, BG_AV_ANVIL1, BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        {
+            sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!23");
+            return false;
+        }
+
+    // Anvil 2
+    for (uint16 i = 0; i <= (BG_AV_OBJECT_ANVIL2_MAX - BG_AV_OBJECT_ANVIL2_MIN); i++)
+        if (!AddObject(BG_AV_OBJECT_ANVIL2_MIN + i, BG_AV_ANVIL2, BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        {
+            sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!24");
+            return false;
+        }
+
     uint16 i;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_BATTLEGROUND, "Alterac Valley: entering state STATUS_WAIT_JOIN ...");
@@ -1519,6 +1535,14 @@ bool BattlegroundAV::SetupBattleground()
 
     // Brazier 4
     for (i = BG_AV_OBJECT_BRAZIER4_MIN ; i <= BG_AV_OBJECT_BRAZIER4_MAX; i++)
+        SpawnBGObject(i, RESPAWN_IMMEDIATELY);
+
+    // Anvil 1
+    for (i = BG_AV_OBJECT_ANVIL1_MIN ; i <= BG_AV_OBJECT_ANVIL1_MAX; i++)
+        SpawnBGObject(i, RESPAWN_IMMEDIATELY);
+
+    // Anvil 2
+    for (i = BG_AV_OBJECT_ANVIL2_MIN ; i <= BG_AV_OBJECT_ANVIL2_MAX; i++)
         SpawnBGObject(i, RESPAWN_IMMEDIATELY);
 
     //creatures
