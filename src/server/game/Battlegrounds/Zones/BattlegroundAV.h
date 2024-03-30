@@ -151,6 +151,10 @@ enum BG_AV_ObjectIds
     BG_AV_CAMPFIRE1                     = 177262,
     BG_AV_CAMPFIRE2                     = 177324,
     BG_AV_CAMPFIRE3                     = 179945,
+    BG_AV_BRAZIER1                      = 177261,
+    BG_AV_BRAZIER2                      = 179419,
+    BG_AV_BRAZIER3                      = 177292,
+    BG_AV_BRAZIER4                      = 177405,
 };
 
 enum BG_AV_Nodes
@@ -318,8 +322,14 @@ enum BG_AV_ObjectTypes
     BG_AV_OBJECT_CAMPFIRE2_MIN               = 279,
     BG_AV_OBJECT_CAMPFIRE2_MAX               = 283,
     BG_AV_OBJECT_CAMPFIRE3                   = 284,
+    BG_AV_OBJECT_BRAZIER1                    = 285,
+    BG_AV_OBJECT_BRAZIER2                    = 286,
+    BG_AV_OBJECT_BRAZIER3_1                  = 287,
+    BG_AV_OBJECT_BRAZIER3_2                  = 288,
+    BG_AV_OBJECT_BRAZIER4_MIN                = 289,
+    BG_AV_OBJECT_BRAZIER4_MAX                = 295,
 
-    BG_AV_OBJECT_MAX                         = 285,
+    BG_AV_OBJECT_MAX                         = 296,
 };
 
 enum BG_AV_OBJECTS
@@ -381,8 +391,14 @@ enum BG_AV_OBJECTS
     AV_OPLACE_CAMPFIRE2_MIN               = 191,
     AV_OPLACE_CAMPFIRE2_MAX               = 195,
     AV_OPLACE_CAMPFIRE3                   = 196,
+    AV_OPLACE_BRAZIER1                    = 197,
+    AV_OPLACE_BRAZIER2                    = 198,
+    AV_OPLACE_BRAZIER3_1                  = 199,
+    AV_OPLACE_BRAZIER3_2                  = 200,
+    AV_OPLACE_BRAZIER4_MIN                = 201,
+    AV_OPLACE_BRAZIER4_MAX                = 207,
 
-    AV_OPLACE_MAX                         = 197,
+    AV_OPLACE_MAX                         = 208,
 };
 
 const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
@@ -610,7 +626,22 @@ const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
     {-251.556, -562.061, 68.1725, 6.11738},
     {-353.118, 37.0955, 65.8904, 3.14159},
     // campfire 3
-    {-1070.53, -617.908, 51.3249, 5.83813}
+    {-1070.53, -617.908, 51.3249, 5.83813},
+    // brazier 1
+    {-1290.27, -172.47, 72.1853, 3.06302},
+    // brazier 2
+    {-1423.16, -318.436, 89.1136, 2.35619},
+    // brazier 3
+    {-1099.21, -266.231, 57.8849, 3.99681},
+    {-1082.6, -266.681, 57.8575, 2.40855},
+    // brazier 4
+    {-1140.82, -343.392, 50.9077, 3.49939},
+    {-1139.68, -356.288, 51.264, 5.57633},
+    {-1215.59, -371.946, 56.5293, 0.357792},
+    {-1241.25, -345.115, 59.6867, 0.357792},
+    {-1202.81, -271.599, 72.5805, 0.357792},
+    {-1282.21, -284.083, 87.256, 6.2221},
+    {-1256.55, -280.278, 73.9473, 6.2221}
 };
 
 const float BG_AV_DoorPositons[2][4] =

@@ -1401,6 +1401,40 @@ bool BattlegroundAV::SetupBattleground()
         return false;
     }
 
+    // Brazier 1
+    if (!AddObject(BG_AV_OBJECT_BRAZIER1, BG_AV_BRAZIER1, BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!19");
+        return false;
+    }
+
+    // Brazier 2
+    if (!AddObject(BG_AV_OBJECT_BRAZIER2, BG_AV_BRAZIER2, BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!20");
+        return false;
+    }
+
+    // Brazier 3
+    if (!AddObject(BG_AV_OBJECT_BRAZIER3_1, BG_AV_BRAZIER3, BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!21.1");
+        return false;
+    }
+    if (!AddObject(BG_AV_OBJECT_BRAZIER3_2, BG_AV_BRAZIER3, BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!21.2");
+        return false;
+    }
+
+    // Brazier 4
+    for (uint16 i = 0; i <= (BG_AV_OBJECT_BRAZIER4_MAX - BG_AV_OBJECT_BRAZIER4_MIN); i++)
+        if (!AddObject(BG_AV_OBJECT_BRAZIER4_MIN + i, BG_AV_BRAZIER4, BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        {
+            sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!22");
+            return false;
+        }
+
     uint16 i;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_BATTLEGROUND, "Alterac Valley: entering state STATUS_WAIT_JOIN ...");
@@ -1472,6 +1506,20 @@ bool BattlegroundAV::SetupBattleground()
 
     // Campfire 3
     SpawnBGObject(BG_AV_OBJECT_CAMPFIRE3, RESPAWN_IMMEDIATELY);
+
+    // Brazier 1
+    SpawnBGObject(BG_AV_OBJECT_BRAZIER1, RESPAWN_IMMEDIATELY);
+
+    // Brazier 2
+    SpawnBGObject(BG_AV_OBJECT_BRAZIER2, RESPAWN_IMMEDIATELY);
+
+    // Brazier 3
+    SpawnBGObject(BG_AV_OBJECT_BRAZIER3_1, RESPAWN_IMMEDIATELY);
+    SpawnBGObject(BG_AV_OBJECT_BRAZIER3_2, RESPAWN_IMMEDIATELY);
+
+    // Brazier 4
+    for (i = BG_AV_OBJECT_BRAZIER4_MIN ; i <= BG_AV_OBJECT_BRAZIER4_MAX; i++)
+        SpawnBGObject(i, RESPAWN_IMMEDIATELY);
 
     //creatures
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
