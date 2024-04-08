@@ -157,6 +157,8 @@ enum BG_AV_ObjectIds
     BG_AV_BRAZIER4                      = 177405,
     BG_AV_ANVIL1                        = 161489,
     BG_AV_ANVIL2                        = 179391,
+    BG_AV_FORGE1                        = 161487,
+    BG_AV_FORGE2                        = 34571,
 };
 
 enum BG_AV_Nodes
@@ -334,8 +336,11 @@ enum BG_AV_ObjectTypes
     BG_AV_OBJECT_ANVIL1_MAX                  = 299,
     BG_AV_OBJECT_ANVIL2_MIN                  = 300,
     BG_AV_OBJECT_ANVIL2_MAX                  = 317,
+    BG_AV_OBJECT_FORGE1_1                    = 318,
+    BG_AV_OBJECT_FORGE1_2                    = 319,
+    BG_AV_OBJECT_FORGE2                      = 320,
 
-    BG_AV_OBJECT_MAX                         = 318,
+    BG_AV_OBJECT_MAX                         = 321,
 };
 
 enum BG_AV_OBJECTS
@@ -407,8 +412,11 @@ enum BG_AV_OBJECTS
     AV_OPLACE_ANVIL1_MAX                  = 211,
     AV_OPLACE_ANVIL2_MIN                  = 212,
     AV_OPLACE_ANVIL2_MAX                  = 229,
+    AV_OPLACE_FORGE1_1                    = 230,
+    AV_OPLACE_FORGE1_2                    = 231,
+    AV_OPLACE_FORGE2                      = 232,
 
-    AV_OPLACE_MAX                         = 230,
+    AV_OPLACE_MAX                         = 233,
 };
 
 const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
@@ -675,7 +683,12 @@ const float BG_AV_ObjectPos[AV_OPLACE_MAX][4] =
     {-100.071, -583.512, 41.7316, 0.00872424},
     {-102.733, -588.775, 41.7316, 5.24472},
     {-100.966, -586.958, 41.7316, 5.76831},
-    {-106.172, -589.721, 41.7316, 4.72112}
+    {-106.172, -589.721, 41.7316, 4.72112},
+    // forge 1
+    {361.097, -531.693, 71.1898, 4.12771},
+    {649.264, -59.1111, 41.5476, 3.59538},
+    // forge 2
+    {-105.423, -584.352, 42.0149, 2.36492}
 };
 
 const float BG_AV_DoorPositons[2][4] =

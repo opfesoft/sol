@@ -1451,6 +1451,25 @@ bool BattlegroundAV::SetupBattleground()
             return false;
         }
 
+    // Forge 1
+    if (!AddObject(BG_AV_OBJECT_FORGE1_1, BG_AV_FORGE1, BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][0], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][1], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][2], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!25.1");
+        return false;
+    }
+    if (!AddObject(BG_AV_OBJECT_FORGE1_2, BG_AV_FORGE1, BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][0], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][1], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][2], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!25.2");
+        return false;
+    }
+
+    // Forge 2
+    if (!AddObject(BG_AV_OBJECT_FORGE2, BG_AV_FORGE2, BG_AV_ObjectPos[AV_OPLACE_FORGE2][0], BG_AV_ObjectPos[AV_OPLACE_FORGE2][1], BG_AV_ObjectPos[AV_OPLACE_FORGE2][2], BG_AV_ObjectPos[AV_OPLACE_FORGE2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!26");
+        return false;
+    }
+
     uint16 i;
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
     sLog->outDebug(LOG_FILTER_BATTLEGROUND, "Alterac Valley: entering state STATUS_WAIT_JOIN ...");
@@ -1544,6 +1563,13 @@ bool BattlegroundAV::SetupBattleground()
     // Anvil 2
     for (i = BG_AV_OBJECT_ANVIL2_MIN ; i <= BG_AV_OBJECT_ANVIL2_MAX; i++)
         SpawnBGObject(i, RESPAWN_IMMEDIATELY);
+
+    // Forge 1
+    SpawnBGObject(BG_AV_OBJECT_FORGE1_1, RESPAWN_IMMEDIATELY);
+    SpawnBGObject(BG_AV_OBJECT_FORGE1_2, RESPAWN_IMMEDIATELY);
+
+    // Forge 2
+    SpawnBGObject(BG_AV_OBJECT_FORGE2, RESPAWN_IMMEDIATELY);
 
     //creatures
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
