@@ -35,13 +35,14 @@ class npc_pet_pri_lightwell : public CreatureScript
 
             void InitializeAI()
             {
-                if (Unit* owner = me->ToTempSummon()->GetSummoner())
-                {
-                    uint32 hp = uint32(owner->GetMaxHealth()*0.3f);
-                    me->SetMaxHealth(hp);
-                    me->SetHealth(hp);
-                    me->SetLevel(owner->getLevel());
-                }
+                if (TempSummon* tempSummon = me->ToTempSummon())
+                    if (Unit* owner = tempSummon->GetSummoner())
+                    {
+                        uint32 hp = uint32(owner->GetMaxHealth()*0.3f);
+                        me->SetMaxHealth(hp);
+                        me->SetHealth(hp);
+                        me->SetLevel(owner->getLevel());
+                    }
 
                 me->CastSpell(me, SPELL_PRIEST_LIGHTWELL_CHARGES, false); // Spell for Lightwell Charges
                 TotemAI::InitializeAI();
