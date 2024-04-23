@@ -826,43 +826,45 @@ public:
         uint32 pathid = 0;
         Creature* target = handler->getSelectedCreature();
 
-        // Did player provide a PathID?
-
-        if (!guid_str)
+        if (show != "near")
         {
-            // No PathID provided
-            // -> Player must have selected a creature
-
-            if (!target)
+            // Did player provide a PathID?
+            if (!guid_str)
             {
-                if (show != "off")
+                // No PathID provided
+                // -> Player must have selected a creature
+
+                if (!target)
                 {
-                    handler->SendSysMessage(LANG_SELECT_CREATURE);
-                    handler->SetSentErrorMessage(true);
-                    return false;
+                    if (show != "off")
+                    {
+                        handler->SendSysMessage(LANG_SELECT_CREATURE);
+                        handler->SetSentErrorMessage(true);
+                        return false;
+                    }
                 }
-            }
-            else if (show == "stop")
-            {
-                if (target->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
-                    handler->PSendSysMessage("|cff00ff00DEBUG: wp stop timer: |cff00ffff%i|r", static_cast<WaypointMovementGenerator<Creature>*>(target->GetMotionMaster()->top())->GetStop());
-                else
-                    handler->PSendSysMessage(LANG_WAYPOINT_NOTFOUNDDBPROBLEM, target->GetGUIDLow());
+                else if (show == "stop")
+                {
+                    if (target->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
+                        handler->PSendSysMessage("|cff00ff00DEBUG: wp stop timer: |cff00ffff%i|r", static_cast<WaypointMovementGenerator<Creature>*>(target->GetMotionMaster()->top())->GetStop());
+                    else
+                        handler->PSendSysMessage(LANG_WAYPOINT_NOTFOUNDDBPROBLEM, target->GetGUIDLow());
 
-                return true;
+                    return true;
+                }
+                else
+                    pathid = target->GetWaypointPath();
             }
             else
-                pathid = target->GetWaypointPath();
-        }
-        else
-        {
-            // PathID provided
-            // Warn if player also selected a creature
-            // -> Creature selection is ignored <-
-            if (target)
-                handler->SendSysMessage(LANG_WAYPOINT_CREATSELECTED);
+            {
+                // PathID provided
+                // Warn if player also selected a creature
+                // -> Creature selection is ignored <-
+                if (target)
+                    handler->SendSysMessage(LANG_WAYPOINT_CREATSELECTED);
 
-            pathid = atoi((char*)guid_str);
+                pathid = atoi((char*)guid_str);
+            }
         }
 
         // Show info for the selected waypoint
@@ -922,27 +924,56 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
         bool isOnTransport = player->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && player->GetTransport();
 
-        if (show == "on")
+        if (show == "on" || show == "near")
         {
-            PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_POS_BY_ID);
+            PreparedStatement* stmt = NULL;
 
-            stmt->setUInt32(0, pathid);
+            if (show == "on")
+            {
+                stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_POS_BY_ID);
+                stmt->setUInt32(0, pathid);
+            }
+            else
+            {
+                stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_POS_NEAR);
+                stmt->setUInt32(0, player->GetMapId());
+                stmt->setFloat(1, player->GetPositionX());
+                stmt->setFloat(2, player->GetPositionY());
+            }
 
             PreparedQueryResult result = WorldDatabase.Query(stmt);
 
             if (!result)
             {
-                handler->SendSysMessage("|cffff33ffPath no found.|r");
-                handler->SetSentErrorMessage(true);
-                return false;
+                if (show == "on")
+                {
+                    handler->SendSysMessage("|cffff33ffPath no found.|r");
+                    handler->SetSentErrorMessage(true);
+                    return false;
+                }
+                else
+                {
+                    handler->SendSysMessage("|cffff33ffNo nearby points found.|r");
+                    handler->SetSentErrorMessage(true);
+                    return false;
+                }
             }
 
-            handler->PSendSysMessage("|cff00ff00DEBUG: wp on, PathID: |cff00ffff%u|r", pathid);
-
-            // Delete all visuals for this NPC
-            stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_WPGUID_BY_ID);
-
-            stmt->setUInt32(0, pathid);
+            // Delete all visuals
+            if (show == "on")
+            {
+                handler->PSendSysMessage("|cff00ff00DEBUG: wp on, PathID: |cff00ffff%u|r", pathid);
+                stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_WPGUID_BY_ID);
+                stmt->setUInt32(0, pathid);
+            }
+            else
+            {
+                handler->PSendSysMessage("|cff00ff00DEBUG: Showing all nearby waypoints|r");
+                stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_WAYPOINT_DATA_WPGUID_NEAR);
+                stmt->setUInt32(0, player->GetMapId());
+                stmt->setFloat(1, player->GetPositionX());
+                stmt->setFloat(2, player->GetPositionY());
+            }
 
             PreparedQueryResult result2 = WorldDatabase.Query(stmt);
 
@@ -987,10 +1018,11 @@ public:
             do
             {
                 Field* fields = result->Fetch();
-                uint32 point    = fields[0].GetUInt32();
-                float x         = fields[1].GetFloat();
-                float y         = fields[2].GetFloat();
-                float z         = fields[3].GetFloat();
+                uint32 pid      = fields[0].GetUInt32();
+                uint32 point    = fields[1].GetUInt32();
+                float x         = fields[2].GetFloat();
+                float y         = fields[3].GetFloat();
+                float z         = fields[4].GetFloat();
 
                 uint32 id = VISUAL_WAYPOINT;
 
@@ -1012,7 +1044,7 @@ public:
                 PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_WPGUID);
 
                 stmt->setInt32(0, int32(wpCreature->GetGUIDLow()));
-                stmt->setUInt32(1, pathid);
+                stmt->setUInt32(1, pid);
                 stmt->setUInt32(2, point);
 
                 WorldDatabase.DirectExecute(stmt);
@@ -1030,7 +1062,9 @@ public:
             }
             while (result->NextRow());
 
-            handler->SendSysMessage("|cff00ff00Showing the current creature's path.|r");
+            if (show == "on")
+                handler->SendSysMessage("|cff00ff00Showing the current creature's path.|r");
+
             return true;
         }
 
