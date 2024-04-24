@@ -102,6 +102,13 @@ void WaypointMgr::Load()
             continue;
         }
 
+        if (wp->pathfinding == WAYPOINT_PATHFINDING_PATH && wp->delay > 0)
+        {
+            sLog->outErrorDb("Path %u waypoint %u in waypoint_data has invalid delay %u (has to be 0 if the waypoint is part of an intermediate path), ignoring", pathId, wp->id, wp->delay);
+            delete wp;
+            continue;
+        }
+
         wp->event_id = fields[9].GetUInt32();
         wp->event_chance = fields[10].GetInt16();
 

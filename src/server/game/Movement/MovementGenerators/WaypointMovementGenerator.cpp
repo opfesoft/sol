@@ -107,6 +107,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
     }
 
     bool transportPath = creature->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && creature->GetTransGUID();
+    Movement::PointsArray intermediatePath;
 
     if (m_isArrivalDone)
     {
@@ -151,6 +152,31 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
     WaypointData const* node = i_path->at(i_currentNode);
 
+    if (node->pathfinding == WAYPOINT_PATHFINDING_PATH)
+    {
+        if (transportPath)
+            intermediatePath.push_back(G3D::Vector3(creature->GetTransOffsetX(), creature->GetTransOffsetY(), creature->GetTransOffsetZ()));
+        else
+            intermediatePath.push_back(G3D::Vector3(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()));
+
+        while (node->pathfinding == WAYPOINT_PATHFINDING_PATH)
+        {
+            intermediatePath.push_back(G3D::Vector3(node->x, node->y, node->z));
+
+            if (intermediatePath.size() > 50)
+            {
+                sLog->outErrorDb("WaypointMovementGenerator::StartMove: creature %s (Entry: %u GUID: %u), path id %u, uses an intermediate path which which has more than 50 points", creature->GetName().c_str(), creature->GetEntry(), creature->GetGUIDLow(), path_id);
+                creature->GetMotionMaster()->MoveIdle();
+                return false;
+            }
+
+            i_currentNode = (i_currentNode+1) % i_path->size();
+            node = i_path->at(i_currentNode);
+        }
+
+        intermediatePath.push_back(G3D::Vector3(node->x, node->y, node->z));
+    }
+
     m_isArrivalDone = false;
 
     creature->AddUnitState(UNIT_STATE_ROAMING_MOVE);
@@ -166,9 +192,14 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
             trans->CalculatePassengerPosition(formationDest.x, formationDest.y, formationDest.z, &formationDest.orientation);
     }
 
-    //! Do not use formationDest here, MoveTo requires transport offsets due to DisableTransportPathTransformations() call
-    //! but formationDest contains global coordinates
-    init.MoveTo(node->x, node->y, node->z, (node->pathfinding == WAYPOINT_PATHFINDING_NODE || node->pathfinding == WAYPOINT_PATHFINDING_ALL));
+    if (!intermediatePath.empty())
+        init.MovebyPath(intermediatePath);
+    else
+    {
+        //! Do not use formationDest here, MoveTo requires transport offsets due to DisableTransportPathTransformations() call
+        //! but formationDest contains global coordinates
+        init.MoveTo(node->x, node->y, node->z, (node->pathfinding == WAYPOINT_PATHFINDING_NODE || node->pathfinding == WAYPOINT_PATHFINDING_ALL));
+    }
 
     if (node->orientation >= 0.f && node->delay)
         init.SetFacing(node->orientation);
