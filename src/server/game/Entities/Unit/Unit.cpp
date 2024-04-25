@@ -19671,7 +19671,7 @@ void Unit::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
                                     break;
                                 }
 
-                    if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
+                    if ((cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER) && creature->GetEntry() != VISUAL_WAYPOINT)
                     {
                         if (target->IsGameMaster() && AccountMgr::IsGMAccount(target->GetSession()->GetSecurity()))
                         {

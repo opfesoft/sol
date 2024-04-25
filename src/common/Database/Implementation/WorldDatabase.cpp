@@ -44,8 +44,8 @@ void WorldDatabaseConnection::DoPrepareStatements()
     PrepareStatement(WORLD_SEL_WAYPOINT_DATA_MAX_ID, "SELECT MAX(id) FROM waypoint_data", CONNECTION_SYNCH);
     PrepareStatement(WORLD_SEL_WAYPOINT_DATA_MAX_POINT, "SELECT MAX(point) FROM waypoint_data WHERE id = ?", CONNECTION_SYNCH);
     PrepareStatement(WORLD_SEL_WAYPOINT_DATA_BY_ID, "SELECT point, position_x, position_y, position_z, orientation, move_type, pathfinding, delay, action, action_chance FROM waypoint_data WHERE id = ? ORDER BY point", CONNECTION_SYNCH);
-    PrepareStatement(WORLD_SEL_WAYPOINT_DATA_POS_BY_ID, "SELECT id, point, position_x, position_y, position_z FROM waypoint_data WHERE id = ?", CONNECTION_SYNCH);
-    PrepareStatement(WORLD_SEL_WAYPOINT_DATA_POS_NEAR, "SELECT id, point, position_x, position_y, position_z FROM waypoint_data WHERE id IN (SELECT path_id FROM creature_addon WHERE guid IN (SELECT guid FROM creature WHERE map = ?) AND path_id > 0) AND (POW(position_x - ?, 2) + POW(position_y - ?, 2)) <= 62500", CONNECTION_SYNCH);
+    PrepareStatement(WORLD_SEL_WAYPOINT_DATA_POS_BY_ID, "SELECT id, point, position_x, position_y, position_z, pathfinding FROM waypoint_data WHERE id = ?", CONNECTION_SYNCH);
+    PrepareStatement(WORLD_SEL_WAYPOINT_DATA_POS_NEAR, "SELECT id, point, position_x, position_y, position_z, pathfinding FROM waypoint_data WHERE id IN (SELECT path_id FROM creature_addon WHERE guid IN (SELECT guid FROM creature WHERE map = ?) AND path_id > 0) AND (POW(position_x - ?, 2) + POW(position_y - ?, 2)) <= 62500", CONNECTION_SYNCH);
     PrepareStatement(WORLD_SEL_WAYPOINT_DATA_POS_FIRST_BY_ID, "SELECT position_x, position_y, position_z FROM waypoint_data WHERE point = 1 AND id = ?", CONNECTION_SYNCH);
     PrepareStatement(WORLD_SEL_WAYPOINT_DATA_POS_BY_ID_AND_POINT, "SELECT position_x, position_y, position_z FROM waypoint_data WHERE id = ? AND point = ?", CONNECTION_SYNCH);
     PrepareStatement(WORLD_SEL_WAYPOINT_DATA_POS_LAST_BY_ID, "SELECT position_x, position_y, position_z, orientation FROM waypoint_data WHERE id = ? ORDER BY point DESC LIMIT 1", CONNECTION_SYNCH);

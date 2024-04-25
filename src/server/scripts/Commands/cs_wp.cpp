@@ -1023,6 +1023,7 @@ public:
                 float x         = fields[2].GetFloat();
                 float y         = fields[3].GetFloat();
                 float z         = fields[4].GetFloat();
+                uint8 pf        = fields[5].GetUInt8();
 
                 uint32 id = VISUAL_WAYPOINT;
 
@@ -1039,6 +1040,8 @@ public:
                     delete wpCreature;
                     return false;
                 }
+                else if (pf == WAYPOINT_PATHFINDING_PATH)
+                    wpCreature->SetDisplayId(16587);
 
                 // Set "wpguid" column to the visual waypoint
                 PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_WAYPOINT_DATA_WPGUID);
