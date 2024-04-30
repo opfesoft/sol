@@ -2084,6 +2084,15 @@ GM.LoginState = 2
 GM.Visible = 2
 
 #
+#    GM.Flying
+#        Description: Enable GM flying at login.
+#        Default:     2 - (Last save state)
+#                     0 - (Flying disabled)
+#                     1 - (Flying enabled)
+
+GM.Flying = 2
+
+#
 #    GM.Chat
 #        Description: GM chat mode at login.
 #        Default:     2 - (Last save state)

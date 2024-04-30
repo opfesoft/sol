@@ -18471,6 +18471,17 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
                 break;
         }
 
+        switch (sWorld->getIntConfig(CONFIG_GM_FLYING))
+        {
+            default:
+            case 0:                  break;                 // flying disabled
+            case 1: SetCanFly(true); break;                 // flying enabled
+            case 2:                                         // save state
+                if (extraflags & PLAYER_EXTRA_GM_FLY_ON)
+                    SetCanFly(true);
+                break;
+        }
+
         switch (sWorld->getIntConfig(CONFIG_GM_CHAT))
         {
             default:
@@ -27714,6 +27725,9 @@ bool Player::SetCanFly(bool apply, bool packetOnly /*= false*/)
 {
     if (!packetOnly && !Unit::SetCanFly(apply))
         return false;
+
+    if (!AccountMgr::IsPlayerAccount(GetSession()->GetSecurity()))
+        SetGMFly(apply);
 
     if (!apply)
         SetFallInformation(time(NULL), GetPositionZ());
