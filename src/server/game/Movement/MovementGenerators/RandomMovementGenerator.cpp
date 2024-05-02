@@ -29,6 +29,18 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
         _currentPoint = RANDOM_POINTS_NUMBER;
         _currDestPosition.Relocate(_initialPosition);
         creature->AddUnitState(UNIT_STATE_ROAMING_MOVE);
+        if (_minMoveTime && _minMoveTime <= _maxMoveTime)
+            _nextMoveTime.Reset(urand(_minMoveTime, _maxMoveTime));
+        else
+        {
+            ++_moveCount;
+            if (roll_chance_i((int32)_moveCount * 25 + 10))
+            {
+                _moveCount = 0;
+                _nextMoveTime.Reset(urand(4000, 8000));
+            }
+        }
+
         Movement::MoveSplineInit init(creature);
         init.MoveTo(_currDestPosition.GetPositionX(), _currDestPosition.GetPositionY(), _currDestPosition.GetPositionZ(), true);
         bool walk = true;
@@ -46,9 +58,9 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
     uint8 newPoint = *randomIter;
     uint16 pathIdx = uint16(_currentPoint*RANDOM_POINTS_NUMBER + newPoint);
 
-    // cant go anywhere from new point, so dont go there to not be stuck
-    if (_validPointsVector[newPoint].empty())
+    if (_validPointsVector[newPoint].empty() && _currentPoint != RANDOM_POINTS_NUMBER)
     {
+        // can't go anywhere from new point, so don't go there to not be stuck
         _validPointsVector[_currentPoint].erase(randomIter);
         return;
     }
@@ -187,7 +199,7 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                         distX = (*itrNext).x - (*itr).x;
                         distY = (*itrNext).y - (*itr).y;
                         if (distX == 0.f && distY == 0.f)
-                            continue;
+                            goto nextLoop;
 
                         map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itr).x, (*itr).y, (*itr).z + i, &zCurrent);
                         map->GetWaterOrGroundLevel(creature->GetPhaseMask(), (*itrNext).x, (*itrNext).y, (*itrNext).z + i, &zNext);
@@ -208,10 +220,10 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                         // Xinef: tree climbing, cut as much as we can
                         if (zDiff > 2.0f || zDiffPre > 0.5f ||
                             (G3D::fuzzyNe(zDiff, 0.0f) && distDiff / zDiff < 2.15f)) // ~25˚
-                            continue;
+                            goto nextLoop;
 
                         if (zCurrent <= INVALID_HEIGHT || zNextPost <= INVALID_HEIGHT || !map->isInLineOfSight((*itr).x, (*itr).y, zCurrent + 0.3f, xNextPost, yNextPost, zNextPost + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                            continue;
+                            goto nextLoop;
                         else
                         {
                             float x1, y1, z1, x2, y2, z2;
@@ -224,7 +236,7 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                             map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + i, &z2);
 
                             if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                                continue;
+                                goto nextLoop;
                             else
                             {
                                 Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x1, y1, 1.f, p.GetAngle(xNextPost, yNextPost) - M_PI / 2.f);
@@ -235,7 +247,7 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                                 map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + i, &z2);
 
                                 if (z1 <= INVALID_HEIGHT || z2 <= INVALID_HEIGHT || !map->isInLineOfSight(x1, y1, z1 + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                                    continue;
+                                    goto nextLoop;
                                 else
                                 {
                                     Position::GetNearPoint2D(p.GetPositionX(), p.GetPositionY(), x2, y2, 1.5f, p.GetAngle(xNextPost, yNextPost));
@@ -244,7 +256,7 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
                                     map->GetWaterOrGroundLevel(creature->GetPhaseMask(), x2, y2, zNextPost + i, &z2);
 
                                     if (z2 <= INVALID_HEIGHT || !map->isInLineOfSight(p.GetPositionX(), p.GetPositionY(), zCurrent + 0.3f, x2, y2, z2 + 0.1f, creature->GetPhaseMask(), LINEOFSIGHT_ALL_CHECKS))
-                                        continue;
+                                        goto nextLoop;
                                 }
                             }
                         }
@@ -260,6 +272,8 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
 
             erase = false;
             break;
+
+            nextLoop: ;
         }
 
         if (erase)
