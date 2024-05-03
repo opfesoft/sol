@@ -2432,7 +2432,7 @@ public:
                     handler->SendSysMessage(LANG_MOVEGENS_IDLE);
                     break;
                 case RANDOM_MOTION_TYPE:
-                    handler->SendSysMessage(LANG_MOVEGENS_RANDOM);
+                    handler->PSendSysMessage(LANG_MOVEGENS_RANDOM, unit->ToCreature() ? unit->ToCreature()->GetWanderDistance() : 0);
                     break;
                 case WAYPOINT_MOTION_TYPE:
                     handler->SendSysMessage(LANG_MOVEGENS_WAYPOINT);
