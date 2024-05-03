@@ -52,8 +52,8 @@ public:
 
     /** \brief Teleport the GM to the specified creature
     *
-    * .go creature <GUID>               --> TP using creature.guid
-    * .go creature azuregos             --> TP player to the mob with this name
+    * .go creature [db] <GUID>          --> TP using creature.guid (db: force DB position)
+    * .go creature [db] azuregos        --> TP player to the mob with this name (db: force DB position)
     *                                       Warning: If there is more than one mob with this name
     *                                       you will be teleported to the first one that is found.
     * .go creature id 6109              --> TP player to the mob, that has this creature_template.entry
@@ -68,6 +68,8 @@ public:
         float x = 0.f, y = 0.f, z = 0.f, ort = 0.f;
         int mapId = 0;
         bool ignoreOrientation = false;
+        bool useDB = false;
+        bool useID = false;
         bool argsFound = false;
         char* param1;
         Player* player = handler->GetSession()->GetPlayer();
@@ -92,6 +94,8 @@ public:
             // User wants to teleport to the NPC's template entry
             if (strcmp(param1, "id") == 0)
             {
+                useID = true;
+
                 // Get the "creature_template.entry"
                 // number or [name] Shift-click form |color|Hcreature_entry:creature_id|h[name]|h|r
                 char* tail = strtok(nullptr, "");
@@ -107,7 +111,13 @@ public:
 
                 whereClause << "WHERE id = '" << entry << '\'';
             }
-            else
+            else if (strcmp(param1, "db") == 0)
+            {
+                useDB = true;
+                param1 = strtok(nullptr, "");
+            }
+
+            if (!useID)
             {
                 int32 guid = atoi(param1);
 
@@ -142,7 +152,7 @@ public:
             uint32 id = fields[6].GetUInt32();
 
             // if creature is in same map with caster go at its current location
-            if (Creature* creature = ObjectAccessor::GetCreature(*player, MAKE_NEW_GUID(guid, id, HIGHGUID_UNIT)))
+            if (Creature* creature = ObjectAccessor::GetCreature(*player, MAKE_NEW_GUID(guid, id, HIGHGUID_UNIT)); creature && !useDB)
             {
                 x = creature->GetPositionX();
                 y = creature->GetPositionY();
