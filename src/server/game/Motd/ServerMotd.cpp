@@ -26,7 +26,7 @@ void Motd::SetMotd(std::string motd)
         motd += "@";
     std::stringstream ss;
     ss << GitRevision::GetDate();
-    motd += "|cffFF4A2DThis server runs Project \"Sol\" " + ss.str() + "|r@|cffFF4A2Dbased on azerothcore-wotlk commit 2eb07056 from 2020-02-28|r";
+    motd += "|cffff4a2dThis server runs |cff3ce7ffProject \"Sol\"|cffff4a2d " + ss.str() + "|r@|cffff4a2dbased on azerothcore-wotlk commit 2eb07056 from 2020-02-28|r";
 
     // scripts may change motd
     sScriptMgr->OnMotdChange(motd);

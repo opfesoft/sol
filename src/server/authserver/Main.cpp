@@ -98,8 +98,8 @@ extern int main(int argc, char** argv)
         return 1;
 
     sLog->outString("%s (authserver)", GitRevision::GetFullVersion());
-    sLog->outString("<Ctrl-C> to stop.");
-    sLog->outString("Project \"Sol\" - based on azerothcore-wotlk commit 2eb07056 from 2020-02-28");
+    sLog->outString("Based on azerothcore-wotlk commit 2eb07056 from 2020-02-28");
+    sLog->outString("<Ctrl-C> to stop");
     sLog->outString("Using configuration file %s.", configFile);
     sLog->outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
 
