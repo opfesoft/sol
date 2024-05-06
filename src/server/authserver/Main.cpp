@@ -98,25 +98,9 @@ extern int main(int argc, char** argv)
         return 1;
 
     sLog->outString("%s (authserver)", GitRevision::GetFullVersion());
-    sLog->outString("<Ctrl-C> to stop.\n");
-
-    sLog->outString("  ███████╗ ███████╗  ██████╗       ██╗████████╗ ███████╗████████╗");
-    sLog->outString("  ██╔═══██╗██╔═══██╗██╔═══██╗      ██║██╔═════╝██╔═════╝╚══██╔══╝");
-    sLog->outString("  ███████╔╝███████╔╝██║   ██║      ██║██████╗  ██║         ██║");
-    sLog->outString("  ██╔════╝ ██╔═══██╗██║   ██║██╗   ██║██╔═══╝  ██║         ██║");
-    sLog->outString("  ██║      ██║   ██║╚██████╔╝╚██████╔╝████████╗╚███████╗   ██║");
-    sLog->outString("  ╚═╝      ╚═╝   ╚═╝ ╚═════╝  ╚═════╝ ╚═══════╝ ╚══════╝   ╚═╝");
-    sLog->outString("              ██╗██╗ ███████╗ ██████╗ ██╗      ██╗██╗");
-    sLog->outString("              ██║██║██╔═════╝██╔═══██╗██║      ██║██║");
-    sLog->outString("              ╚═╝╚═╝╚██████╗ ██║   ██║██║      ╚═╝╚═╝");
-    sLog->outString("                     ╚════██╗██║   ██║██║");
-    sLog->outString("                    ███████╔╝╚██████╔╝████████╗");
-    sLog->outString("                    ╚══════╝  ╚═════╝ ╚═══════╝\n");
-
-    sLog->outString("Project \"Sol\" - based on AzerothCore 3.3.5a 2020-02-28 - www.azerothcore.org\n");
-
+    sLog->outString("<Ctrl-C> to stop.");
+    sLog->outString("Project \"Sol\" - based on azerothcore-wotlk commit 2eb07056 from 2020-02-28");
     sLog->outString("Using configuration file %s.", configFile);
-
     sLog->outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)

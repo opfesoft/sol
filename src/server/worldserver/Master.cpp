@@ -98,22 +98,8 @@ int Master::Run()
     seed1.SetRand(16 * 8);
 
     sLog->outString("%s (worldserver-daemon)", GitRevision::GetFullVersion());
-    sLog->outString("<Ctrl-C> to stop.\n");
-
-    sLog->outString("  ███████╗ ███████╗  ██████╗       ██╗████████╗ ███████╗████████╗");
-    sLog->outString("  ██╔═══██╗██╔═══██╗██╔═══██╗      ██║██╔═════╝██╔═════╝╚══██╔══╝");
-    sLog->outString("  ███████╔╝███████╔╝██║   ██║      ██║██████╗  ██║         ██║");
-    sLog->outString("  ██╔════╝ ██╔═══██╗██║   ██║██╗   ██║██╔═══╝  ██║         ██║");
-    sLog->outString("  ██║      ██║   ██║╚██████╔╝╚██████╔╝████████╗╚███████╗   ██║");
-    sLog->outString("  ╚═╝      ╚═╝   ╚═╝ ╚═════╝  ╚═════╝ ╚═══════╝ ╚══════╝   ╚═╝");
-    sLog->outString("              ██╗██╗ ███████╗ ██████╗ ██╗      ██╗██╗");
-    sLog->outString("              ██║██║██╔═════╝██╔═══██╗██║      ██║██║");
-    sLog->outString("              ╚═╝╚═╝╚██████╗ ██║   ██║██║      ╚═╝╚═╝");
-    sLog->outString("                     ╚════██╗██║   ██║██║");
-    sLog->outString("                    ███████╔╝╚██████╔╝████████╗");
-    sLog->outString("                    ╚══════╝  ╚═════╝ ╚═══════╝\n");
-
-    sLog->outString("Project \"Sol\" - based on AzerothCore 3.3.5a 2020-02-28 - www.azerothcore.org\n");
+    sLog->outString("<Ctrl-C> to stop.");
+    sLog->outString("Project \"Sol\" - based on azerothcore-wotlk commit 2eb07056 from 2020-02-28");
 
     /// worldserver PID file creation
     std::string pidFile = sConfigMgr->GetStringDefault("PidFile", "");
