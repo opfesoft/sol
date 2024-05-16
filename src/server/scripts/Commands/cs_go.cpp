@@ -52,8 +52,10 @@ public:
 
     /** \brief Teleport the GM to the specified creature
     *
+    * .go creature [db]                 --> TP to the selected creature (db: force DB position)
     * .go creature [db] <GUID>          --> TP using creature.guid (db: force DB position)
-    * .go creature [db] azuregos        --> TP player to the mob with this name (db: force DB position)
+    * .go creature [db] azuregos        --> TP player to the mob with this name (db: force DB position;
+    *                                       replace blanks in the name with underscore)
     *                                       Warning: If there is more than one mob with this name
     *                                       you will be teleported to the first one that is found.
     * .go creature id 6109              --> TP player to the mob, that has this creature_template.entry
@@ -119,11 +121,27 @@ public:
 
             if (!useID)
             {
-                int32 guid = atoi(param1);
+                int32 guid = 0;
+
+                if (!param1)
+                {
+                    if (Unit* unit = handler->getSelectedUnit())
+                        if (Creature* creature = unit->ToCreature())
+                            guid = creature->GetDBTableGUIDLow();
+                }
+                else
+                    guid = atoi(param1);
 
                 // Number is invalid - maybe the user specified the mob's name
                 if (!guid)
                 {
+                    if (!param1)
+                    {
+                        handler->SendSysMessage(LANG_COMMAND_GOCREATNOTFOUND);
+                        handler->SetSentErrorMessage(true);
+                        return false;
+                    }
+
                     std::string name = param1;
                     WorldDatabase.EscapeString(name);
                     whereClause << ", creature_template WHERE creature.id = creature_template.entry AND creature_template.name " _LIKE_ " '" << name << '\'';
