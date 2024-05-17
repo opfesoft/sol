@@ -20,6 +20,7 @@ EndScriptData */
 #include "Language.h"
 #include "Player.h"
 #include "GameGraveyard.h"
+#include <regex>
 
 class go_commandscript : public CommandScript
 {
@@ -560,9 +561,9 @@ public:
         if (!*args)
             return false;
 
-        std::string s(args);
-        std::replace(s.begin(), s.end(), ',', ' ');
-        std::replace(s.begin(), s.end(), '|', ' ');
+        std::string tmpStr(args);
+        std::regex regEx("[^\\d\\-.]");
+        std::string s = std::regex_replace(tmpStr, regEx, " ");
 
         Player* player = handler->GetSession()->GetPlayer();
 
