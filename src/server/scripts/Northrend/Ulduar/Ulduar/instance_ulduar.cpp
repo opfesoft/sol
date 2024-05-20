@@ -624,6 +624,7 @@ public:
                 case EVENT_TOWER_OF_FLAMES_DESTROYED:
                     {
                         instance->LoadGrid(364.0f, -16.0f); //make sure leviathan is loaded
+                        instance->LoadGrid(364.0f, 32.0f); //make sure Mimiron's and Thorim's Targetting Crystal are loaded
                         m_leviathanTowers[type-EVENT_TOWER_OF_LIFE_DESTROYED] = data;
                         GameObject* gobj = NULL;
                         if ((gobj = instance->GetGameObject(m_leviathanVisualTowers[type-EVENT_TOWER_OF_LIFE_DESTROYED][0])))
