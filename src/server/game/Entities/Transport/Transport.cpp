@@ -21,6 +21,7 @@
 #include "CellImpl.h"
 #include "WorldModel.h"
 #include "Spell.h"
+#include "CreatureGroups.h"
 
 MotionTransport::MotionTransport() : Transport(), _transportInfo(NULL), _isMoving(true), _pendingStop(false), _triggeredArrivalEvent(false), _triggeredDepartureEvent(false), _passengersLoaded(false), _delayedTeleport(false), _hasArrived(false), _lastArea(0)
 {
@@ -349,6 +350,8 @@ Creature* MotionTransport::CreateNPCPassenger(uint32 guid, CreatureData const* d
 
     _staticPassengers.insert(creature);
     sScriptMgr->OnAddCreaturePassenger(this, creature);
+    if (creature->GetFormation())
+        sFormationMgr->ResetFormationInfo(creature);
     return creature;
 }
 

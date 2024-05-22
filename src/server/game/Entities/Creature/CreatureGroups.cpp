@@ -296,7 +296,7 @@ void CreatureGroup::FormationReset(bool dismiss)
     m_Formed = !dismiss;
 }
 
-void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool generatePath)
+void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool generatePath, Movement::PointsArray* intermediatePath /*= NULL*/)
 {
     //! To do: This should probably get its own movement generator or use WaypointMovementGenerator.
     //! If the leader's path is known, member's path can be plotted as well using formation offsets.
@@ -310,6 +310,10 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
 
     float pathDist = m_leader->GetExactDist(x, y, z);
     float pathAngle = m_leader->GetAngle(x, y);
+    bool transportPath = m_leader->HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && m_leader->GetTransGUID();
+
+    // Xinef: this should be automatized, if turn angle is greater than PI/2 (90°) we should swap formation angle
+    bool swapFormation = m_leader->GetOrientation() && (M_PI - fabs(fabs(m_leader->GetOrientation() - pathAngle) - M_PI) > M_PI * 0.5f);
 
     for (CreatureGroupMemberType::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
     {
@@ -321,21 +325,56 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
         if (member->HasUnitState(UNIT_STATE_NOT_MOVE))
             continue;
 
-        // Xinef: this should be automatized, if turn angle is greater than PI/2 (90�) we should swap formation angle
-        if (m_leader->GetOrientation() && (M_PI - fabs(fabs(m_leader->GetOrientation() - pathAngle) - M_PI) > M_PI*0.50f))
-        {
+        if (swapFormation)
             itr->second->follow_angle = (2 * M_PI) - itr->second->follow_angle;
-        }
 
         float followAngle = itr->second->follow_angle + M_PI; // for some reason, someone thought it was a great idea to invert relative angles...
         float followDist = itr->second->follow_dist;
 
         Position p = {x, y, z, 0.0f};
+        Movement::PointsArray path;
+        float memberPathDist = 0.f;
 
-        if (m_leader->IsFlying() && member->CanFly())
-            Position::GetNearPoint2D(x, y, p.m_positionX, p.m_positionY, followDist, pathAngle + followAngle);
+        if (!intermediatePath || intermediatePath->size() < 2)
+        {
+            if (m_leader->IsFlying() && member->CanFly())
+                Position::GetNearPoint2D(x, y, p.m_positionX, p.m_positionY, followDist, pathAngle + followAngle);
+            else
+                member->MovePosition(p, followDist, pathAngle + followAngle - member->GetOrientation());
+
+            memberPathDist = member->GetExactDist(&p);
+        }
         else
-            member->MovePosition(p, followDist, pathAngle + followAngle - member->GetOrientation());
+        {
+            pathDist = 0.f;
+            Position oldPos = { member->GetPositionX(), member->GetPositionY(), member->GetPositionZ(), 0.f };
+            path.push_back(G3D::Vector3(oldPos.m_positionX, oldPos.m_positionY, oldPos.m_positionZ));
+
+            for (unsigned int i = 1; i < intermediatePath->size(); i++)
+            {
+                Position previousPoint = { intermediatePath->at(i - 1).x, intermediatePath->at(i - 1).y, intermediatePath->at(i - 1).z, 0.f };
+                p = { intermediatePath->at(i).x, intermediatePath->at(i).y, intermediatePath->at(i).z, 0.f };
+
+                if (transportPath)
+                    if (TransportBase* trans = m_leader->GetDirectTransport())
+                    {
+                        trans->CalculatePassengerPosition(previousPoint.m_positionX, previousPoint.m_positionY, previousPoint.m_positionZ, &previousPoint.m_orientation);
+                        trans->CalculatePassengerPosition(p.m_positionX, p.m_positionY, p.m_positionZ, &p.m_orientation);
+                    }
+
+                pathDist += previousPoint.GetExactDist(p.m_positionX, p.m_positionY, p.m_positionZ);
+                pathAngle = previousPoint.GetAngle(p.m_positionX, p.m_positionY);
+
+                if (m_leader->IsFlying() && member->CanFly())
+                    Position::GetNearPoint2D(p.m_positionX, p.m_positionY, p.m_positionX, p.m_positionY, followDist, pathAngle + followAngle);
+                else
+                    member->MovePosition(p, followDist, pathAngle + followAngle - member->GetOrientation());
+
+                memberPathDist += oldPos.GetExactDist(&p);
+                oldPos = p;
+                path.push_back(G3D::Vector3(p.m_positionX, p.m_positionY, p.m_positionZ));
+            }
+        }
 
         p.m_orientation = pathAngle;
 
@@ -349,13 +388,40 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
         // xinef: if we move members to position without taking care of sizes, we should compare distance without sizes
         // xinef: change members speed basing on distance - if too far speed up, if too close slow down
         UnitMoveType mtype = Movement::SelectSpeedType(member->GetUnitMovementFlags());
-        float speedRate = m_leader->GetSpeedRate(mtype) * member->GetExactDist(&p) / pathDist;
+        float speedRate = m_leader->GetSpeedRate(mtype) * memberPathDist / pathDist;
 
         if (speedRate > 0.01f) // don't move if speed rate is too low
         {
-            member->SetSpeedRate(mtype, speedRate);
-            member->GetMotionMaster()->MovePoint(0, p, generatePath);
-            member->SetHomePosition(p);
+            if (path.empty())
+            {
+                member->SetSpeedRate(mtype, speedRate);
+                member->GetMotionMaster()->MovePoint(0, p, generatePath);
+                member->SetHomePosition(p);
+            }
+            else
+            {
+                member->SetSpeedRate(mtype, speedRate);
+                member->GetMotionMaster()->MoveSplinePath(&path, false);
+                member->SetHomePosition(p);
+            }
+
+            if (TransportBase* trans = m_leader->GetDirectTransport())
+            {
+                trans->CalculatePassengerOffset(p.m_positionX, p.m_positionY, p.m_positionZ, &p.m_orientation);
+                member->SetTransportHomePosition(p.m_positionX, p.m_positionY, p.m_positionZ, p.m_orientation);
+            }
         }
     }
+}
+
+bool CreatureGroup::IsFollowing(Creature* member)
+{
+    if (!m_leader || !member || m_leader == member)
+        return false;
+
+    uint32 guid = member->GetDBTableGUIDLow() ? member->GetDBTableGUIDLow() : member->GetGUIDLow();
+    if (FormationInfo* fi = sFormationMgr->CreatureGroupMap[guid])
+        return fi->groupAI != 5;
+
+    return false;
 }

@@ -12,10 +12,10 @@ template<class T>
 class EscortMovementGenerator : public MovementGeneratorMedium< T, EscortMovementGenerator<T> >
 {
     public:
-        EscortMovementGenerator(Movement::PointsArray* _path = NULL) : i_recalculateSpeed(false)
+        EscortMovementGenerator(Movement::PointsArray* path = NULL, bool setSplineId = true) : i_recalculateSpeed(false), _splineId(0), _setSplineId(setSplineId)
         {
-            if (_path)
-                m_precomputedPath = *_path;
+            if (path)
+                m_precomputedPath = *path;
         }
 
         void DoInitialize(T*);
@@ -34,6 +34,7 @@ class EscortMovementGenerator : public MovementGeneratorMedium< T, EscortMovemen
         Movement::PointsArray m_precomputedPath;
 
         uint32 _splineId;
+        bool _setSplineId;
 };
 
 #endif

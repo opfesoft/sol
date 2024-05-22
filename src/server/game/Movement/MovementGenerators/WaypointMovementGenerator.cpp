@@ -151,6 +151,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
         return true;
 
     WaypointData const* node = i_path->at(i_currentNode);
+    Movement::Location formationDest(node->x, node->y, node->z, 0.0f);
 
     if (node->pathfinding == WAYPOINT_PATHFINDING_PATH)
     {
@@ -158,6 +159,8 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
             intermediatePath.push_back(G3D::Vector3(creature->GetTransOffsetX(), creature->GetTransOffsetY(), creature->GetTransOffsetZ()));
         else
             intermediatePath.push_back(G3D::Vector3(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()));
+
+        uint32 tmpCurrentNode = i_currentNode;
 
         while (node->pathfinding == WAYPOINT_PATHFINDING_PATH)
         {
@@ -170,8 +173,8 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
                 return false;
             }
 
-            i_currentNode = (i_currentNode+1) % i_path->size();
-            node = i_path->at(i_currentNode);
+            tmpCurrentNode = (tmpCurrentNode + 1) % i_path->size();
+            node = i_path->at(tmpCurrentNode);
         }
 
         intermediatePath.push_back(G3D::Vector3(node->x, node->y, node->z));
@@ -181,7 +184,6 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
     creature->AddUnitState(UNIT_STATE_ROAMING_MOVE);
 
-    Movement::Location formationDest(node->x, node->y, node->z, 0.0f);
     Movement::MoveSplineInit init(creature);
 
     //! If creature is on transport, we assume waypoints set in DB are already transport offsets
@@ -198,7 +200,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
     {
         //! Do not use formationDest here, MoveTo requires transport offsets due to DisableTransportPathTransformations() call
         //! but formationDest contains global coordinates
-        init.MoveTo(node->x, node->y, node->z, (node->pathfinding == WAYPOINT_PATHFINDING_NODE || node->pathfinding == WAYPOINT_PATHFINDING_ALL));
+        init.MoveTo(node->x, node->y, node->z, (node->pathfinding == WAYPOINT_PATHFINDING_NODE || node->pathfinding == WAYPOINT_PATHFINDING_ALL || node->pathfinding == WAYPOINT_PATHFINDING_PATH_ALL));
     }
 
     if (node->orientation >= 0.f && node->delay)
@@ -222,10 +224,16 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
     init.Launch();
 
+    if (!intermediatePath.empty())
+        splineId = creature->movespline->GetId();
+    else
+        splineId = 0;
+
     //Call for creature group update
     if (creature->GetFormation() && creature->GetFormation()->getLeader() == creature)
         creature->GetFormation()->LeaderMoveTo(formationDest.x, formationDest.y, formationDest.z, node->move_type == WAYPOINT_MOVE_TYPE_RUN,
-            (node->pathfinding == WAYPOINT_PATHFINDING_FORMATION || node->pathfinding == WAYPOINT_PATHFINDING_ALL));
+            (node->pathfinding == WAYPOINT_PATHFINDING_FORMATION || node->pathfinding == WAYPOINT_PATHFINDING_ALL || node->pathfinding == WAYPOINT_PATHFINDING_PATH_ALL),
+            node->pathfinding == WAYPOINT_PATHFINDING_PATH_ALL ? &intermediatePath : NULL);
 
     return true;
 }
@@ -309,6 +317,11 @@ void WaypointMovementGenerator<Creature>::MovementInform(Creature* creature)
 {
     if (creature->AI())
         creature->AI()->MovementInform(WAYPOINT_MOTION_TYPE, i_currentNode);
+}
+
+void WaypointMovementGenerator<Creature>::IntermediatePointReached()
+{
+    i_currentNode = (i_currentNode + 1) % i_path->size();
 }
 
 //----------------------------------------------------//

@@ -56,6 +56,7 @@
 #include "TargetedMovementGenerator.h"
 #include "MovementPacketBuilder.h"
 #include "PointMovementGenerator.h"
+#include "WaypointMovementGenerator.h"
 
 #include <math.h>
 
@@ -475,10 +476,12 @@ class SplineHandler
         bool operator()(Movement::MoveSpline::UpdateResult result)
         {
             if ((result & (Movement::MoveSpline::Result_NextSegment|Movement::MoveSpline::Result_JustArrived)) &&
-                _unit->GetTypeId() == TYPEID_UNIT && _unit->GetMotionMaster()->GetCurrentMovementGeneratorType() == ESCORT_MOTION_TYPE &&
-                _unit->movespline->GetId() == _unit->GetMotionMaster()->GetCurrentSplineId())
+                _unit->GetTypeId() == TYPEID_UNIT && _unit->movespline->GetId() == _unit->GetMotionMaster()->GetCurrentSplineId())
             {
-                _unit->ToCreature()->AI()->MovementInform(ESCORT_MOTION_TYPE, _unit->movespline->currentPathIdx()-1);
+                if (_unit->GetMotionMaster()->GetCurrentMovementGeneratorType() == ESCORT_MOTION_TYPE)
+                    _unit->ToCreature()->AI()->MovementInform(ESCORT_MOTION_TYPE, _unit->movespline->currentPathIdx() - 1);
+                else if (_unit->GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE && !(result & Movement::MoveSpline::Result_Arrived))
+                    static_cast<WaypointMovementGenerator<Creature>*>(_unit->ToCreature()->GetMotionMaster()->top())->IntermediatePointReached();
             }
 
             return true;
@@ -12746,7 +12749,7 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy, uint32 duration)
         creature->UpdateEnvironmentIfNeeded(2);
 
         // Set home position at place of engaging combat for escorted creatures
-        if ((IsAIEnabled && creature->AI()->IsEscorted()) ||
+        if ((IsAIEnabled && creature->AI()->IsEscorted()) || (creature->GetFormation() && creature->GetFormation()->IsFollowing(creature)) ||
             GetMotionMaster()->GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE ||
             GetMotionMaster()->GetCurrentMovementGeneratorType() == ESCORT_MOTION_TYPE)
             creature->SetHomePosition(GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
@@ -15653,12 +15656,25 @@ void Unit::StopMoving(bool playerInteraction /*= false*/)
     {
         if (Creature* creature = ToCreature())
             if (CreatureGroup* formation = creature->GetFormation())
+            {
                 if (Creature* leader = formation->getLeader())
                     if (leader != creature && leader->IsAlive())
                     {
                         leader->StopMoving(); // stop the leader of the formation, otherwise the member is forced to follow
                         leader->SetLastPlayerInteraction(World::GetGameTimeMS());
                     }
+
+                const CreatureGroup::CreatureGroupMemberType& m = formation->GetMembers();
+                for (CreatureGroup::CreatureGroupMemberType::const_iterator itr = m.begin(); itr != m.end(); ++itr)
+                {
+                    Creature* member = itr->first;
+                    if (formation->IsFollowing(member) && member != creature && member->IsAlive())
+                    {
+                        member->StopMoving();
+                        member->SetLastPlayerInteraction(World::GetGameTimeMS());
+                    }
+                }
+            }
 
         SetLastPlayerInteraction(World::GetGameTimeMS());
     }

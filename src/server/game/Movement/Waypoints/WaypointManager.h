@@ -29,8 +29,9 @@ enum WaypointPathFinding
     WAYPOINT_PATHFINDING_NONE      = 2,
     WAYPOINT_PATHFINDING_ALL       = 3,
     WAYPOINT_PATHFINDING_PATH      = 4,
+    WAYPOINT_PATHFINDING_PATH_ALL  = 5,
 
-    WAYPOINT_PATHFINDING_MAX       = 5
+    WAYPOINT_PATHFINDING_MAX       = 6
 };
 
 struct WaypointData

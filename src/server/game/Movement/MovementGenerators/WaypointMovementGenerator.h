@@ -46,7 +46,7 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
 {
     public:
         WaypointMovementGenerator(uint32 _path_id = 0, bool _repeating = true)
-            : PathMovementBase((WaypointPath const*)NULL), i_nextMoveTime(0), m_isArrivalDone(false), path_id(_path_id), repeating(_repeating)  {}
+            : PathMovementBase((WaypointPath const*)NULL), i_nextMoveTime(0), m_isArrivalDone(false), path_id(_path_id), repeating(_repeating), splineId(0) {}
         ~WaypointMovementGenerator() { i_path = NULL; }
         void DoInitialize(Creature*);
         void DoFinalize(Creature*);
@@ -61,6 +61,8 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
         void LoadPath(Creature*);
         void Stop(int32 time) { i_nextMoveTime.Reset(time); }
         int32 GetStop() const { return i_nextMoveTime.GetExpiry(); }
+        uint32 GetSplineId() const { return splineId; }
+        void IntermediatePointReached();
 
     private:
 
@@ -85,6 +87,7 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
         bool m_isArrivalDone;
         uint32 path_id;
         bool repeating;
+        uint32 splineId;
 };
 
 /** FlightPathMovementGenerator generates movement of the player for the paths

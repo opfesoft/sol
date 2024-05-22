@@ -65,8 +65,9 @@ class CreatureGroup
         void RemoveMember(Creature* member);
         void FormationReset(bool dismiss);
 
-        void LeaderMoveTo(float x, float y, float z, bool run, bool generatePath);
+        void LeaderMoveTo(float x, float y, float z, bool run, bool generatePath, Movement::PointsArray* intermediatePath = NULL);
         void MemberAttackStart(Creature* member, Unit* target);
+        bool IsFollowing(Creature* member);
 
     private:
         Creature* m_leader; //Important do not forget sometimes to work with pointers instead synonims :D:D
