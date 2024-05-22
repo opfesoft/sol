@@ -4,8 +4,8 @@
 
 <br>
 
-This is a custom version of AzerothCore (AC) based on azerothcore-wotlk commit [2eb07056](https://github.com/azerothcore/azerothcore-wotlk/commit/2eb07056680776f85fcd700d45defa37c0ff9815) from 2020-02-28<br>
-The [AC master branch](https://github.com/azerothcore/azerothcore-wotlk) on GitHub has been cloned into branch "[ac\_master](https://gitlab.com/opfesoft/sol/-/tree/ac_master)" and will be kept up to date in order to be able to reference commits from within GitLab.
+This is a custom version of AzerothCore (AC) based on azerothcore-wotlk commit [2eb07056](https://github.com/azerothcore/azerothcore-wotlk/commit/2eb07056680776f85fcd700d45defa37c0ff9815) from 2020-02-28.<br>
+The [AC master branch](https://github.com/azerothcore/azerothcore-wotlk/tree/master) on GitHub has been cloned into branch "[ac\_master](https://gitlab.com/opfesoft/sol/-/tree/ac_master)" and will be kept up to date in order to be able to reference commits from within GitLab.
 
 You are free to use Sol, but there won't be any support for it. This is solely a learning / fun project.
 
