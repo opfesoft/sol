@@ -49,19 +49,19 @@ public:
         {
             if (player->HasItemCount(ITEM_LIBRAM_OF_RUMINATION))
                 AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), GOSSIP_OPTION_LIBRAM_OF_RUMINATION, GOSSIP_SENDER_MAIN,
-                    GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_RUMINATION);
+                    static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_RUMINATION));
             if (player->HasItemCount(ITEM_LIBRAM_OF_CONSTITUTION))
                 AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), GOSSIP_OPTION_LIBRAM_OF_CONSTITUTION, GOSSIP_SENDER_MAIN,
-                    GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_CONSTITUTION);
+                    static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_CONSTITUTION));
             if (player->HasItemCount(ITEM_LIBRAM_OF_TENACITY))
                 AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), GOSSIP_OPTION_LIBRAM_OF_TENACITY, GOSSIP_SENDER_MAIN,
-                    GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_TENACITY);
+                    static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_TENACITY));
             if (player->HasItemCount(ITEM_LIBRAM_OF_RESILIENCE))
                 AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), GOSSIP_OPTION_LIBRAM_OF_RESILIENCE, GOSSIP_SENDER_MAIN,
-                    GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_RESILIENCE);
+                    static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_RESILIENCE));
             if (player->HasItemCount(ITEM_LIBRAM_OF_VORACITY))
                 AddGossipItemFor(player, Player::GetDefaultGossipMenuForSource(creature), GOSSIP_OPTION_LIBRAM_OF_VORACITY, GOSSIP_SENDER_MAIN,
-                    GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_VORACITY);
+                    static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_VORACITY));
         }
 
         SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
@@ -79,23 +79,23 @@ public:
 
         switch (action)
         {
-            case GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_RUMINATION:
+            case static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_RUMINATION):
                 qm.AddMenuItem(QUEST_LIBRAM_OF_RUMINATION, 4);
                 SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_LIBRAM_OF_RUMINATION, creature), creature->GetGUID());
                 break;
-            case GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_CONSTITUTION:
+            case static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_CONSTITUTION):
                 qm.AddMenuItem(QUEST_LIBRAM_OF_CONSTITUTION, 4);
                 SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_LIBRAM_OF_CONSTITUTION, creature), creature->GetGUID());
                 break;
-            case GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_TENACITY:
+            case static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_TENACITY):
                 qm.AddMenuItem(QUEST_LIBRAM_OF_TENACITY, 4);
                 SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_LIBRAM_OF_TENACITY, creature), creature->GetGUID());
                 break;
-            case GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_RESILIENCE:
+            case static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_RESILIENCE):
                 qm.AddMenuItem(QUEST_LIBRAM_OF_RESILIENCE, 4);
                 SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_LIBRAM_OF_RESILIENCE, creature), creature->GetGUID());
                 break;
-            case GOSSIP_ACTION_INFO_DEF + GOSSIP_OPTION_LIBRAM_OF_VORACITY:
+            case static_cast<int>(GOSSIP_ACTION_INFO_DEF) + static_cast<int>(GOSSIP_OPTION_LIBRAM_OF_VORACITY):
                 qm.AddMenuItem(QUEST_LIBRAM_OF_VORACITY, 4);
                 SendGossipMenuFor(player, player->GetGossipTextId(GOSSIP_MENU_LIBRAM_OF_VORACITY, creature), creature->GetGUID());
                 break;

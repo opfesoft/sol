@@ -1479,14 +1479,14 @@ class Unit : public WorldObject
         uint32 getClassMask() const { return 1 << (getClass()-1); }
         uint8 getGender() const { return GetByteValue(UNIT_FIELD_BYTES_0, 2); }
 
-        float GetStat(Stats stat) const { return float(GetUInt32Value(UNIT_FIELD_STAT0+stat)); }
-        void SetStat(Stats stat, int32 val) { SetStatInt32Value(UNIT_FIELD_STAT0+stat, val); }
+        float GetStat(Stats stat) const { return float(GetUInt32Value(static_cast<int>(UNIT_FIELD_STAT0)+static_cast<int>(stat))); }
+        void SetStat(Stats stat, int32 val) { SetStatInt32Value(static_cast<int>(UNIT_FIELD_STAT0)+static_cast<int>(stat), val); }
         uint32 GetArmor() const { return GetResistance(SPELL_SCHOOL_NORMAL); }
         void SetArmor(int32 val) { SetResistance(SPELL_SCHOOL_NORMAL, val); }
 
-        uint32 GetResistance(SpellSchools school) const { return GetUInt32Value(UNIT_FIELD_RESISTANCES+school); }
+        uint32 GetResistance(SpellSchools school) const { return GetUInt32Value(static_cast<int>(UNIT_FIELD_RESISTANCES)+static_cast<int>(school)); }
         uint32 GetResistance(SpellSchoolMask mask) const;
-        void SetResistance(SpellSchools school, int32 val) { SetStatInt32Value(UNIT_FIELD_RESISTANCES+school, val); }
+        void SetResistance(SpellSchools school, int32 val) { SetStatInt32Value(static_cast<int>(UNIT_FIELD_RESISTANCES)+static_cast<int>(school), val); }
         static float GetEffectiveResistChance(Unit const* owner, SpellSchoolMask schoolMask, Unit const* victim, SpellInfo const* spellInfo = NULL);
 
         uint32 GetHealth()    const { return GetUInt32Value(UNIT_FIELD_HEALTH); }
@@ -1510,8 +1510,8 @@ class Unit : public WorldObject
 
         Powers getPowerType() const { return Powers(GetByteValue(UNIT_FIELD_BYTES_0, 3)); }
         void setPowerType(Powers power);
-        uint32 GetPower(Powers power) const { return GetUInt32Value(UNIT_FIELD_POWER1   +power); }
-        uint32 GetMaxPower(Powers power) const { return GetUInt32Value(UNIT_FIELD_MAXPOWER1+power); }
+        uint32 GetPower(Powers power) const { return GetUInt32Value(static_cast<int>(UNIT_FIELD_POWER1)   +static_cast<int>(power)); }
+        uint32 GetMaxPower(Powers power) const { return GetUInt32Value(static_cast<int>(UNIT_FIELD_MAXPOWER1)+static_cast<int>(power)); }
         void SetPower(Powers power, uint32 val);
         void SetMaxPower(Powers power, uint32 val);
         // returns the change in power
@@ -1520,11 +1520,11 @@ class Unit : public WorldObject
 
         uint32 GetAttackTime(WeaponAttackType att) const
         {
-           float f_BaseAttackTime = GetFloatValue(UNIT_FIELD_BASEATTACKTIME+att) / m_modAttackSpeedPct[att];
+           float f_BaseAttackTime = GetFloatValue(static_cast<int>(UNIT_FIELD_BASEATTACKTIME)+static_cast<int>(att)) / m_modAttackSpeedPct[att];
            return (uint32)f_BaseAttackTime;
         }
 
-        void SetAttackTime(WeaponAttackType att, uint32 val) { SetFloatValue(UNIT_FIELD_BASEATTACKTIME+att, val*m_modAttackSpeedPct[att]); }
+        void SetAttackTime(WeaponAttackType att, uint32 val) { SetFloatValue(static_cast<int>(UNIT_FIELD_BASEATTACKTIME)+static_cast<int>(att), val*m_modAttackSpeedPct[att]); }
         void ApplyAttackTimePercentMod(WeaponAttackType att, float val, bool apply);
         void ApplyCastTimePercentMod(float val, bool apply);
 
@@ -2030,16 +2030,16 @@ class Unit : public WorldObject
         int32 GetMaxPositiveAuraModifierByAffectMask(AuraType auratype, SpellInfo const* affectedSpell) const;
         int32 GetMaxNegativeAuraModifierByAffectMask(AuraType auratype, SpellInfo const* affectedSpell) const;
 
-        float GetResistanceBuffMods(SpellSchools school, bool positive) const { return GetFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school); }
-        void SetResistanceBuffMods(SpellSchools school, bool positive, float val) { SetFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val); }
-        void ApplyResistanceBuffModsMod(SpellSchools school, bool positive, float val, bool apply) { ApplyModSignedFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply); }
-        void ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply) { ApplyPercentModFloatValue(positive ? UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+school : UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+school, val, apply); }
+        float GetResistanceBuffMods(SpellSchools school, bool positive) const { return GetFloatValue(positive ? static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE)+static_cast<int>(school) : static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE)+static_cast<int>(school)); }
+        void SetResistanceBuffMods(SpellSchools school, bool positive, float val) { SetFloatValue(positive ? static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE)+static_cast<int>(school) : static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE)+static_cast<int>(school), val); }
+        void ApplyResistanceBuffModsMod(SpellSchools school, bool positive, float val, bool apply) { ApplyModSignedFloatValue(positive ? static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE)+static_cast<int>(school) : static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE)+static_cast<int>(school), val, apply); }
+        void ApplyResistanceBuffModsPercentMod(SpellSchools school, bool positive, float val, bool apply) { ApplyPercentModFloatValue(positive ? static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE)+static_cast<int>(school) : static_cast<int>(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE)+static_cast<int>(school), val, apply); }
         void InitStatBuffMods()
         {
             for (uint8 i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_POSSTAT0+i, 0);
             for (uint8 i = STAT_STRENGTH; i < MAX_STATS; ++i) SetFloatValue(UNIT_FIELD_NEGSTAT0+i, 0);
         }
-        void ApplyStatBuffMod(Stats stat, float val, bool apply) { ApplyModSignedFloatValue((val > 0 ? UNIT_FIELD_POSSTAT0+stat : UNIT_FIELD_NEGSTAT0+stat), val, apply); }
+        void ApplyStatBuffMod(Stats stat, float val, bool apply) { ApplyModSignedFloatValue((val > 0 ? static_cast<int>(UNIT_FIELD_POSSTAT0)+static_cast<int>(stat) : static_cast<int>(UNIT_FIELD_NEGSTAT0)+static_cast<int>(stat)), val, apply); }
         void ApplyStatPercentBuffMod(Stats stat, float val, bool apply);
 
         void SetCreateStat(Stats stat, float val) { m_createStats[stat] = val; }
@@ -2048,8 +2048,8 @@ class Unit : public WorldObject
         void SetCreateMana(uint32 val) { SetUInt32Value(UNIT_FIELD_BASE_MANA, val); }
         uint32 GetCreateMana() const { return GetUInt32Value(UNIT_FIELD_BASE_MANA); }
         uint32 GetCreatePowers(Powers power) const;
-        float GetPosStat(Stats stat) const { return GetFloatValue(UNIT_FIELD_POSSTAT0+stat); }
-        float GetNegStat(Stats stat) const { return GetFloatValue(UNIT_FIELD_NEGSTAT0+stat); }
+        float GetPosStat(Stats stat) const { return GetFloatValue(static_cast<int>(UNIT_FIELD_POSSTAT0)+static_cast<int>(stat)); }
+        float GetNegStat(Stats stat) const { return GetFloatValue(static_cast<int>(UNIT_FIELD_NEGSTAT0)+static_cast<int>(stat)); }
         float GetCreateStat(Stats stat) const { return m_createStats[stat]; }
 
         void SetCurrentCastedSpell(Spell* pSpell);

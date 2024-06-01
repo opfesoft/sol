@@ -621,10 +621,10 @@ bool BattlegroundQueue::CheckSkirmishForSameFaction(BattlegroundBracketId bracke
                                 {
                                     // update internal GroupQueueInfo data
                                     (*pitr)->teamId = wrongTeamId;
-                                    (*pitr)->_groupType = BG_QUEUE_NORMAL_ALLIANCE + wrongTeamId;
+                                    (*pitr)->_groupType = static_cast<int>(BG_QUEUE_NORMAL_ALLIANCE) + static_cast<int>(wrongTeamId);
 
                                     // add GroupQueueInfo to new queue
-                                    m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + wrongTeamId].push_front(*pitr);
+                                    m_QueuedGroups[bracket_id][static_cast<int>(BG_QUEUE_NORMAL_ALLIANCE) + static_cast<int>(wrongTeamId)].push_front(*pitr);
 
                                     // remove GroupQueueInfo from old queue
                                     for (auto qitr = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + i].begin(); qitr != m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + i].end(); ++qitr)

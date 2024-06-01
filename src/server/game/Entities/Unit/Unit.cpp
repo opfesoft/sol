@@ -11214,7 +11214,7 @@ float Unit::SpellDoneCritChance(Unit const* /*victim*/, SpellInfo const* spellPr
                 crit_chance = 0.0f;
             // For other schools
             else if (GetTypeId() == TYPEID_PLAYER)
-                crit_chance = GetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask));
+                crit_chance = GetFloatValue(static_cast<int>(PLAYER_SPELL_CRIT_PERCENTAGE1) + static_cast<int>(GetFirstSchoolInMask(schoolMask)));
             else
             {
                 crit_chance = (float)m_baseSpellCritChance;
@@ -14237,7 +14237,7 @@ float Unit::GetModifierValue(UnitMods unitMod, UnitModifierType modifierType) co
 
 float Unit::GetTotalStatValue(Stats stat, float additionalValue) const
 {
-    UnitMods unitMod = UnitMods(UNIT_MOD_STAT_START + stat);
+    UnitMods unitMod = UnitMods(static_cast<int>(UNIT_MOD_STAT_START) + static_cast<int>(stat));
 
     if (m_auraModifiersGroup[unitMod][TOTAL_PCT] <= 0.0f)
         return 0.0f;
@@ -14275,7 +14275,7 @@ void Unit::ApplyStatPercentBuffMod(Stats stat, float val, bool apply)
     if (val == -100.0f)     // prevent set var to zero
         val = -99.99f;
     float var = GetStat(stat)*val/100.0f;
-    ApplyModSignedFloatValue((var > 0 ? UNIT_FIELD_POSSTAT0+stat : UNIT_FIELD_NEGSTAT0+stat), var, apply);
+    ApplyModSignedFloatValue((var > 0 ? static_cast<int>(UNIT_FIELD_POSSTAT0)+static_cast<int>(stat) : static_cast<int>(UNIT_FIELD_NEGSTAT0)+static_cast<int>(stat)), var, apply);
 }
 
 SpellSchools Unit::GetSpellSchoolByAuraGroup(UnitMods unitMod) const
@@ -14470,7 +14470,7 @@ void Unit::SetPower(Powers power, uint32 val)
     if (maxPower < val)
         val = maxPower;
 
-    SetStatInt32Value(UNIT_FIELD_POWER1 + power, val);
+    SetStatInt32Value(static_cast<int>(UNIT_FIELD_POWER1) + static_cast<int>(power), val);
 
     WorldPacket data(SMSG_POWER_UPDATE);
     data.append(GetPackGUID());
@@ -14506,7 +14506,7 @@ void Unit::SetPower(Powers power, uint32 val)
 void Unit::SetMaxPower(Powers power, uint32 val)
 {
     uint32 cur_power = GetPower(power);
-    SetStatInt32Value(UNIT_FIELD_MAXPOWER1 + power, val);
+    SetStatInt32Value(static_cast<int>(UNIT_FIELD_MAXPOWER1) + static_cast<int>(power), val);
 
     // group update
     if (GetTypeId() == TYPEID_PLAYER)
@@ -15964,12 +15964,12 @@ void Unit::ApplyAttackTimePercentMod(WeaponAttackType att, float val, bool apply
     if (val > 0)
     {
         ApplyPercentModFloatVar(m_modAttackSpeedPct[att], val, !apply);
-        ApplyPercentModFloatValue(UNIT_FIELD_BASEATTACKTIME+att, val, !apply);
+        ApplyPercentModFloatValue(static_cast<int>(UNIT_FIELD_BASEATTACKTIME)+static_cast<int>(att), val, !apply);
     }
     else
     {
         ApplyPercentModFloatVar(m_modAttackSpeedPct[att], -val, apply);
-        ApplyPercentModFloatValue(UNIT_FIELD_BASEATTACKTIME+att, -val, apply);
+        ApplyPercentModFloatValue(static_cast<int>(UNIT_FIELD_BASEATTACKTIME)+static_cast<int>(att), -val, apply);
     }
     m_attackTimer[att] = uint32(GetAttackTime(att) * m_modAttackSpeedPct[att] * remainingTimePct);
 }

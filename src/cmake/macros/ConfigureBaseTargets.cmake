@@ -7,12 +7,11 @@
 # An interface library to make the target com available to other targets
 add_library(acore-compile-option-interface INTERFACE)
 
-# Use -std=c++17 instead of -std=gnu++17
 set(CXX_EXTENSIONS OFF)
 
-# Enable support С++17
-set(CMAKE_CXX_STANDARD 17)
-message(STATUS "Enabled С++17 support")
+# Enable support С++20
+set(CMAKE_CXX_STANDARD 20)
+message(STATUS "Enabled С++20 support")
 
 # An interface library to make the target features available to other targets
 add_library(acore-feature-interface INTERFACE)

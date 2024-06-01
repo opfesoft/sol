@@ -571,7 +571,7 @@ void BattlegroundEY::FillInitialWorldStates(WorldPacket& data)
 
 GraveyardStruct const* BattlegroundEY::GetClosestGraveyard(Player* player)
 {
-    GraveyardStruct const* entry = sGraveyard->GetGraveyard(BG_EY_GRAVEYARD_MAIN_ALLIANCE + player->GetTeamId());
+    GraveyardStruct const* entry = sGraveyard->GetGraveyard(static_cast<int>(BG_EY_GRAVEYARD_MAIN_ALLIANCE) + static_cast<int>(player->GetTeamId()));
     GraveyardStruct const* nearestEntry = entry;
 
     float pX = player->GetPositionX();

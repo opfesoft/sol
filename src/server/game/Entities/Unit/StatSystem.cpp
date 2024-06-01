@@ -290,7 +290,7 @@ void Player::UpdateMaxHealth()
 
 void Player::UpdateMaxPower(Powers power)
 { 
-    UnitMods unitMod = UnitMods(UNIT_MOD_POWER_START + power);
+    UnitMods unitMod = UnitMods(static_cast<int>(UNIT_MOD_POWER_START) + static_cast<int>(power));
 
     float bonusPower = (power == POWER_MANA && GetCreatePowers(power) > 0) ? GetManaBonusFromIntellect() : 0;
 
@@ -795,7 +795,7 @@ void Player::UpdateSpellCritChance(uint32 school)
 void Player::UpdateArmorPenetration(int32 amount)
 { 
     // Store Rating Value
-    SetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_ARMOR_PENETRATION, amount);
+    SetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_ARMOR_PENETRATION), amount);
 }
 
 void Player::UpdateMeleeHitChances()
@@ -998,7 +998,7 @@ void Creature::UpdateMaxHealth()
 
 void Creature::UpdateMaxPower(Powers power)
 { 
-    UnitMods unitMod = UnitMods(UNIT_MOD_POWER_START + power);
+    UnitMods unitMod = UnitMods(static_cast<int>(UNIT_MOD_POWER_START) + static_cast<int>(power));
 
     float value  = GetTotalAuraModValue(unitMod);
     SetMaxPower(power, uint32(value));
@@ -1169,7 +1169,7 @@ void Guardian::UpdateMaxHealth()
 
 void Guardian::UpdateMaxPower(Powers power)
 { 
-    UnitMods unitMod = UnitMods(UNIT_MOD_POWER_START + power);
+    UnitMods unitMod = UnitMods(static_cast<int>(UNIT_MOD_POWER_START) + static_cast<int>(power));
 
     float addValue = (power == POWER_MANA) ? std::max<float>(GetStat(STAT_INTELLECT) - GetCreateStat(STAT_INTELLECT), 0.0f) : 0.0f;
     float multiplicator = 15.0f;

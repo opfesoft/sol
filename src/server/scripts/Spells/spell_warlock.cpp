@@ -197,7 +197,7 @@ class spell_warl_improved_demonic_tactics : public SpellScriptLoader
             void CalculateAmount(AuraEffect const* aurEff, int32& amount, bool&  /*canBeRecalculated*/)
             {
                 if (aurEff->GetEffIndex() == EFFECT_0)
-                    amount = CalculatePct<int32, float>(GetUnitOwner()->ToPlayer()->GetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + SPELL_SCHOOL_FROST), GetSpellInfo()->Effects[EFFECT_0].CalcValue());
+                    amount = CalculatePct<int32, float>(GetUnitOwner()->ToPlayer()->GetFloatValue(static_cast<int>(PLAYER_SPELL_CRIT_PERCENTAGE1) + static_cast<int>(SPELL_SCHOOL_FROST)), GetSpellInfo()->Effects[EFFECT_0].CalcValue());
                 else
                     amount = CalculatePct<int32, float>(GetUnitOwner()->ToPlayer()->GetFloatValue(PLAYER_CRIT_PERCENTAGE), GetSpellInfo()->Effects[EFFECT_0].CalcValue());
             }
@@ -967,7 +967,7 @@ class spell_warl_life_tap : public SpellScriptLoader
                 {
                     int32 damage = GetEffectValue() + LIFE_TAP_COEFFICIENT;
                     int32 damage2Mana = GetEffectValue();
-                    int32 mana = int32(damage2Mana + (caster->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+SPELL_SCHOOL_SHADOW) * 0.5f));
+                    int32 mana = int32(damage2Mana + (caster->GetInt32Value(static_cast<int>(PLAYER_FIELD_MOD_DAMAGE_DONE_POS)+static_cast<int>(SPELL_SCHOOL_SHADOW)) * 0.5f));
 
                     // Shouldn't Appear in Combat Log
                     target->ModifyHealth(-damage);

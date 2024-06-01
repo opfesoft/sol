@@ -105,16 +105,13 @@ inline bool myisfinite(float f) { return isfinite(f) && !isnan(f); }
 
 #define MAX_NETCLIENT_PACKET_SIZE (32767 - 1)               // Client hardcap: int16 with trailing zero space otherwise crash on memory free
 
-enum TimeConstants
-{
-    MINUTE          = 60,
-    HOUR            = MINUTE*60,
-    DAY             = HOUR*24,
-    WEEK            = DAY*7,
-    MONTH           = DAY*30,
-    YEAR            = MONTH*12,
-    IN_MILLISECONDS = 1000
-};
+static constexpr int32 MINUTE          = 60;
+static constexpr int32 HOUR            = MINUTE * 60;
+static constexpr int32 DAY             = HOUR * 24;
+static constexpr int32 WEEK            = DAY * 7;
+static constexpr int32 MONTH           = DAY * 30;
+static constexpr int32 YEAR            = MONTH * 12;
+static constexpr int32 IN_MILLISECONDS = 1000;
 
 enum AccountTypes
 {

@@ -974,9 +974,9 @@ void LFGMgr::UpdateRaidBrowser(uint32 diff)
                 currInternalInfoMap[sitr->first] = RBInternalInfo(guid, sitr->second.comment, groupGuid != 0, groupGuid, sitr->second.roles, encounterMask, instanceGuid,
                     1, p->getLevel(), p->getClass(), p->getRace(), p->GetAverageItemLevel(), 
                     talents, p->m_last_area_id, p->GetArmor(), (uint32)std::max<int32>(0, spellDamage), (uint32)std::max<int32>(0, spellHeal),
-                    p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_CRIT_MELEE), p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_CRIT_RANGED), p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_CRIT_SPELL), std::max<float>(0.0f, mp5), std::max<float>(0.0f, mp5combat),
+                    p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_CRIT_MELEE)), p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_CRIT_RANGED)), p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_CRIT_SPELL)), std::max<float>(0.0f, mp5), std::max<float>(0.0f, mp5combat),
                     std::max<uint32>(baseAP, rangedAP), (uint32)p->GetStat(STAT_AGILITY), p->GetMaxHealth(), maxPower, p->GetDefenseSkillValue(),
-                    p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_DODGE), p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_BLOCK), p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_PARRY), p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_HASTE_SPELL), p->GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + CR_EXPERTISE));
+                    p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_DODGE)), p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_BLOCK)), p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_PARRY)), p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_HASTE_SPELL)), p->GetUInt32Value(static_cast<int>(PLAYER_FIELD_COMBAT_RATING_1) + static_cast<int>(CR_EXPERTISE)));
 
                 if (!groupGuid)
                     continue;

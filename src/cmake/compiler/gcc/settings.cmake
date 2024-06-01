@@ -9,20 +9,6 @@ target_compile_definitions(acore-compile-option-interface
   INTERFACE
     -D_BUILD_DIRECTIVE="${CMAKE_BUILD_TYPE}")
 
-set(GCC_EXPECTED_VERSION 4.8.2)
-
-if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS GCC_EXPECTED_VERSION)
-  message(FATAL_ERROR "GCC: This project requires version ${GCC_EXPECTED_VERSION} to build but found ${CMAKE_CXX_COMPILER_VERSION}")
-endif()
-
-if(PLATFORM EQUAL 32)
-  # Required on 32-bit systems to enable SSE2 (standard on x64)
-  target_compile_options(acore-compile-option-interface
-    INTERFACE
-      -msse2
-      -mfpmath=sse)
-endif()
-
 target_compile_definitions(acore-compile-option-interface
   INTERFACE
     -DHAVE_SSE2
