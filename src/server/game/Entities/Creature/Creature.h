@@ -773,6 +773,9 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         void SetUpdateHealth(bool updateHealth) { m_updateHealth = updateHealth; }
         bool IsUpdateHealth() const { return m_updateHealth; }
         void SendHealthUpdate();
+        void SetWPScriptTimer(uint32 wpScriptTime);
+        void UpdateWPScriptTimer(uint32 diff);
+        uint32 GetWPScriptTimer() const { return m_wpScriptTimer; }
 
     protected:
         bool CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data = NULL);
@@ -798,6 +801,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         uint32 m_wpActiveTimerInit;
         uint32 m_wpInactiveTimer;
         uint32 m_wpInactiveTimerInit;
+        uint32 m_wpScriptTimer;
 
         ReactStates m_reactState;                           // for AI, not charmInfo
         ReactStates m_storedReactState;

@@ -773,6 +773,14 @@ void Map::Update(const uint32 t_diff, const uint32 s_diff, bool  /*thread*/)
         if (!creature || !creature->IsInWorld() || creature->isActiveObject())
             continue;
 
+        bool visitCreature = false;
+
+        if (creature->GetWPScriptTimer())
+        {
+            creature->UpdateWPScriptTimer(t_diff);
+            visitCreature = true;
+        }
+
         if (creature->GetWPInactiveTimerInit() > 0)
         {
             if (!creature->GetWPActiveTimer())
@@ -780,8 +788,11 @@ void Map::Update(const uint32 t_diff, const uint32 s_diff, bool  /*thread*/)
                     creature->InitWPActiveTimer();
 
             if (creature->GetWPActiveTimer())
-                VisitNearbyCellsOf(creature, grid_object_update, world_object_update, grid_large_object_update, world_large_object_update);
+                visitCreature = true;
         }
+
+        if (visitCreature)
+            VisitNearbyCellsOf(creature, grid_object_update, world_object_update, grid_large_object_update, world_large_object_update);
     }
 
     // non-player active objects, increasing iterator in the loop in case of object removal

@@ -44,6 +44,11 @@ void Map::ScriptsStart(ScriptMapMap const& scripts, uint32 id, Object* source, O
         sa.ownerGUID  = ownerGUID;
 
         sa.script = &iter->second;
+
+        if (source && sa.script->type == SCRIPTS_WAYPOINT)
+            if (Creature* creature = source->ToCreature())
+                creature->SetWPScriptTimer(iter->first * IN_MILLISECONDS);
+
         m_scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld->GetGameTime() + iter->first), sa));
         if (iter->first == 0)
             immedScript = true;
