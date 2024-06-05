@@ -523,7 +523,7 @@ enum AcoreStrings
     LANG_MOVEGENS_IDLE                  = 527,
     LANG_MOVEGENS_RANDOM                = 528,
     LANG_MOVEGENS_WAYPOINT              = 529,
-    LANG_MOVEGENS_ANIMAL_RANDOM         = 530,
+    LANG_MOVEGENS_ESCORT                = 530,
     LANG_MOVEGENS_CONFUSED              = 531,
     LANG_MOVEGENS_CHASE_PLAYER          = 532,
     LANG_MOVEGENS_CHASE_CREATURE        = 533,
@@ -971,7 +971,10 @@ enum AcoreStrings
     LANG_GUILD_INFO_BANK_GOLD           = 1181,
     LANG_GUILD_INFO_MOTD                = 1182,
     LANG_GUILD_INFO_EXTRA_INFO          = 1183,
-    // Room for more level 3              1184-1198 not used
+    LANG_MOVEGENS_ASSISTANCE_DISTRACT   = 1184,
+    LANG_MOVEGENS_TIMED_FLEEING         = 1185,
+    LANG_MOVEGENS_ROTATE                = 1186,
+    // Room for more level 3              1187-1198 not used
 
     // Debug commands
     LANG_DO_NOT_USE_6X_DEBUG_AREATRIGGER_LEFT = 1999,

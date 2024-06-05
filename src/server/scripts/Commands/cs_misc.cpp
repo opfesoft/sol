@@ -2437,8 +2437,8 @@ public:
                 case WAYPOINT_MOTION_TYPE:
                     handler->SendSysMessage(LANG_MOVEGENS_WAYPOINT);
                     break;
-                case ANIMAL_RANDOM_MOTION_TYPE:
-                    handler->SendSysMessage(LANG_MOVEGENS_ANIMAL_RANDOM);
+                case ESCORT_MOTION_TYPE:
+                    handler->SendSysMessage(LANG_MOVEGENS_ESCORT);
                     break;
                 case CONFUSED_MOTION_TYPE:
                     handler->SendSysMessage(LANG_MOVEGENS_CONFUSED);
@@ -2499,6 +2499,15 @@ public:
                     break;
                 case EFFECT_MOTION_TYPE:
                     handler->SendSysMessage(LANG_MOVEGENS_EFFECT);
+                    break;
+                case ASSISTANCE_DISTRACT_MOTION_TYPE:
+                    handler->SendSysMessage(LANG_MOVEGENS_ASSISTANCE_DISTRACT);
+                    break;
+                case TIMED_FLEEING_MOTION_TYPE:
+                    handler->SendSysMessage(LANG_MOVEGENS_TIMED_FLEEING);
+                    break;
+                case ROTATE_MOTION_TYPE:
+                    handler->SendSysMessage(LANG_MOVEGENS_ROTATE);
                     break;
                 default:
                     handler->PSendSysMessage(LANG_MOVEGENS_UNKNOWN, movementGenerator->GetMovementGeneratorType());
