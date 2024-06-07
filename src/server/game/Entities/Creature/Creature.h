@@ -69,6 +69,12 @@ enum CreatureFlagsExtra : uint32
     CREATURE_FLAG_EXTRA_DB_ALLOWED                      = (0xFFFFFFFF & ~(CREATURE_FLAG_EXTRA_UNUSED | CREATURE_FLAG_EXTRA_DUNGEON_BOSS))
 };
 
+enum CreatureAddonFlags : uint32
+{
+    CREATURE_ADDON_FLAG_IS_LARGE                        = 0x00000001,   // visibility distance for creatures; if set use maximum visibility distance (250y), otherwise default from worldserver.conf (normally 100y)
+    CREATURE_ADDON_FLAG_NO_RANDOM_GENDER                = 0x00000002,   // creature will only use the original gender of the specified DisplayID (see table "creature_model_info")
+};
+
 #define MAX_AGGRO_RESET_TIME 10 // in seconds
 
 #define MAX_KILL_CREDIT 2
@@ -319,7 +325,7 @@ struct CreatureAddon
     uint32 bytes1;
     uint32 bytes2;
     uint32 emote;
-    bool isLarge;
+    uint32 addonFlags;
     float maxAggroRadius;
     std::vector<uint32> auras;
 };
@@ -874,6 +880,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool m_saveRespawnTime;
         bool m_updateHealth;
         float m_maxAggroRadius;
+        bool m_randomGender;
 
         inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
         inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;

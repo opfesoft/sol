@@ -170,7 +170,7 @@ m_reactState(REACT_AGGRESSIVE), m_storedReactState(REACT_AGGRESSIVE), m_defaultM
 m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false),
 m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_despawnTime(0), m_killDelay(0), m_killTime(0), m_path_id(0), m_nextPathPoint(0), m_formation(NULL), m_assistanceTimer(0),
-m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false), m_hasLevelRange(false), m_saveRespawnTime(true), m_updateHealth(false), m_maxAggroRadius(-1.f)
+m_spawnedByDefault(true), m_playerDamageReq(0), m_damagedByPlayer(false), m_hasLevelRange(false), m_saveRespawnTime(true), m_updateHealth(false), m_maxAggroRadius(-1.f), m_randomGender(true)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
     m_idleLosCheckTimer = CREATURE_IDLE_LOS_CHECK_INTERVAL;
@@ -384,8 +384,11 @@ bool Creature::InitEntry(uint32 Entry, const CreatureData* data)
         return false;
     }
 
+    if (CreatureAddon const* cainfo = GetCreatureAddon(); cainfo && cainfo->addonFlags & CREATURE_ADDON_FLAG_NO_RANDOM_GENDER)
+        m_randomGender = false;
+
     uint32 displayID = ObjectMgr::ChooseDisplayId(GetCreatureTemplate(), data);
-    CreatureModelInfo const* minfo = sObjectMgr->GetCreatureModelRandomGender(&displayID);
+    CreatureModelInfo const* minfo = sObjectMgr->GetCreatureModelRandomGender(&displayID, m_randomGender);
     if (!minfo)                                             // Cancel load if no model defined
     {
         sLog->outErrorDb("Creature (Entry: %u) has no model defined in table `creature_template`, can't load. ", Entry);
@@ -976,9 +979,8 @@ bool Creature::Create(uint32 guidlow, Map* map, uint32 phaseMask, uint32 Entry, 
     }
 
     LoadCreaturesAddon();
-
     uint32 displayID = GetNativeDisplayId();
-    CreatureModelInfo const* minfo = sObjectMgr->GetCreatureModelRandomGender(&displayID);
+    CreatureModelInfo const* minfo = sObjectMgr->GetCreatureModelRandomGender(&displayID, m_randomGender);
     if (minfo && !IsTotem())                               // Cancel load if no model defined or if totem
     {
         SetDisplayId(displayID);
@@ -1833,7 +1835,7 @@ void Creature::Respawn(bool force)
         setDeathState(JUST_RESPAWNED);
 
         uint32 displayID = ObjectMgr::ChooseDisplayId(GetCreatureTemplate(), GetCreatureData());
-        CreatureModelInfo const* minfo = sObjectMgr->GetCreatureModelRandomGender(&displayID);
+        CreatureModelInfo const* minfo = sObjectMgr->GetCreatureModelRandomGender(&displayID, m_randomGender);
         if (minfo)                                             // Cancel load if no model defined
         {
             SetDisplayId(displayID);
@@ -2429,7 +2431,7 @@ bool Creature::LoadCreaturesAddon(bool reload)
     }
 
     // Check if Creature is Large
-    if (cainfo->isLarge)
+    if (cainfo->addonFlags & CREATURE_ADDON_FLAG_IS_LARGE)
         SetVisibilityDistanceOverride(true);
 
     if (cainfo->maxAggroRadius >= 0.f)

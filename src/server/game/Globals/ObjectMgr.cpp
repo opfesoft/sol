@@ -535,8 +535,8 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6         7               8
-    QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, isLarge, maxAggroRadius, auras FROM creature_template_addon");
+    //                                                0       1       2      3       4       5      6           7               8
+    QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, addonFlags, maxAggroRadius, auras FROM creature_template_addon");
 
     if (!result)
     {
@@ -565,7 +565,7 @@ void ObjectMgr::LoadCreatureTemplateAddons()
         creatureAddon.bytes1         = fields[3].GetUInt32();
         creatureAddon.bytes2         = fields[4].GetUInt32();
         creatureAddon.emote          = fields[5].GetUInt32();
-        creatureAddon.isLarge        = fields[6].GetBool();
+        creatureAddon.addonFlags     = fields[6].GetUInt32();
         creatureAddon.maxAggroRadius = fields[7].IsNull() ? -1.f : fields[7].GetFloat();
 
         Tokenizer tokens(fields[8].GetString(), ' ');
@@ -949,8 +949,8 @@ void ObjectMgr::LoadCreatureAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6        7               8
-    QueryResult result = WorldDatabase.Query("SELECT guid, path_id, mount, bytes1, bytes2, emote, isLarge, maxAggroRadius, auras FROM creature_addon");
+    //                                                0     1        2      3       4       5      6           7               8
+    QueryResult result = WorldDatabase.Query("SELECT guid, path_id, mount, bytes1, bytes2, emote, addonFlags, maxAggroRadius, auras FROM creature_addon");
 
     if (!result)
     {
@@ -988,7 +988,7 @@ void ObjectMgr::LoadCreatureAddons()
         creatureAddon.bytes1         = fields[3].GetUInt32();
         creatureAddon.bytes2         = fields[4].GetUInt32();
         creatureAddon.emote          = fields[5].GetUInt32();
-        creatureAddon.isLarge        = fields[6].GetBool();
+        creatureAddon.addonFlags     = fields[6].GetUInt32();
         creatureAddon.maxAggroRadius = fields[7].IsNull() ? -1.f : fields[7].GetFloat();
 
         Tokenizer tokens(fields[8].GetString(), ' ');
@@ -1397,14 +1397,14 @@ void ObjectMgr::ChooseCreatureFlags(const CreatureTemplate* cinfo, uint32& npcfl
     }
 }
 
-CreatureModelInfo const* ObjectMgr::GetCreatureModelRandomGender(uint32* displayID)
+CreatureModelInfo const* ObjectMgr::GetCreatureModelRandomGender(uint32* displayID, bool randomGender /*= true*/)
 {
     CreatureModelInfo const* modelInfo = GetCreatureModelInfo(*displayID);
     if (!modelInfo)
         return NULL;
 
     // If a model for another gender exists, 50% chance to use it
-    if (modelInfo->modelid_other_gender != 0 && urand(0, 1) == 0)
+    if (randomGender && modelInfo->modelid_other_gender != 0 && urand(0, 1) == 0)
     {
         CreatureModelInfo const* minfo_tmp = GetCreatureModelInfo(modelInfo->modelid_other_gender);
         if (!minfo_tmp)
