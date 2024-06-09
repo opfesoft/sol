@@ -318,12 +318,15 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
     for (CreatureGroupMemberType::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
     {
         Creature* member = itr->first;
-        if (member == m_leader || !member->IsAlive() || member->GetVictim())
+        if (member == m_leader)
             continue;
 
-        // Xinef: If member is stunned / rooted etc don't allow to move him
-        if (member->HasUnitState(UNIT_STATE_NOT_MOVE))
+        if (!member->IsAlive() || member->GetVictim() ||
+            member->HasUnitState(UNIT_STATE_NOT_MOVE)) // Xinef: If member is stunned / rooted etc don't allow to move him
+        {
+            member->SetLeaderMoveFailed(true);
             continue;
+        }
 
         if (swapFormation)
             itr->second->follow_angle = (2 * M_PI) - itr->second->follow_angle;
@@ -332,6 +335,7 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
         float followDist = itr->second->follow_dist;
 
         Position p = {x, y, z, 0.0f};
+
         Movement::PointsArray path;
         float memberPathDist = 0.f;
 
@@ -376,6 +380,9 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
             }
         }
 
+        if (member->IsLeaderMoveFailed())
+            memberPathDist += member->GetExactDist(m_leader);
+
         p.m_orientation = pathAngle;
 
         member->SetUnitMovementFlags(m_leader->GetUnitMovementFlags());
@@ -392,10 +399,10 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
 
         if (speedRate > 0.01f) // don't move if speed rate is too low
         {
-            if (path.empty())
+            if (path.empty() || member->IsLeaderMoveFailed())
             {
                 member->SetSpeedRate(mtype, speedRate);
-                member->GetMotionMaster()->MovePoint(0, p, generatePath);
+                member->GetMotionMaster()->MovePoint(0, p, generatePath || member->IsLeaderMoveFailed());
                 member->SetHomePosition(p);
             }
             else
@@ -411,6 +418,8 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run, bool gener
                 member->SetTransportHomePosition(p.m_positionX, p.m_positionY, p.m_positionZ, p.m_orientation);
             }
         }
+
+        member->SetLeaderMoveFailed(false);
     }
 }
 

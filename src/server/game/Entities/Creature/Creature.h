@@ -782,6 +782,8 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         void SetWPScriptTimer(uint32 wpScriptTime);
         void UpdateWPScriptTimer(uint32 diff);
         uint32 GetWPScriptTimer() const { return m_wpScriptTimer; }
+        void SetLeaderMoveFailed(bool leaderMoveFailed) { m_leaderMoveFailed = leaderMoveFailed; }
+        bool IsLeaderMoveFailed() const { return m_leaderMoveFailed; }
 
     protected:
         bool CreateFromProto(uint32 guidlow, uint32 Entry, uint32 vehId, const CreatureData* data = NULL);
@@ -881,6 +883,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool m_updateHealth;
         float m_maxAggroRadius;
         bool m_randomGender;
+        bool m_leaderMoveFailed;
 
         inline static CreatureGuidChanceInstanceIdMap _creatureGuidChanceInstanceIdMap;
         inline static ACE_Thread_Mutex _creatureGuidChanceInstanceIdMapMutex;
