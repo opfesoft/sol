@@ -84,7 +84,8 @@ enum ConditionTypes
     CONDITION_HAS_MINION               = 152,                // creature entry   alive state    0                  true if the unit has a minion with the specified creature entry and the alive state 1 (alive), 2 (dead) or 0 (both)
     CONDITION_UNIT_HAS_FLAG            = 153,                // index            flag mask      0                  true if the unit has all flags specified in the mask
     CONDITION_CORPSE                   = 154,                // 0                0              0                  true if unit is corpse
-    CONDITION_RANGE3_END               = 155                 // placeholder
+    CONDITION_NEAR_CREATURE_GUID       = 155,                // guid             distance       dead               true if there is a creature with the specified GUID in range
+    CONDITION_RANGE3_END               = 156                 // placeholder
 };
 
 /*! Documentation on implementing a new ConditionSourceType:

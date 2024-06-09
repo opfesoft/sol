@@ -3985,13 +3985,13 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         else
         {
             if (baseObject)
-                target = FindCreatureNear(baseObject, e.target.unitGUID.dbGuid);
+                target = baseObject->FindCreatureNear(e.target.unitGUID.dbGuid);
             if (!target)
             {
                 if (scriptTrigger)
-                    target = FindCreatureNear(scriptTrigger, e.target.unitGUID.dbGuid);
+                    target = scriptTrigger->FindCreatureNear(e.target.unitGUID.dbGuid);
                 else if (scriptTriggerGO)
-                    target = FindCreatureNear(scriptTriggerGO, e.target.unitGUID.dbGuid);
+                    target = scriptTriggerGO->FindCreatureNear(e.target.unitGUID.dbGuid);
             }
             if (target && (!e.target.unitGUID.entry || target->GetEntry() == e.target.unitGUID.entry))
             {
@@ -4035,13 +4035,13 @@ ObjectList* SmartScript::GetTargets(SmartScriptHolder const& e, Unit* invoker /*
         else
         {
             if (baseObject)
-                target = FindGameObjectNear(baseObject, e.target.goGUID.dbGuid);
+                target = baseObject->FindGameObjectNear(e.target.goGUID.dbGuid);
             if (!target)
             {
                 if (scriptTrigger)
-                    target = FindGameObjectNear(scriptTrigger, e.target.goGUID.dbGuid);
+                    target = scriptTrigger->FindGameObjectNear(e.target.goGUID.dbGuid);
                 else if (scriptTriggerGO)
-                    target = FindGameObjectNear(scriptTriggerGO, e.target.goGUID.dbGuid);
+                    target = scriptTriggerGO->FindGameObjectNear(e.target.goGUID.dbGuid);
             }
             if (target && (!e.target.goGUID.entry || target->GetEntry() == e.target.goGUID.entry))
                 l->push_back(target);
@@ -4803,7 +4803,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
 
         if (e.event.distance.guid != 0)
         {
-            creature = FindCreatureNear(me, e.event.distance.guid);
+            creature = me->FindCreatureNear(e.event.distance.guid);
 
             if (!creature)
                 return;
@@ -4844,7 +4844,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
 
         if (e.event.distance.guid != 0)
         {
-            gameobject = FindGameObjectNear(me, e.event.distance.guid);
+            gameobject = me->FindGameObjectNear(e.event.distance.guid);
 
             if (!gameobject)
                 return;

@@ -442,6 +442,12 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo, bool conditionTargetNullR
                 condMeets = unit->IsCorpse();
             break;
         }
+        case CONDITION_NEAR_CREATURE_GUID:
+        {
+            if (Creature* creature = object->FindCreatureNear(ConditionValue1); creature && creature->IsAlive() && !ConditionValue3)
+                condMeets = object->IsInRange(creature, 0, (float)ConditionValue2);
+            break;
+        }
         default:
             condMeets = false;
             break;
@@ -634,6 +640,9 @@ uint32 Condition::GetSearcherTypeMaskForCondition()
             break;
         case CONDITION_CORPSE:
             mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_NEAR_CREATURE_GUID:
+            mask |= GRID_MAP_TYPE_MASK_ALL;
             break;
         default:
             ASSERT(false && "Condition::GetSearcherTypeMaskForCondition - missing condition handling!");
@@ -2328,6 +2337,15 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
                 sLog->outErrorDb("Corpse condition has useless data in value2 (%u)!", cond->ConditionValue2);
             if (cond->ConditionValue3)
                 sLog->outErrorDb("Corpse condition has useless data in value3 (%u)!", cond->ConditionValue3);
+            break;
+        }
+        case CONDITION_NEAR_CREATURE_GUID:
+        {
+            if (cond->ConditionValue1 && !sObjectMgr->GetCreatureData(cond->ConditionValue1))
+            {
+                sLog->outErrorDb("NearCreatureGuid condition has non existing creature GUID (%u), skipped", cond->ConditionValue1);
+                return false;
+            }
             break;
         }
         default:

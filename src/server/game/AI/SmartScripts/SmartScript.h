@@ -161,37 +161,6 @@ class SmartScript
             return 0;
         }
 
-        GameObject* FindGameObjectNear(WorldObject* searchObject, uint32 guid) const
-        {
-            GameObject* gameObject = NULL;
-
-            CellCoord p(acore::ComputeCellCoord(searchObject->GetPositionX(), searchObject->GetPositionY()));
-            Cell cell(p);
-
-            acore::GameObjectWithDbGUIDCheck goCheck(guid);
-            acore::GameObjectSearcher<acore::GameObjectWithDbGUIDCheck> checker(searchObject, gameObject, goCheck);
-
-            TypeContainerVisitor<acore::GameObjectSearcher<acore::GameObjectWithDbGUIDCheck>, GridTypeMapContainer > objectChecker(checker);
-            cell.Visit(p, objectChecker, *searchObject->GetMap(), *searchObject, searchObject->GetVisibilityRange());
-
-            return gameObject;
-        }
-
-        Creature* FindCreatureNear(WorldObject* searchObject, uint32 guid) const
-        {
-            Creature* creature = NULL;
-            CellCoord p(acore::ComputeCellCoord(searchObject->GetPositionX(), searchObject->GetPositionY()));
-            Cell cell(p);
-
-            acore::CreatureWithDbGUIDCheck target_check(guid);
-            acore::CreatureSearcher<acore::CreatureWithDbGUIDCheck> checker(searchObject, creature, target_check);
-
-            TypeContainerVisitor<acore::CreatureSearcher <acore::CreatureWithDbGUIDCheck>, GridTypeMapContainer > unit_checker(checker);
-            cell.Visit(p, unit_checker, *searchObject->GetMap(), *searchObject, searchObject->GetVisibilityRange());
-
-            return creature;
-        }
-
         ObjectListMap* mTargetStorage;
 
         void OnReset();

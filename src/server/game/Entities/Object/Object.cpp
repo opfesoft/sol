@@ -2410,6 +2410,37 @@ GameObject* WorldObject::FindNearestGameObjectOfType(GameobjectTypes type, float
     return go;
 }
 
+Creature* WorldObject::FindCreatureNear(uint32 guid) const
+{
+    Creature* creature = NULL;
+    CellCoord p(acore::ComputeCellCoord(this->GetPositionX(), this->GetPositionY()));
+    Cell cell(p);
+
+    acore::CreatureWithDbGUIDCheck target_check(guid);
+    acore::CreatureSearcher<acore::CreatureWithDbGUIDCheck> checker(this, creature, target_check);
+
+    TypeContainerVisitor<acore::CreatureSearcher <acore::CreatureWithDbGUIDCheck>, GridTypeMapContainer > unit_checker(checker);
+    cell.Visit(p, unit_checker, *this->GetMap(), *this, this->GetVisibilityRange());
+
+    return creature;
+}
+
+GameObject* WorldObject::FindGameObjectNear(uint32 guid) const
+{
+    GameObject* gameObject = NULL;
+
+    CellCoord p(acore::ComputeCellCoord(this->GetPositionX(), this->GetPositionY()));
+    Cell cell(p);
+
+    acore::GameObjectWithDbGUIDCheck goCheck(guid);
+    acore::GameObjectSearcher<acore::GameObjectWithDbGUIDCheck> checker(this, gameObject, goCheck);
+
+    TypeContainerVisitor<acore::GameObjectSearcher<acore::GameObjectWithDbGUIDCheck>, GridTypeMapContainer > objectChecker(checker);
+    cell.Visit(p, objectChecker, *this->GetMap(), *this, this->GetVisibilityRange());
+
+    return gameObject;
+}
+
 Player* WorldObject::SelectNearestPlayer(float distance /*= 0*/, bool alive /*= true*/, bool allowGM /*= true*/) const
 { 
     Player* target = NULL;
