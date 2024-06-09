@@ -212,7 +212,8 @@ void SmartAI::StartPath(bool run, uint32 path, bool repeat, Unit* invoker)
         Movement::PointsArray pathPoints;
         GenerateWayPointArray(&pathPoints);
 
-        me->GetMotionMaster()->MoveSplinePath(&pathPoints);
+        if (!me->HasUnitState(UNIT_STATE_NOT_MOVE))
+            me->GetMotionMaster()->MoveSplinePath(&pathPoints);
         GetScript()->ProcessEventsFor(SMART_EVENT_WAYPOINT_START, NULL, wp->id, GetScript()->GetPathId());
     }
 }
