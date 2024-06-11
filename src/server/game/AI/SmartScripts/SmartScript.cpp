@@ -1110,6 +1110,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         if (!me)
             break;
 
+        if (e.action.combatStop.deleteThreatList)
+            me->DeleteThreatList();
         me->CombatStop(true);
         break;
     }
