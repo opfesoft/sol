@@ -2072,7 +2072,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
         MovementSlot movementSlot = e.action.MoveToPos.controlled ? MOTION_SLOT_CONTROLLED : MOTION_SLOT_ACTIVE;
 
-        if (!target)
+        if (e.GetTargetType() == SMART_TARGET_POSITION)
         {
             G3D::Vector3 dest(e.target.x, e.target.y, e.target.z);
             if (e.action.MoveToPos.transport)
@@ -2081,7 +2081,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
             me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, dest.x, dest.y, dest.z, true, true, movementSlot);
         }
-        else // Xinef: we can use dest.x, dest.y, dest.z to make offset
+        else if (target) // Xinef: we can use dest.x, dest.y, dest.z to make offset
         {
             float x, y, z;
             target->GetPosition(x, y, z);
