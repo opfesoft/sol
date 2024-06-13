@@ -1594,7 +1594,26 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
     }
     case SMART_ACTION_ATTACK_START:
     {
-        if (!me)
+        if (e.action.attackStart.targetType)
+        {
+            if (ObjectList* l = GetTargets(CreateSmartEvent(SMART_EVENT_UPDATE_IC, 0, 0, 0, 0, 0, 0, SMART_ACTION_NONE, 0, 0, 0, 0, 0, 0, (SMARTAI_TARGETS)e.action.attackStart.targetType, e.action.attackStart.targetParam1, e.action.attackStart.targetParam2, e.action.attackStart.targetParam3, e.action.attackStart.targetParam4, 0), unit, gob))
+            {
+                if (ObjectList* targets = GetTargets(e, unit, gob))
+                {
+                    if (Unit* target = acore::Containers::SelectRandomContainerElement(*targets)->ToUnit())
+                        for (ObjectList::const_iterator itr = l->begin(); itr != l->end(); ++itr)
+                            if (Creature* c = (*itr)->ToCreature())
+                                c->AI()->AttackStart(target);
+
+                    delete targets;
+                }
+
+                delete l;
+            }
+
+            break;
+        }
+        else if (!me)
             break;
 
         ObjectList* targets = GetTargets(e, unit, gob);

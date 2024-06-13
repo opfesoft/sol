@@ -461,7 +461,7 @@ enum SMART_ACTION
     SMART_ACTION_MOVE_FORWARD                       = 46,     // distance
     SMART_ACTION_SET_VISIBILITY                     = 47,     // on/off
     SMART_ACTION_SET_ACTIVE                         = 48,     // on/off
-    SMART_ACTION_ATTACK_START                       = 49,     //
+    SMART_ACTION_ATTACK_START                       = 49,     // targetType, targetParam1, targetParam2, targetParam3, targetParam4
     SMART_ACTION_SUMMON_GO                          = 50,     // GameObjectID, DespawnTime in s
     SMART_ACTION_KILL_UNIT                          = 51,     //
     SMART_ACTION_ACTIVATE_TAXI                      = 52,     // TaxiID
@@ -1301,6 +1301,15 @@ struct SmartAction
         {
             uint32 deleteThreatList;
         } combatStop;
+
+        struct
+        {
+            uint32 targetType;
+            uint32 targetParam1;
+            uint32 targetParam2;
+            uint32 targetParam3;
+            uint32 targetParam4;
+        } attackStart;
 
         //! Note for any new future actions
         //! All parameters must have type uint32
