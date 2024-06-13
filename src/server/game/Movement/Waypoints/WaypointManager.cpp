@@ -43,6 +43,8 @@ void WaypointMgr::Load()
     }
 
     uint32 count = 0;
+    uint32 oldPathId = 0;
+    uint32 expectedPointId = 0;
 
     do
     {
@@ -50,9 +52,23 @@ void WaypointMgr::Load()
         WaypointData* wp = new WaypointData();
 
         uint32 pathId = fields[0].GetUInt32();
-        WaypointPath& path = _waypointStore[pathId];
 
+        if (oldPathId != pathId)
+        {
+            expectedPointId = 0;
+            oldPathId = pathId;
+        }
+
+        expectedPointId++;
         wp->id = fields[1].GetUInt32();
+
+        if (wp->id != expectedPointId)
+        {
+            sLog->outErrorDb("Path %u in waypoint_data has invalid point ID (expected: %u, found: %u), ignoring", pathId, expectedPointId, wp->id);
+            delete wp;
+            continue;
+        }
+
         float x = fields[2].GetFloat();
         float y = fields[3].GetFloat();
         float z = fields[4].GetFloat();
@@ -112,6 +128,7 @@ void WaypointMgr::Load()
         wp->event_id = fields[9].GetUInt32();
         wp->event_chance = fields[10].GetInt16();
 
+        WaypointPath& path = _waypointStore[pathId];
         path.push_back(wp);
         ++count;
     }
