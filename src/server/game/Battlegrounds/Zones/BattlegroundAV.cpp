@@ -1355,12 +1355,12 @@ bool BattlegroundAV::SetupBattleground()
         }
 
     // Bonfires
-    if (!AddObject(BG_AV_OBJECT_BONFIRE1, BG_AV_BONFIRE1, BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][0], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][1], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][2], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_BONFIRE1, BG_AV_BONFIRE1, BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][0], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][1], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][2], BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BONFIRE1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!13");
         return false;
     }
-    if (!AddObject(BG_AV_OBJECT_BONFIRE2, BG_AV_BONFIRE2, BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][0], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][1], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][2], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_BONFIRE2, BG_AV_BONFIRE2, BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][0], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][1], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][2], BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BONFIRE2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!14");
         return false;
@@ -1368,19 +1368,19 @@ bool BattlegroundAV::SetupBattleground()
 
     // Burning Embers
     for (uint16 i = 0; i <= (BG_AV_OBJECT_BURNING_EMBERS_MAX - BG_AV_OBJECT_BURNING_EMBERS_MIN); i++)
-        if (!AddObject(BG_AV_OBJECT_BURNING_EMBERS_MIN + i, BG_AV_BURNING_EMBERS, BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        if (!AddObject(BG_AV_OBJECT_BURNING_EMBERS_MIN + i, BG_AV_BURNING_EMBERS, BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BURNING_EMBERS_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
         {
             sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!15");
             return false;
         }
 
     // Campfire 1
-    if (!AddObject(BG_AV_OBJECT_CAMPFIRE1_1, BG_AV_CAMPFIRE1, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_CAMPFIRE1_1, BG_AV_CAMPFIRE1, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!16.1");
         return false;
     }
-    if (!AddObject(BG_AV_OBJECT_CAMPFIRE1_2, BG_AV_CAMPFIRE1, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_CAMPFIRE1_2, BG_AV_CAMPFIRE1, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE1_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!16.2");
         return false;
@@ -1388,40 +1388,40 @@ bool BattlegroundAV::SetupBattleground()
 
     // Campfire 2
     for (uint16 i = 0; i <= (BG_AV_OBJECT_CAMPFIRE2_MAX - BG_AV_OBJECT_CAMPFIRE2_MIN); i++)
-        if (!AddObject(BG_AV_OBJECT_CAMPFIRE2_MIN + i, BG_AV_CAMPFIRE2, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        if (!AddObject(BG_AV_OBJECT_CAMPFIRE2_MIN + i, BG_AV_CAMPFIRE2, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE2_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
         {
             sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!17");
             return false;
         }
 
     // Campfire 3
-    if (!AddObject(BG_AV_OBJECT_CAMPFIRE3, BG_AV_CAMPFIRE3, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_CAMPFIRE3, BG_AV_CAMPFIRE3, BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][0], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][1], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][2], BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAMPFIRE3][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!18");
         return false;
     }
 
     // Brazier 1
-    if (!AddObject(BG_AV_OBJECT_BRAZIER1, BG_AV_BRAZIER1, BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_BRAZIER1, BG_AV_BRAZIER1, BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!19");
         return false;
     }
 
     // Brazier 2
-    if (!AddObject(BG_AV_OBJECT_BRAZIER2, BG_AV_BRAZIER2, BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_BRAZIER2, BG_AV_BRAZIER2, BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!20");
         return false;
     }
 
     // Brazier 3
-    if (!AddObject(BG_AV_OBJECT_BRAZIER3_1, BG_AV_BRAZIER3, BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_BRAZIER3_1, BG_AV_BRAZIER3, BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!21.1");
         return false;
     }
-    if (!AddObject(BG_AV_OBJECT_BRAZIER3_2, BG_AV_BRAZIER3, BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_BRAZIER3_2, BG_AV_BRAZIER3, BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER3_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!21.2");
         return false;
@@ -1429,7 +1429,7 @@ bool BattlegroundAV::SetupBattleground()
 
     // Brazier 4
     for (uint16 i = 0; i <= (BG_AV_OBJECT_BRAZIER4_MAX - BG_AV_OBJECT_BRAZIER4_MIN); i++)
-        if (!AddObject(BG_AV_OBJECT_BRAZIER4_MIN + i, BG_AV_BRAZIER4, BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        if (!AddObject(BG_AV_OBJECT_BRAZIER4_MIN + i, BG_AV_BRAZIER4, BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_BRAZIER4_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
         {
             sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!22");
             return false;
@@ -1437,7 +1437,7 @@ bool BattlegroundAV::SetupBattleground()
 
     // Anvil 1
     for (uint16 i = 0; i <= (BG_AV_OBJECT_ANVIL1_MAX - BG_AV_OBJECT_ANVIL1_MIN); i++)
-        if (!AddObject(BG_AV_OBJECT_ANVIL1_MIN + i, BG_AV_ANVIL1, BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        if (!AddObject(BG_AV_OBJECT_ANVIL1_MIN + i, BG_AV_ANVIL1, BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_ANVIL1_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
         {
             sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!23");
             return false;
@@ -1445,28 +1445,49 @@ bool BattlegroundAV::SetupBattleground()
 
     // Anvil 2
     for (uint16 i = 0; i <= (BG_AV_OBJECT_ANVIL2_MAX - BG_AV_OBJECT_ANVIL2_MIN); i++)
-        if (!AddObject(BG_AV_OBJECT_ANVIL2_MIN + i, BG_AV_ANVIL2, BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+        if (!AddObject(BG_AV_OBJECT_ANVIL2_MIN + i, BG_AV_ANVIL2, BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][0], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][1], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][2], BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_ANVIL2_MIN + i][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
         {
             sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!24");
             return false;
         }
 
     // Forge 1
-    if (!AddObject(BG_AV_OBJECT_FORGE1_1, BG_AV_FORGE1, BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][0], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][1], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][2], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_FORGE1_1, BG_AV_FORGE1, BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][0], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][1], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][2], BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE1_1][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!25.1");
         return false;
     }
-    if (!AddObject(BG_AV_OBJECT_FORGE1_2, BG_AV_FORGE1, BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][0], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][1], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][2], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_FORGE1_2, BG_AV_FORGE1, BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][0], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][1], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][2], BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE1_2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!25.2");
         return false;
     }
 
     // Forge 2
-    if (!AddObject(BG_AV_OBJECT_FORGE2, BG_AV_FORGE2, BG_AV_ObjectPos[AV_OPLACE_FORGE2][0], BG_AV_ObjectPos[AV_OPLACE_FORGE2][1], BG_AV_ObjectPos[AV_OPLACE_FORGE2][2], BG_AV_ObjectPos[AV_OPLACE_FORGE2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY, GO_FLAG_NOT_SELECTABLE))
+    if (!AddObject(BG_AV_OBJECT_FORGE2, BG_AV_FORGE2, BG_AV_ObjectPos[AV_OPLACE_FORGE2][0], BG_AV_ObjectPos[AV_OPLACE_FORGE2][1], BG_AV_ObjectPos[AV_OPLACE_FORGE2][2], BG_AV_ObjectPos[AV_OPLACE_FORGE2][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_FORGE2][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_FORGE2][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
     {
         sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!26");
+        return false;
+    }
+
+    // Cauldron
+    if (!AddObject(BG_AV_OBJECT_CAULDRON, BG_AV_CAULDRON, BG_AV_ObjectPos[AV_OPLACE_CAULDRON][0], BG_AV_ObjectPos[AV_OPLACE_CAULDRON][1], BG_AV_ObjectPos[AV_OPLACE_CAULDRON][2], BG_AV_ObjectPos[AV_OPLACE_CAULDRON][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_CAULDRON][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_CAULDRON][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!27");
+        return false;
+    }
+
+    // Wanted: ORCS!
+    if (!AddObject(BG_AV_OBJECT_WANTED_ORCS, BG_AV_WANTED_ORCS, BG_AV_ObjectPos[AV_OPLACE_WANTED_ORCS][0], BG_AV_ObjectPos[AV_OPLACE_WANTED_ORCS][1], BG_AV_ObjectPos[AV_OPLACE_WANTED_ORCS][2], BG_AV_ObjectPos[AV_OPLACE_WANTED_ORCS][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_WANTED_ORCS][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_WANTED_ORCS][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!28");
+        return false;
+    }
+
+    // Wanted: DWARVES!
+    if (!AddObject(BG_AV_OBJECT_WANTED_DWARVES, BG_AV_WANTED_DWARVES, BG_AV_ObjectPos[AV_OPLACE_WANTED_DWARVES][0], BG_AV_ObjectPos[AV_OPLACE_WANTED_DWARVES][1], BG_AV_ObjectPos[AV_OPLACE_WANTED_DWARVES][2], BG_AV_ObjectPos[AV_OPLACE_WANTED_DWARVES][3], 0, 0, sin(BG_AV_ObjectPos[AV_OPLACE_WANTED_DWARVES][3]/2), cos(BG_AV_ObjectPos[AV_OPLACE_WANTED_DWARVES][3]/2), RESPAWN_IMMEDIATELY, GO_STATE_READY))
+    {
+        sLog->outError("BatteGroundAV: Failed to spawn some object Battleground not created!29");
         return false;
     }
 
@@ -1570,6 +1591,15 @@ bool BattlegroundAV::SetupBattleground()
 
     // Forge 2
     SpawnBGObject(BG_AV_OBJECT_FORGE2, RESPAWN_IMMEDIATELY);
+
+    // Cauldron
+    SpawnBGObject(BG_AV_OBJECT_CAULDRON, RESPAWN_IMMEDIATELY);
+
+    // Wanted: ORCS!
+    SpawnBGObject(BG_AV_OBJECT_WANTED_ORCS, RESPAWN_IMMEDIATELY);
+
+    // Wanted: DWARVES!
+    SpawnBGObject(BG_AV_OBJECT_WANTED_DWARVES, RESPAWN_IMMEDIATELY);
 
     //creatures
 #if defined(ENABLE_EXTRAS) && defined(ENABLE_EXTRA_LOGS)
