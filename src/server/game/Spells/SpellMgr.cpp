@@ -3613,6 +3613,9 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetB[EFFECT_0] = TARGET_UNIT_SRC_AREA_ENTRY;
             spellInfo->EffectRadiusIndex[EFFECT_0] = 9;
             break;
+        case 12043: // Presence of Mind
+            spellInfo->AttributesEx6 |= SPELL_ATTR6_IGNORE_CATEGORY_COOLDOWN_MODS;
+            break;
 
 
         /////////////////////////////////////////////
