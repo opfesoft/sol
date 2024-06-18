@@ -16145,9 +16145,14 @@ void Player::FailQuest(uint32 questId)
     if (Quest const* quest = sObjectMgr->GetQuestTemplate(questId))
     {
         QuestStatus qStatus = GetQuestStatus(questId);
-        // xinef: if quest is marked as failed, dont do it again
+
+        // we can only fail incomplete quest or...
         if (qStatus != QUEST_STATUS_INCOMPLETE)
-            return;
+        {
+            // completed timed quest with no requirements
+            if (qStatus != QUEST_STATUS_COMPLETE || !quest->HasSpecialFlag(QUEST_SPECIAL_FLAGS_TIMED) || !quest->HasSpecialFlag(QUEST_SPECIAL_FLAGS_COMPLETED_AT_START))
+                return;
+        }
 
         SetQuestStatus(questId, QUEST_STATUS_FAILED);
 
