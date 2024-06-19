@@ -43,7 +43,10 @@ class npc_pet_gen_mojo : public CreatureScript
                 _victimGUID = 0;
 
                 if (Unit* owner = me->GetOwner())
-                    me->GetMotionMaster()->MoveFollow(owner, 0.0f, 0.0f);
+                {
+                    me->GetMotionMaster()->Clear(false);
+                    me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
+                }
             }
 
             void EnterCombat(Unit* /*who*/) { }
@@ -69,7 +72,8 @@ class npc_pet_gen_mojo : public CreatureScript
 
                 DoCast(player, SPELL_FEELING_FROGGY, true);
                 DoCast(me, SPELL_SEDUCTION_VISUAL, true);
-                me->GetMotionMaster()->MoveFollow(player, 0.0f, 0.0f);
+                me->GetMotionMaster()->Clear(false);
+                me->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
             }
 
         private:
@@ -746,6 +750,11 @@ public:
                 }
             }
         }
+
+        void EnterEvadeMode()
+        {
+            CreatureAI::EnterEvadeMode();
+        }
     };
 
     CreatureAI* GetAI(Creature* pCreature) const
@@ -950,6 +959,11 @@ public:
             me->AddUnitState(UNIT_STATE_NO_ENVIRONMENT_UPD);
             me->SetCanFly(true);
             me->SetDisableGravity(true);
+        }
+
+        void EnterEvadeMode()
+        {
+            CreatureAI::EnterEvadeMode();
         }
     };
 
