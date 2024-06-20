@@ -3530,12 +3530,14 @@ void Spell::cancel(bool bySelf)
     {
         case SPELL_STATE_PREPARING:
             CancelGlobalCooldown();
+            SendCastResult(SPELL_FAILED_INTERRUPTED);
+
             if (m_caster->GetTypeId() == TYPEID_PLAYER)
-            {
                 if (m_caster->ToPlayer()->NeedSendSpectatorData())
                     ArenaSpectator::SendCommand_Spell(m_caster->FindMap(), m_caster->GetGUID(), "SPE", m_spellInfo->Id, bySelf ? 99998 : 99999);
-            }
-            [[fallthrough]];
+
+            break;
+
         case SPELL_STATE_DELAYED:
             SendInterrupted(SPELL_FAILED_INTERRUPTED);
             break;
