@@ -145,6 +145,9 @@ enum ThrallWarchief
     GOSSIP_TEXT_THRALL_STORY6   =  5738,
 
     FOR_THE_HORDE_YELL_COOLDOWN =  3600,
+
+    HERALD_OF_THRALL_ID         = 10719,
+    HERALD_OF_THRALL_GUID       = 3009704,
 };
 
 /// @todo verify abilities/timers
@@ -206,6 +209,15 @@ public:
     {
         if (quest->GetQuestId() == QUEST_FOR_THE_HORDE && lastTimeForTheHordeYell + FOR_THE_HORDE_YELL_COOLDOWN <= sWorld->GetGameTime())
         {
+            CreatureData const* data = sObjectMgr->GetCreatureData(HERALD_OF_THRALL_GUID);
+            if (data)
+            {
+                creature->GetMap()->LoadGrid(data->posX, data->posY);
+                Creature* herald = ObjectAccessor::GetCreature(*creature, MAKE_NEW_GUID(HERALD_OF_THRALL_GUID, HERALD_OF_THRALL_ID, HIGHGUID_UNIT));
+                if (herald)
+                    sCreatureTextMgr->SendChat(herald, 0, nullptr);
+            }
+
             lastTimeForTheHordeYell = sWorld->GetGameTime();
             sCreatureTextMgr->SendChat(creature, 0, nullptr);
         }
