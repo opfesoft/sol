@@ -148,6 +148,7 @@ enum ThrallWarchief
 
     HERALD_OF_THRALL_ID         = 10719,
     HERALD_OF_THRALL_GUID       = 3009704,
+    UNADORNED_SPIKE_ID          = 175787,
 };
 
 /// @todo verify abilities/timers
@@ -217,6 +218,9 @@ public:
                 if (herald)
                     sCreatureTextMgr->SendChat(herald, 0, nullptr);
             }
+
+            if (GameObject* spike = creature->FindNearestGameObject(UNADORNED_SPIKE_ID, 10.0f))
+                spike->SetGoState(GO_STATE_ACTIVE);
 
             lastTimeForTheHordeYell = sWorld->GetGameTime();
             sCreatureTextMgr->SendChat(creature, 0, nullptr);
