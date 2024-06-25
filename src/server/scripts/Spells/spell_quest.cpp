@@ -2550,14 +2550,15 @@ class spell_q11010_q11102_q11023_choose_loc : public SpellScriptLoader
 
 // 39844 - Skyguard Blasting Charge
 // 40160 - Throw Bomb
-class spell_q11010_q11102_q11023_q11008_check_fly_mount : public SpellScriptLoader
+// 41291 - Soul Cannon
+class spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount : public SpellScriptLoader
 {
     public:
-        spell_q11010_q11102_q11023_q11008_check_fly_mount() : SpellScriptLoader("spell_q11010_q11102_q11023_q11008_check_fly_mount") { }
+        spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount() : SpellScriptLoader("spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount") { }
 
-        class spell_q11010_q11102_q11023_q11008_check_fly_mount_SpellScript : public SpellScript
+        class spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount_SpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_q11010_q11102_q11023_q11008_check_fly_mount_SpellScript);
+            PrepareSpellScript(spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount_SpellScript);
 
             SpellCastResult CheckRequirement()
             {
@@ -2570,13 +2571,13 @@ class spell_q11010_q11102_q11023_q11008_check_fly_mount : public SpellScriptLoad
 
             void Register()
             {
-                OnCheckCast += SpellCheckCastFn(spell_q11010_q11102_q11023_q11008_check_fly_mount_SpellScript::CheckRequirement);
+                OnCheckCast += SpellCheckCastFn(spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount_SpellScript::CheckRequirement);
             }
         };
 
         SpellScript* GetSpellScript() const
         {
-            return new spell_q11010_q11102_q11023_q11008_check_fly_mount_SpellScript();
+            return new spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount_SpellScript();
         }
 };
 
@@ -3242,7 +3243,7 @@ void AddSC_quest_spell_scripts()
     new spell_q11010_q11102_q11023_aggro_check();
     new spell_q11010_q11102_q11023_aggro_burst();
     new spell_q11010_q11102_q11023_choose_loc();
-    new spell_q11010_q11102_q11023_q11008_check_fly_mount();
+    new spell_q11010_q11102_q11023_q11008_q11090_check_fly_mount();
     new spell_q12730_quenching_mist();
     new spell_q13291_q13292_q13239_q13261_frostbrood_skytalon_grab_decoy();
     new spell_q13011_bear_flank_master();
