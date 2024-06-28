@@ -66,7 +66,6 @@ void WaypointMovementGenerator<Creature>::OnArrived(Creature* creature)
     if (m_isArrivalDone)
         return;
 
-    creature->ClearUnitState(UNIT_STATE_ROAMING_MOVE);
     m_isArrivalDone = true;
 
     if (i_path->at(i_currentNode)->event_id && urand(0, 99) < i_path->at(i_currentNode)->event_chance)
@@ -156,15 +155,15 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
     if (node->pathfinding == WAYPOINT_PATHFINDING_PATH)
     {
         if (transportPath)
-            intermediatePath.push_back(G3D::Vector3(creature->GetTransOffsetX(), creature->GetTransOffsetY(), creature->GetTransOffsetZ()));
+            intermediatePath.emplace_back(creature->GetTransOffsetX(), creature->GetTransOffsetY(), creature->GetTransOffsetZ());
         else
-            intermediatePath.push_back(G3D::Vector3(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()));
+            intermediatePath.emplace_back(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ());
 
         uint32 tmpCurrentNode = i_currentNode;
 
         while (node->pathfinding == WAYPOINT_PATHFINDING_PATH)
         {
-            intermediatePath.push_back(G3D::Vector3(node->x, node->y, node->z));
+            intermediatePath.emplace_back(node->x, node->y, node->z);
 
             if (intermediatePath.size() > 50)
             {
@@ -177,7 +176,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
             node = i_path->at(tmpCurrentNode);
         }
 
-        intermediatePath.push_back(G3D::Vector3(node->x, node->y, node->z));
+        intermediatePath.emplace_back(node->x, node->y, node->z);
     }
 
     m_isArrivalDone = false;
