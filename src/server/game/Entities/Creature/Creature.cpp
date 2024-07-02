@@ -1848,7 +1848,6 @@ void Creature::Respawn(bool force)
 
         SetLastPlayerInteraction(0);
         SetLeaderMoveFailed(false);
-        GetMotionMaster()->InitDefault();
 
         //Call AI respawn virtual function
         if (IsAIEnabled)

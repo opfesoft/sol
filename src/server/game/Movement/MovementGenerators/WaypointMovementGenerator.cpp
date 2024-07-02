@@ -101,7 +101,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
     if (creature->GetNextPathPoint())
     {
-        i_currentNode = creature->GetNextPathPoint() % i_path->size();
+        i_currentNode = (creature->GetNextPathPoint() - 1) % i_path->size();
         creature->SetNextPathPoint(0);
     }
 
@@ -167,7 +167,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
             if (intermediatePath.size() > 50)
             {
-                sLog->outErrorDb("WaypointMovementGenerator::StartMove: creature %s (Entry: %u GUID: %u), path id %u, uses an intermediate path which which has more than 50 points", creature->GetName().c_str(), creature->GetEntry(), creature->GetGUIDLow(), path_id);
+                sLog->outErrorDb("WaypointMovementGenerator::StartMove: creature %s (Entry: %u GUID: %u), path id %u, uses an intermediate path which has more than 50 points", creature->GetName().c_str(), creature->GetEntry(), creature->GetGUIDLow(), path_id);
                 creature->GetMotionMaster()->MoveIdle();
                 return false;
             }
