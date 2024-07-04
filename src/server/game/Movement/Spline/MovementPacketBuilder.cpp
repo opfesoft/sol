@@ -82,24 +82,15 @@ namespace Movement
         data << uint8(MonsterMoveStop);
     }
 
-    void WriteLinearPath(const Spline<int32>& spline, ByteBuffer& data)
+    void WriteLinearPath(const Spline<int32>& spline, const std::vector<uint32>& compressedPath, ByteBuffer& data)
     {
         uint32 last_idx = spline.getPointCount(true) - 3;
         const Vector3 * real_path = &spline.getPoint(1, true);
 
         data << last_idx;
         data << real_path[last_idx];   // destination
-        if (last_idx > 1)
-        {
-            Vector3 middle = (real_path[0] + real_path[last_idx]) / 2.f;
-            Vector3 offset;
-            // first and last points already appended
-            for (uint32 i = 1; i < last_idx; ++i)
-            {
-                offset = middle - real_path[i];
-                data.appendPackXYZ(offset.x, offset.y, offset.z);
-            }
-        }
+        for (const auto& p : compressedPath)
+            data << p;
     }
 
     void WriteCatmullRomPath(const Spline<int32>& spline, ByteBuffer& data)
@@ -121,6 +112,7 @@ namespace Movement
         WriteCommonMonsterMovePart(move_spline, data);
 
         const Spline<int32>& spline = move_spline.spline;
+        const std::vector<uint32>& compressedPath = move_spline.m_compressedPath;
         MoveSplineFlag splineflags = move_spline.splineflags;
         if (splineflags & MoveSplineFlag::Mask_CatmullRom)
         {
@@ -130,7 +122,7 @@ namespace Movement
                 WriteCatmullRomPath(spline, data);
         }
         else
-            WriteLinearPath(spline, data);
+            WriteLinearPath(spline, compressedPath, data);
     }
 
     void PacketBuilder::WriteCreate(const MoveSpline& move_spline, ByteBuffer& data)

@@ -141,8 +141,9 @@ void MoveSpline::init_spline(const MoveSplineInitArgs& args)
     point_Idx = spline.first();
 }
 
-void MoveSpline::Initialize(MoveSplineInitArgs const& args)
+void MoveSpline::Initialize(const MoveSplineInitArgs& args, const std::vector<uint32>* compressedPath /*= nullptr*/)
 {
+    m_compressedPath.clear();
     splineflags = args.flags;
     facing = args.facing;
     m_Id = args.splineId;
@@ -158,6 +159,12 @@ void MoveSpline::Initialize(MoveSplineInitArgs const& args)
     {
         spline.clear();
         return;
+    }
+
+    if (compressedPath && !compressedPath->empty())
+    {
+        m_compressedPath.resize(compressedPath->size());
+        std::copy(compressedPath->begin(), compressedPath->end(), m_compressedPath.begin());
     }
 
     init_spline(args);

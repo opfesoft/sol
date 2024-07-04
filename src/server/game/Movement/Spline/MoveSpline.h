@@ -58,6 +58,8 @@ namespace Movement
         int32           point_Idx;
         int32           point_Idx_offset;
 
+        std::vector<uint32> m_compressedPath;
+
         void init_spline(const MoveSplineInitArgs& args);
 
     protected:
@@ -79,7 +81,7 @@ namespace Movement
         void _Interrupt() { splineflags.done = true; }
 
     public:
-        void Initialize(const MoveSplineInitArgs&);
+        void Initialize(const MoveSplineInitArgs& args, const std::vector<uint32>* compressedPath = nullptr);
         bool Initialized() const { return !spline.empty(); }
 
         MoveSpline();

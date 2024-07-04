@@ -103,7 +103,34 @@ namespace Movement
             return 0;
 
         unit->m_movementInfo.SetMovementFlags(moveFlags);
-        move_spline.Initialize(args);
+
+        std::vector<uint32> compressedPath;
+
+        if (!(args.flags & MoveSplineFlag::Mask_CatmullRom) && args.path.size() > 2)
+        {
+            // The client only supports compressed paths for linear splines, adjust the server spline to match the client and avoid sync issues
+            compressedPath.reserve(args.path.size() - 2);
+            Vector3 middle = (args.path[0] + args.path[args.path.size() - 1]) / 2.f;
+            Vector3 offset;
+
+            for (auto& p : std::span(args.path.begin() + 1, args.path.end() - 1))
+            {
+                offset = middle - p;
+                int compressedX = static_cast<int>(std::round(offset.x / 0.25f));
+                int compressedY = static_cast<int>(std::round(offset.y / 0.25f));
+                int compressedZ = static_cast<int>(std::round(offset.z / 0.25f));
+                p.x = middle.x - compressedX * 0.25f;
+                p.y = middle.y - compressedY * 0.25f;
+                p.z = middle.z - compressedZ * 0.25f;
+                uint32 compressed = 0;
+                compressed |= (compressedX & 0x7FF);
+                compressed |= (compressedY & 0x7FF) << 11;
+                compressed |= (compressedZ & 0x3FF) << 22;
+                compressedPath.emplace_back(compressed);
+            }
+        }
+
+        move_spline.Initialize(args, &compressedPath);
 
         WorldPacket data(SMSG_MONSTER_MOVE, 64);
         data.append(unit->GetPackGUID());
