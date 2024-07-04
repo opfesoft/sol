@@ -36,8 +36,12 @@ namespace FactorySelector
 
         //scriptname in db
         if (!ai_factory)
+        {
             if (scriptedAI)
                 return scriptedAI;
+        }
+        else if (scriptedAI)
+            delete scriptedAI;
 
         // AIname in db
         if (!ai_factory && !ainame.empty())
