@@ -985,6 +985,9 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
             pCurrChar->TeleportTo(at->target_mapId, at->target_X, at->target_Y, at->target_Z, pCurrChar->GetOrientation());
         else
             pCurrChar->TeleportTo(pCurrChar->m_homebindMapId, pCurrChar->m_homebindX, pCurrChar->m_homebindY, pCurrChar->m_homebindZ, pCurrChar->m_homebindO);
+
+        // Probably a hackfix, but currently the best workaround to prevent character names showing as Unknown after teleport out from instances at login.
+        pCurrChar->GetSession()->SendNameQueryOpcode(pCurrChar->GetGUID());
     }
 
     //sLog->outDebug("Player %s added to Map.", pCurrChar->GetName().c_str());
