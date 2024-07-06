@@ -1920,7 +1920,7 @@ bool Creature::HasMechanicTemplateImmunity(uint32 mask) const
 
 bool Creature::IsImmunedToSpell(SpellInfo const* spellInfo)
 {
-    if (!spellInfo)
+    if (!spellInfo || spellInfo->HasAttribute(SPELL_ATTR0_CU_UNAFFECTED_BY_MECHANIC_IMMUNE))
         return false;
 
     // Xinef: this should exclude self casts...
