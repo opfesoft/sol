@@ -1599,6 +1599,50 @@ public:
     }
 };
 
+enum FelManaPotion
+{
+    SPELL_ALCHEMISTS_STONE          = 17619,
+    SPELL_ALCHEMISTS_STONE_ENERGIZE = 21400,
+};
+
+class spell_item_fel_mana_potion : public SpellScriptLoader
+{
+public:
+    spell_item_fel_mana_potion() : SpellScriptLoader("spell_item_fel_mana_potion") { }
+
+    class spell_item_fel_mana_potion_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_item_fel_mana_potion_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_ALCHEMISTS_STONE)
+                || !sSpellMgr->GetSpellInfo(SPELL_ALCHEMISTS_STONE_ENERGIZE))
+                return false;
+            return true;
+        }
+
+        void OnPeriodic(AuraEffect const* /*aurEff*/)
+        {
+            if (Unit* caster = GetCaster(); caster && caster->HasAura(SPELL_ALCHEMISTS_STONE))
+            {
+                uint32 val = (GetSpellInfo()->Effects[EFFECT_0].BasePoints + 1) * 0.4f;
+                caster->CastCustomSpell(SPELL_ALCHEMISTS_STONE_ENERGIZE, SPELLVALUE_BASE_POINT0, val, caster, true);
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_item_fel_mana_potion_AuraScript::OnPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_ENERGIZE);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_item_fel_mana_potion_AuraScript();
+    }
+};
+
 // Theirs
 // Generic script for handling item dummy effects which trigger another spell.
 class spell_item_trigger_spell : public SpellScriptLoader
@@ -4429,6 +4473,7 @@ void AddSC_item_spell_scripts()
     new spell_item_eye_of_gruul_healing_discount();
     new spell_item_summon_argent_knight();
     new spell_item_instant_statue();
+    new spell_item_fel_mana_potion();
 
     // Theirs
     // 23074 Arcanite Dragonling
