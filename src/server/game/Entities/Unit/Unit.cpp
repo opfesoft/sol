@@ -15652,34 +15652,41 @@ void Unit::SendPetAIReaction(uint64 guid)
 
 void Unit::StopMoving(bool playerInteraction /*= false*/)
 {
-    if (playerInteraction)
-    {
-        if (Creature* creature = ToCreature())
-            if (CreatureGroup* formation = creature->GetFormation())
-            {
-                if (Creature* leader = formation->getLeader())
-                    if (leader != creature && leader->IsAlive())
-                    {
-                        leader->StopMoving(); // stop the leader of the formation, otherwise the member is forced to follow
-                        leader->SetLastPlayerInteraction(World::GetGameTimeMS());
-                    }
+    ClearUnitState(UNIT_STATE_MOVING);
 
-                const CreatureGroup::CreatureGroupMemberType& m = formation->GetMembers();
-                for (CreatureGroup::CreatureGroupMemberType::const_iterator itr = m.begin(); itr != m.end(); ++itr)
+    if (Creature* creature = ToCreature())
+        if (CreatureGroup* formation = creature->GetFormation())
+        {
+            const CreatureGroup::CreatureGroupMemberType& m = formation->GetMembers();
+            for (CreatureGroup::CreatureGroupMemberType::const_iterator itr = m.begin(); itr != m.end(); ++itr)
+            {
+                Creature* member = itr->first;
+                if (Creature* leader = formation->getLeader(); leader && member != creature && member->IsAlive())
                 {
-                    Creature* member = itr->first;
-                    if (formation->IsFollowing(member) && member != creature && member->IsAlive())
+                    if (creature == leader)
                     {
-                        member->StopMoving();
-                        member->SetLastPlayerInteraction(World::GetGameTimeMS());
+                        if (formation->IsFollowing(member))
+                        {
+                            // creature is the leader of the formation, stop the members
+                            if (!member->IsStopped())
+                                member->StopMoving();
+                            if (playerInteraction)
+                                member->SetLastPlayerInteraction(World::GetGameTimeMS());
+                        }
+                    }
+                    else if (playerInteraction && creature != leader)
+                    {
+                        // stop the leader of the formation, otherwise the member is forced to follow
+                        if (!leader->IsStopped())
+                            leader->StopMoving();
+                        leader->SetLastPlayerInteraction(World::GetGameTimeMS());
                     }
                 }
             }
+        }
 
+    if (playerInteraction)
         SetLastPlayerInteraction(World::GetGameTimeMS());
-    }
-
-    ClearUnitState(UNIT_STATE_MOVING);
 
     // not need send any packets if not in world or not moving
     if (!IsInWorld())
