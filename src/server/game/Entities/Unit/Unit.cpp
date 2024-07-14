@@ -8996,7 +8996,11 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
 
                     if (AuraEffect* aurEff = owner->GetDummyAuraEffect(SPELLFAMILY_WARLOCK, 3220, 0))
                     {
-                        basepoints0 = int32((aurEff->GetAmount() * owner->SpellBaseDamageBonusDone(SpellSchoolMask(SPELL_SCHOOL_MASK_MAGIC)) + 100.0f) / 100.0f); // TODO: Is it right?
+                        int32 spellDamage = owner->SpellBaseDamageBonusDone(SpellSchoolMask(SPELL_SCHOOL_MASK_MAGIC));
+                        if (AuraEffect* demonicAurEff = owner->GetAuraEffect(48090, 0))
+                            spellDamage -= demonicAurEff->GetAmount();
+
+                        basepoints0 = int32((aurEff->GetAmount() * (spellDamage > 0 ? spellDamage : 0) + 100.0f) / 100.0f); // TODO: Is it right?
                         CastCustomSpell(this, trigger_spell_id, &basepoints0, &basepoints0, NULL, true, castItem, triggeredByAura);
                         return true;
                     }
