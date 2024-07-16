@@ -431,6 +431,16 @@ SetAllCreaturesWithWaypointMovementActive = 300
 WaypointMovementActiveTimer = 5
 
 #
+#    UseFullPrecisionLinearSplines
+#        Description: The client only supports low precision linear splines (3 float values packed
+#                     into one integer value). If the client has been modified to use float values
+#                     this parameter has to be set to 1.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+UseFullPrecisionLinearSplines = 0
+
+#
 ###################################################################################################
 
 ###################################################################################################

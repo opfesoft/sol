@@ -8,6 +8,7 @@
 #include "MovementPacketBuilder.h"
 #include "MoveSpline.h"
 #include "ByteBuffer.h"
+#include "World.h"
 
 namespace Movement
 {
@@ -89,8 +90,12 @@ namespace Movement
 
         data << last_idx;
         data << real_path[last_idx];   // destination
-        for (const auto& p : compressedPath)
-            data << p;
+
+        if (sWorld->getBoolConfig(CONFIG_USE_FULL_PRECISION_LINEAR_SPLINES))
+            data.append<Vector3>(&spline.getPoint(2, true), last_idx);
+        else
+            for (const auto& p : compressedPath)
+                data << p;
     }
 
     void WriteCatmullRomPath(const Spline<int32>& spline, ByteBuffer& data)

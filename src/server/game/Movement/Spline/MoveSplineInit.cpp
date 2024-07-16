@@ -104,11 +104,10 @@ namespace Movement
 
         unit->m_movementInfo.SetMovementFlags(moveFlags);
 
-        std::vector<uint32> compressedPath;
-
-        if (!(args.flags & MoveSplineFlag::Mask_CatmullRom) && args.path.size() > 2)
+        if (!sWorld->getBoolConfig(CONFIG_USE_FULL_PRECISION_LINEAR_SPLINES) && !(args.flags & MoveSplineFlag::Mask_CatmullRom) && args.path.size() > 2)
         {
             // The client only supports compressed paths for linear splines, adjust the server spline to match the client and avoid sync issues
+            std::vector<uint32> compressedPath;
             compressedPath.reserve(args.path.size() - 2);
             Vector3 middle = (args.path[0] + args.path[args.path.size() - 1]) / 2.f;
             Vector3 offset;
@@ -128,9 +127,11 @@ namespace Movement
                 compressed |= (compressedZ & 0x3FF) << 22;
                 compressedPath.emplace_back(compressed);
             }
-        }
 
-        move_spline.Initialize(args, &compressedPath);
+            move_spline.Initialize(args, &compressedPath);
+        }
+        else
+            move_spline.Initialize(args);
 
         WorldPacket data(SMSG_MONSTER_MOVE, 64);
         data.append(unit->GetPackGUID());

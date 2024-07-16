@@ -1302,6 +1302,7 @@ void World::LoadConfigSettings(bool reload)
 
     m_int_configs[CONFIG_SET_ALL_CREATURES_WITH_WAYPOINT_MOVEMENT_ACTIVE] = sConfigMgr->GetIntDefault("SetAllCreaturesWithWaypointMovementActive", 0);
     m_int_configs[CONFIG_WAYPOINT_MOVEMENT_ACTIVE_TIMER] = sConfigMgr->GetIntDefault("WaypointMovementActiveTimer", 0);
+    m_bool_configs[CONFIG_USE_FULL_PRECISION_LINEAR_SPLINES] = sConfigMgr->GetBoolDefault("UseFullPrecisionLinearSplines", false);
 
     // DoS protection (if enabled uses the packet spoof parameters)
     m_bool_configs[CONFIG_DOS_PROTECTION] = sConfigMgr->GetBoolDefault("DoSProtection", true);
