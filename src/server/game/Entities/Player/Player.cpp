@@ -16008,12 +16008,7 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     bool rewarded = IsQuestRewarded(quest_id) && !quest->IsDFQuest();
 
     // Not give XP in case already completed once repeatable quest
-    uint32 XP = rewarded ? 0 : uint32(quest->XPValue(this)*sWorld->getRate(RATE_XP_QUEST));
-
-    // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
-    Unit::AuraEffectList const& ModXPPctAuras = GetAuraEffectsByType(SPELL_AURA_MOD_XP_QUEST_PCT);
-    for (Unit::AuraEffectList::const_iterator i = ModXPPctAuras.begin(); i != ModXPPctAuras.end(); ++i)
-        AddPct(XP, (*i)->GetAmount());
+    uint32 XP = rewarded ? 0 : CalculateQuestRewardXP(quest);
 
     int32 moneyRew = 0;
     if (getLevel() < sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL))
@@ -16662,6 +16657,18 @@ bool Player::TakeQuestSourceItem(uint32 questId, bool msg)
     }
 
     return true;
+}
+
+uint32 Player::CalculateQuestRewardXP(Quest const* quest)
+{
+    uint32 XP = uint32(quest->XPValue(this)*sWorld->getRate(RATE_XP_QUEST));
+
+    // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
+    Unit::AuraEffectList const& ModXPPctAuras = GetAuraEffectsByType(SPELL_AURA_MOD_XP_QUEST_PCT);
+    for (Unit::AuraEffectList::const_iterator i = ModXPPctAuras.begin(); i != ModXPPctAuras.end(); ++i)
+        AddPct(XP, (*i)->GetAmount());
+
+    return XP;
 }
 
 bool Player::GetQuestRewardStatus(uint32 quest_id) const
