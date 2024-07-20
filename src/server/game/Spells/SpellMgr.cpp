@@ -3621,6 +3621,15 @@ void SpellMgr::LoadDbcDataCorrections()
         case 12043: // Presence of Mind
             spellInfo->AttributesEx6 |= SPELL_ATTR6_IGNORE_CATEGORY_COOLDOWN_MODS;
             break;
+        case 471:   // Palamino
+        case 8980:  // Skeletal Horse
+        case 10788: // Leopard
+        case 10790: // Tiger
+        case 10792: // Spotted Panther
+        case 60136: // Grand Caravan Mammoth
+        case 60140: // Grand Caravan Mammoth
+            spellInfo->AuraInterruptFlags &= ~AURA_INTERRUPT_FLAG_NOT_ABOVEWATER;
+            break;
 
 
         /////////////////////////////////////////////
