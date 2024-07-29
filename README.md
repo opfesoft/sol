@@ -1,4 +1,4 @@
-## Project "Sol"
+## Project "Sol"<br>(Discontinued as of 2024-07-29)
 
 ### Open source MMORPG server for Linux based on AzerothCore
 
